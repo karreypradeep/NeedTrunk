@@ -1,0 +1,794 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel id="confirmation" style="border:0px;">
+		<p:messages autoUpdate="true" />
+
+		<p:panelGrid id="admission_confirm" style="width:100%;margin-bottom:10px;">
+
+			<!-- General information -->
+			<p:row>
+				<p:column colspan="2" style="font-weight: bold; background-color:wheat;">
+					<center>General information :</center>
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.existingAdmissionNumber}">
+				<p:column>
+					<h:outputLabel id="con_stu_exis_admission_nr_label" value="#{msg.existing_admission_number}"/>
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_exis_admission_nr" value="#{admissionBean.student.externalAdmissionNr}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{sessionBean.currentBranchRule.batchRequiredIndicator}">
+				<p:column>
+					<h:outputLabel id="con_stu_applying_batch_label" value="Applying for batch" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_applying_batch" value="#{admissionBean.appliedForBatch.name}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_applying_ay_label" value="Applying for academic year" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_applying_ay" value="#{admissionBean.appliedForAcademicYear.displayLabel}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_applying_class_label" value="Applying for class" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_applying_class" value="#{admissionBean.applyingForKlass.name}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_current_kalss_label" value="Previous qualified education" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_current_class" value="#{admissionBean.student.previousQualifiedEducation}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.showApplicationFormFee()}">
+				<p:column>
+					<h:outputLabel id="con_stu_application_fee_label" value="Application fee" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_application_fee" value="#{admissionBean.admissionReservationFee.applicationFormFee}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.showApplicationFormFee() and admissionBean.applicationFeeExternalTransaction}">
+				<p:column>
+					<h:outputLabel id="con_stu_app_fee_ext_trans_number_label" value="Application Fee External Transaction Nr" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_app_ext_trans_number_fee"
+						value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionNr}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.showApplicationFormFee() and admissionBean.applicationFeeExternalTransaction}">
+				<p:column>
+					<h:outputLabel id="con_stu_app_fee_ext_trans_date_label" value="Application Fee External Transaction Date" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_app_fee_ext_trans_date"
+						value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionDate}" style="font-weight:bold;">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_referenced_by_label" value="#{msg.referencedBy}" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_referenced_by" value="#{admissionBean.student.referencedBy}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_admission_date_label" value="#{msg.admission_date}" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_admission_date" value="#{admissionBean.student.admissionDate}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+
+			<!-- Personal information -->
+			<p:row>
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Personal information :</center>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_first_name_label" value="Student name" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_first_name" value="#{admissionBean.student.displayName}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_dob_label" value="Date of birth" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_dob" value="#{admissionBean.student.dateOfBirth}" style="font-weight:bold;">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_gender_label" value="Gender" />
+				</p:column>
+				<p:column>
+					<h:outputLabel value="#{admissionBean.student.gender.label}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_residence_label" value="Residence" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_residence" value="#{admissionBean.student.residence.label}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_nationality_label" value="Nationality" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_nationality" value="#{admissionBean.student.nationality}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_religion_label" value="Religion" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_religion" value="#{admissionBean.student.religion}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_mother_tongue_label" value="Mother tongue" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_mother_tongue" value="#{admissionBean.student.motherTongue}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_stu_reservation_label" value="Reservation" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_stu_reservation" value="#{admissionBean.student.reservation}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+
+			<!-- Primary contact information -->
+			<p:row>
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Primary contact information :</center>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_primary_address_label" value="Address" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_primary_address" value="#{admissionBean.primaryAddress.address}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_primary_address_city_label" value="City" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_primary_address_city" value="#{admissionBean.primaryAddress.city}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_primary_address_country_label" value="Country" />
+
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_primary_aadress_country" value="#{admissionBean.primaryAddress.country.name}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_primary_address_state_label" value="State" />
+
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_primary_address_state" value="#{admissionBean.primaryAddress.state}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_primary_address_zipcode_label" value="Zip code" />
+
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_primary_address_zipcode" value="#{admissionBean.primaryAddress.zipCode}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_primary_address_homephone_label" value="Home phone" />
+
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_primary_address_homephone" value="#{admissionBean.primaryAddress.homePhoneNr}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_primary_address_mobilephone_label" value="Mobile phone" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_primary_address_mobilephone" value="#{admissionBean.primaryAddress.mobileNr}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_primary_address_emaillabel" value="Email" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_primary_address_email" value="#{admissionBean.primaryAddress.email}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+
+
+
+
+
+			<!-- Father information -->
+			<p:row>
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Father information :</center>
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_father_first_name_label" value="Father name " />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_first_name" value="#{admissionBean.studentFather.displayName}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel id="con_father_dob_label" value="Date of birth" />
+
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_dob" value="#{admissionBean.studentFather.dateOfBirth}" style="font-weight:bold;">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+
+				</p:column>
+			</p:row>
+
+
+
+
+			<!-- Father contact information -->
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Father contact information :</center>
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column>
+					<h:outputLabel id="con_father_address_label" value="Address" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_address" value="#{admissionBean.fatherAddress.address}" size="40" maxlength="100"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column>
+					<h:outputLabel id="con_father_address_city_label" value="City" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_address_city" value="#{admissionBean.fatherAddress.city}" style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column>
+					<h:outputLabel id="con_father_address_country_label" value="Country" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_address_country" value="#{admissionBean.fatherAddress.country.name}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column>
+					<h:outputLabel id="con_father_address_state_label" value="State" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_address_state" value="#{admissionBean.fatherAddress.state}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column>
+					<h:outputLabel id="con_father_address_zipcode_label" value="Zip code" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_address_zipcode" value="#{admissionBean.fatherAddress.zipCode}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column>
+					<h:outputLabel id="con_father_address_homephone_label" value="Home phone" for="con_father_address_homephone" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_address_homephone" value="#{admissionBean.fatherAddress.homePhoneNr}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column>
+					<h:outputLabel id="con_father_address_mobilephone_label" value="Mobile phone" for="con_father_address_mobilephone" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_address_mobilephone" value="#{admissionBean.fatherAddress.mobileNr}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayFatherInfo}">
+				<p:column>
+					<h:outputLabel id="con_father_address_email_label" value="Email" for="con_father_address_email" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_father_address_email" value="#{admissionBean.fatherAddress.email}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+
+
+
+
+
+
+
+			<!-- Mother information -->
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Mother information :</center>
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_name_label" value="Mother name " />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_name" value="#{admissionBean.studentMother.displayName}" style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_dob_label" value="Date of birth" />
+
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_dob" value="#{admissionBean.studentMother.dateOfBirth}" style="font-weight:bold;">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+
+				</p:column>
+			</p:row>
+
+
+
+
+
+
+			<!-- Mother contact information -->
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Mother contact information :</center>
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_address_label" value="Address" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_address" value="#{admissionBean.motherAddress.address}" size="40" maxlength="100"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_address_city_label" value="City" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_address_city" value="#{admissionBean.motherAddress.city}" style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_address_country_label" value="Country" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_address_country" value="#{admissionBean.motherAddress.country.name}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_address_state_label" value="State" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_address_state" value="#{admissionBean.motherAddress.state}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_address_zipcode_label" value="Zip code" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_address_zipcode" value="#{admissionBean.motherAddress.zipCode}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_address_homephone_label" value="Home phone" for="con_mother_address_homephone" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_address_homephone" value="#{admissionBean.motherAddress.homePhoneNr}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_address_mobilephone_label" value="Mobile phone" for="con_mother_address_mobilephone" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_address_mobilephone" value="#{admissionBean.motherAddress.mobileNr}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayMotherInfo}">
+				<p:column>
+					<h:outputLabel id="con_mother_address_email_label" value="Email" for="con_mother_address_email" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_mother_address_email" value="#{admissionBean.motherAddress.email}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+
+
+
+
+
+
+
+			<!-- Guardian information -->
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Guardian information :</center>
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_name_label" value="Guardian name " />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_name" value="#{admissionBean.studentGuardian.displayName}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_dob_label" value="Date of birth" />
+
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_dob" value="#{admissionBean.studentGuardian.dateOfBirth}" style="font-weight:bold;">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+
+				</p:column>
+			</p:row>
+
+
+
+
+
+
+
+
+
+			<!-- Guardian contact information -->
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Guardian contact information :</center>
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_address_label" value="Address" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_address" value="#{admissionBean.guardianAddress.address}" size="40" maxlength="100"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_address_city_label" value="City" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_address_city" value="#{admissionBean.guardianAddress.city}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_address_country_label" value="Country" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_address_country" value="#{admissionBean.guardianAddress.country.name}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_address_state_label" value="State" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_address_state" value="#{admissionBean.guardianAddress.state}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_address_zipcode_label" value="Zip code" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_address_zipcode" value="#{admissionBean.guardianAddress.zipCode}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_address_homephone_label" value="Home phone" for="con_guardian_address_homephone" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_address_homephone" value="#{admissionBean.guardianAddress.homePhoneNr}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_address_mobilephone_label" value="Mobile phone"
+						for="con_guardian_address_mobilephone" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_address_mobilephone" value="#{admissionBean.guardianAddress.mobileNr}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayGuardianInfo}">
+				<p:column>
+					<h:outputLabel id="con_guardian_address_email_label" value="Email" for="con_guardian_address_email" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_guardian_address_email" value="#{admissionBean.guardianAddress.email}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+
+
+
+
+
+
+			<!-- Most recent school information-->
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo}">
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Recent school information :</center>
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo}">
+				<p:column>
+					<h:outputLabel id="con_ed_school_name_label" value="Recent school name" for="con_ed_school_name" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_ed_school_name" value="#{admissionBean.educationHistory.schoolName}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo}">
+				<p:column>
+					<h:outputLabel id="con_ed_school_type_label" value="Recent school type" for="con_ed_school_type" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_ed_school_type" value="#{admissionBean.educationHistory.schoolType.label}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo}">
+				<p:column>
+					<h:outputLabel id="con_ed_mediam_label" value="Mediam" for="con_ed_mediam" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_ed_mediam" value="#{admissionBean.educationHistory.medium.label}" style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo}">
+				<p:column>
+					<h:outputLabel id="con_ed_highist_class_label" value="Highest class promoted from school"
+						for="con_ed_highist_class" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_ed_highist_class" value="#{admissionBean.educationHistory.highestKlass}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo}">
+				<p:column>
+					<h:outputLabel id="con_ed_doj_label" value="Date of joining" for="con_ed_doj" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_ed_doj" value="#{admissionBean.educationHistory.dateOfjoining}" style="font-weight:bold;">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo}">
+				<p:column>
+					<h:outputLabel id="con_ed_dor_label" value="Date of relieving" for="con_ed_dor" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_ed_dor" value="#{admissionBean.educationHistory.dateOfRelieving}" style="font-weight:bold;">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo}">
+				<p:column>
+					<h:outputLabel id="con_ed_cp_name_label" value="Contact person" for="con_ed_cp_name" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_ed_cp_name" value="#{admissionBean.educationHistory.contactPersonName}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+			<!-- Most recent school information-->
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo and admissionBean.recentSchoolAddressAvailable}">
+				<p:column colspan="2" style="font-weight: bold;background-color:wheat;">
+					<center>Recent school contact details:</center>
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo and admissionBean.recentSchoolAddressAvailable}">
+				<p:column>
+					<h:outputLabel id="con_rec_sch_label" value="Address" for="con_rec_sch" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_rec_sch" value="#{admissionBean.educationHistory.address.address}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo and admissionBean.recentSchoolAddressAvailable}">
+				<p:column>
+					<h:outputLabel id="con_rec_sch_city_label" value="City" for="con_rec_sch_city" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_rec_sch_city" value="#{admissionBean.educationHistory.address.city}"
+						style="font-weight:bold;" />
+
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo and admissionBean.recentSchoolAddressAvailable}">
+				<p:column>
+					<h:outputLabel id="con_rec_sch_country_label" value="Country" for="con_rec_sch_country" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_rec_sch_country" value="#{admissionBean.educationHistory.address.country.name}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo and admissionBean.recentSchoolAddressAvailable}">
+				<p:column>
+					<h:outputLabel id="con_rec_sch_state_label" value="State" for="con_rec_sch_state" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_rec_sch_state" value="#{admissionBean.educationHistory.address.state}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo and admissionBean.recentSchoolAddressAvailable}">
+				<p:column>
+					<h:outputLabel id="con_rec_sch_zipcode_label" value="Zip code" for="con_rec_sch_zipcode" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_rec_sch_zipcode" value="#{admissionBean.educationHistory.address.zipCode}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo and admissionBean.recentSchoolAddressAvailable}">
+				<p:column>
+					<h:outputLabel id="con_rec_sch_officephone_label" value="Office phone" for="con_rec_sch_officephone" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_rec_sch_officephone" value="#{admissionBean.educationHistory.address.mobileNr}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+
+
+			<p:row rendered="#{admissionBean.displayRecentSchoolInfo and admissionBean.recentSchoolAddressAvailable}">
+				<p:column>
+					<h:outputLabel id="con_rec_sch_email_label" value="Email" for="con_rec_sch_email" />
+				</p:column>
+				<p:column>
+					<h:outputLabel id="con_rec_sch_email" value="#{admissionBean.educationHistory.address.email}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+
+	</p:panel>
+</ui:composition>

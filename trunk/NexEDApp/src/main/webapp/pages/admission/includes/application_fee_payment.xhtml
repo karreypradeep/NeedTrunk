@@ -1,0 +1,55 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	
+	<p:messages autoUpdate="true" />
+	
+	<h:panelGrid id="admission_payment_panel" columns="3" cellpadding="5">
+		
+	<p:outputLabel value="#{msg.is_application_fee_paid}" for="stu_app_fee_ext_tran_check"
+			rendered="#{admissionBean.showApplicationFormFee()}" />
+		<p:selectBooleanCheckbox id="stu_app_fee_ext_tran_check" value="#{admissionBean.applicationFeeExternalTransaction}"
+			onLabel="Yes" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close"
+			rendered="#{admissionBean.showApplicationFormFee()}">
+			<p:ajax update="admission_payment_panel" process="@this" listener="#{admissionBean.resetExistingApplicationFeeDetails()}" />
+		</p:selectBooleanCheckbox>
+		<p:message id="stu_app_fee_ext_tran_check_msg" for="stu_app_fee_ext_tran_check"
+			rendered="#{admissionBean.showApplicationFormFee()}" />
+
+		<p:outputLabel id="stu_application_fee_label" value="#{msg.application_form_fee}" for="stu_application_fee"
+			rendered="#{admissionBean.showApplicationFormFee()}" />
+		<pe:inputNumber id="stu_application_fee" value="#{admissionBean.admissionReservationFee.applicationFormFee}"
+			rendered="#{admissionBean.showApplicationFormFee()}" style="width:95%;">
+			<p:ajax process="@this" />
+		</pe:inputNumber>
+		<p:message id="stu_application_fee_msg" for="stu_application_fee" rendered="#{admissionBean.showApplicationFormFee()}" />
+
+		<p:outputLabel id="ext_trans_number_lbl" value="#{msg.external_transaction_number}" for="ext_trans_number"
+			rendered="#{admissionBean.applicationFeeExternalTransaction}" />
+		<p:inputText id="ext_trans_number"
+			value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionNr}" required="true"
+			rendered="#{admissionBean.applicationFeeExternalTransaction}" style="width:95%;">
+			<p:ajax process="@this" />
+		</p:inputText>
+		<p:message id="ext_trans_number_msg" for="ext_trans_number"
+			rendered="#{admissionBean.applicationFeeExternalTransaction}" />
+
+		<p:outputLabel id="ext_trans_date_lbl" value="#{msg.external_transaction_date}" for="ext_trans_date"
+			rendered="#{admissionBean.applicationFeeExternalTransaction}" />
+		<p:calendar id="ext_trans_date" value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionDate}"
+			navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true"
+			rendered="#{admissionBean.applicationFeeExternalTransaction}">
+			<p:ajax event="dateSelect" process="@this" />
+		</p:calendar>
+		<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.applicationFeeExternalTransaction}" />
+	
+	</h:panelGrid>
+	
+	<p:commandButton id="submitAdmBtn" value="Submit Admission" icon="ui-icon-person"
+			action="#{admissionBean.submitAdmission}" update="@form" />
+
+	<p:blockUI block="form" trigger="submitAdmBtn" />	
+	
+</ui:composition>	

@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:tabMenu activeIndex="#{branchBean.activeTabIndex}">
+		<p:menuitem value="Branch" icon="ui-icon-home" action="#{branchBean.onTabChange}" process="@this" update="@form">
+			<f:setPropertyActionListener target="#{branchBean.activeTabIndex}" value="0" />
+		</p:menuitem>
+		<p:menuitem value="Assemble" icon="ui-icon-wrench" action="#{branchBean.onTabChange}" process="@this" update="@form"
+			disabled="#{branchBean.disbledBranchSubTabs}">
+			<f:setPropertyActionListener target="#{branchBean.activeTabIndex}" value="1" />
+			<f:setPropertyActionListener target="#{branchAssemblyBean.loadBuildingBlocksFlag}" value="true" />
+		</p:menuitem>
+		<p:menuitem value="Notifications" icon="ui-icon-bookmark" action="#{branchNotificationSettingsBean.onTabChange}" process="@this" update="@form"
+			disabled="#{branchBean.disbledBranchSubTabs}" >
+			<f:setPropertyActionListener target="#{branchBean.activeTabIndex}" value="2" />
+		</p:menuitem>
+		<p:menuitem value="Rules" icon="ui-icon-bookmark" action="#{branchBean.onTabChange}" process="@this" update="@form"
+			disabled="#{branchBean.disbledBranchSubTabs}">
+			<f:setPropertyActionListener target="#{branchBean.activeTabIndex}" value="3" />
+		</p:menuitem>
+		<p:menuitem value="Financials" icon="ui-icon-gear" action="#{klassBean.onTabChange}" process="@this" update="@form"
+			disabled="#{branchBean.disbledBranchSubTabs}" rendered="false">
+			<f:setPropertyActionListener target="#{branchBean.activeTabIndex}" value="4"/>
+		</p:menuitem>
+		<p:menuitem value="Reports" icon="ui-icon-gear" action="#{branchBean.onTabChange}" process="@this" update="@form"
+			disabled="#{branchBean.disbledBranchSubTabs}" rendered="false">
+			<f:setPropertyActionListener target="#{branchBean.activeTabIndex}" value="5" />
+		</p:menuitem>
+	</p:tabMenu>
+	<p:panel>
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+		<c:if test="#{klassBean.activeTabIndex == 0}">
+			<ui:include src="branch_general.xhtml" />
+		</c:if>
+
+
+		<c:if test="#{klassBean.activeTabIndex == 1}">
+			<ui:include src="branch_building_block_tree.xhtml" />
+		</c:if>
+
+
+		<c:if test="#{klassBean.activeTabIndex == 2}">
+			<ui:include src="branch_notifications_settings.xhtml" />
+		</c:if>
+
+		<c:if test="#{klassBean.activeTabIndex == 3}">
+			<ui:include src="branch_rules.xhtml" />
+		</c:if>
+
+		<c:if test="#{klassBean.activeTabIndex == 4}">
+			<ui:include src="branch_financial_details.xhtml" />
+		</c:if>
+
+
+		<c:if test="#{klassBean.activeTabIndex == 5}">
+			<ui:include src="branch_reports.xhtml" />
+		</c:if>
+	</p:panel>
+</ui:composition>

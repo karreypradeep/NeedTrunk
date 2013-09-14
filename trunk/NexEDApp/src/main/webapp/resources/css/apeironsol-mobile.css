@@ -1,0 +1,52 @@
+/**
+ * 
+ * Author : Pradeep
+ **/
+.bmui-input {
+	width: 98%;
+}
+
+/**
+ *  Messages styles
+ **/
+ 
+.ui-message-info, .ui-message-error, .ui-message-warn, .ui-message-fatal  {
+	text-align: left;
+	padding: 10px 10px 5px 5px;
+	border-radius: 4px;
+	margin: 5px 0px;
+	width: 98%;
+	text-shadow : none;
+}
+ 
+.ui-messages-info,.ui-message-info {
+	
+	color: #FFFFFF;
+	background-color: #3B5998;
+	border-color: #3B599
+}
+
+.ui-messages-error,.ui-message-error {
+	color: #FFFFFF;
+	background-color: #AC1515;
+	border-color: #AC1515;
+	text-align: left;
+}
+
+.ui-messages-fatal,.ui-message-fatal {
+	color: white;
+	background-color: #A70505;
+	border-color: #A70505;
+	text-align: left;
+}
+
+.ui-messages-warn,.ui-message-warn {
+	color: white;
+	background-color: #109FE2;
+	border-color: #109FE2;
+	text-align: left;
+}
+
+.ui-apeironsol-pannelgrid-noborder td {
+	border-style: hidden !important;
+}

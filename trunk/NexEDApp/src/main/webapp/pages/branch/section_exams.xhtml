@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+	<p:panel id="student_exam_panel" style="margin-bottom:10px;">
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{sectionExamsBean.loadExamTypes}" />
+		</f:metadata>
+
+		<h:panelGrid columns="3" style="border:0px;">
+
+			<p:outputLabel value="Exam type" for="exam_type" />
+			<p:selectOneMenu id="exam_type" value="#{sectionExamsBean.selectedExamType}" required="true"
+				converter="buildingBlockConverter">
+				<f:selectItem itemLabel="Select exam type" itemValue="" />
+				<f:selectItems value="#{sectionExamsBean.examTypes}" var="examTypeBuildingBlock"
+					itemLabel="#{examTypeBuildingBlock.name}" itemValue="#{examTypeBuildingBlock}" />
+				<p:ajax process="@this" update="@form" listener="#{sectionExamsBean.loadSectionExamsByExamType()}" />
+			</p:selectOneMenu>
+			<p:message id="exam_type_msg" for="exam_type" />
+
+			<p:outputLabel value="Exam" for="exam" />
+			<p:selectOneMenu id="exam" value="#{sectionExamsBean.selectedSectionExam}" required="true"
+				converter="sectionExamConverter">
+				<f:selectItem itemLabel="Select exam" itemValue="" />
+				<f:selectItems value="#{sectionExamsBean.sectionExams}" var="sectionExamVar" itemLabel="#{sectionExamVar.exam.name}"
+					itemValue="#{sectionExamVar}" />
+				<p:ajax process="@this" update="@form" listener="#{sectionExamsBean.loadSectionExamSubjectsBySectionExam()}" />
+			</p:selectOneMenu>
+			<p:message id="exam_msg" for="exam" />
+
+			<p:outputLabel value="Subject" for="subject1" />
+			<p:selectOneMenu id="subject1" value="#{sectionExamsBean.selectedSectionExamSubject}" required="true"
+				converter="sectionExamSubjectConverter">
+				<f:selectItem itemLabel="Select subject" itemValue="" />
+				<f:selectItems value="#{sectionExamsBean.sectionExamSubjects}" var="sectionExamSubject"
+					itemLabel="#{sectionExamSubject.sectionSubject.subject.name}" />
+				<p:ajax process="@this" update="@form" listener="#{sectionExamsBean.loadStudentExamSubjectsBySectionExamSubject()}" />
+			</p:selectOneMenu>
+			<p:message id="subject1_msg" for="subject1" />
+		</h:panelGrid>
+
+		<p:panel header="Submit marks for exam type #{sectionExamsBean.selectedExamType.name}" style="border:0px;"
+			rendered="#{sectionExamsBean.studentExamSubjects.size() > 0}">
+			<p:dataTable id="feeDetails" value="#{sectionExamsBean.studentExamSubjects}" var="studentExamSubject" editable="true">
+				<p:ajax event="rowEdit" update="@this" />
+				<p:column>
+					<f:facet name="header">
+							Student name
+						</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{studentExamSubject.studentAcademicYear.student.displayName}" style="width:100%;" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{studentExamSubject.studentAcademicYear.student.displayName}" style="width:100%;" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+							Admission Nr
+						</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{studentExamSubject.studentAcademicYear.student.admissionNr}" style="width:100%;" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{studentExamSubject.studentAcademicYear.student.admissionNr}" style="width:100%;" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+							Exam
+						</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{sectionExamsBean.selectedSectionExam.exam.name}" style="width:100%;" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{sectionExamsBean.selectedSectionExam.exam.name}" style="width:100%;" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+							Subject
+						</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{sectionExamsBean.selectedSectionExamSubject.sectionSubject.subject.name}"
+								style="width:100%;" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{sectionExamsBean.selectedSectionExamSubject.sectionSubject.subject.name}"
+								style="width:100%;" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+							Schedule date
+						</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{studentExamSubject.sectionExamSubject.scheduledDate}" style="width:100%;" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{studentExamSubject.sectionExamSubject.scheduledDate}" style="width:100%;" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+							Maximum marks
+						</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{studentExamSubject.sectionExamSubject.maximumMarks}" style="width:100%;" />
+						</f:facet>
+						<f:facet name="input">
+							<h:outputText value="#{studentExamSubject.sectionExamSubject.maximumMarks}" style="width:100%;" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column>
+					<f:facet name="header">
+							Scored marks
+						</f:facet>
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{studentExamSubject.scoredMarks}" style="width:100%;" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{studentExamSubject.scoredMarks}">
+								<p:ajax process="@this" update="@form" event="change" />
+							</p:inputText>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+				<p:column style="width:50px;text-align:center;">
+					<p:rowEditor />
+				</p:column>
+			</p:dataTable>
+			<p:commandButton id="submit_marks_save" value="Save" update="@form" icon="ui-icon-circle-check" action="#{sectionExamsBean.submitMarksObtained}"/>
+			<p:commandButton id="submit_marks_cancle" value="Cancel" update="@form" process="@this" icon="ui-icon-circle-close">
+			</p:commandButton>
+
+		</p:panel>
+
+
+	</p:panel>
+</ui:composition>

@@ -1,0 +1,133 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+
+	<c:if test="#{branchLevelFeeBean.newAction || branchLevelFeeBean.viewAction }">
+		<ui:include src="/pages/modules/financial/branch_level_fee.xhtml"></ui:include>
+	</c:if>
+
+
+	<c:if test="#{!branchLevelFeeBean.newAction and !branchLevelFeeBean.viewAction}">
+
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{branchLevelFeeBean.loadAcademicYearBranchLevelFeeDOs()}" />
+		</f:metadata>
+
+		<p:toolbar style="margin-bottom:1px;">
+
+			<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+				<h:outputText value="Branch Fee Definitions" style="font-size:20px;" />
+			</p:toolbarGroup>
+
+			<p:toolbarGroup align="right">
+				<c:if test="#{!branchLevelFeeBean.viewOrNewAction}">
+					<p:commandButton value="New Branch Fee Definition" icon="ui-icon-document" update="@form" process="@this"
+						action="#{branchLevelFeeBean.reset()}" disabled="#{!grantedAuthorityBean.userAllowedToCreateFeeDefinitions}">
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.newAction}" value="true" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.viewAction}" value="false" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.loadAllAcademicYearsFlag}" value="true" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.loadBranchLevelFeeTypeBuildingBlocksFlag}" value="true" />
+
+					</p:commandButton>
+				</c:if>
+			</p:toolbarGroup>
+
+		</p:toolbar>
+
+		<p:panel style="margin-botton:1px;margin-top:1px;">
+			<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+			<b>Branch level fees can be defined here.</b>
+			<br />
+			<br />
+			<b>Flowing activities can be done on the class.</b>
+
+			<ul id="hintList_list" class="ui-datalist-data" type="disc">
+				<li class="ui-datalist-item">New branch fee definition can be created by clicking <strong>"New Branch
+						Fee Definition"</strong> button. Existing branch level fees details can be viewed by clicking the <strong>"View"</strong>
+					link
+				</li>
+				<li class="ui-datalist-item">Existing branch level fees can be removed by clicking the delete option on the
+					record. <strong>Branch level fee can be delete only if it is not associated to any student in the branch.</strong>
+				</li>
+			</ul>
+
+		</p:panel>
+
+		<p:panel>
+			<p:treeTable value="#{branchLevelFeeBean.root}" var="branchLevelFeeTreeNode" >
+
+
+
+				<p:column headerText="Name">
+					<p:commandLink value="#{branchLevelFeeTreeNode.name}" rendered="#{branchLevelFeeTreeNode.optionsNode}"
+						process="@this" update="@form">
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.branchLevelFee}"
+							value="#{branchLevelFeeTreeNode.branchLevelFee}" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.newAction}" value="false" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.viewAction}" value="true" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.loadAllAcademicYearsFlag}" value="true" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.loadBranchLevelFeeTypeBuildingBlocksFlag}" value="true" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.branchLevelFee}"
+							value="#{branchLevelFeeTreeNode.branchLevelFee}" />
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.branchLevelFeeCatalogs}"
+							value="#{branchLevelFeeTreeNode.branchLevelFee.branchLevelFeeCatalogs}" />
+
+					</p:commandLink>
+					<h:outputLabel value="#{branchLevelFeeTreeNode.name}" rendered="#{!branchLevelFeeTreeNode.optionsNode}" />
+				</p:column>
+
+				<p:column headerText="Payment Frequency">
+					<f:facet name="header">
+						<h:outputLabel value="Payment Frequency	" />
+					</f:facet>
+					<h:outputText value="#{branchLevelFeeTreeNode.paymentFrequency.label}" />
+				</p:column>
+
+				<p:column headerText="Due date">
+
+					<h:outputText value="#{branchLevelFeeTreeNode.dueDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Due amount">
+
+					<h:outputText value="#{branchLevelFeeTreeNode.dueAmount}">
+						<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Total Amount">
+					<h:outputText value="#{branchLevelFeeTreeNode.totalAmount}" style="width:100px;float:right;">
+						<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+					</h:outputText>
+				</p:column>
+
+				<p:column style="width:10px">
+					<p:commandLink styleClass="ui-icon ui-icon-trash" rendered="#{branchLevelFeeTreeNode.optionsNode}"
+						onclick="confirmation.show()">
+						<f:setPropertyActionListener target="#{branchLevelFeeBean.branchLevelFee}"
+							value="#{branchLevelFeeTreeNode.branchLevelFee}" />
+					</p:commandLink>
+				</p:column>
+
+			</p:treeTable>
+
+
+		</p:panel>
+
+		<p:confirmDialog id="confirmDialog" message="Are you want to delete branch fee definition?" header="Confirmation"
+			severity="alert" widgetVar="confirmation">
+			<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
+				action="#{branchLevelFeeBean.removeBranchLevelFee()}" />
+			<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />
+		</p:confirmDialog>
+
+
+	</c:if>
+
+</ui:composition>

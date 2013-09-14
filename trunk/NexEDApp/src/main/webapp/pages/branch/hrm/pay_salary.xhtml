@@ -1,0 +1,282 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel style="margin-top:1px;margin-bottom:10px;">
+		<f:facet name="header">
+			<h:outputLabel value="Pay Salary" style="font-size: 16px; font-weight:bold;" />
+		</f:facet>
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+		<h:panelGrid columns="2" columnClasses="column-vertical-align, column-vertical-align">
+			<h:panelGrid id="father_panel_grid" columns="3" columnClasses="label, value, label" styleClass="grid" cellpadding="5"
+				width="600px">
+				<h:panelGrid columns="3">
+					<p:outputLabel id="employee_label" value="Employee" for="employee" />
+					<p:selectOneMenu id="employee" value="#{employeeSalaryBean.currentEmployee}" required="true"
+						converter="employeeConverter" disabled="#{employeeSalaryBean.employeeSalary.id != null}">
+						<f:selectItem itemLabel="Select employee" itemValue="" />
+						<f:selectItems value="#{employeeSalaryBean.branchEmployees}" var="employee" itemLabel="#{employee.displayName}"
+							itemValue="#{employee}" />
+						<p:ajax update="@form" process="@this" listener="#{employeeSalaryBean.handleEmployeeChange}" />
+					</p:selectOneMenu>
+					<p:message id="employee_msg" for="employee" />
+
+					<p:outputLabel id="salary_type_label" value="Salary type" for="salary_type" />
+					<p:selectOneMenu id="salary_type" value="#{employeeSalaryBean.employeeSalary.salaryType}" required="true"
+						disabled="#{employeeSalaryBean.employeeSalary.id != null}">
+						<f:selectItem itemLabel="Select salary type" itemValue="" />
+						<f:selectItems value="#{enumConstantsBean.salaryTypeConstants}" var="salaryType" itemLabel="#{salaryType.label}"
+							itemValue="#{salaryType}" />
+						<p:ajax update="@form" process="@this" listener="#{employeeSalaryBean.handleSalaryTypeChange}" />
+					</p:selectOneMenu>
+					<p:message id="salary_type_msg" for="salary_type" />
+
+					<p:outputLabel id="salary_month_label" value="Salary for month" for="salary_month" />
+					<p:calendar id="salary_month" value="#{employeeSalaryBean.employeeSalary.salaryMonth}" pattern="dd/MM/yyyy"
+						size="20" maxlength="20" required="true" showOn="button" showButtonPanel="true"
+						disabled="#{employeeSalaryBean.employeeSalary.id != null}">
+						<p:ajax event="dateSelect" process="@this" update="@form" listener="#{employeeSalaryBean.handleSalaryMonthChange}"></p:ajax>
+					</p:calendar>
+					<p:message id="salary_month_msg" for="salary_month" />
+
+					<p:outputLabel value="Select payment mode" for="d_payment_type" />
+					<p:selectOneMenu id="d_payment_type" value="#{employeeSalaryBean.employeeSalary.paymentMethod}" required="true">
+						<f:selectItem itemLabel="Select payment method" itemValue="" />
+						<f:selectItems value="#{enumConstantsBean.paymentMethodsConstants}" var="paymentMethod"
+							itemLabel="#{paymentMethod.label}" itemValue="#{paymentMethod}" />
+						<p:ajax process="@this" update="@form" listener="#{employeeSalaryBean.handlePaymentModeChange}" />
+					</p:selectOneMenu>
+					<p:message id="d_payment_type_msg" for="d_payment_type" />
+
+					<c:if test="${employeeSalaryBean.employeeSalary.paymentMethod == 'CHEQUE'}">
+
+						<p:outputLabel value="Select Account Type" for="account_type" />
+						<p:selectOneMenu id="account_type" value="#{employeeSalaryBean.employeeSalary.branchAccountType}" required="true">
+							<f:selectItem itemLabel="Select Account Type" itemValue="" />
+							<f:selectItems value="#{enumConstantsBean.branchAccountTypeConstants}" var="branchAccountType"
+								itemLabel="#{branchAccountType.label}" itemValue="#{branchAccountType}" />
+							<p:ajax process="@this" update="@form" listener="#{employeeSalaryBean.handleBranchAccountTypeChange}" />
+						</p:selectOneMenu>
+						<p:message id="account_type_msg" for="account_type" />
+
+						<c:if test="${employeeSalaryBean.employeeSalary.branchAccountType == 'BANK_ACCOUNT'}">
+							<p:outputLabel id="d_cheque_nd_label" value="Cheque number" for="d_cheque_nr" />
+							<p:inputText id="d_cheque_nr" value="#{employeeSalaryBean.employeeSalary.chequeNumber}" required="true">
+								<p:ajax process="@this" update="@this" />
+							</p:inputText>
+							<p:message id="d_cheque_nd_msg" for="d_cheque_nr" />
+
+							<p:outputLabel id="bank_account_number_label" value="Bank Account Number" for="bank_account_number" />
+							<p:selectOneMenu id="bank_account_number" value="#{employeeSalaryBean.employeeSalary.branchBankAccount}"
+								required="true">
+								<f:selectItem itemLabel="Select bank account number" itemValue="" />
+								<f:selectItems value="#{employeeSalaryBean.branchBakAccounts}" var="branchBakAccount"
+									itemLabel="#{branchBakAccount.bankName} - #{branchBakAccount.accountNumber}" itemValue="#{branchBakAccount}" />
+								<p:ajax process="@this" update="@form" />
+								<f:converter converterId="branchBankAccountConverter" />
+							</p:selectOneMenu>
+							<p:message id="bank_account_number_msg" for="bank_account_number" />
+						</c:if>
+						<c:if test="${employeeSalaryBean.employeeSalary.branchAccountType == 'CREDIT_ACCOUNT'}">
+							<p:outputLabel id="credit_account_number_label" value="Credit Account Number" for="credit_account_number" />
+							<p:selectOneMenu id="credit_account_number" value="#{employeeSalaryBean.employeeSalary.branchCreditAccount}"
+								required="true">
+								<f:selectItem itemLabel="Select credit account number" itemValue="" />
+								<f:selectItems value="#{employeeSalaryBean.branchCreditAccounts}" var="branchCreditAccount"
+									itemLabel="#{branchCreditAccount.employee.displayName} - #{branchCreditAccount.accountNumber}"
+									itemValue="#{branchCreditAccount}" />
+								<p:ajax process="@this" update="@form" />
+								<f:converter converterId="branchCreditAccountConverter" />
+							</p:selectOneMenu>
+							<p:message id="credit_account_number_msg" for="credit_account_number" />
+						</c:if>
+					</c:if>
+
+					<p:commandButton id="emp_sal_details" value="Get salary details"
+						action="#{employeeSalaryBean.getEmployeeSalaryDetails()}" update="@form" icon="ui-icon-check"
+						title="Get salary details" disabled="#{employeeSalaryBean.employeeSalary.id != null}" />
+
+				</h:panelGrid>
+			</h:panelGrid>
+			<h:panelGrid width="500px" rendered="#{employeeSalaryBean.currentEmployee != null}">
+				<p:panel id="employee_details_panel" style="margin-bottom:1px;border:0px" cellpadding="10" header="Employee Details">
+					<h:panelGrid columns="2">
+
+						<h:outputLabel id="employee_name_label" value="Employee Name :" />
+						<h:outputText value="#{employeeSalaryBean.currentEmployeeDO.employee.displayName}" />
+
+						<h:outputLabel id="employee_number_label" value="Employee Number :" />
+						<h:outputText value="#{employeeSalaryBean.currentEmployeeDO.employee.employeeNumber}" />
+
+						<h:outputLabel id="current_status_label" value="Employment status :" />
+						<h:outputText value="#{employeeSalaryBean.currentEmployeeDO.employee.currentStatus}" />
+
+						<h:outputLabel id="employee_joining_date_label" value="Employment Joining Date :" />
+						<h:outputText value="#{employeeSalaryBean.currentEmployeeDO.joiningDate}" />
+
+						<h:outputLabel id="employee_end_date_label" value="Employment End Date :"
+							rendered="#{employeeSalaryBean.currentEmployeeDO.employementEndDate !=null}" />
+						<h:outputText value="#{employeeSalaryBean.currentEmployeeDO.employementEndDate}"
+							rendered="#{employeeSalaryBean.currentEmployeeDO.employementEndDate !=null}" />
+
+					</h:panelGrid>
+				</p:panel>
+				<p:panel id="bank_account_panel" style="margin-bottom:1px;border:0px" cellpadding="10" header="Bank Account Details"
+					rendered="#{employeeSalaryBean.employeeSalary.branchBankAccount != null}">
+					<h:panelGrid columns="2">
+
+						<h:outputLabel id="bank_name_label" value="Bank Name :" />
+						<h:outputText value="#{employeeSalaryBean.employeeSalary.branchBankAccount.bankName}" />
+
+						<h:outputLabel id="branch_name_label" value="Bank Branch Number :" />
+						<h:outputText value="#{employeeSalaryBean.employeeSalary.branchBankAccount.bankBranch}" />
+
+						<h:outputLabel id="account_number_label" value="Account Number :" />
+						<h:outputText value="#{employeeSalaryBean.employeeSalary.branchBankAccount.accountNumber}" />
+
+					</h:panelGrid>
+				</p:panel>
+			</h:panelGrid>
+		</h:panelGrid>
+	</p:panel>
+
+	<p:panel rendered="#{employeeSalaryBean.loadEmployeeSalaryDetails}">
+
+		<p:outputLabel id="salary_paid_date_label" value="Salary paid date" for="salary_paid_date" />
+		<p:calendar id="salary_paid_date" value="#{employeeSalaryBean.employeeSalary.paidDate}" navigator="true"
+			display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
+			maxdate="#{sessionBean.currentDate}"
+			mindate="#{employeeSalaryBean.currentEmployeeDO!=null?employeeSalaryBean.currentEmployeeDO.joiningDate:sessionBean.currentBranch.startDate}"
+			disabled="#{employeeSalaryBean.employeeSalary.id != null}">
+			<p:ajax event="dateSelect" process="@this" update="@form"></p:ajax>
+		</p:calendar>
+		<p:message id="salary_paid_date_msg" for="salary_paid_date" />
+
+		<br />
+
+		<p:dataTable var="monthlySalaryDeduction"
+			value="#{employeeSalaryBean.currentEmployeeSalaryDO.employeeSalaryDeductions}" id="salaryDeductionsTable">
+			<f:facet name="header">
+				<h:outputText value="Deductions" style="float:left;margin-top:5px;margin-bottom:5px;" />
+			</f:facet>
+
+			<p:column>
+				<h:outputText value="#{monthlySalaryDeduction.decutionBuildingBlock.name}" />
+			</p:column>
+			<p:column style="width:200px">
+
+				<p:inputText value="#{monthlySalaryDeduction.amount}"
+					disabled="#{employeeSalaryBean.isDeductionDisabled(monthlySalaryDeduction.decutionBuildingBlock.salaryDeduction,employeeSalaryBean.employeeSalary)}">
+					<p:ajax process="@this" update="@form"></p:ajax>
+				</p:inputText>
+			</p:column>
+			<p:columnGroup type="footer">
+				<p:row>
+					<p:column colspan="1" footerText="Advance Deductions  " style="text-align:left" />
+					<p:column footerText="#{employeeSalaryBean.currentEmployeeSalaryDO.advanceDeduction}"
+						style="color:red;text-align:left" />
+				</p:row>
+				<p:row>
+					<p:column colspan="1" footerText="Total Deductions  " style="text-align:left" />
+					<p:column footerText="#{employeeSalaryBean.currentEmployeeSalaryDO.totalDeduction}"
+						style="color:red;text-align:left" />
+				</p:row>
+			</p:columnGroup>
+		</p:dataTable>
+
+		<br />
+
+		<p:dataTable var="monthlySalaryComponent"
+			value="#{employeeSalaryBean.currentEmployeeSalaryDO.employeeSalaryComponents}" id="cTCMonthlyTable">
+			<f:facet name="header">
+				<h:outputText value="Monthly Salary" style="float:left;margin-top:5px;margin-bottom:5px;" />
+			</f:facet>
+
+			<p:column>
+				<h:outputText value="#{monthlySalaryComponent.employeeCTCDetails.ctcDefinitionType.name}" />
+			</p:column>
+
+			<p:column>
+				<h:outputText
+					value="#{(monthlySalaryComponent.employeeCTCDetails.amount/(monthlySalaryComponent.employeeCTCDetails.salaryPaymentFrequency!=null?monthlySalaryComponent.employeeCTCDetails.salaryPaymentFrequency.frequency:12))}" />
+			</p:column>
+
+			<p:column style="width:200px">
+				<p:inputText value="#{monthlySalaryComponent.amount}" disabled="#{employeeSalaryBean.employeeSalary.id != null}">
+					<p:ajax process="@this" update="@form"></p:ajax>
+				</p:inputText>
+			</p:column>
+			<f:facet name="footer">
+
+				<div style="float: left; margin-top: 5px; margin-bottom: 5px;">
+
+					<h:outputText value="Gross Salary : " />
+
+					<p:spacer width="10" />
+
+					<h:outputText value="#{employeeSalaryBean.currentEmployeeSalaryDO.grossSalary}" style="color:green" />
+
+					<p:spacer width="10" />
+
+					<h:outputText value="Net Salary : " />
+
+					<p:spacer width="10" />
+
+					<h:outputText value="#{employeeSalaryBean.currentEmployeeSalaryDO.netSalary}" style="color:blue" />
+
+				</div>
+			</f:facet>
+
+		</p:dataTable>
+
+		<br />
+		<p:panelGrid style="width:100%;margin-bottom:10px;" columnClasses="adm-conf-label,adm-conf-value">
+			<f:facet name="header">
+				<p:row>
+					<p:column colspan="2">
+						<h:outputLabel value="Net payment summary" style="float: left; margin-top: 5px; margin-bottom: 5px;" />
+					</p:column>
+				</p:row>
+			</f:facet>s
+			<p:row>
+				<p:column>
+					<h:outputLabel value="Net salary" />
+				</p:column>
+				<p:column style="width:175px">
+					<h:outputLabel value="#{employeeSalaryBean.currentEmployeeSalaryDO.netSalary}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel value="Total deductions" />
+				</p:column>
+				<p:column style="width:200px">
+					<h:outputLabel value="#{employeeSalaryBean.currentEmployeeSalaryDO.totalDeduction}" style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column>
+					<h:outputLabel value="Net pay" />
+				</p:column>
+				<p:column style="width:200px">
+					<h:outputLabel
+						value="#{employeeSalaryBean.currentEmployeeSalaryDO.netSalary - employeeSalaryBean.currentEmployeeSalaryDO.totalDeduction}"
+						style="font-weight:bold;" />
+				</p:column>
+			</p:row>
+		</p:panelGrid>
+	</p:panel>
+	<br></br>
+
+	<p:commandButton id="submit" value="Submit" icon="ui-icon-circle-check" style="float:left;"
+		action="#{employeeSalaryBean.saveEmployeeSalary()}" update="@form"
+		disabled="#{employeeSalaryBean.employeeSalary.id != null}" />
+	<p:commandButton id="emp_sal_cancel" value="#{msg.cancel}" update="@form" immediate="true" icon="ui-icon-close"
+		title="#{msg.cancel}">
+		<f:setPropertyActionListener target="#{employeeSalaryBean.viewOrNewAction}" value="false" />
+	</p:commandButton>
+
+</ui:composition>

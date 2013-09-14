@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StudentsDetails_Section" language="groovy" pageWidth="800" pageHeight="802" columnWidth="800" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="711269c9-98ef-4b48-81d4-b07dcfa80a80">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="subreport_name" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="section" class="java.lang.Object">
+		<fieldDescription><![CDATA[section]]></fieldDescription>
+	</field>
+	<field name="studentROList" class="java.util.List">
+		<fieldDescription><![CDATA[studentROList]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="89" splitType="Stretch">
+			<subreport>
+				<reportElement uuid="80566ea3-ec7b-4f9b-9c5f-3783ba56e22a" x="0" y="23" width="200" height="34"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{studentROList})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{subreport_name}]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="c6f03655-bd99-4703-af5e-d64bc55af006" mode="Opaque" x="0" y="0" width="200" height="20"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Serif" size="12" isBold="true" isUnderline="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Section: " + $F{section}.getName()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

@@ -1,0 +1,69 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:dataTable id="studentViewFeeDetails" value="#{studentFinancialBean.procesingStudentFeeDetailsDOs}"
+		var="studentFinancialTransactionDO" editable="true" paginator="false" sortOrder="descending">
+
+		<f:facet name="header">
+
+			<p:commandButton id="back" value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this"
+				style="float:left;" actionListener="#{studentFinancialBean.updateSelectPayments}">
+				<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="selectFeeType" />
+			</p:commandButton>
+
+		</f:facet>
+
+		<p:column headerText="Fee name" style="width:125px">
+				<h:outputText value="#{studentFinancialTransactionDO.feeName}" style="width:100%" />
+		</p:column>
+		
+		<p:column headerText="Due date" style="width:125px">
+				<h:outputText value="#{studentFinancialTransactionDO.dueDate}" style="width:100%">
+					<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
+				</h:outputText>
+		</p:column>
+		
+		<p:column headerText="Total fee" style="width:125px">
+				<h:outputText value="#{studentFinancialTransactionDO.fee}" style="width:100%">
+					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+				</h:outputText>
+		</p:column>
+		
+		<p:column headerText="Fee deducted" style="width:125px">
+				<h:outputText value="#{studentFinancialTransactionDO.totalFeeDeductedAmount}" style="width:100%">
+					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+				</h:outputText>
+		</p:column>
+		
+		<p:column headerText="Net Fee" style="width:125px">
+				<h:outputText value="#{studentFinancialTransactionDO.totalNetAmount}" style="width:100%">
+					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+				</h:outputText>
+		</p:column>
+			
+		<p:column headerText="Fee paid" style="width:125px">
+				<h:outputText value="#{studentFinancialTransactionDO.totalFeePaymentAmount}" style="width:100%">
+					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+				</h:outputText>
+		</p:column>
+		
+		<p:column headerText="Fee net paid" style="width:125px">
+				<h:outputText value="#{studentFinancialTransactionDO.totalNetAmountPaid}" style="width:100%">
+					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+				</h:outputText>	
+		</p:column>
+		
+		<p:column headerText="Fee due" style="width:125px">
+				<h:outputText value="#{studentFinancialTransactionDO.totalNetDue}" style="width:100%">
+					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+				</h:outputText>
+		</p:column>
+		
+		
+	</p:dataTable>
+
+</ui:composition>

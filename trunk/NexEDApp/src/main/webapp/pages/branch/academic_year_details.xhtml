@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<div class="ui-apeironsol-body-header">
+		<h:outputText value="Academic year : #{academicYearBean.academicYear.displayLabel}" />
+	</div>
+
+	<p:tabMenu activeIndex="#{academicYearBean.activeTabIndex}">
+		<p:menuitem value="#{msg.academic_year}" icon="ui-icon-home" action="#{academicYearBean.onTabChange}" process="@this"
+			update="@form">
+			<f:setPropertyActionListener target="#{academicYearBean.activeTabIndex}" value="0" />
+		</p:menuitem>
+
+		<p:menuitem value="#{msg.week_ends}" icon="ui-icon-calendar" action="#{academicYearWeekEndBean.onTabChange}"
+			process="@this" update="@all" disabled="#{academicYearBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{academicYearBean.activeTabIndex}" value="1" />
+		</p:menuitem>
+
+		<p:menuitem value="#{msg.holidays}" icon="ui-icon-calendar" action="#{academicYearHolidayBean.onTabChange}"
+			process="@this" update="@form" disabled="#{academicYearBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{academicYearBean.activeTabIndex}" value="2" />
+			<f:setPropertyActionListener target="#{academicYearHolidayBean.loadAcademinYearHolidaysFromDB}" value="true" />
+		</p:menuitem>
+
+	</p:tabMenu>
+
+	<c:if test="#{academicYearBean.activeTabIndex == 0}">
+		<ui:include src="/pages/branch/academic_year.xhtml" />
+	</c:if>
+	<c:if test="#{academicYearBean.activeTabIndex == 1}">
+		<ui:include src="/pages/branch/academic_year_weekends.xhtml" />
+	</c:if>
+	<c:if test="#{academicYearBean.activeTabIndex == 2}">
+		<ui:include src="/pages/branch/academic_year_holidays.xhtml" />
+	</c:if>
+</ui:composition>

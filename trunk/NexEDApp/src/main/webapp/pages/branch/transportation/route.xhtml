@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="#{msg.route}" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+	<p:messages id="routeMessages" globalOnly="true" autoUpdate="true" closable="true" />
+	<p:panel>
+		<h:panelGrid id="newRoutePanelgrid" columns="3" cellpadding="5" styleClass="columm-nowrap">
+			<p:outputLabel id="routeNameLabel" value="#{msg.routeName}" for="routeName" />
+			<p:inputText id="routeName" value="#{routeBean.route.name}" required="true" title="#{msg.routeNameTitle}"
+				requiredMessage="#{model.route_name_mandatory}" />
+			<p:message id="routeNameMessage" for="routeName" />
+
+			<p:outputLabel id="routeNumberLabel" value="#{msg.routeNumber}" for="routeNumber" />
+			<p:inputText id="routeNumber" value="#{routeBean.route.number}" required="true" title="#{msg.routeNumberTitle}"
+				requiredMessage="#{model.route_number_mandatory}" />
+			<p:message id="routeNumberMessage" for="routeNumber" />
+
+			<p:outputLabel id="routeSourceLabel" for="routeSource" value="#{msg.routeSource}" />
+			<p:selectOneMenu id="routeSource" value="#{routeBean.route.source}" required="true"
+				requiredMessage="#{model.route_source_mandatory}" converter="pickUpPointConverter">
+				<p:ajax event="change" update="sources" listener="#{routeBean.onSourceChange}" process="@this" />
+				<f:selectItem itemLabel="select:" itemValue="" />
+				<f:selectItems value="#{routeBean.activePickUpPoints}" var="pickUpPoint" itemLabel="#{pickUpPoint.name}"
+					itemValue="#{pickUpPoint}" />
+			</p:selectOneMenu>
+			<p:message id="routeSourceMessage" for="routeSource" />
+
+		</h:panelGrid>
+		<br />
+
+		<h:panelGrid id="sources" columns="2" width="100%">
+			<p:pickList id="sourcesPickList" value="#{routeBean.pickUpPointDualListModel}" var="pickUpPointEntity"
+				itemLabel="#{pickUpPointEntity.name}" itemValue="#{pickUpPointEntity}" converter="pickUpPointConverter"
+				showSourceFilter="true" showTargetFilter="true" filterMatchMode="contains">
+				<f:facet name="sourceCaption">#{msg.unAssignedPickUpPoints}</f:facet>
+				<f:facet name="targetCaption">#{msg.assignedPickUpPoints}</f:facet>
+			</p:pickList>
+		</h:panelGrid>
+
+		<br />
+		<p:commandButton id="routeSave" value="#{msg.save}" action="#{routeBean.saveRoute}" update="@form" icon="ui-icon-check"
+			title="#{msg.save}" />
+		<p:commandButton id="routeCancel" value="#{msg.cancel}" action="#{routeBean.cancleRoute}" update="@form" immediate="true"
+			icon="ui-icon-close" title="msg.cancel" />
+	</p:panel>
+</ui:composition>

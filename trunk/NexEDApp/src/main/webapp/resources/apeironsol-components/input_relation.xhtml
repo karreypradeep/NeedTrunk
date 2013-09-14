@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<composite:interface>
+	<composite:attribute name="id" displayName="id" />
+	<composite:attribute name="relationModel" required="true" displayName="relation" type="com.apeironsol.nexed.core.model.Relation" />
+</composite:interface>
+
+<composite:implementation>
+	<h:panelGrid id="grid" columns="2" style="width:100%;" columnClasses="column-vertical-align,column-vertical-align">
+		<h:panelGrid columns="3" cellpadding="5" style="vertical-align: top;">
+			<h:outputText value="Relation" style="font-weight:bold;" />
+			<h:outputText value="" />
+			<h:outputText value="" />
+
+			<p:outputLabel id="#{cc.attrs.id}_first_name_label" value="First name" for="#{cc.attrs.id}_first_name" />
+			<p:inputText id="#{cc.attrs.id}_first_name" value="#{cc.attrs.relationModel.firstName}" required="true" />
+			<p:message id="#{cc.attrs.id}_first_name_msg" for="#{cc.attrs.id}_first_name" />
+
+			<p:outputLabel id="#{cc.attrs.id}_middle_name_label" value="Middle name" for="#{cc.attrs.id}_middle_name" />
+			<p:inputText id="#{cc.attrs.id}_middle_name" value="#{cc.attrs.relationModel.middleName}" />
+			<p:message id="#{cc.attrs.id}_middle_name_msg" for="#{cc.attrs.id}_middle_name" />
+
+			<p:outputLabel id="#{cc.attrs.id}_last_name_label" value="Last name" for="#{cc.attrs.id}_last_name" />
+			<p:inputText id="#{cc.attrs.id}_last_name" value="#{cc.attrs.relationModel.lastName}" required="true" />
+			<p:message id="#{cc.attrs.id}_last_name_msg" for="#{cc.attrs.id}_last_name" />
+
+			<p:outputLabel id="#{cc.attrs.id}_dob_label" value="Date of birth" for="#{cc.attrs.id}_dob" />
+			<p:calendar id="#{cc.attrs.id}_dob" value="#{cc.attrs.relationModel.dateOfBirth}" navigator="true" display="inline"
+				effect="drop" pattrsern="dd/MM/yyyy" yearRange="1947"/>
+			<p:message id="#{cc.attrs.id}_dob_msg" for="#{cc.attrs.id}_dob" />
+
+			<p:outputLabel id="#{cc.attrs.id}_type_label" value="Relation Type" for="#{cc.attrs.id}_type" />
+			<p:selectOneMenu id="#{cc.attrs.id}_type" value="#{cc.attrs.relationModel.relationType}" style="width:150px;" required="true">
+				<f:selectItem itemLabel="Select relation type" itemValue="" />
+				<f:selectItems value="#{enumConstantsBean.relationType}" var="relationType" itemLabel="#{relationType.label}"
+					itemValue="#{relationType}" />
+			</p:selectOneMenu>
+			<p:message id="#{cc.attrs.id}_type_msg" for="#{cc.attrs.id}_type" />
+
+			<p:outputLabel id="#{cc.attrs.id}_gender_label" value="Gender" for="#{cc.attrs.id}_gender" />
+			<p:selectOneMenu id="#{cc.attrs.id}_gender" value="#{cc.attrs.relationModel.gender}" style="width:150px;" required="true">
+				<f:selectItem itemLabel="Select gender   " itemValue="" />
+				<f:selectItems value="#{enumConstantsBean.gender}" var="gender" itemLabel="#{gender.label}" itemValue="#{gender}" />
+			</p:selectOneMenu>
+			<p:message id="#{cc.attrs.id}_gender_msg" for="#{cc.attrs.id}_gender" />
+
+
+		</h:panelGrid>
+		<h:panelGrid columns="3" cellpadding="5" style="vertical-align: top;">
+			<h:outputText value="Contact information" style="font-weight:bold;" />
+			<h:outputText value="" />
+			<h:outputText value="" />
+
+			<p:outputLabel id="#{cc.attrs.id}_address_label" value="Address" for="#{cc.attrs.id}_address" />
+			<p:inputText id="#{cc.attrs.id}_address" value="#{cc.attrs.relationModel.address.address}" size="30" maxlength="100" required="true" />
+			<p:message id="#{cc.attrs.id}_address_msg" for="#{cc.attrs.id}_address" />
+
+			<p:outputLabel id="#{cc.attrs.id}_address_city_label" value="City" for="#{cc.attrs.id}_address_city" />
+			<p:inputText id="#{cc.attrs.id}_address_city" value="#{cc.attrs.relationModel.address.city}" required="true" />
+			<p:message for="#{cc.attrs.id}_address_city" />
+
+			<p:outputLabel id="#{cc.attrs.id}_address_country_label" value="Country" for="#{cc.attrs.id}_address_country" />
+			<p:selectOneMenu id="#{cc.attrs.id}_address_country" value="#{cc.attrs.relationModel.address.country}" style="width:150px;"
+				required="true" converter="countryConverter">
+				<f:selectItem itemLabel="Select country" itemValue="" />
+				<f:selectItems value="#{countryBean.countries}" var="country" itemLabel="#{country.name}" itemValue="#{country}"/>
+			</p:selectOneMenu>
+			<p:message for="#{cc.attrs.id}_address_country" />
+
+			<p:outputLabel id="#{cc.attrs.id}_address_state_label" value="State" for="#{cc.attrs.id}_address_state" />
+			<p:inputText id="#{cc.attrs.id}_address_state" value="#{cc.attrs.relationModel.address.state}" required="true" />
+			<p:message id="#{cc.attrs.id}_address_state_msg" for="#{cc.attrs.id}_address_state" />
+
+			<p:outputLabel id="#{cc.attrs.id}_address_zipcode_label" value="Zip code" for="#{cc.attrs.id}_address_zipcode" />
+			<p:inputText id="#{cc.attrs.id}_address_zipcode" value="#{cc.attrs.relationModel.address.zipCode}" required="true" />
+			<p:message id="#{cc.attrs.id}_address_zipcode_label_msg" for="#{cc.attrs.id}_address_zipcode" />
+
+			<p:outputLabel id="#{cc.attrs.id}_address_homephone_label" value="Home phone" for="#{cc.attrs.id}_address_homephone" />
+			<p:inputText id="#{cc.attrs.id}_address_homephone" value="#{cc.attrs.relationModel.address.homePhoneNr}" />
+			<p:message id="#{cc.attrs.id}_address_homephone_msg" for="#{cc.attrs.id}_address_homephone" />
+
+			<p:outputLabel id="#{cc.attrs.id}_address_mobilephone_label" value="Mobile phone" for="#{cc.attrs.id}_address_mobilephone" />
+			<p:inputText id="#{cc.attrs.id}_address_mobilephone" value="#{cc.attrs.relationModel.address.mobileNr}" />
+			<p:message id="#{cc.attrs.id}_address_mobilephone_msg" for="#{cc.attrs.id}_address_mobilephone" />
+
+			<p:outputLabel id="#{cc.attrs.id}_address_email_label" value="Email" for="#{cc.attrs.id}_address_email" />
+			<p:inputText id="#{cc.attrs.id}_address_email" value="#{cc.attrs.relationModel.address.email}" />
+			<p:message id="#{cc.attrs.id}_address_email_msg" for="#{cc.attrs.id}_address_email" />
+		</h:panelGrid>
+	</h:panelGrid>
+</composite:implementation>
+
+
+</html>

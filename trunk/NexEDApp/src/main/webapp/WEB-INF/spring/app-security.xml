@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:int-security="http://www.springframework.org/schema/integration/security"
+	xmlns:sec="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration/security http://www.springframework.org/schema/integration/security/spring-integration-security-2.0.xsd
+		http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
+
+	<!-- Resource Security -->
+
+	<sec:http access-denied-page="/access-denied.ems">
+		<sec:form-login login-page="/login.html" default-target-url="/" />
+		
+		<!-- Organization Resources -->
+		<sec:intercept-url pattern="/pages/organization/**" access="ROLE_ADMIN,ROLE_APEIRONSOL" />
+		<sec:intercept-url pattern="/faces/pages/organization/**" access="ROLE_ADMIN,ROLE_APEIRONSOL" />
+		
+		<!-- Branch Resources-->
+		<sec:intercept-url pattern="/pages/branch/**" access="ROLE_EMPLOYEE,ROLE_ADMIN,ROLE_APEIRONSOL" />
+		<sec:intercept-url pattern="/faces/pages/branch/**" access="ROLE_EMPLOYEE,ROLE_ADMIN,ROLE_APEIRONSOL" />
+		
+		<!-- Employee Resources-->
+		<sec:intercept-url pattern="/pages/employee/**" access="ROLE_EMPLOYEE,ROLE_APEIRONSOL" />
+		<sec:intercept-url pattern="/faces/pages/employee/**" access="ROLE_EMPLOYEE,ROLE_APEIRONSOL" />
+		
+		<!-- Student Resources-->
+		<sec:intercept-url pattern="/pages/student/**" access="ROLE_STUDENT,ROLE_APEIRONSOL" />
+		<sec:intercept-url pattern="/faces/pages/student/**" access="ROLE_STUDENT,ROLE_APEIRONSOL" />
+		
+		<!-- Parent Resources-->
+		<sec:intercept-url pattern="/pages/parent/**" access="ROLE_PARENT,ROLE_APEIRONSOL" />
+		<sec:intercept-url pattern="/faces/pages/parent/**" access="ROLE_PARENT,ROLE_APEIRONSOL" />
+	
+		<!-- Module Resources-->
+		<sec:intercept-url pattern="/pages/modules/**" access="ROLE_APEIRONSOL" />
+		<sec:intercept-url pattern="/faces/pages/modules/**" access="ROLE_APEIRONSOL" />
+		
+		<!-- All Resources-->
+		<sec:intercept-url pattern="/pages/**" access="ROLE_APEIRONSOL" />
+		<sec:intercept-url pattern="/faces/pages/**" access="ROLE_APEIRONSOL" />
+		
+		<sec:intercept-url pattern="/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<sec:intercept-url pattern="/images/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<sec:intercept-url pattern="/resources/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<sec:intercept-url pattern="/templates/**" access="IS_AUTHENTICATED_ANONYMOUSLY" />
+		<sec:logout logout-success-url="/home.html" invalidate-session="true" />
+		
+		<sec:session-management invalid-session-url="/home.ems">
+			<sec:concurrency-control max-sessions="1" error-if-maximum-exceeded="true" />
+		</sec:session-management>
+		
+		<sec:custom-filter ref="branchSelectionCheckFilter" position="LAST"/>
+		
+	</sec:http>
+
+	
+	<!-- Business login method security -->
+	<sec:global-method-security secured-annotations="enabled" jsr250-annotations="disabled"/>
+	
+	
+	<sec:authentication-manager alias="authenticationManager">
+		<sec:authentication-provider user-service-ref="userService">
+			<sec:password-encoder ref="passwordEncoder"/>
+		</sec:authentication-provider>
+	</sec:authentication-manager>
+</beans>

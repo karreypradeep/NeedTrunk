@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel header="Bank Account Details">
+		<p:messages id="messages1" globalOnly="true" autoUpdate="true" closable="true" />
+
+		<h:panelGrid id="father_panel_grid" columns="3" columnClasses="label, value,  label" styleClass="grid" cellpadding="5">
+
+			<p:outputLabel id="start_date_label" value="Start date" for="start_date" />
+			<p:calendar id="start_date" value="#{branchBalanceSheetBean.currentBranchBalanceSheet.startDate}" navigator="true"
+				pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button"
+				disabled="#{branchBalanceSheetBean.currentBranchBalanceSheet.id!=null}" maxdate="#{sessionBean.systemDate}"/>
+			<p:message id="start_date_msg" for="start_date" />
+
+			<p:outputLabel id="opening_balance_label" value="Opening Balance" for="opening_balance" />
+			<p:inputText id="opening_balance" value="#{branchBalanceSheetBean.currentBranchBalanceSheet.openingBalance}"
+				size="20" maxlength="20" required="true" disabled="#{branchBalanceSheetBean.openingBalanceDisabled}">
+				<f:convertNumber pattern="000.00" />
+				<p:ajax process="@this" update="@this" />
+			</p:inputText>
+			<p:message id="opening_balance_msg" for="opening_balance" />
+
+			<p:outputLabel id="end_date_label" value="End date" for="end_date" />
+			<p:calendar id="end_date" value="#{branchBalanceSheetBean.currentBranchBalanceSheet.endDate}" navigator="true"
+				pattern="dd/MMM/yyyy" size="20" maxlength="20" showOn="button"  maxdate="#{sessionBean.systemDate}"/>
+			<p:message id="end_date_msg" for="end_date" />
+
+			<p:outputLabel id="closing_balance_label" value="Closing Balance" for="closing_balance" />
+			<p:inputText id="closing_balance" value="#{branchBalanceSheetBean.currentClosingBalance}" size="20" maxlength="20"
+				required="true" disabled="true">
+				<f:convertNumber pattern="000.00" />
+				<p:ajax process="@this" update="@this" />
+			</p:inputText>
+			<p:message id="closing_balance_msg" for="closing_balance" />
+
+		</h:panelGrid>
+		<p:commandButton id="open_balance_sheet" value="Create Balance Sheet"
+			action="#{branchBalanceSheetBean.getBranchBalanceSheetDetails()}" update="@form"
+			disabled="#{branchBalanceSheetBean.currentBranchBalanceSheet.id!=null}" />
+		<p:commandButton id="balance_sheet_save" value="Save" action="#{branchBalanceSheetBean.saveBranchBalanceSheet()}"
+			update="@form"
+			disabled="#{branchBalanceSheetBean.currentBranchBalanceSheet.balanceSheetClosedIndicator || !branchBalanceSheetBean.brachBalanceSheetVisibleInd}" />
+		<p:commandButton id="balance_sheet_process" value="Process"
+			action="#{branchBalanceSheetBean.processBranchBalanceSheet()}" update="@form"
+			disabled="#{branchBalanceSheetBean.currentBranchBalanceSheet.balanceSheetClosedIndicator || branchBalanceSheetBean.currentBranchBalanceSheet.id==null}" />
+		<p:commandButton id="open_closed_balance_sheet" value="Open closed balance sheet"
+			action="#{branchBalanceSheetBean.openClosedBranchBalanceSheet()}" update="@form"
+			rendered="#{branchBalanceSheetBean.currentBranchBalanceSheet.balanceSheetClosedIndicator}" />
+		<p:commandButton id="cancel_balance_sheet" value="Cancel" action="#{branchBalanceSheetBean.calcelAction}"
+			update="@form" immediate="true" />
+
+		<p:treeTable value="#{branchBalanceSheetBean.root}" var="branchBalanceSheetTreeNode" id="fees_due_collected_table">
+
+			<f:facet name="header">
+			</f:facet>
+
+			<p:column style="width:150px">
+				<f:facet name="header">  
+                		Description	  
+            	</f:facet>
+				<h:outputText value="#{branchBalanceSheetTreeNode.description}" />
+			</p:column>
+
+			<p:column style="width:100px">
+				<f:facet name="header">  
+                		Date	  
+            	</f:facet>
+				<h:outputText value="#{branchBalanceSheetTreeNode.date}">
+					<f:convertDateTime pattern="dd/MMM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column style="width:100px">
+				<f:facet name="header">  
+               			 Credit Amount  
+            	</f:facet>
+				<h:outputText value="#{branchBalanceSheetTreeNode.creditAmount}"
+					rendered="#{branchBalanceSheetTreeNode.creditAmount > 0}">
+					<f:convertNumber pattern="#,##,##,##,###.00" />
+				</h:outputText>
+			</p:column>
+
+			<p:column style="width:100px">
+				<f:facet name="header">    
+               			 Debit Amount  
+            	</f:facet>
+				<h:outputText value="#{branchBalanceSheetTreeNode.debitAmount}"
+					rendered="#{branchBalanceSheetTreeNode.debitAmount > 0}">
+					<f:convertNumber pattern="#,##,##,##,###.00" />
+				</h:outputText>
+			</p:column>
+
+			<f:facet name="footer">  
+            	Closing Balance (Opening balance + Credit Amount - Debit Amount): #{branchBalanceSheetBean.currentBranchBalanceSheet.openingBalance}  + #{branchBalanceSheetBean.currentTotalCreditAmount} - #{branchBalanceSheetBean.currentTotalDebitAmount} =  #{branchBalanceSheetBean.currentClosingBalance} 
+        	</f:facet>
+		</p:treeTable>
+
+	</p:panel>
+
+</ui:composition>

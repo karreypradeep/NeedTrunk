@@ -1,0 +1,199 @@
+<!--  This document is a part of the source code and related artifacts for EMSystem.
+      www.apeironsol.com  
+      Copyright © 2012 apeironsol
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:accordionPanel rendered="#{accessBean.acccessingOrganization}" style="width:100%;"
+		activeIndex="#{leftMenuBean.activeTabIndex}" id="org_side_menu">
+
+		<p:tab title="#{msg.organization}" id="left_organization_tab">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.organization}" update="@form" process="org_side_menu">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_ORGANIZATION">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.branches}" update="@form" process="org_side_menu"
+					disabled="#{!organizationBean.disableOrganization}">
+					<f:setPropertyActionListener target="#{branchBean.loadBranchesFlag}" value="true" />
+					<f:setPropertyActionListener target="#{branchBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="ORGANIZATION_BRANCHES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.building_blocks}" id="left_building_blocks_tab"
+			disabled="#{!organizationBean.disableOrganization}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.assert_type}" process="org_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeAssert}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.departments}" process="org_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeDepartment}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.designations}" process="org_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeDesignation}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.documents_required_for_admission}" process="org_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeDocumentsRequiredForAdmission}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				
+				<p:commandLink value="#{msg.exam_type}" process="org_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeExamType}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				
+				<p:commandLink value="#{msg.expense_types}" process="org_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeExpense}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.fee_type}" update="@form" process="org_side_menu">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeFee}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.investment_type}" update="@form" process="org_side_menu">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeInvestmentType}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.liability_type}" update="@form" process="org_side_menu">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeLiability}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.employee_ctc_definition}" update="@form" process="org_side_menu">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeEmployeeCTCDefinition}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.salary_deduction}" update="@form" process="org_side_menu">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.buildingBlockTypeSalaryDeduction}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.student_classification}" update="@form" process="org_side_menu">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.studentClassification}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.user_management}" id="left_user_management_tab"
+			disabled="#{!organizationBean.disableOrganization}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.groups}" process="org_side_menu" update="@form"
+					actionListener="#{userGroupBean.loadUserGroups}">
+					<f:setPropertyActionListener target="#{userGroupBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="ORGANIZATION_USER_GROUPS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.users}" process="org_side_menu" update="@form"
+					actionListener="#{userAccountBean.loadStartUpData}">
+					<f:setPropertyActionListener target="#{userAccountBean.renderNewUserButton}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_USER_ACCOUNTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.settings}" id="left_organization_settings_tab" disabled="#{!organizationBean.disableOrganization}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.settings}" process="org_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="ORGANIZATION_SETTINGS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value=" SMS Providers" process="org_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="SMS_PROVIDERS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+	</p:accordionPanel>
+
+
+</ui:composition>

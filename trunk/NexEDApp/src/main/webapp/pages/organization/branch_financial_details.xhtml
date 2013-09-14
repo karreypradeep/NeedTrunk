@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<ui:define name="tree">
+		<ui:include src="branch_tree.xhtml"></ui:include>
+	</ui:define>
+
+	<p:dataTable id="branchfinancialsDatatable" var="branchCalc" value="#{branchDepartmentBean.branchFinancialDetails}"
+		paginator="true" rows="10"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
+		<p:column headerText="Calendar year" sortBy="#{branchCalc.calendarYear.startDate}"
+			filterBy="#{branchCalc.calendarYear.startDate}" filterMatchMode="contains">
+			<h:outputText value="#{branchCalc.calendarYear.startDate}">
+				<f:convertDateTime pattern="#{format.date}" />
+			</h:outputText>
+		</p:column>
+		<p:column headerText="Total fee expected" sortBy="#{branchCalc.totalFeeExpected}"
+			filterBy="#{branchCalc.totalFeeExpected}" filterMatchMode="contains">
+			<h:outputText value="#{branchCalc.totalFeeExpected}" />
+		</p:column>
+		<p:column headerText="Total fee collected" sortBy="#{branchCalc.totalFeeCollected}"
+			filterBy="#{branchCalc.totalFeeCollected}" filterMatchMode="contains">
+			<h:outputText value="#{branchCalc.totalFeeCollected}" />
+		</p:column>
+		<p:column headerText="Scholarship" sortBy="#{branchCalc.totalFeeScholarshipAwarded}"
+			filterBy="#{branchCalc.totalFeeScholarshipAwarded}" filterMatchMode="contains">
+			<h:outputText value="#{branchCalc.totalFeeScholarshipAwarded}" />
+		</p:column>
+		<p:column headerText="Expenditure" sortBy="#{branchCalc.totalExpenditure}" filterBy="#{branchCalc.totalExpenditure}"
+			filterMatchMode="contains">
+			<h:outputText value="#{branchCalc.totalExpenditure}" />
+		</p:column>
+	</p:dataTable>
+	<h:panelGrid columns="2">
+		<h:commandLink>
+			<p:graphicImage value="/images/excel.png" />
+			<p:dataExporter type="xls" target="branchfinancialsDatatable" fileName="branchfinancials" />
+		</h:commandLink>
+		<h:commandLink>
+			<p:graphicImage value="/images/pdf.png" />
+			<p:dataExporter type="pdf" target="branchfinancialsDatatable" fileName="branchfinancials" />
+		</h:commandLink>
+		<h:commandLink>
+			<p:graphicImage value="/images/xml.png" />
+			<p:dataExporter type="xml" target="branchfinancialsDatatable" fileName="branchfinancials" />
+		</h:commandLink>
+	</h:panelGrid>
+
+</ui:composition>

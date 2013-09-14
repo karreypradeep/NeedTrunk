@@ -1,0 +1,106 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<f:facet name="header">General</f:facet>
+
+		<h:panelGrid columns="3" cellpadding="5">
+
+			<p:outputLabel id="admid_add_reg_nbr_label" value="Registration number" for="admid_add_reg_nbr" />
+			<p:inputText id="admid_add_reg_nbr" value="#{admissionBean.student.registrationNr}" disabled="true" />
+			<p:message id="admid_add_reg_nbr_msg" for="admid_add_reg_nbr" />
+
+			<p:outputLabel id="admid_ext_add_nbr_label" value="External admission number" for="admid_ext_add_nbr" />
+			<p:inputText id="admid_ext_add_nbr" value="#{admissionBean.student.externalAdmissionNr}"
+				disabled="#{admissionBean.student.admissionStatus.value == 'accepted'}" />
+			<p:message id="admid_ext_add_nbr_msg" for="admid_ext_add_nbr" />
+
+			<p:outputLabel id="admid_add_nbr_label" value="Admission number" for="admid_add_nbr" />
+			<p:inputText id="admid_add_nbr" value="#{admissionBean.student.admissionNr}" disabled="true" />
+			<p:message id="admid_add_nbr_msg" for="admid_add_nbr" />
+
+
+			<p:outputLabel id="admid_add_status_label" value="Admission status" for="admid_add_status" />
+			<p:selectOneMenu id="admid_add_status" value="#{admissionBean.student.admissionStatus}" required="true"
+				disabled="true">
+				<f:selectItems value="#{enumConstantsBean.admissionStatusTypes}" var="admissionStatus"
+					itemLabel="#{admissionStatus.label}" itemValue="#{admissionStatus}" />
+			</p:selectOneMenu>
+			<p:message id="admid_add_status_msg" for="admid_add_status" />
+
+			<c:if test="#{sessionBean.currentBranchRule.batchRequiredIndicator}">
+				<p:outputLabel id="add_batch_label" value="Batch" for="add_batch" />
+				<p:selectOneMenu id="add_batch" value="#{admissionBean.student.appliedForBatch}" required="true"
+					disabled="#{admissionBean.student.admissionStatus.value == 'accepted'}">
+					<f:selectItems value="#{admissionBean.batchesForBranch}" var="batch" itemLabel="#{batch.name}" itemValue="#{batch}" />
+					<f:converter converterId="batchConverter" />
+					<p:ajax process="@this" update="@form"></p:ajax>
+				</p:selectOneMenu>
+				<p:message id="add_batch_msg" for="add_batch" />
+			</c:if>
+
+			<p:outputLabel id="add_academic_year_label" value="Academic year" for="add_academic_year" />
+			<p:selectOneMenu id="add_academic_year" value="#{admissionBean.student.appliedForAcademicYear}" required="true"
+				disabled="#{admissionBean.student.admissionStatus.value == 'accepted'}">
+				<f:selectItems value="#{admissionBean.allAcademicYearsForCurrentBranch}" var="academicYear"
+					itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+				<f:converter converterId="academicYearConverter" />
+				<p:ajax process="@this" update="@form"></p:ajax>
+			</p:selectOneMenu>
+			<p:message id="add_academic_year_msg" for="add_academic_year" />
+
+			<p:outputLabel id="admid_applying_class_label" value="Applied for class" for="admid_applying_class" />
+			<p:selectOneMenu id="admid_applying_class" value="#{admissionBean.applyingForClassId}" style="width:155px;"
+				required="true" disabled="#{admissionBean.student.admissionStatus.value == 'accepted'}">
+				<f:selectItem itemLabel="Select applying class" />
+				<f:selectItems value="#{admissionBean.klasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass.id}" />
+				<p:ajax process="@this" update="@form"></p:ajax>
+			</p:selectOneMenu>
+			<p:message id="admid_applying_class_msg" for="admid_applying_class" />
+
+			<p:outputLabel id="admid_accepted_class_label" value="Accepted for class" for="admid_accepted_class" />
+			<p:selectOneMenu id="admid_accepted_class" value="#{admissionBean.student.acceptedForKlass}" style="width:155px;"
+				disabled="true">
+				<f:selectItem itemLabel="Not Accepted" />
+				<f:selectItems value="#{admissionBean.klasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
+				<f:converter converterId="klassConverter" />
+				<p:ajax process="@this" update="@form"></p:ajax>
+			</p:selectOneMenu>
+			<p:message id="admid_accepted_class_msg" for="admid_accepted_class" />
+
+			<p:outputLabel id="admid_add_current_kalss_label" value="Previous qualified education" for="admid_add_current_class" />
+			<p:inputText id="admid_add_current_class" value="#{admissionBean.student.previousQualifiedEducation}" />
+			<p:message id="admid_add_current_class_msg" for="admid_add_current_class" />
+
+
+			<p:outputLabel id="admid_adm_referenced_by_label" value="#{msg.referencedBy}" for="admid_adm_referenced_by" />
+			<p:inputText id="admid_adm_referenced_by" value="#{admissionBean.student.referencedBy}"
+				disabled="#{admissionBean.student.admissionStatus.value == 'accepted'}" />
+			<p:message id="admid_adm_referenced_by_msg" for="admid_adm_referenced_by" />
+
+			<p:outputLabel id="admid_adm_admission_date_label" value="#{msg.admission_date}" for="admid_adm_admission_date" />
+			<p:calendar id="admid_adm_admission_date" value="#{admissionBean.student.admissionDate}" navigator="true"
+				display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="2010"
+				disabled="#{admissionBean.student.admissionStatus.value == 'accepted'}" />
+			<p:message id="admid_adm_admission_date_msg" for="admid_adm_admission_date" />
+
+		</h:panelGrid>
+
+	<p:commandButton id="generalBack" value="Back" action="#{admissionBean.performSearch()}" update="@form"
+		icon="ui-icon-circle-arrow-w" style="width:80px;">
+		<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_ADMISSIONS">
+			<f:converter converterId="viewContentConverter" />
+		</f:setPropertyActionListener>
+		<f:setPropertyActionListener target="#{admissionBean.loadBranchStudentsFlag}" value="true" />
+		<f:setPropertyActionListener target="#{admissionBean.newAction}" value="false" />
+		<f:setPropertyActionListener target="#{admissionBean.viewAction}" value="false" />
+	</p:commandButton>
+	<p:spacer width="5px" />
+	<p:commandButton id="generalReset" value="Reset" update="@form" process="@this" style="width:80px;"
+		icon="ui-icon-circle-triangle-w" disabled="#{admissionBean.admissionDisabled}" />
+	<p:spacer width="5px" />
+	<p:commandButton id="generalSave" value="Save" action="#{admissionBean.saveAdmission}" update="@form"
+		disabled="#{admissionBean.admissionDisabled}" icon="ui-icon-circle-check" style="width:80px;" />
+
+</ui:composition>

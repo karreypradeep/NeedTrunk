@@ -1,0 +1,48 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<script>
+	
+		function printDiv(divName) {
+		var printContents = document.getElementById(divName).innerHTML;
+		var originalContents = document.body.innerHTML;
+
+		document.body.innerHTML = printContents;
+
+		window.print();
+
+		document.body.innerHTML = originalContents;
+		}
+	</script>
+
+	<h:panelGrid columns="2" width="100%">
+		<p:commandButton id="back" value="Done" icon="ui-icon-circle-close" update="@form" process="@this" style="float:left;"
+			action="#{studentFinancialBean.updateSelectPayments}" rendered="#{not studentFinancialBean.viewingGeneratedReceipt}">
+			<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="selectFeeType" />
+		</p:commandButton>
+
+		<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;" rendered="#{studentFinancialBean.viewingGeneratedReceipt}">
+			<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="viewTransactions" />
+		</p:commandButton>
+
+
+		<p:commandButton value="Print" type="button" icon="ui-icon-print" ajax="false" style="float:right;"
+			onclick="$(PrimeFaces.escapeClientId('payment_receipt')).jqprint();return false;">
+		</p:commandButton>
+
+		<p:commandButton value="Print" type="button" icon="ui-icon-print" process="@this" style="float:left;"
+			onclick="printDiv('payment_receipt');return false;" rendered="disabled">
+		</p:commandButton>
+
+	</h:panelGrid>
+	<p:panel id="payment_receipt">
+		<biz:student_fee_transaction_receipt studentFeeTransactionDOModel="#{studentFinancialBean.studentFeeTransactionDO}"
+			organizationName="#{sessionBean.currentOrganization.name}" branchName="#{sessionBean.currentBranch.name}"
+			className="#{studentFinancialBean.studentCurrentKlassName}"
+			sectionName="#{studentFinancialBean.studentCurrentSectionName}" receiptHeaer="Payment confirmation receipt" parentName="#{studentBean.studentParentOrGuardianName}"/>
+	</p:panel>
+</ui:composition>

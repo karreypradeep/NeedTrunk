@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<c:choose>
+
+		<c:when test="#{studentBean.viewAction}">
+			<ui:include src="/pages/branch/student.xhtml" />
+		</c:when>
+
+		<c:otherwise>
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{studentBean.loadActiveClassesForCurrentBranch}" />
+				<f:event type="preRenderView" listener="#{studentBean.loadActiveAcademicYearsForCurrentBranch()}" />
+			</f:metadata>
+			<p:toolbar style="margin-bottom:1px;">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText value="Students" style="font-size:20px;" />
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:panel style="margin-top:1px;margin-bottom:10px;">
+				<f:facet name="header">
+					<h:outputLabel value="#{msg.search_criteria}" style="font-size: 16px; font-weight:bold;" />
+				</f:facet>
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+				<h:panelGrid columns="2" id="expense_type_grid" cellpadding="4" style="border:0px;" columnClasses="column-vertical-align,column-vertical-align">
+
+					<h:panelGrid columns="2" id="expense_type_grid1" cellpadding="4" style="border:0px;">
+					
+						<p:outputLabel id="student_admission_number_search_label" value="#{msg.admissonNr}"
+							for="student_admission_number_search" />
+						<p:inputText id="student_admission_number_search" value="#{studentBean.studentSearchCriteria.admissionNumber}"
+							size="20">
+						</p:inputText>
+					
+						<p:outputLabel id="student_name_search_label" value="#{msg.student_name}" for="student_name_search" />
+						<p:inputText id="student_name_search" value="#{studentBean.studentSearchCriteria.name}" size="20">
+						</p:inputText>
+
+						<p:outputLabel id="date_of_birth_label" value="#{msg.date_of_birth}" for="date_of_birth" />
+						<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
+							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							maxdate="#{sessionBean.currentDate}" />
+						
+						<p:outputLabel id="student_status_label" value="#{msg.status}" for="student_status" />
+						<p:selectOneMenu id="student_status" value="#{studentBean.studentSearchCriteria.studentStatus}"
+							style="width:135px;">
+							<f:selectItem itemLabel="Select status" itemValue="" />
+							<f:selectItems value="#{enumConstantsBean.studentStatusConstantsForSearch}" var="studentStatus"
+								itemLabel="#{studentStatus.label}" itemValue="#{studentStatus}" />
+						</p:selectOneMenu>
+							
+					</h:panelGrid>
+
+					<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
+
+
+						<p:outputLabel id="academic_year_label" value="#{msg.academicYear}" for="academic_year" />
+						<p:selectOneMenu id="academic_year" value="#{studentBean.studentSearchCriteria.academicYear}"
+							converter="academicYearConverter" style="width:165px;">
+							<f:selectItem itemLabel="Select academic year" itemValue="" />
+							<f:selectItems value="#{studentBean.activeAcademicYears}" var="academicYear"
+								itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+							<p:ajax update="expense_type_grid2" listener="#{studentBean.handleFromKlassChange}" process="@this" />
+						</p:selectOneMenu>
+
+					
+						<p:outputLabel id="class_label" value="#{msg.class_students}" for="class" />
+						<p:selectOneMenu id="class" value="#{studentBean.studentSearchCriteria.klass}" converter="klassConverter" style="width:165px;">
+							<f:selectItem itemLabel="Select class" itemValue="" />
+							<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
+							<p:ajax update="expense_type_grid2" listener="#{studentBean.handleFromKlassChange}" process="@this" />
+						</p:selectOneMenu>
+
+
+						<p:outputLabel id="section_label" value="#{msg.section_students}" for="section" />
+						<p:selectOneMenu id="section" value="#{studentBean.studentSearchCriteria.section}" converter="sectionConverter"
+							style="width:100%">
+							<f:selectItem itemLabel="Select section" itemValue="" />
+							<f:selectItems value="#{studentBean.sectionsForSearhCriteriaByKlass}" var="section" itemLabel="#{section.name}"
+								itemValue="#{section}" />
+						</p:selectOneMenu>
+					</h:panelGrid>
+				</h:panelGrid>
+
+				<p:commandButton id="expense_type_search_buton" value="#{msg.search}"
+					action="#{studentBean.searchStudentSectionsBySearchCriteria()}" update="@form" icon="ui-icon-search" />
+				<p:commandButton id="expense_type_reset" value="Reset" update="@form" action="#{studentBean.resetSearchCriteria}"
+					process="@this" icon="ui-icon-refresh" />
+
+				<p:dataTable id="students_table" var="studentSection" value="#{studentBean.studentSectionsBySearchCriteria}"
+					paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,15,20" paginatorPosition="bottom" style="margin-top:15px;"
+					currentPageReportTemplate="(Displaying {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})">
+					<f:facet name="header">
+						<h:outputText value="Search Results" style="float:left;margin-top:5px;margin-bottom:5px;" />
+						<h:commandLink style="float:right;" rendered="#{studentBean.studentSectionsBySearchCriteria.size()>0}">
+							<p:graphicImage value="/images/excel.png" />
+							<p:dataExporter type="xls" target="students_table" fileName="Students" />
+						</h:commandLink>
+						<h:commandLink style="float:right;" rendered="#{studentBean.studentSectionsBySearchCriteria.size()>0}">
+							<p:graphicImage value="/images/pdf.png" />
+							<p:dataExporter type="pdf" target="students_table" fileName="Students"
+								preProcessor="#{studentBean.preProcessPDF}" />
+						</h:commandLink>
+					</f:facet>
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.displayName}"
+						filterBy="#{studentSection.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+						<f:facet name="header">
+							Student name
+						</f:facet>
+
+						<p:commandLink id="viewLink" value="#{studentSection.studentAcademicYear.student.displayName}" title="View"
+							style="margin:0px 0px 0px;" process="@this" update="@form" action="#{studentBean.viewStudent()}">
+							<f:setPropertyActionListener value="#{studentSection}" target="#{studentBean.studentSection}" />
+							<f:setPropertyActionListener value="#{studentSection.studentAcademicYear.student}"
+								target="#{studentBean.student}" />
+							<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+								value="#{studentBean.studentTabModel.personalTab}" />
+							<f:setPropertyActionListener target="#{studentBean.viewAction}" value="true" />
+							<f:setPropertyActionListener target="#{studentTreeBean.loadStudentTreeFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.loadRelationsFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.studentAcademicYear}"
+								value="#{studentSection.studentAcademicYear}" />
+							<f:setPropertyActionListener target="#{studentBean.loadProfilePictureFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.loadAcademicYearsFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.loadSubmittedDocumentsMedicalFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.loadStudentLatestAcademicYearDetailsInd}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.studentCurrentAction}" value="" />
+						</p:commandLink>
+					</p:column>
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.admissionNr}"
+						filterBy="#{studentSection.studentAcademicYear.student.admissionNr}" filterMatchMode="contains">
+						<f:facet name="header">
+							Admission number
+						</f:facet>
+						<h:outputText value="#{studentSection.studentAcademicYear.student.admissionNr}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.externalAdmissionNr}"
+						filterBy="#{studentSection.studentAcademicYear.student.externalAdmissionNr}" filterMatchMode="contains">
+						<f:facet name="header">
+							Ext admission number
+						</f:facet>
+						<h:outputText value="#{studentSection.studentAcademicYear.student.externalAdmissionNr}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.dateOfBirth}"
+						filterBy="#{studentSection.studentAcademicYear.student.dateOfBirth}" filterMatchMode="contains">
+						<f:facet name="header">
+							Date of birth
+						</f:facet>
+						<h:outputText value="#{studentSection.studentAcademicYear.student.dateOfBirth}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column sortBy="#{studentSection.studentSectionStatus.label}"
+						filterBy="#{studentSection.studentSectionStatus.label}">
+						<f:facet name="header">
+							Status
+						</f:facet>
+						<h:outputText value="#{studentSection.studentSectionStatus.label}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.gender.label}"
+						filterBy="#{studentSection.studentAcademicYear.student.gender.label}">
+						<f:facet name="header">
+							Gender
+						</f:facet>
+						<h:outputText value="#{studentSection.studentAcademicYear.student.gender.label}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.residence.label}"
+						filterBy="#{studentSection.studentAcademicYear.student.residence.label}">
+						<f:facet name="header">
+							Residance
+						</f:facet>
+						<h:outputText value="#{studentSection.studentAcademicYear.student.residence.label}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.section.klass.name}" filterBy="#{studentSection.section.klass.name}">
+						<f:facet name="header">
+							Class
+						</f:facet>
+						<h:outputText value="#{studentSection.section.klass.name}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.section.name}" filterBy="#{studentSection.section.name}">
+						<f:facet name="header">
+							Section
+						</f:facet>
+						<h:outputText value="#{studentSection.section.name}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+
+			<p:blockUI block="form" trigger="expense_type_search_buton">  
+        		Request is processing, please wait<br />
+				<p:graphicImage value="/images/ajax-loader.gif" />
+			</p:blockUI>
+
+		</c:otherwise>
+
+	</c:choose>
+</ui:composition>

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:tabMenu activeIndex="#{employeeBean.activeTabIndex}">
+
+		<p:menuitem value="Personal" icon="ui-icon-home" action="#{employeeBean.onTabChange()}" process="@this" update="@form">
+			<f:setPropertyActionListener target="#{employeeBean.activeTabIndex}" value="0" />
+		</p:menuitem>
+
+		<p:menuitem value="Designation" icon="ui-icon-home" action="#{employeeDesignationBean.onTabChange()}" process="@this" update="@form">
+			<f:setPropertyActionListener target="#{employeeBean.activeTabIndex}" value="1" />
+		</p:menuitem>
+
+		<p:menuitem value="CTC" icon="ui-icon-home" action="#{employeeCTCBean.onTabChange()}" process="@this" update="@form">
+			<f:setPropertyActionListener target="#{employeeBean.activeTabIndex}" value="2" />
+		</p:menuitem>
+
+	</p:tabMenu>
+	
+	<c:if test="#{not empty employeeBean.employee.displayName}">
+		<div class="ui-apeironsol-menu-header">
+			<h:outputText value="Employee: #{employeeBean.employee.displayName}"  />
+		</div>
+	</c:if>
+
+	<p:panel>
+		<p:messages id="messages" globalOnly="true" closable="true" />
+
+		<c:choose>
+
+			<c:when test="#{employeeBean.activeTabIndex == 0}">
+				<ui:include src="/pages/branch/employee/employee_profile.xhtml" />
+			</c:when>
+
+			<c:when test="#{employeeBean.activeTabIndex == 1}">
+				<ui:include src="/pages/branch/employee/employee_designation.xhtml" />
+			</c:when>
+
+			<c:when test="#{employeeBean.activeTabIndex == 2}">
+				<ui:include src="/pages/modules/hrms/employee_ctc_list.xhtml" />
+			</c:when>
+
+		</c:choose>
+	</p:panel>
+
+</ui:composition>

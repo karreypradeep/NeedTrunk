@@ -1,0 +1,67 @@
+<project name="emsapptest-db" basedir=".">
+
+
+	<property name="db.name" value="emsapptest" />
+	<property name="sql.driver" value="org.gjt.mm.mysql.Driver" />
+	<property name="sql.url" value="jdbc:mysql://localhost/${db.name}" />
+	<property name="sql.user" value="root" />
+	<property name="sql.pass" value="" />
+	<property name="driver.jar" value="./drivers/mysql-connector-java-5.1.19-bin.jar" />
+
+	<target name="insert-test-data">
+		<sql driver="${sql.driver}" url="${sql.url}" userid="${sql.user}" password="${sql.pass}">
+			<classpath>
+				<pathelement location="${driver.jar}" />
+			</classpath>   
+           	use ${db.name};
+			
+			
+			<transaction src="insert-iso-countries-list.sql" />
+
+			<transaction src="insert-organization.sql" />
+			<transaction src="insert-bulding-blocks.sql" />
+			<transaction src="insert-addresses.sql" />
+			<transaction src="insert-branches.sql" />
+			<transaction src="insert-branch-assemblies.sql" />
+
+			<transaction src="insert-user-accounts.sql" />
+			<transaction src="insert-user-groups.sql" />
+			<transaction src="insert-user-group-authority.sql" />
+			<transaction src="insert-user-account-user-group.sql" />
+
+			<transaction src="insert-academic-years.sql" />
+			<transaction src="insert-classes.sql" />
+
+
+		</sql>
+	</target>
+
+	<target name="drop-db">
+		<sql driver="${sql.driver}" url="jdbc:mysql://localhost" userid="${sql.user}" password="${sql.pass}" classpath="${driver.jar}">
+			drop database if exists ${db.name};
+	      </sql>
+	</target>
+
+
+	<target name="create-db">
+		<sql driver="${sql.driver}" url="jdbc:mysql://localhost" userid="${sql.user}" password="${sql.pass}" classpath="${driver.jar}" src="create-db.sql" />
+	</target>
+
+	<target name="create-schema">
+		<sql driver="${sql.driver}" url="${sql.url}" userid="${sql.user}" password="${sql.pass}" classpath="${driver.jar}" src="create-schema.sql" />
+	</target>
+
+	<target name="create-sequence">
+		<sql driver="${sql.driver}" url="${sql.url}" userid="${sql.user}" password="${sql.pass}" classpath="${driver.jar}" src="create-sequence.sql" />
+	</target>
+
+
+
+	<target name="create-test-db">
+		<antcall target="drop-db" />
+		<antcall target="create-db" />
+		<antcall target="create-schema" />
+		<antcall target="insert-test-data" />
+	</target>
+
+</project>

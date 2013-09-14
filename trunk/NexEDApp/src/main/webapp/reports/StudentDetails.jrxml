@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StudentDetails" language="groovy" pageWidth="800" pageHeight="800" columnWidth="720" leftMargin="40" rightMargin="40" topMargin="50" bottomMargin="50" uuid="a1910580-96b4-40c5-b22d-db097f6de293">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="report_title" class="java.lang.String"/>
+	<parameter name="org_name" class="java.lang.String"/>
+	<parameter name="branchRO" class="java.lang.Object"/>
+	<parameter name="subreport_name" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<group name="Group1"/>
+	<group name="Group2"/>
+	<group name="Group3"/>
+	<group name="Group4"/>
+	<background>
+		<band/>
+	</background>
+	<title>
+		<band height="31">
+			<frame>
+				<reportElement uuid="06fd42b4-c281-4bfb-bbbe-c0572021d94f" mode="Opaque" x="0" y="0" width="720" height="30" backcolor="#177ECA"/>
+				<textField>
+					<reportElement uuid="69a90a60-4340-4060-aaa7-2a817d7ae232" x="0" y="5" width="150" height="20" forecolor="#F9F7F7"/>
+					<box leftPadding="3"/>
+					<textElement textAlignment="Left" verticalAlignment="Bottom">
+						<font fontName="Courier 10 Pitch" size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{org_name}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement uuid="b462f504-9476-4151-b450-a8ada267050e" mode="Opaque" x="228" y="5" width="264" height="20" forecolor="#F9F7F7" backcolor="#177ECA"/>
+					<textElement textAlignment="Center" verticalAlignment="Bottom">
+						<font fontName="Courier 10 Pitch" size="16" isBold="true" isUnderline="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{branchRO}.getBranch().getName()]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<detail>
+		<band height="60">
+			<subreport>
+				<reportElement uuid="0494eb95-d8da-4e91-af09-cc6dbf700a48" x="2" y="30" width="200" height="22"/>
+				<subreportParameter name="subreport_name">
+					<subreportParameterExpression><![CDATA[$P{subreport_name}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{branchRO}.getKlassROList())]]></dataSourceExpression>
+				<subreportExpression><![CDATA["StudentDetails_Klass.jasper"]]></subreportExpression>
+			</subreport>
+			<textField>
+				<reportElement uuid="96d52399-e624-4f7e-a691-ba30600cf2ae" x="246" y="8" width="229" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{report_title}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="26">
+			<frame>
+				<reportElement uuid="7b04e10a-91f3-4277-b5b8-c059b2686c55" mode="Opaque" x="0" y="0" width="720" height="25" backcolor="#177ECA"/>
+				<textField>
+					<reportElement uuid="6547bca7-6b83-4c43-b92b-13132d8df197" x="609" y="3" width="80" height="20" forecolor="#F6EEEE"/>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
+				</textField>
+				<textField evaluationTime="Report">
+					<reportElement uuid="d0f2b044-3d5f-4a39-a24a-c905ce59c5a5" x="690" y="3" width="29" height="20" forecolor="#F6EEEE"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement uuid="36ae6151-7895-417f-9aa0-798fbc277ff8" x="230" y="2" width="261" height="20" forecolor="#F6EEEE"/>
+					<textElement verticalAlignment="Middle">
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[All copyrights reserved to www.apeironsol.com]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</pageFooter>
+</jasperReport>

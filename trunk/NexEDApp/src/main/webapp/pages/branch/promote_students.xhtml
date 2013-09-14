@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{studentsPromotionBean.loadActiveClasses}" />
+		<f:event type="preRenderView" listener="#{studentsPromotionBean.loadActiveAcademicYearsForCurrentBranch}" />
+	</f:metadata>
+	<p:panel>
+		<f:facet name="header">
+			<span style="float: left"> <h:outputLabel value="Promote students" style="font-size: 16px; font-weight:bold;" /></span>
+		</f:facet>
+		<p:messages id="messages1" globalOnly="true" autoUpdate="true" closable="true" />
+		<h:panelGrid columns="2" cellpadding="4" style="border:1px;width:100%">
+			<p:panel style="border:0px;">
+				<f:facet name="header">
+					From section
+				</f:facet>
+				<h:panelGrid columns="3" cellpadding="4" style="border:0px;">
+
+					<p:outputLabel id="from_academic_year_label" value="Academic year" for="from_academic_year" />
+					<p:selectOneMenu id="from_academic_year" value="#{studentsPromotionBean.fromAcademicYear}" required="true"
+						converter="academicYearConverter">
+						<f:selectItem itemLabel="Select academic year" itemValue="" />
+						<f:selectItems value="#{studentsPromotionBean.activeAcademicYears}" var="academicYear"
+							itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+						<p:ajax update="@form" process="@this" listener="#{studentsPromotionBean.handleFromKlassChange}" />
+					</p:selectOneMenu>
+					<p:message id="from_academic_year_msg" for="from_academic_year" />
+
+					<p:outputLabel id="from_class_label" value="Class" for="from_class" />
+					<p:selectOneMenu id="from_class" value="#{studentsPromotionBean.fromKlass}" required="true"
+						converter="klassConverter" disabled="#{studentsPromotionBean.fromAcademicYear == null}">
+						<f:selectItem itemLabel="Select class" itemValue="" />
+						<f:selectItems value="#{studentsPromotionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}"
+							itemValue="#{klass}" />
+						<p:ajax update="@form" listener="#{studentsPromotionBean.handleFromKlassChange}" process="@this" />
+					</p:selectOneMenu>
+					<p:message id="from_class_msg" for="from_class" />
+
+					<p:outputLabel id="from_section_label" value="Section" for="from_section" />
+					<p:selectOneMenu id="from_section" value="#{studentsPromotionBean.fromSection}" style="width:155px;"
+						required="true" converter="sectionConverter" disabled="#{studentsPromotionBean.fromKlass == null}">
+						<f:selectItem itemLabel="Select assigning section" />
+						<f:selectItems value="#{studentsPromotionBean.sourceSections}" var="section" itemLabel="#{section.name}"
+							itemValue="#{section}" />
+						<p:ajax update="@form" process="@this" listener="#{studentsPromotionBean.getActiveStudentsOfSourceSection()}" />
+					</p:selectOneMenu>
+					<p:message id="from_section_msg" for="from_section" />
+
+					<p:outputLabel id="no_of_students_from_section_label" value="Number of active students"
+						for="no_of_students_from_section" />
+					<h:outputText id="no_of_students_from_section"
+						value="#{studentsPromotionBean.studentSectionForSourceSection!=null ? studentsPromotionBean.studentSectionForSourceSection.size() : 0}" />
+					<p:message id="no_of_students_from_section_msg" for="no_of_students_from_section" />
+				</h:panelGrid>
+			</p:panel>
+			<p:panel style="border:0px;">
+				<f:facet name="header">
+					To section
+				</f:facet>
+				<h:panelGrid columns="3" cellpadding="4" style="border:0px;">
+
+					<p:outputLabel id="to_academic_year_label" value="Academic year" for="to_academic_year" />
+					<p:selectOneMenu id="to_academic_year" value="#{studentsPromotionBean.toAcademicYear}" required="true"
+						converter="academicYearConverter" disabled="#{studentsPromotionBean.fromAcademicYear == null}">
+						<f:selectItem itemLabel="Select academic year" itemValue="" />
+						<f:selectItems value="#{studentsPromotionBean.activeAcademicYears}" var="academicYear"
+							itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+						<p:ajax update="@form" process="@this" listener="#{studentsPromotionBean.handleToKlassChange}" />
+					</p:selectOneMenu>
+					<p:message id="to_academic_year_msg" for="to_academic_year" />
+
+					<p:outputLabel id="to_class_label" value="Class" for="to_class" />
+					<p:selectOneMenu id="to_class" value="#{studentsPromotionBean.toKlass}" required="true" converter="klassConverter" disabled="#{studentsPromotionBean.toAcademicYear == null}">
+						<f:selectItem itemLabel="Select class" itemValue="" />
+						<f:selectItems value="#{studentsPromotionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}"
+							itemValue="#{klass}" />
+						<p:ajax update="@form" listener="#{studentsPromotionBean.handleToKlassChange}" process="@this" />
+					</p:selectOneMenu>
+					<p:message id="to_class_msg" for="to_class" />
+
+					<p:outputLabel id="to_section_label" value="Section" for="to_section" />
+					<p:selectOneMenu id="to_section" value="#{studentsPromotionBean.toSection}" style="width:155px;" required="true"
+						converter="sectionConverter" disabled="#{studentsPromotionBean.toKlass == null}">
+						<f:selectItem itemLabel="Select assigning section" />
+						<f:selectItems value="#{studentsPromotionBean.destinationSections}" var="section" itemLabel="#{section.name}"
+							itemValue="#{section}" />
+						<p:ajax update="@form" process="@this" listener="#{studentsPromotionBean.getActiveStudentsOfDestinationSection()}" />
+					</p:selectOneMenu>
+					<p:message id="to_section_msg" for="to_section" />
+
+					<p:outputLabel id="no_of_students_to_section_label" value="Number of active students"
+						for="no_of_students_to_section" />
+					<h:outputText id="no_of_students_to_section"
+						value="#{studentsPromotionBean.studentSectionForDestinationSection!=null ? studentsPromotionBean.studentSectionForDestinationSection.size() : 0}" />
+					<p:message id="no_of_students_to_section_msg" for="no_of_students_to_section" />
+
+
+				</h:panelGrid> 
+			</p:panel>
+		</h:panelGrid>
+		<p:commandButton value="Promote" update="@form" process="@form" action="#{studentsPromotionBean.promoteStudents}" />
+		<p:commandButton id="expense_type_reset" value="Reset" update="@form" action="#{studentsPromotionBean.reset}"
+			process="@this" icon="ui-icon-refresh" />
+	</p:panel>
+	<p:spacer height="10" />
+	<p:spacer height="10" />
+
+	<p:dataTable id="asserts_table" var="studentFinancialAcademicYearDO"
+		value="#{studentsPromotionBean.studentFinancialAcademicYearDataModel}" style="margin-top:1px;"
+		selection="#{studentsPromotionBean.studentSectionsForPromotion}">
+
+		<f:facet name="header">
+			<h:outputText value="Students to be promoted" style="float:left;margin-top:5px;margin-bottom:5px;" />
+		</f:facet>
+
+		<p:column selectionMode="multiple" style="width:2%" />
+
+		<p:column sortBy="#{studentFinancialAcademicYearDO.student.displayName}"
+			filterBy="#{studentFinancialAcademicYearDO.student.displayName}" filterMatchMode="contains">
+			<f:facet name="header">
+							Name
+						</f:facet>
+			<h:outputText value="#{studentFinancialAcademicYearDO.student.displayName}" />
+		</p:column>
+
+		<p:column sortBy="#{studentFinancialAcademicYearDO.student.admissionNr}"
+			filterBy="#{studentFinancialAcademicYearDO.student.admissionNr}" filterMatchMode="contains">
+			<f:facet name="header">
+							Admission number
+				</f:facet>
+			<h:outputText value="#{studentFinancialAcademicYearDO.student.admissionNr}" />
+		</p:column>
+
+		<p:column sortBy="#{studentFinancialAcademicYearDO.student.dateOfBirth}"
+			filterBy="#{studentFinancialAcademicYearDO.student.dateOfBirth}" filterMatchMode="contains">
+			<f:facet name="header">
+							Date of birth
+				</f:facet>
+			<h:outputText value="#{studentFinancialAcademicYearDO.student.dateOfBirth}">
+				<f:convertDateTime pattern="dd/MMM/yyyy" />
+			</h:outputText>
+		</p:column>
+
+		<p:column sortBy="#{studentFinancialAcademicYearDO.student.residence.label}"
+			filterBy="#{studentFinancialAcademicYearDO.student.residence.label}" filterMatchMode="contains">
+			<f:facet name="header">
+							Residantial status
+				</f:facet>
+			<h:outputText value="#{studentFinancialAcademicYearDO.student.residence.label}" />
+		</p:column>
+
+
+		<p:column>
+			<f:facet name="header">  
+                Total fee payable
+            </f:facet>
+			<h:outputText value="#{studentFinancialAcademicYearDO.fee}" />
+		</p:column>
+
+		<p:column>
+			<f:facet name="header">  
+                Fee due
+            </f:facet>
+			<h:outputText value="#{studentFinancialAcademicYearDO.netFeeDue}" />
+		</p:column>
+
+	</p:dataTable>
+</ui:composition>

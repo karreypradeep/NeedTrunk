@@ -1,0 +1,7 @@
+<html>
+<body>
+<h4>Dear Parent,</h4>
+Please pay school fees ${feeDue} due for your child ${studentName}.
+If already paid please ignore this message.
+</body>
+</html>

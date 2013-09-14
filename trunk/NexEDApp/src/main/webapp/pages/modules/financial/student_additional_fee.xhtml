@@ -1,0 +1,108 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel id="additionalFeePanel" header="Student Additional Fee">
+
+		<h:panelGrid columns="3" cellpadding="5">
+
+
+			<p:outputLabel id="additionalFeeTypeLabel" value="Additional Fee type" for="additionalFeeType" />
+			<p:selectOneMenu id="additionalFeeType"
+				value="#{studentAdditionalFeeBean.studentAdditionalFee.studentAdditionalFeeType}" required="true">
+				<f:selectItem itemLabel="Select Fee Type" itemValue="" />
+				<f:selectItems value="#{enumConstantsBean.studentAdditionalFeeTypes}" var="additionalFeeType"
+					itemLabel="#{additionalFeeType.label}" itemValue="#{additionalFeeType}" />
+			</p:selectOneMenu>
+			<p:message id="additionalFeeTypeMsg" for="additionalFeeType" />
+
+			<p:outputLabel id="studentAdditionalFeeLabel" value="Fee Name" for="studentAdditionalFee" />
+			<p:inputText id="studentAdditionalFee" value="#{studentAdditionalFeeBean.studentAdditionalFee.feeName}"
+				required="true" />
+			<p:message id="studentAdditionalFeeMsg" for="studentAdditionalFee" />
+
+			<p:outputLabel id="dueDatelabel" value="End date" for="dueDate" style="white-space:nowrap;" />
+			<p:calendar id="dueDate" value="#{studentAdditionalFeeBean.studentAdditionalFee.dueDate}" navigator="true"
+				display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
+				mindate="#{studentBean.studentAcademicYear.academicYear.startDate}"
+				maxdate="#{studentBean.studentAcademicYear.academicYear.endDate}" />
+			<p:message id="dueDatemsg" for="dueDate" />
+
+
+			<p:outputLabel id="fee_amount_label" value="Fee Amount" for="fee_amount" />
+			<p:inputText id="fee_amount" value="#{studentAdditionalFeeBean.studentAdditionalFee.amount}" required="true">
+			</p:inputText>
+			<p:message id="fee_amount_msg" for="fee_amount" />
+
+		</h:panelGrid>
+
+		<p:commandButton icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;" value="Back">
+			<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="selectFeeType" />
+		</p:commandButton>
+		<p:commandButton id="reset" value="Reset" process="@this" update="additionalFeePanel"
+			actionListener="#{studentAdditionalFeeBean.reset()}" />
+		<p:commandButton id="save" value="Save" update="@form"
+			actionListener="#{studentAdditionalFeeBean.createStudentAdditionalFee()}" />
+
+
+	</p:panel>
+	<br />
+	<p:dataTable id="datatable" var="studentAdditionalFee" value="#{studentAdditionalFeeBean.studentAdditionalFees}"
+		paginator="true" rows="10"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+		<f:facet name="header">
+			<h:outputLabel value="Student Additional Fees" style="float:left;margin-top:5px;margin-bottom:5px;" />
+		</f:facet>
+
+		<p:column headerText="Fee Name" sortBy="#{studentAdditionalFee.feeName}" filterBy="#{studentAdditionalFee.feeName}"
+			filterMatchMode="contains">
+
+			<p:commandLink id="feeLink" value="#{studentAdditionalFee.feeName}" title="View"
+				style="margin:0px 0px 0px;float:left;" update="@form" process="@this">
+				<f:setPropertyActionListener target="#{studentAdditionalFeeBean.studentAdditionalFee}"
+					value="#{studentAdditionalFee}" />
+			</p:commandLink>
+		</p:column>
+
+		<p:column headerText="Fee Type" sortBy="#{studentAdditionalFee.studentAdditionalFeeType.label}"
+			filterBy="#{studentAdditionalFee.studentAdditionalFeeType.label}" filterMatchMode="contains">
+
+			<p:outputLabel value="#{studentAdditionalFee.studentAdditionalFeeType.label}" />
+		</p:column>
+
+		<p:column headerText="Due date" sortBy="#{studentAdditionalFee.dueDate}" filterBy="#{studentAdditionalFee.dueDate}"
+			filterMatchMode="contains">
+			<p:outputLabel value="#{studentAdditionalFee.dueDate}" />
+		</p:column>
+
+
+		<p:column headerText="Amount" sortBy="#{studentAdditionalFee.amount}" filterBy="#{studentAdditionalFee.amount}"
+			filterMatchMode="contains">
+			<p:outputLabel value="#{studentAdditionalFee.amount}" />
+		</p:column>
+
+		<p:column headerText="Options" style="width:20px;">
+			<p:commandLink id="deleteFeeLink" styleClass="ui-icon ui-icon-trash" title="Delete"
+				style="margin:0px 0px 0px;float:left;" process="@this"
+				onclick="confirmation.show()">
+				<f:setPropertyActionListener target="#{studentAdditionalFeeBean.studentAdditionalFee}"
+					value="#{studentAdditionalFee}" />
+			</p:commandLink>
+		</p:column>
+
+	</p:dataTable>
+
+	<p:confirmDialog id="confirmDialog" message="Are you want to delete the student additional fee?" header="Confirmation"
+		severity="alert" widgetVar="confirmation">
+		<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
+			action="#{studentAdditionalFeeBean.deleteStudentAdditionalFee()}" />
+		<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />
+	</p:confirmDialog>
+
+
+</ui:composition>

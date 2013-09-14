@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel id="batch" style="margin-bottom:10px;">
+		<f:facet name="header">
+			SMS Provider
+		</f:facet>
+		<p:messages id="messages" globalOnly="true" />
+		<h:panelGrid columns="3" id="grid" cellpadding="4" style="border:0px;margin-bottom:10px;">
+
+			<p:outputLabel id="sms_provider_name_label" value="SMS Provider name" for="sms_provider_name" />
+			<p:inputText id="sms_provider_name" value="#{smsProviderBean.smsProvider.smsProviderName}" required="true"
+				maxlength="255" />
+			<p:message id="sms_provider_name_msg" for="sms_provider_name" />
+
+			<p:outputLabel id="scheme_label" value="Scheme" for="scheme" />
+			<p:inputText id="scheme" value="#{smsProviderBean.smsProvider.scheme}" required="true" maxlength="20" />
+			<p:message id="scheme_msg" for="scheme" />
+
+			<p:outputLabel id="host_label" value="Host" for="host" />
+			<p:inputText id="host" value="#{smsProviderBean.smsProvider.host}" required="true" maxlength="255" />
+			<p:message id="host_msg" for="host" />
+
+			<p:outputLabel id="path_label" value="Path" for="path" />
+			<p:inputText id="path" value="#{smsProviderBean.smsProvider.path}" required="true" maxlength="255" />
+			<p:message id="path_msg" for="path" />
+
+			<p:outputLabel id="userNameKey_label" value="User name key" for="userNameKey" />
+			<p:inputText id="userNameKey" value="#{smsProviderBean.smsProvider.userNameKey}" required="true" maxlength="255" />
+			<p:message id="userNameKey_msg" for="userNameKey" />
+
+			<p:outputLabel id="userName_label" value="User name" for="userName" />
+			<p:inputText id="userName" value="#{smsProviderBean.smsProvider.userName}" required="true" maxlength="255" />
+			<p:message id="userName_msg" for="userName" />
+
+			<p:outputLabel id="passwordKey_label" value="Password key" for="passwordKey" />
+			<p:inputText id="passwordKey" value="#{smsProviderBean.smsProvider.passwordKey}" required="true" maxlength="255" />
+			<p:message id="passwordKey_msg" for="passwordKey" />
+
+			<p:outputLabel id="password_label" value="Password" for="password" />
+			<p:inputText id="password" value="#{smsProviderBean.smsProvider.password}" required="true" maxlength="255" />
+			<p:message id="password_msg" for="password" />
+
+			<p:outputLabel id="senderIdKey_label" value="Sender Id Key" for="senderIdKey" />
+			<p:inputText id="senderIdKey" value="#{smsProviderBean.smsProvider.senderIdKey}" required="true" maxlength="255" />
+			<p:message id="senderIdKey_msg" for="senderIdKey" />
+
+			<p:outputLabel id="senderId_label" value="Sender Id" for="senderId" />
+			<p:inputText id="senderId" value="#{smsProviderBean.smsProvider.senderId}" required="true" maxlength="255" />
+			<p:message id="senderId_msg" for="senderId" />
+
+			<p:outputLabel id="toKey_label" value="To Key" for="toKey" />
+			<p:inputText id="toKey" value="#{smsProviderBean.smsProvider.toKey}" required="true" maxlength="255" />
+			<p:message id="toKey_msg" for="toKey" />
+
+			<p:outputLabel id="messageKey_label" value="Message Key" for="messageKey" />
+			<p:inputText id="messageKey" value="#{smsProviderBean.smsProvider.messageKey}" required="true" maxlength="255" />
+			<p:message id="messageKey_msg" for="messageKey" />
+
+			<p:outputLabel id="routeKey_label" value="Route Key" for="routeKey" />
+			<p:inputText id="routeKey" value="#{smsProviderBean.smsProvider.routeKey}" required="true" maxlength="255" />
+			<p:message id="routeKey_msg" for="routeKey" />
+
+			<p:outputLabel id="route_label" value="Route" for="route" />
+			<p:inputText id="route" value="#{smsProviderBean.smsProvider.route}" required="true" maxlength="255" />
+			<p:message id="route_msg" for="route" />
+		</h:panelGrid>
+
+		<p:commandButton id="batch_cancle" value="Back" process="@this" update="@form" icon="ui-icon-circle-arrow-w">
+			<f:setPropertyActionListener target="#{smsProviderBean.viewOrNewAction}" value="false" />
+		</p:commandButton>
+		<p:commandButton id="save" value="Save" action="#{smsProviderBean.saveSMSProvider}" update="@form"
+			icon="ui-icon-circle-check" />
+
+	</p:panel>
+</ui:composition>

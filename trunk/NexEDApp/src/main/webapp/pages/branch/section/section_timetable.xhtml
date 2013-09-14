@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{sectionTimetableBean.loadEventsForMonth}" />
+	</f:metadata>
+
+
+	<p:schedule value="#{sectionTimetableBean.eventModel}" timeFormat="HH:mm" widgetVar="myschedule">
+		<p:ajax event="dateSelect" listener="#{sectionTimetableBean.onDateSelect}" update="eventDialog1"
+			oncomplete="dlg.show()" />
+		<p:ajax event="eventSelect" listener="#{sectionTimetableBean.onEventSelect}" update="eventDialog1"
+			oncomplete="dlg.show()" />
+	</p:schedule>
+
+
+	<p:dialog id="eventDialog1" header="Event" widgetVar="dlg" resizable="false" modal="true">
+
+
+		<p:messages id="dialogMessages" />
+
+		<h:panelGrid id="eventDetails" columns="2">
+
+			<h:outputLabel for="subjectId" value="Subject:" />
+			<p:selectOneMenu id="subjectId" value="#{sectionTimetableBean.sectionSubject}" converter="sectionSubjectConverter"
+				requiredMessage="Please select subject" required="true">
+				<f:selectItem itemLabel="Select subject" itemValue="" />
+				<f:selectItems value="#{sectionTimetableBean.sectionSubjects}" var="sectionSubject"
+					itemLabel="#{sectionSubject.subject.name}" />
+			</p:selectOneMenu>
+
+			<h:outputLabel for="techerId" value="Teacher:" />
+			<p:selectOneMenu id="techerId" value="#{sectionTimetableBean.sectionTeacher}" converter="sectionTeacherConverter"
+				requiredMessage="Select Teacher" required="true">
+				<f:selectItem itemLabel="Select teacher" itemValue="" />
+				<f:selectItems value="#{sectionTimetableBean.sectionTeachers}" var="sectionTecher"
+					itemLabel="#{sectionTecher.employee.displayName}" />
+			</p:selectOneMenu>
+
+			<h:outputLabel for="fromDate" value="Start date:" />
+			<p:calendar id="fromDate" value="#{sectionTimetableBean.scheduleStartDate}" pattern="dd/MM/yyyy"
+				disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}" />
+
+			<h:outputLabel for="toDate" value="End date:" />
+			<p:calendar id="toDate" value="#{sectionTimetableBean.scheduleEndDate}" pattern="dd/MM/yyyy"
+				disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}" />
+
+			<h:outputLabel for="fromTime" value="Start time" />
+			<p:calendar id="fromTime" value="#{sectionTimetableBean.scheduleStartTime}" pattern="HH:mm" minHour="8" maxHour="18"
+				timeOnly="true" />
+
+			<h:outputLabel for="toTime" value="End time" />
+			<p:calendar id="toTime" value="#{sectionTimetableBean.scheduleEndTime}" pattern="HH:mm" minHour="8" maxHour="18"
+				timeOnly="true" />
+
+			<h:outputText value="Apply To Days: " />
+			<p:selectManyCheckbox value="#{sectionTimetableBean.selectedWeekDays}" converter="weekDayConverter"
+				disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}">
+				<f:selectItems value="#{sessionBean.weekDays}" var="weekDay" itemLabel="#{weekDay.label}" />
+			</p:selectManyCheckbox>
+
+			<f:facet name="footer">
+				<p:commandButton value="Save" actionListener="#{sectionTimetableBean.addEvent}" update="dialogMessages"
+					oncomplete="handleComplete(xhr, status, args);" process="eventDialog1"
+					disabled="#{!grantedAuthorityBean.userAllowedToCreateTimetable}" />
+				<p:commandButton value="Delete" actionListener="#{sectionTimetableBean.deleteEvent}"
+					oncomplete="myschedule.update();dlg.hide();" process="@this"
+					rendered="#{sectionTimetableBean.scheduleEventBeingUpdated}"
+					disabled="#{!grantedAuthorityBean.userAllowedToRemoveTimetable}" />
+				<p:commandButton value="Cancel" oncomplete="dlg.hide()" process="@this" />
+			</f:facet>
+		</h:panelGrid>
+	</p:dialog>
+
+	<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if (!args.validationFailed) {
+				if (args.isValid) {
+					myschedule.update();
+					dlg.hide();
+				}
+			}
+		}
+	</script>
+</ui:composition>

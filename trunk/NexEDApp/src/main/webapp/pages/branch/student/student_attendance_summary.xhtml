@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<style type="text/css">
+.LightSalmon {
+	BACKGROUND: #FFA07A
+}
+
+.white {
+	BACKGROUND: #FFFFFF
+}
+
+.yellow {
+	BACKGROUND: #FFFF66
+}
+</style>
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{studentAttendanceSummaryBean.buildSectionAttendanceColumns}" />
+	</f:metadata>
+
+	<p:panel>
+		<p:dataTable id="attendanceTable" var="attendanceDate" value="#{studentAttendanceSummaryBean.attendanceDates}">
+			<c:forEach var="column" items="#{studentAttendanceSummaryBean.attendanceColumns}">
+				<c:choose>
+					<c:when test="#{column.dateColumn}">
+						<p:column headerText="Date">
+						#{attendanceDate}
+						</p:column>
+					</c:when>
+					<c:otherwise>
+						<p:column headerText="#{column.monthHeader}">
+							<p:column style="width:50px;"
+								styleClass="#{studentAttendanceSummaryBean.getAttendanceClass(column.studentAttendanceMonthlyDO,attendanceDate)}">
+								<center>
+									<p:commandLink
+										styleClass="#{studentAttendanceSummaryBean.getStyleClassForStudent(column.studentAttendanceMonthlyDO,attendanceDate)}"
+										style="#{studentAttendanceSummaryBean.isAttendanceTakenForDate(column.studentAttendanceMonthlyDO,attendanceDate) ? studentAttendanceSummaryBean.isStudentPresentOnDate(column.studentAttendanceMonthlyDO,attendanceDate) ?   'background-color: #10AF10;':'background-color: #DA4545;':'background-color: #FFA07A;'}"
+										process="@this" update="@form" oncomplete="dlg.show()"
+										disabled="#{studentAttendanceSummaryBean.isStudentPresentOnDate(column.studentAttendanceMonthlyDO,attendanceDate)}">
+										<f:setPropertyActionListener target="#{studentAttendanceSummaryBean.currentStudentAttendanceMonthlyDO}"
+											value="#{column.studentAttendanceMonthlyDO}" />
+										<f:setPropertyActionListener target="#{studentAttendanceSummaryBean.currentDateOfMonth}"
+											value="#{attendanceDate}" />
+									</p:commandLink>
+								</center>
+							</p:column>
+						</p:column>
+					</c:otherwise>
+				</c:choose>
+			</c:forEach>
+		</p:dataTable>
+	</p:panel>
+
+	<script type="text/javascript">  
+	function handleComplete(xhr, status, args) {
+        if(!args.validationFailed) {
+        	dlg.hide();
+        }
+     }
+
+    function showToolTip(e) {
+
+    		alert(e.id);
+
+    }
+    </script>
+
+	<p:dialog widgetVar="dlg" resizable="false" dynamic="true" modal="true" width="500"
+		header="#{studentAttendanceSummaryBean.dialogHeader}">
+		<p:messages id="dialogMessages" />
+
+		<h:panelGrid border="0" columns="2" cellpadding="10">
+
+			<h:outputLabel id="studentNameDlg" value="Student Name" />
+			<h:outputText id="studentNameDlgValue" value="#{studentBean.student.displayName}" />
+
+			<h:outputLabel id="admissionNrDlg" value="Admission number" />
+			<h:outputText id="admissionNrDlgValue" value="#{studentBean.student.admissionNr}" />
+
+			<h:outputLabel id="attendanceDateDlg" value="Attendance date" />
+			<h:outputText value="#{studentAttendanceSummaryBean.currentStudentAttendanceMonthlyDO.attendanceMonth.time}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+
+			<h:outputLabel id="absentReason" value="Reason for Absent" />
+			<p:inputTextarea id="absentReasonTestArea" cols="40" value="#{studentAttendanceSummaryBean.absentReason}"
+				disabled="false"></p:inputTextarea>
+
+			<c:if test="#{studentAttendanceSummaryBean.currentAttendanceSubjectWise}">
+				<h:outputLabel id="noOfSubjectsDlg" value="All subjects" />
+				<h:outputText value="#{studentAttendanceSummaryBean.currentStudentAllSubjects}">
+				</h:outputText>
+
+				<h:outputLabel id="subjectsAbsent" value="Absent subjects" />
+				<h:outputText value="#{studentAttendanceSummaryBean.currentStudentSubjectsAbsent}">
+				</h:outputText>
+			</c:if>
+			<f:facet name="footer">
+				<p:commandButton value="Cancel" oncomplete="dlg.hide();" update=":form" process="@this" />
+			</f:facet>
+
+		</h:panelGrid>
+	</p:dialog>
+</ui:composition>

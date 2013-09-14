@@ -1,0 +1,176 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<h:panelGrid columns="2" width="100%" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
+		<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
+			actionListener="#{studentFinancialBean.updateSelectPayments}">
+			<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="selectFeeType" />
+		</p:commandButton>
+
+		<h:panelGrid columns="2" cellspacing="0" cellpadding="0" style="float:right;">
+			<p:commandButton id="requestRefund1" value="Request refund" icon="ui-icon-circle-check" process="@form" update="@form"
+				style="float:left;" actionListener="#{studentFinancialBean.processRefundForRequest()}" disabled="#{!grantedAuthorityBean.userAllowedToProcessFeePayment}"/>
+
+			<p:commandButton id="approveRefund1" value="Approve refund" icon="ui-icon-circle-check" process="@form" update="@form"
+				style="float:left;" actionListener="#{studentFinancialBean.processRefundForApproval()}" rendered="#{grantedAuthorityBean.userAllowedToAcceptFeeRefundRequest}"/>
+		</h:panelGrid>
+
+	</h:panelGrid>
+	
+	<p:blockUI block="form" trigger="requestRefund1 approveRefund1">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
+
+	<p:dataTable id="studentFeeRefundTable" value="#{studentFinancialBean.procesingStudentFeeDetailsDOs}"
+		var="studentFeeDetailsDO" editable="true" paginator="false" sortOrder="descending">
+
+		<f:facet name="header">
+
+			<h:outputLabel value="Please fill the refund amount" style="float:left;font-size:16px;" />
+
+		</f:facet>
+
+		<p:ajax event="rowEdit" update="@this" />
+
+		<p:column headerText="Fee name" style="width:125px">
+			<p:cellEditor>
+
+				<f:facet name="output">
+					<h:outputText value="#{studentFeeDetailsDO.feeName}" style="width:100%" />
+				</f:facet>
+
+				<f:facet name="input">
+					<h:outputText value="#{studentFeeDetailsDO.feeName}" style="width:100%" />
+				</f:facet>
+
+			</p:cellEditor>
+		</p:column>
+
+		<p:column headerText="Due date" style="width:125px">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{studentFeeDetailsDO.dueDate}" style="width:100%">
+						<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
+					</h:outputText>
+				</f:facet>
+				<f:facet name="input">
+
+					<h:outputText value="#{studentFeeDetailsDO.dueDate}" style="width:100%">
+						<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
+					</h:outputText>
+
+				</f:facet>
+			</p:cellEditor>
+		</p:column>
+
+		<p:column headerText="Net fee" style="width:125px">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{studentFeeDetailsDO.totalNetAmount}" style="width:100%">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+				<f:facet name="input">
+					<h:outputText value="#{studentFeeDetailsDO.totalNetAmount}" style="width:100%">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+			</p:cellEditor>
+		</p:column>
+		<p:column headerText="Net fee paid" style="width:125px">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{studentFeeDetailsDO.totalNetAmountPaid}" style="width:100%;">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+				<f:facet name="input">
+					<h:outputText value="#{studentFeeDetailsDO.totalNetAmountPaid}" style="width:100%;">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+			</p:cellEditor>
+		</p:column>
+
+		<p:column headerText="Refund Requested" style="width:125px;text-align:center;">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{studentFeeDetailsDO.totalFeeRefundRequestAmount}" style="width:100%;">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+
+				<f:facet name="input">
+					<h:outputText value="#{studentFeeDetailsDO.totalFeeRefundRequestAmount}">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+
+			</p:cellEditor>
+		</p:column>
+
+		<p:column headerText="Refund Pending" style="width:125px;text-align:center;">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{studentFeeDetailsDO.totalFeeRefundPendingAmount}" style="width:100%;">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+
+				<f:facet name="input">
+					<h:outputText value="#{studentFeeDetailsDO.totalFeeRefundPendingAmount}">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+
+			</p:cellEditor>
+		</p:column>
+
+		<p:column headerText="Payment Pending" style="width:125px;text-align:center;">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{studentFeeDetailsDO.totalFeePaymentPendingAmount}" style="width:100%;">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+
+				<f:facet name="input">
+					<h:outputText value="#{studentFeeDetailsDO.totalFeePaymentPendingAmount}">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</f:facet>
+
+			</p:cellEditor>
+		</p:column>
+
+
+		<p:column headerText="Refund amount" style="width:125px;text-align:center;">
+			<p:cellEditor>
+				<f:facet name="output">
+					<h:outputText value="#{studentFeeDetailsDO.refundAmount}" style="width:100%;">
+						<f:convertNumber pattern="0.00" />
+					</h:outputText>
+				</f:facet>
+
+				<f:facet name="input">
+					<p:inputText value="#{studentFeeDetailsDO.refundAmount}">
+						<f:convertNumber pattern="0.00" />
+						<p:ajax process="@this" update="@this" />
+					</p:inputText>
+				</f:facet>
+
+			</p:cellEditor>
+		</p:column>
+
+		<p:column style="width:50px;text-align:center;">
+			<p:rowEditor rendered="#{studentFeeDetailsDO.totalFeePaymentAmount != 0}" />
+		</p:column>
+	</p:dataTable>
+
+
+</ui:composition>

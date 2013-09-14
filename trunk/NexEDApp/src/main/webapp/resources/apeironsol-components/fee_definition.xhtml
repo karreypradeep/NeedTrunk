@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<composite:interface>
+
+	<composite:attribute name="acedemicYearLable" />
+	<composite:attribute name="acedemicYear" />
+	<composite:attribute name="acedemicYears" />
+
+	<composite:attribute name="feeAmountLable" />
+	<composite:attribute name="feeAmount" />
+
+	<composite:attribute name="paymentFrequencyLable" />
+	<composite:attribute name="paymentFrequency" />
+	<composite:attribute name="paymentFrequencies" />
+
+	<composite:attribute name="noOfPaymentsLable" />
+	<composite:attribute name="noOfPayments" />
+
+
+</composite:interface>
+
+<composite:implementation>
+
+	<p:panel id="feePanel" style="margin-bottom:10px;">
+		<h:panelGrid columns="3" id="feePanelGrid" cellpadding="4" style="border:0px;margin-bottom:10px;">
+
+			<p:outputLabel id="academic_year_label" value="#{cc.attrs.acedemicYearLable}" for="academic_year" />
+			<p:selectOneMenu id="academic_year" value="#{cc.attrs.acedemicYear}">
+				<f:selectItem itemLabel="select:" itemValue="" />
+				<f:selectItems value="#{cc.attrs.acedemicYears}" var="academicYear" itemLabel="#{academicYear.displayLabel}"
+					itemValue="#{academicYear.id}" />
+				<p:ajax process="@this" update="@form" listener="#{klassLevelFeeBean.onChangeAcademicYear}" />
+			</p:selectOneMenu>
+			<p:message id="academic_year_msg" for="academic_year" />
+
+			<p:outputLabel id="fee_amount_label" value="#{cc.attrs.feeAmountLable}" for="fee_amount" />
+			<p:inputText id="fee_amount" value="#{cc.attrs.feeAmount}">
+				<f:validateDoubleRange minimum="0" />
+				<f:convertNumber maxFractionDigits="2" groupingUsed="false" pattern="000.00" />
+				<p:ajax process="@this" update="@form" listener="#{klassLevelFeeBean.onChangeAmount}" />
+			</p:inputText>
+			<p:message id="fee_amount_msg" for="fee_amount" />
+
+			<p:outputLabel id="frequency_label" value="#{cc.attrs.paymentFrequencyLable}" for="frequency" />
+			<p:selectOneMenu id="frequency" value="#{cc.attrs.paymentFrequency}">
+				<f:selectItem itemLabel="select:" itemValue="" />
+				<f:selectItems value="#{cc.attrs.paymentFrequencies}" var="frequency" itemLabel="#{frequency.label}"
+					itemValue="#{frequency}" />
+				<p:ajax process="@this" update="@form" listener="#{klassLevelFeeBean.onChangePaymentFrequency}" />
+			</p:selectOneMenu>
+			<p:message id="frequency_msg" for="frequency" />
+
+			<p:outputLabel id="payments_label" value="#{cc.attrs.noOfPaymentsLable}" for="payments"
+				rendered="#{klassLevelFeeBean.displayNoOfPayments}" />
+			<p:inputText id="payments" value="#{cc.attrs.noOfPayments}" rendered="#{klassLevelFeeBean.displayNoOfPayments}">
+				<f:validateLongRange minimum="1" maximum="12" />
+				<p:ajax process="@this" update="@form" listener="#{klassLevelFeeBean.onChangeNumberOfPayments}" />
+			</p:inputText>
+			<p:message id="payments_msg" for="payments" rendered="#{klassLevelFeeBean.displayNoOfPayments}" />
+
+		</h:panelGrid>
+		<p:commandButton id="save" value="Save" action="#{klassLevelFeeBean.saveKlassFee}" update="@form" />
+		<p:commandButton id="cancel" value="Cancel" update="@form" process="@this">
+			<f:setPropertyActionListener target="#{klassLevelFeeBean.displayNewKlassFee}" value="false" />
+		</p:commandButton>
+	</p:panel>
+
+</composite:implementation>
+
+</html>

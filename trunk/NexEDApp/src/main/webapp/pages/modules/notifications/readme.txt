@@ -1,0 +1,1 @@
+All core related pages should go here.

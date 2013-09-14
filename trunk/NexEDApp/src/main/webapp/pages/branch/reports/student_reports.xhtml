@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components" xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="Students reports" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+	<p:panel id="students_details_panel" style="margin-top:1px;margin-bottom:10px;">
+		<p:panel style="margin-top:1px;border:0px;">
+			<p:messages id="messages" autoUpdate="true" closable="true" />
+
+			<h:panelGrid columns="2" id="student_report_search_grid" cellpadding="4" style="border:0px;">
+
+
+				<h:panelGrid columns="2" id="student_report_search_grid2" cellpadding="5" style="border:0px;" cellspacing="5">
+
+					<p:outputLabel id="academic_year_label" value="#{msg.academicYear}" for="academic_year" />
+					<p:selectOneMenu id="academic_year" value="#{studentReportBean.studentSearchCriteria.academicYear}" converter="academicYearConverter" style="width:165px;"
+						required="true">
+						<f:selectItem itemLabel="Select academic year" itemValue="" />
+						<f:selectItems value="#{studentReportBean.activeAcademicYears}" var="academicYear" itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+						<p:ajax update="student_report_search_grid2" listener="#{studentReportBean.handleFromKlassChange}" process="@this" />
+					</p:selectOneMenu>
+
+					<p:outputLabel id="class_label" value="#{msg.class_students}" for="class" />
+					<p:selectOneMenu id="class" value="#{studentReportBean.studentSearchCriteria.klass}" converter="klassConverter" style="width:165px;">
+						<f:selectItem itemLabel="Select class" itemValue="" />
+						<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
+						<p:ajax update="student_report_search_grid2" listener="#{studentReportBean.handleFromKlassChange}" process="@this" />
+					</p:selectOneMenu>
+
+					<p:outputLabel id="section_label" value="#{msg.section_students}" for="section" />
+					<p:selectOneMenu id="section" value="#{studentReportBean.studentSearchCriteria.section}" converter="sectionConverter" style="width:165px;">
+						<f:selectItem itemLabel="Select section" itemValue="" />
+						<f:selectItems value="#{studentReportBean.sectionsForSearhCriteriaByKlass}" var="section" itemLabel="#{section.name}" itemValue="#{section}" />
+					</p:selectOneMenu>
+
+					<p:outputLabel id="student_status_label" value="#{msg.status}" for="student_status" />
+					<p:selectOneMenu id="student_status" value="#{studentReportBean.studentSearchCriteria.studentStatus}" style="width:165px;">
+						<f:selectItem itemLabel="Select status" itemValue="" />
+						<f:selectItems value="#{enumConstantsBean.studentStatusConstantsForSearch}" var="studentStatus" itemLabel="#{studentStatus.label}"
+							itemValue="#{studentStatus}" />
+					</p:selectOneMenu>
+
+				</h:panelGrid>
+
+				<h:panelGrid columns="2" id="student_report_search_grid1" cellpadding="4" style="border:0px;">
+
+					<p:outputLabel id="report_type_label" value="Report Type" for="report_type" />
+					<p:selectOneListbox id="report_type" required="true" style="width:200px;height:130px" value="#{studentReportBean.selectedReport}"
+						requiredMessage="Please select report to generate." converter="jasperReportNamesConstantConverter">
+						<f:selectItems value="#{enumConstantsBean.jasperReportNames}" var="jasperReportName" itemLabel="#{jasperReportName.label}" itemValue="#{jasperReportName}" />
+						<p:ajax update="@form" />
+					</p:selectOneListbox>
+
+				</h:panelGrid>
+
+			</h:panelGrid>
+
+			<p:commandButton id="students_details_search_buton" value="#{msg.search}" action="#{studentReportBean.searchBranchStudentsDetails()}" update="@form"
+				icon="ui-icon-search" />
+			<p:commandButton id="student_details_reset" value="Reset" update="@form" action="#{studentReportBean.resetSearchCriteria}" process="@this"
+				icon="ui-icon-refresh" />
+
+		</p:panel>
+
+		<p:spacer height="10" />
+		<p:separator />
+		<p:spacer height="5" />
+
+		<!-- Student Details Table -->
+		<p:dataTable id="students_details_table" var="studentRO" value="#{studentReportBean.studentROList}" paginator="true" rows="50"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,15,20,50,100" paginatorPosition="bottom" style="margin-top:15px;"
+			currentPageReportTemplate="(Displaying {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})">
+			<f:facet name="header">
+				<c:choose>
+					<c:when test="#{studentReportBean.selectedReport.value == 'student_personal_details_report'}">
+						<h:outputText value="Student Personal Details" style="float:left;margin-top:5px;margin-bottom:5px;" />
+					</c:when>
+					<c:when test="#{studentReportBean.selectedReport.value == 'student_contact_details_report'}">
+						<h:outputText value="Student Contact Details" style="float:left;margin-top:5px;margin-bottom:5px;" />
+					</c:when>
+					<c:when test="#{studentReportBean.selectedReport.value == 'student_fee_summary_report'}">
+						<h:outputText value="Student Fee Summary" style="float:left;margin-top:5px;margin-bottom:5px;" />
+					</c:when>
+					<c:when test="#{studentReportBean.selectedReport.value == 'student_fee_details_report'}">
+						<h:outputText value="Student Fee Details" style="float:left;margin-top:5px;margin-bottom:5px;" />
+					</c:when>
+				</c:choose>
+
+				<p:commandLink id="students_personal_excel" style="float:right;" rendered="#{studentReportBean.studentROList.size()>0}">
+					<p:graphicImage value="/images/excel.png" />
+					<f:setPropertyActionListener target="#{studentReportBean.reportType}" value="EXCEL_REPORT" />
+					<p:dataExporter type="xls" target="students_details_table" fileName="Student Details" postProcessor="#{studentReportBean.postProcessXLS}" />
+				</p:commandLink>
+
+				<p:commandLink id="students_personal_pdf" style="float:right;" rendered="#{studentReportBean.studentROList.size()>0}">
+					<p:graphicImage value="/images/pdf.png" />
+					<f:setPropertyActionListener target="#{studentReportBean.reportType}" value="PDF_REPORT" />
+					<p:fileDownload value="#{studentReportBean.generateReport()}" />
+				</p:commandLink>
+			</f:facet>
+			<p:column headerText="Student name" sortBy="#{studentRO.studentAcademicYear.student.displayName}" filterBy="#{studentRO.studentAcademicYear.student.displayName}"
+				filterMatchMode="contains" style="width:15%">
+				
+				<p:commandLink id="studentNameLink" title="View" value="#{studentRO.studentAcademicYear.student.displayName}" style="margin:0px 0px 0px;" process="@this"
+					update="@form" action="#{studentReportBean.viewStudent()}">
+					
+					<f:setPropertyActionListener value="#{studentRO.studentSection}"
+					target="#{studentReportBean.currentStudentSection}" />
+					
+				</p:commandLink>
+			</p:column>
+			<p:column sortBy="#{studentRO.studentAcademicYear.student.admissionNr}" filterBy="#{studentRO.studentAcademicYear.student.admissionNr}"
+				filterMatchMode="contains">
+				<f:facet name="header">
+							Admission number
+				        </f:facet>
+				<h:outputText value="#{studentRO.studentAcademicYear.student.admissionNr}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentAcademicYear.student.externalAdmissionNr}" filterBy="#{studentRO.studentAcademicYear.student.externalAdmissionNr}"
+				filterMatchMode="contains" style="width:3%">
+				<f:facet name="header">
+							Ext adm
+				        </f:facet>
+				<h:outputText value="#{studentRO.studentAcademicYear.student.externalAdmissionNr}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.residenceType}" filterBy="#{studentRO.residenceType}" filterMatchMode="contains" style="width:5%">
+				<f:facet name="header">
+							Residential Type
+				        </f:facet>
+				<h:outputText value="#{studentRO.residenceType}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.studentSection.section.dispalyNameWithKlassName}"
+				filterBy="#{studentRO.studentFinancialAcademicYearDO.studentSection.section.dispalyNameWithKlassName}" filterMatchMode="contains">
+				<f:facet name="header">
+							Class/Section
+				        </f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.studentSection.section.dispalyNameWithKlassName}" />
+			</p:column>
+
+			<!-- Specific to Student Personal Details -->
+			<p:column sortBy="#{studentRO.studentAcademicYear.student.dateOfBirth}" filterBy="#{studentRO.studentAcademicYear.student.dateOfBirth}"
+				filterMatchMode="contains" rendered="#{studentReportBean.selectedReport.value == 'student_personal_details_report'}">
+				<f:facet name="header">
+							Date of birth
+				        </f:facet>
+				<h:outputText value="#{studentRO.studentAcademicYear.student.dateOfBirth}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentAcademicYear.student.gender}" filterBy="#{studentRO.studentAcademicYear.student.gender}" filterMatchMode="contains"
+				rendered="#{studentReportBean.selectedReport.value == 'student_personal_details_report'}">
+				<f:facet name="header">
+							Gender
+				        </f:facet>
+				<h:outputText value="#{studentRO.studentAcademicYear.student.gender}" />
+			</p:column>
+
+			<!-- Specific to Student Contact Details -->
+			<p:column sortBy="#{studentRO.parentOrGuardianName}" filterBy="#{studentRO.parentOrGuardianName}" filterMatchMode="contains"
+				rendered="#{studentReportBean.selectedReport.value == 'student_contact_details_report' or studentReportBean.selectedReport.value == 'student_fee_summary_report'}">
+				<f:facet name="header">
+							Parent/Guardian
+						</f:facet>
+				<h:outputText value="#{studentRO.parentOrGuardianName}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentAcademicYear.student.address.contactNumber}" filterBy="#{studentRO.studentAcademicYear.student.address.contactNumber}"
+				filterMatchMode="contains"
+				rendered="#{studentReportBean.selectedReport.value == 'student_contact_details_report' or studentReportBean.selectedReport.value == 'student_fee_summary_report'}">
+				<f:facet name="header">
+							Contact number
+						</f:facet>
+				<h:outputText value="#{studentRO.studentAcademicYear.student.address.contactNumber}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentAcademicYear.student.address.displayAddress}" filterBy="#{studentRO.studentAcademicYear.student.address.displayAddress}"
+				filterMatchMode="contains" rendered="#{studentReportBean.selectedReport.value == 'student_contact_details_report'}">
+				<f:facet name="header">
+							Address
+						</f:facet>
+				<h:outputText value="#{studentRO.studentAcademicYear.student.address.displayAddress}" />
+			</p:column>
+
+			<!-- Specific to Student Fee Summary -->
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.netFee}" filterBy="#{studentRO.studentFinancialAcademicYearDO.netFee}"
+				filterMatchMode="contains" rendered="#{studentReportBean.selectedReport.value == 'student_fee_summary_report'}">
+				<f:facet name="header">
+							Total fee
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.netFee}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.netFeePaid}" filterBy="#{studentRO.studentFinancialAcademicYearDO.netFeePaid}"
+				filterMatchMode="contains" rendered="#{studentReportBean.selectedReport.value == 'student_fee_summary_report'}">
+				<f:facet name="header">
+							Fee paid
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.netFeePaid}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.netFeeDue}" filterBy="#{studentRO.studentFinancialAcademicYearDO.netFeeDue}"
+				filterMatchMode="contains" rendered="#{studentReportBean.selectedReport.value == 'student_fee_summary_report'}">
+				<f:facet name="header">
+							Fee due
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.netFeeDue}" />
+			</p:column>
+
+			<!-- Specific to Student Fee Summary Details -->
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.fee}" filterBy="#{studentRO.studentFinancialAcademicYearDO.fee}" filterMatchMode="contains"
+				rendered="#{studentReportBean.selectedReport.value == 'student_fee_details_report'}">
+				<f:facet name="header">
+							Total fee
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.fee}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.totalFeeDeductedAmount}"
+				filterBy="#{studentRO.studentFinancialAcademicYearDO.totalFeeDeductedAmount}" filterMatchMode="contains"
+				rendered="#{studentReportBean.selectedReport.value == 'student_fee_details_report'}">
+				<f:facet name="header">
+							Fee waved
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.totalFeeDeductedAmount}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.totalFeeRefundAmount}"
+				filterBy="#{studentRO.studentFinancialAcademicYearDO.totalFeeRefundAmount}" filterMatchMode="contains"
+				rendered="#{studentReportBean.selectedReport.value == 'student_fee_details_report'}">
+				<f:facet name="header">
+							Fee refunded
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.totalFeeRefundAmount}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.netFee}" filterBy="#{studentRO.studentFinancialAcademicYearDO.netFee}"
+				filterMatchMode="contains" rendered="#{studentReportBean.selectedReport.value == 'student_fee_details_report'}">
+				<f:facet name="header">
+							Net fee
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.netFee}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.netFeePaid}" filterBy="#{studentRO.studentFinancialAcademicYearDO.netFeePaid}"
+				filterMatchMode="contains" rendered="#{studentReportBean.selectedReport.value == 'student_fee_details_report'}">
+				<f:facet name="header">
+							Fee paid
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.netFeePaid}" />
+			</p:column>
+			<p:column sortBy="#{studentRO.studentFinancialAcademicYearDO.netFeeDue}" filterBy="#{studentRO.studentFinancialAcademicYearDO.netFeeDue}"
+				filterMatchMode="contains" rendered="#{studentReportBean.selectedReport.value == 'student_fee_details_report'}">
+				<f:facet name="header">
+							Fee due
+						</f:facet>
+				<h:outputText value="#{studentRO.studentFinancialAcademicYearDO.netFeeDue}" />
+			</p:column>
+		</p:dataTable>
+
+		<p:blockUI block="form" trigger="students_details_search_buton">  
+        		Request is processing, please wait<br />
+			<p:graphicImage value="/images/ajax-loader.gif" />
+		</p:blockUI>
+	</p:panel>
+
+</ui:composition>

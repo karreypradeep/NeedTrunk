@@ -1,0 +1,17 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel id="education_history_panel" style="border:0px;">
+		<ui:include src="/pages/common/education_history.xhtml" />
+		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
+			<p:outputLabel id="skip_lable" value="Skip this step" for="skip" style="font-weight:bold;" />
+			<p:selectBooleanCheckbox id="skip" value="#{admissionBean.disableRecentSchoolInfo}" onLabel="Yes" offLabel="No"
+				onIcon="ui-icon-check" offIcon="ui-icon-close">
+				<p:ajax update="edu_panel_grid" />
+			</p:selectBooleanCheckbox>
+		</h:panelGrid>
+	</p:panel>
+
+</ui:composition>

@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jee="http://www.springframework.org/schema/jee" 
+	xmlns:jms="http://www.springframework.org/schema/jms" 
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-3.0.xsd
+	http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.0.xsd
+	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
+
+
+	<!-- JMS Resource look-ups -->
+	<jee:jndi-lookup id="jmsConnectionFactory" jndi-name="java:/jms/ConnectionFactory" resource-ref="false" />
+
+	<bean id="serverDestinationResolver" class="org.springframework.jms.support.destination.BeanFactoryDestinationResolver" />
+
+	<!-- START JMS Configurations for StudentFeeEmailNotificationQueue -->
+	<jee:jndi-lookup id="emailDestination" jndi-name="queue/emailQueue" resource-ref="false" />
+
+	<jee:jndi-lookup id="emailDeadLetterDestination" jndi-name="queue/emailDeadLetterQueue"
+		resource-ref="false" />
+
+	<!-- JMS config -->
+	<bean id="jmsTemplateEmail" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="defaultDestination" ref="emailDestination" />
+		<property name="deliveryPersistent" value="true" />
+		<property name="sessionTransacted" value="true" />
+	</bean>
+
+	<bean id="jmsTemplateEmailDeadLetter" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="defaultDestination" ref="emailDeadLetterDestination" />
+		<property name="deliveryPersistent" value="true" />
+	</bean>
+
+
+	<jms:listener-container connection-factory="jmsConnectionFactory" destination-resolver="serverDestinationResolver"
+		concurrency="5-10" acknowledge="transacted" >
+		<jms:listener destination="emailDestination" ref="emailConsumerMDP" method="onMessage" />
+	</jms:listener-container> 
+	
+	<jms:listener-container connection-factory="jmsConnectionFactory" destination-resolver="serverDestinationResolver"
+		concurrency="5-10" acknowledge="transacted" >
+		<jms:listener destination="emailDeadLetterDestination" ref="emailDeadLetterConsumerMDP" method="onMessage" />
+	</jms:listener-container> 
+
+	<bean id="emailConsumerMDP" class="com.apeironsol.nexed.notifications.consumers.email.EmailConsumer" />
+
+	<bean id="emailDeadLetterConsumerMDP" class="com.apeironsol.nexed.notifications.consumers.email.EmailDeadLetterConsumer" />
+
+	<!-- END JMS Configurations for StudentFeeEmailNotificationQueue -->
+
+
+<!-- START JMS Configurations for StudentFeeSMSNotificationQueue -->
+	<jee:jndi-lookup id="smsDestination" jndi-name="queue/smsQueue" resource-ref="false" />
+
+	<jee:jndi-lookup id="smsDestinationDeadLetter" jndi-name="queue/smsDeadLetterQueue"
+		resource-ref="false" />
+
+	<!-- JMS config -->
+	<bean id="jmsTemplateSMS" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="defaultDestination" ref="smsDestination" />
+		<property name="deliveryPersistent" value="true" />
+		<property name="sessionTransacted" value="true" />
+	</bean>
+
+	<bean id="jmsTemplateSMSDeadLetter" class="org.springframework.jms.core.JmsTemplate">
+		<property name="connectionFactory" ref="jmsConnectionFactory" />
+		<property name="defaultDestination" ref="smsDestinationDeadLetter" />
+		<property name="deliveryPersistent" value="true" />
+	</bean>
+
+	<jms:listener-container connection-factory="jmsConnectionFactory" destination-resolver="serverDestinationResolver"
+		concurrency="5-10" acknowledge="transacted" >
+		<jms:listener destination="smsDestination" ref="smsConsumerMDP" method="onMessage" />
+	</jms:listener-container> 
+	
+	<jms:listener-container connection-factory="jmsConnectionFactory" destination-resolver="serverDestinationResolver"
+		concurrency="5-10" acknowledge="transacted" >
+		<jms:listener destination="smsDestinationDeadLetter" ref="smsDeadLetterConsumerMDP" method="onMessage" />
+	</jms:listener-container> 
+
+	<bean id="smsConsumerMDP" class="com.apeironsol.nexed.notifications.consumers.sms.SMSConsumer" />
+
+	<bean id="smsDeadLetterConsumerMDP" class="com.apeironsol.nexed.notifications.consumers.sms.SMSDeadLetterConsumer" />
+
+	<!-- END JMS Configurations for StudentFeeEmailNotificationQueue -->
+
+	<!-- Activates @Scheduled and @Async annotations for scheduling -->
+	<task:annotation-driven executor="executorWithPoolSizeRange" scheduler="taskScheduler" />
+	<!-- The 'executor' element: When a task is submitted, the executor will first try to use a free thread if the number of active 
+		threads is currently less than the core size. If the core size has been reached, then the task will be added to the queue as long 
+		as its capacity has not yet been reached. Only then, if the queue's capacity has been reached, will the executor create a new thread 
+		beyond the core size. If the max size has also been reached, then the executor will reject the task See: 25.4.2 The 'executor' element -->
+	<!-- Defines a ThreadPoolTaskExecutor instance with configurable pool size, queue-capacity, keep-alive, and rejection-policy values. 
+		The id becomes the default thread name prefix -->
+	<task:executor id="executorWithPoolSizeRange" pool-size="5-25" queue-capacity="100" />
+
+	<!-- Defines a ThreadPoolTaskScheduler instance with configurable pool size. The id becomes the default thread name prefix. -->
+	<task:scheduler id="taskScheduler" pool-size="1" />
+
+</beans>

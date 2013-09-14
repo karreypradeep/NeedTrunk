@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+<composite:interface>
+	<composite:attribute name="id" displayName="id" />
+	<composite:attribute name="relationModel" required="true" displayName="relation" type="com.apeironsol.nexed.core.model.Relation" />
+</composite:interface>
+
+<composite:implementation>
+	<h:panelGrid id="grid" columns="2" style="width:100%;" columnClasses="column-vertical-align,column-vertical-align">
+		<h:panelGrid columns="2" cellpadding="5" style="vertical-align: top;">
+			<h:outputText value="Relation" style="font-weight:bold;" />
+			<h:outputText value="" />
+
+			<h:outputText id="#{cc.attrs.id}_first_name_label" value="First name" />
+			<h:outputText id="#{cc.attrs.id}_first_name" value="#{cc.attrs.relationModel.firstName}" />
+
+			<h:outputText id="#{cc.attrs.id}_middle_name_label" value="Middle name" />
+			<h:outputText id="#{cc.attrs.id}_middle_name" value="#{cc.attrs.relationModel.middleName}" />
+
+			<h:outputText id="#{cc.attrs.id}_last_name_label" value="Last name" />
+			<h:outputText id="#{cc.attrs.id}_last_name" value="#{cc.attrs.relationModel.lastName}" />
+
+			<h:outputText id="#{cc.attrs.id}_dob_label" value="Date of birth" />
+			<h:outputText id="#{cc.attrs.id}_dob" value="#{cc.attrs.relationModel.dateOfBirth}" />
+
+			<h:outputText id="#{cc.attrs.id}_type_label" value="Relation Type" />
+			<h:outputText id="#{cc.attrs.id}_type" value="#{cc.attrs.relationModel.relationType.label}" />
+
+			<h:outputText id="#{cc.attrs.id}_gender_label" value="Gender" />
+			<h:outputText id="#{cc.attrs.id}_gender" value="#{cc.attrs.relationModel.gender.label}" />
+
+		</h:panelGrid>
+		<h:panelGrid columns="2" cellpadding="5" style="vertical-align: top;">
+			<h:outputText value="Contact information" style="font-weight:bold;" />
+			<h:outputText value="" />
+
+			<h:outputText id="#{cc.attrs.id}_address_label" value="Address" />
+			<h:outputText id="#{cc.attrs.id}_address" value="#{cc.attrs.relationModel.address.address}" />
+
+			<h:outputText id="#{cc.attrs.id}_address_city_label" value="City" />
+			<h:outputText id="#{cc.attrs.id}_address_city" value="#{cc.attrs.relationModel.address.city}" />
+
+			<h:outputText id="#{cc.attrs.id}_address_country_label" value="Country" />
+			<h:outputText id="#{cc.attrs.id}_address_country" value="#{cc.attrs.relationModel.address.country.name}" />
+
+			<h:outputText id="#{cc.attrs.id}_address_state_label" value="State" />
+			<h:outputText id="#{cc.attrs.id}_address_state" value="#{cc.attrs.relationModel.address.state}" />
+
+			<h:outputText id="#{cc.attrs.id}_address_zipcode_label" value="Zip code" />
+			<h:outputText id="#{cc.attrs.id}_address_zipcode" value="#{cc.attrs.relationModel.address.zipCode}" />
+
+			<h:outputText id="#{cc.attrs.id}_address_homephone_label" value="Home phone" />
+			<h:outputText id="#{cc.attrs.id}_address_homephone" value="#{cc.attrs.relationModel.address.homePhoneNr}" />
+
+			<h:outputText id="#{cc.attrs.id}_address_mobilephone_label" value="Mobile phone" />
+			<h:outputText id="#{cc.attrs.id}_address_mobilephone" value="#{cc.attrs.relationModel.address.mobileNr}" />
+
+			<h:outputText id="#{cc.attrs.id}_address_email_label" value="Email" />
+			<h:outputText id="#{cc.attrs.id}_address_email" value="#{cc.attrs.relationModel.address.email}" />
+		</h:panelGrid>
+	</h:panelGrid>
+</composite:implementation>
+
+
+</html>

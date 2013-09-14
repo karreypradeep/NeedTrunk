@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	
+	<f:facet name="header">Personal</f:facet>
+	
+	<link type="text/css" rel="stylesheet"
+		href="#{facesContext.externalContext.requestContextPath}/resources/css/student-profile.css" />
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{studentBean.loadRelations}" />
+		<f:event type="preRenderView" listener="#{studentBean.loadProfilePicture}" />
+	</f:metadata>
+	
+	
+	<h:panelGrid columns="2" columnClasses="column-vertical-align,profile-right-column" style="width:100%">
+
+		<p:panel id="studentProfilePanel" style="padding:0px;margin:0px;border:0px;">
+
+			<p:panel id="personalDetailsPanel" style="border:0px;">
+				<c:choose>
+					<c:when test="#{studentBean.editStudentPersonalDetails}">
+						<h:panelGrid columns="3" cellpadding="5">
+							<p:outputLabel value="#{msg.firstName}" style="font-weight:bold" for="firstName" />
+							<p:inputText id="firstName" value="#{studentBean.student.firstName}" required="true" />
+							<p:message id="firstName_msg" for="firstName" />
+
+							<p:outputLabel value="#{msg.middleName}" style="font-weight:bold" for="middleName" />
+							<p:inputText id="middleName" value="#{studentBean.student.middleName}" />
+							<p:message id="middleName_msg" for="middleName" />
+
+
+							<p:outputLabel value="#{msg.firstName}" style="font-weight:bold" for="lastName" />
+							<p:inputText id="lastName" value="#{studentBean.student.lastName}" required="true" />
+							<p:message id="lastName_msg" for="lastName" />
+
+
+							<p:outputLabel value="#{msg.dob}" style="font-weight:bold" for="dob" />
+							<p:calendar id="dob" value="#{studentBean.student.dateOfBirth}" navigator="true" display="inline" effect="drop"
+								pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+							<p:message id="dob_msg" for="dob" />
+
+							<p:outputLabel value="#{msg.gender}" style="font-weight:bold" for="gender" />
+							<p:selectOneRadio id="gender" value="#{studentBean.student.gender}" required="true">
+								<f:selectItems value="#{enumConstantsBean.gender}" var="gender" itemLabel="#{gender.label}"
+									itemValue="#{gender}" />
+							</p:selectOneRadio>
+							<p:message id="gender_msg" for="gender" />
+
+							<p:outputLabel value="#{msg.class}" style="font-weight:bold" for="klassName" />
+							<p:inputText id="klassName" value="#{studentBean.currentOrMostRecentStudentSection.section.klass.name}"
+								required="true" disabled="true"/>
+							<p:message id="klassName_msg" for="klassName" />
+
+
+							<p:outputLabel value="#{msg.section}" style="font-weight:bold" for="sectionName" />
+							<p:inputText id="sectionName" value="#{studentBean.currentOrMostRecentStudentSection.section.name}"
+								required="true" disabled="true"/>
+							<p:message id="sectionName_msg" for="sectionName" />
+							
+							<p:outputLabel id="student_classification_type_label" value="Student classification"
+								for="student_classification_type" style="font-weight:bold" />
+							<p:selectOneMenu id="student_classification_type" value="#{studentBean.student.studentClassificationType}"
+								style="width:155px;" converter="buildingBlockConverter">
+								<f:selectItem itemLabel="Select student classification" />
+								<f:selectItems value="#{admissionBean.buildingBlockTypeStudentClassifications}"
+									var="buildingBlockTypeStudentClassification" itemLabel="#{buildingBlockTypeStudentClassification.name}"
+									itemValue="#{buildingBlockTypeStudentClassification}" />
+							</p:selectOneMenu>
+							<p:message id="student_classification_type_msg" for="student_classification_type" />
+
+						</h:panelGrid>
+						<p:commandButton id="save" value="#{msg.save}" action="#{studentBean.saveStudent}" icon="ui-icon-circle-check"
+							title="#{msg.save}" update="@form" process="personalDetailsPanel" style="width:80px;" />
+						<p:spacer width="5" />
+						<p:commandButton id="cancel" value="#{msg.cancel}" update="personalDetailsPanel" process="@this"
+							icon="ui-icon-circle-close" title="#{msg.cancel}" style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.editStudentPersonalDetails}" value="false" />
+						</p:commandButton>
+					</c:when>
+					<c:otherwise>
+						<h:panelGrid columns="2" cellspacing="5" cellpadding="3">
+
+							<h:outputLabel value="#{msg.admissonNr}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.admissionNr}" />
+
+							<c:if test="#{not empty studentBean.student.externalAdmissionNr}">
+								<h:outputLabel value="#{msg.extenalAdmissonNr}" style="font-weight:bold" />
+								<h:outputLabel value="#{studentBean.student.externalAdmissionNr}" />
+							</c:if>
+
+							<h:outputLabel value="#{msg.name}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.displayName}" />
+
+							<h:outputLabel value="#{msg.dob}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.dateOfBirth}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputLabel>
+
+							<h:outputLabel value="#{msg.gender}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.gender.label}" />
+
+							<h:outputLabel value="#{msg.class}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.currentOrMostRecentStudentSection.section.klass.name}" />
+
+							<p:outputLabel value="Residence" style="font-weight:bold" for="resiType" />
+							<h:outputLabel id="resiType" value="#{studentBean.student.residence.label}" />
+
+							<h:outputLabel value="#{msg.student_classification}" style="font-weight:bold"
+								rendered="#{studentBean.student.studentClassificationType!=null}" />
+							<h:outputLabel value="#{studentBean.student.studentClassificationType.name}"
+								rendered="#{studentBean.student.studentClassificationType!=null}" />
+
+							<h:outputLabel value="#{msg.section}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.currentOrMostRecentStudentSection.section.name}" />
+						</h:panelGrid>
+						<p:panel width="100%" style="border:0px;text-align: right;">
+							<p:commandLink value="Edit" style="font-size: 15; color: blue; font-weight:bold" update="personalDetailsPanel"
+								process="@this" rendered="#{grantedAuthorityBean.userAllowedToUpdateStudentPersonalDetails}">
+								<f:setPropertyActionListener target="#{studentBean.editStudentPersonalDetails}" value="true" />
+							</p:commandLink>  
+						</p:panel>
+					</c:otherwise>
+				</c:choose>
+			</p:panel>
+
+			<p:panel id="addressDetailsPanel" header="Address Details" toggleable="true" toggleSpeed="500" collapsed="true"
+				style="border:0px;" rendered="#{grantedAuthorityBean.userAllowedToAccessStudentAddress}">
+				<c:choose>
+					<c:when test="#{studentBean.editStudentAddressDetails}">
+						<biz:address id="primaryAddress" addressModel="#{studentBean.primaryAddress}" />
+
+						<p:commandButton id="addressSave" value="#{msg.save}" action="#{studentBean.savePrimaryAddress}"
+							update="addressDetailsPanel" process="addressDetailsPanel" icon="ui-icon-circle-check" title="#{msg.save}"
+							style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.editStudentAddressDetails}" value="false" />
+						</p:commandButton>
+						<p:spacer width="5" />
+						<p:commandButton id="addressCancel" value="#{msg.cancel}" update="addressDetailsPanel" immediate="true"
+							icon="ui-icon-circle-close" title="#{msg.cancel}" style="width:80px;">
+						</p:commandButton>
+					</c:when>
+					<c:otherwise>
+						<h:panelGrid columns="2" columnClasses="label, value, label" styleClass="grid" cellspacing="5" cellpadding="3">
+							<h:outputLabel value="#{msg.address}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.address.address}" size="40" />
+
+							<h:outputLabel value="#{msg.city}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.address.city}" />
+
+							<h:outputLabel value="#{msg.country}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.address.country.name}" />
+
+							<h:outputLabel value="#{msg.state}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.address.state}" />
+
+							<h:outputLabel value="#{msg.pincode}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.address.zipCode}" />
+
+							<h:outputLabel value="#{msg.homePhone}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.address.homePhoneNr}" />
+
+							<h:outputLabel value="#{msg.mobilePhone}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.address.mobileNr}" />
+
+							<h:outputLabel value="#{msg.emailId}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.student.address.email}" />
+
+							<c:if test="#{cc.attrs.showPrimary}">
+								<h:outputLabel value="#{msg.is-primary}" style="font-weight:bold" />
+								<p:selectBooleanCheckbox value="#{studentBean.student.address.primary}" disabled="true" />
+							</c:if>
+						</h:panelGrid>
+						<p:panel width="100%" style="border:0px;text-align: right;">
+							<p:commandLink value="Edit" style="font-size: 15; color: blue; font-weight:bold" update="addressDetailsPanel"
+								process="addressDetailsPanel" rendered="#{grantedAuthorityBean.userAllowedToUpdateStudentAddress}">
+								<f:setPropertyActionListener target="#{studentBean.editStudentAddressDetails}" value="true" />
+								<f:setPropertyActionListener target="#{studentBean.primaryAddress}" value="#{studentBean.student.address}"></f:setPropertyActionListener>
+							</p:commandLink>
+						</p:panel>
+					</c:otherwise>
+				</c:choose>
+			</p:panel>
+
+			<p:panel id="medicalHistoryPanel" header="Medical History" toggleable="true" toggleSpeed="500" collapsed="true"
+				style="border:0px;" rendered="#{grantedAuthorityBean.userAllowedToAccessStudentMedicalHistory}">
+				<c:choose>
+					<c:when test="#{studentBean.editStudentMedicalHistory}">
+						<h:panelGrid columns="3" cellpadding="5"
+							columnClasses="column-adm-conf-label,column-adm-conf-value,column-adm-conf-label" styleClass="grid">
+							<p:outputLabel id="stu_curr_using_medi_label" value="#{msg.currently_using_medicines}" for="stu_curr_using_medi" />
+							<p:inputTextarea id="stu_curr_using_medi" cols="75" rows="7" required="true"
+								value="#{studentBean.medicalHistory.currentlyUsingMedicines}" />
+							<p:message id="stu_curr_using_medi_msg" for="stu_curr_using_medi" />
+
+							<p:outputLabel id="stu_allergies_label" value="#{msg.known_allergies}" for="stu_allergies" />
+							<p:inputTextarea id="stu_allergies" cols="75" rows="7" required="true"
+								value="#{studentBean.medicalHistory.knownAllergies}" />
+							<p:message id="stu_allergies_msg" for="stu_allergies" />
+
+							<p:outputLabel id="stu_curr_medi_cond_label" value="#{msg.current_medical_condition}" for="stu_curr_medi_cond" />
+							<p:inputTextarea id="stu_curr_medi_cond" cols="75" rows="7" required="true"
+								value="#{studentBean.medicalHistory.currentMedicalCondition}" />
+							<p:message id="stu_curr_medi_cond_msg" for="stu_curr_medi_cond" />
+
+							<p:outputLabel id="stu_prev_opers_details_label" value="#{msg.previous_operation_details}"
+								for="stu_prev_opers_details" />
+							<p:inputTextarea id="stu_prev_opers_details" cols="75" rows="7" required="true"
+								value="#{studentBean.medicalHistory.previousOperatationDetails}" />
+							<p:message id="stu_prev_opers_details_msg" for="stu_prev_opers_details" />
+
+							<p:outputLabel id="stu_relat_details_label" value="#{msg.relatives_health_condition}" for="stu_relat_details" />
+							<p:inputTextarea id="stu_relat_details" cols="75" rows="7" required="true"
+								value="#{studentBean.medicalHistory.relativesHealthDetails}" />
+							<p:message id="stu_relat_details_msg" for="stu_relat_details" />
+						</h:panelGrid>
+						<p:commandButton id="save" value="#{msg.save}" action="#{studentBean.saveMedicalHistory}"
+							icon="ui-icon-circle-check" title="#{msg.save}" update="medicalHistoryPanel" process="medicalHistoryPanel"
+							style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.editStudentMedicalHistory}" value="false" />
+						</p:commandButton>
+						<p:spacer width="5" />
+						<p:commandButton id="cancel" value="#{msg.cancel}" update="medicalHistoryPanel" process="@this"
+							icon="ui-icon-circle-close" title="#{msg.cancel}" style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.editStudentMedicalHistory}" value="false" />
+						</p:commandButton>
+					</c:when>
+					<c:otherwise>
+						<h:panelGrid columns="2" columnClasses="column-adm-conf-label,column-adm-conf-value" styleClass="grid"
+							cellspacing="5" cellpadding="3">
+							<h:outputLabel value="#{msg.currently_using_medicines}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.medicalHistory.currentlyUsingMedicines}" size="40" />
+
+							<h:outputLabel value="#{msg.known_allergies}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.medicalHistory.knownAllergies}" size="40" />
+
+							<h:outputLabel value="#{msg.current_medical_condition}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.medicalHistory.currentMedicalCondition}" size="40" />
+
+							<h:outputLabel value="#{msg.previous_operation_details}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.medicalHistory.previousOperatationDetails}" size="40" />
+
+							<h:outputLabel value="#{msg.relatives_health_condition}" style="font-weight:bold" />
+							<h:outputLabel value="#{studentBean.medicalHistory.relativesHealthDetails}" size="40" />
+						</h:panelGrid>
+						<p:panel width="100%" style="border:0px;text-align: right;">
+							<p:commandLink value="Edit" style="font-size: 15; color: blue; font-weight:bold" update="medicalHistoryPanel"
+								process="medicalHistoryPanel" rendered="#{grantedAuthorityBean.userAllowedToUpdateStudentMedicalHistory}">
+								<f:setPropertyActionListener target="#{studentBean.editStudentMedicalHistory}" value="true" />
+							</p:commandLink>
+						</p:panel>
+					</c:otherwise>
+				</c:choose>
+			</p:panel>
+
+			<p:panel id="fatherDetailsPanel" header="Father Details" toggleable="true" toggleSpeed="500" collapsed="true"
+				style="border:0px;" rendered="#{grantedAuthorityBean.userAllowedToAccessStudentParentDetails}">
+				<c:choose>
+					<c:when test="#{studentBean.editStudentFatherDetails}">
+						<biz:student_profile_input_relation id="father" relationModel="#{studentBean.studentFather}" />
+						<p:commandButton id="fatherSave" value="Save" update="fatherDetailsPanel" process="fatherDetailsPanel"
+							action="#{studentBean.saveRelation}" icon="ui-icon-circle-check" style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.relation}" value="#{studentBean.studentFather}" />
+							<f:setPropertyActionListener target="#{studentBean.editStudentFatherDetails}" value="false" />
+						</p:commandButton>
+						<p:spacer width="5" />
+						<p:commandButton value="#{msg.cancel}" update="fatherDetailsPanel" immediate="true" icon="ui-icon-circle-close"
+							style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.editStudentFatherDetails}" value="false" />
+						</p:commandButton>
+					</c:when>
+					<c:otherwise>
+						<biz:input_relation_readonly id="relationFatherReadOnly" relationModel="#{studentBean.studentFather}" />
+						<p:panel width="100%" style="border:0px;text-align: right;">
+							<p:commandLink value="Edit" style="font-size: 15; color: blue; font-weight:bold" update="fatherDetailsPanel"
+								process="fatherDetailsPanel" rendered="#{grantedAuthorityBean.userAllowedToUpdateStudentParentDetails}">
+								<f:setPropertyActionListener target="#{studentBean.editStudentFatherDetails}" value="true" />
+								<f:setPropertyActionListener target="#{studentBean.loadRelationsFlag}" value="true" />
+							</p:commandLink>
+						</p:panel>
+					</c:otherwise>
+				</c:choose>
+			</p:panel>
+
+			<p:panel id="motherDetailsPanel" header="Mother Details" toggleable="true" toggleSpeed="500" collapsed="true"
+				style="border:0px;" rendered="#{grantedAuthorityBean.userAllowedToAccessStudentParentDetails}">
+				<c:choose>
+					<c:when test="#{studentBean.editStudentMotherDetails}">
+						<biz:student_profile_input_relation id="mother" relationModel="#{studentBean.studentMother}" />
+						<p:commandButton id="motherPanel" value="Save" update="motherDetailsPanel" process="motherDetailsPanel"
+							action="#{studentBean.saveRelation}" icon="ui-icon-circle-check" style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.relation}" value="#{studentBean.studentMother}" />
+							<f:setPropertyActionListener target="#{studentBean.editStudentMotherDetails}" value="false" />
+						</p:commandButton>
+						<p:spacer width="5" />
+						<p:commandButton value="#{msg.cancel}" update="motherDetailsPanel" immediate="true" icon="ui-icon-circle-close"
+							style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.editStudentMotherDetails}" value="false" />
+						</p:commandButton>
+					</c:when>
+					<c:otherwise>
+						<biz:input_relation_readonly id="relationMotherReadOnly" relationModel="#{studentBean.studentMother}" />
+						<p:panel width="100%" style="border:0px;text-align: right;">
+							<p:commandLink value="Edit" style="font-size: 15; color: blue; font-weight:bold" update="motherDetailsPanel"
+								process="motherDetailsPanel" rendered="#{grantedAuthorityBean.userAllowedToUpdateStudentParentDetails}">
+								<f:setPropertyActionListener target="#{studentBean.editStudentMotherDetails}" value="true" />
+								<f:setPropertyActionListener target="#{studentBean.loadRelationsFlag}" value="true" />
+							</p:commandLink>
+						</p:panel>
+					</c:otherwise>
+				</c:choose>
+			</p:panel>
+
+			<p:panel id="guardianDetailsPanel" header="Guardian Details" toggleable="true" toggleSpeed="500" collapsed="true"
+				style="border:0px;" rendered="#{grantedAuthorityBean.userAllowedToAccessStudentParentDetails}">
+				<c:choose>
+					<c:when test="#{studentBean.editStudentGuardianDetails}">
+						<biz:student_profile_input_relation id="guardian" relationModel="#{studentBean.studentGuardian}" />
+						<p:commandButton id="guardianSave" value="Save" update="guardianDetailsPanel" process="guardianDetailsPanel"
+							action="#{studentBean.saveRelation}" icon="ui-icon-circle-check" style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.relation}" value="#{studentBean.studentGuardian}" />
+							<f:setPropertyActionListener target="#{studentBean.editStudentGuardianDetails}" value="false" />
+						</p:commandButton>
+						<p:spacer width="5" />
+						<p:commandButton id="relationGuardianReset" value="#{msg.cancel}" update="guardianDetailsPanel" immediate="true"
+							icon="ui-icon-circle-close" style="width:80px;">
+							<f:setPropertyActionListener target="#{studentBean.editStudentGuardianDetails}" value="false" />
+						</p:commandButton>
+					</c:when>
+					<c:otherwise>
+						<biz:input_relation_readonly id="relationGuardianReadOnly" relationModel="#{studentBean.studentGuardian}" />
+						<p:panel width="100%" style="border:0px;text-align: right;">
+							<p:commandLink value="Edit" style="font-size: 15; color: blue; font-weight:bold" update="guardianDetailsPanel"
+								process="guardianDetailsPanel" rendered="#{grantedAuthorityBean.userAllowedToUpdateStudentParentDetails}">
+								<f:setPropertyActionListener target="#{studentBean.editStudentGuardianDetails}" value="true" />
+								<f:setPropertyActionListener target="#{studentBean.loadRelationsFlag}" value="true" />
+							</p:commandLink>
+						</p:panel>
+					</c:otherwise>
+				</c:choose>
+			</p:panel>
+
+		</p:panel>
+
+		<p:panel style="border:0px;padding: 0px;margin: 0px;">
+
+
+			<div id="photo" class="photo-outer"
+				onmouseover="uploadphoto.className='link-position link-style';takephoto.className='link-position link-style'"
+				onmouseout="uploadphoto.className='link-position link-style link-hide';takephoto.className='link-position link-style link-hide'">
+
+				<div class="photo-border" style="width: 250px; height: 250px;" id="profile_photo">
+					<div class="photo">
+						<p:graphicImage value="#{studentBean.profilePictureStreamedContent}" width="250" height="250"
+							onmouseover="this.class.name='ZAa cz'" />
+					</div>
+				</div>
+				<div style="-webkit-user-select: none;">
+					<div id="uploadphoto" class="link-position link-style link-hide" style="margin-top: -30px;">
+						<p:commandLink value="Change photo" onclick="takephotoPanel.show()" process="@this" />
+					</div>
+				</div>
+			</div>
+			<div class="Oka b1">
+				<div class="lc l-y4">
+					<div class="KC">
+						<div class="Tta  l-rHa ">
+							<div class="Vta a-f-e">
+								<div class="Uta UCa a-f-e"></div>
+							</div>
+							<div class="a-f-e pga">
+								Current status : <b>#{studentBean.student.studentStatus.label}</b>
+							</div>
+						</div>
+						<c:if test="#{studentBean.student.studentStatus == 'ACTIVE'}">
+							<div class="Tta  l-uHa ">
+								<div class="Vta a-f-e">
+									<div class="Uta aDa a-f-e"></div>
+								</div>
+								<div class="a-f-e pga">
+									Status today : <b>#{studentBean.studentTodayAttandanceStatus}</b>
+								</div>
+							</div>
+						</c:if>
+					</div>
+				</div>
+			</div>
+		</p:panel>
+
+	</h:panelGrid>
+
+	<h:form id="photoDialogForm" enctype="multipart/form-data" prependId="false">
+		<p:dialog id="takephotoDialog" header="Profile picture" severity="alert" widgetVar="takephotoPanel" resizable="false"
+			modal="true" closable="true" width="800" position="top">
+
+
+			<div class="biz-ui-dialog-right">
+				<h:outputLabel>Upload picture</h:outputLabel>
+			</div>
+			<div class="biz-ui-dialog-left">
+				<p:messages id="photoDialogMessages" />
+
+				<div class="biz-ui-dialog-left-fileupload"
+					onmouseover="
+							if(fileupload.innerHTML.indexOf('tr') == -1) {
+								fileupload.className='ui-fileupload ui-widget ui-state-highlight';
+							} else {
+								fileupload.className='ui-fileupload ui-widget';
+							};		
+							marginfill.className='biz-ui-dialog-left-fileupload-fill-hide';
+							fileuploadhint.className='biz-ui-dialog-left-fileupload-hint-hide';"
+					onmouseout="fileupload.className='ui-fileupload ui-widget';
+							if(fileupload.innerHTML.indexOf('tr') == -1) {
+								fileuploadhint.className='biz-ui-dialog-left-fileupload-hint';
+								marginfill.className='biz-ui-dialog-left-fileupload-fill-show'
+							} else {
+								
+								fileuploadhint.className='biz-ui-dialog-left-fileupload-fill-hide';
+								marginfill.className='biz-ui-dialog-left-fileupload-fill-show-hide'
+							}">
+
+					<p:fileUpload id="fileupload" mode="advanced" allowTypes="/(\.|\/)(gif|jpe?g|png)$/"
+						fileUploadListener="#{studentBean.handleFileUpload}" dragDropSupport="true" update=":form" multiple="false"
+						auto="true" sizeLimit="1321896">
+					</p:fileUpload>
+
+					<div id="fileuploadhint" class="biz-ui-dialog-left-fileupload-hint">
+						<center>Drag and drop (gif/jpe/jpeg/png) files here.</center>
+					</div>
+					<div id="marginfill" class="biz-ui-dialog-left-fileupload-fill-show" />
+
+
+				</div>
+
+			</div>
+    </p:dialog>
+	</h:form>
+</ui:composition>

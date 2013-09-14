@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+<ui:composition template="/templates/main.xhtml">
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{branchTreeBean.showBranchTree}" />
+	</f:metadata>
+	<ui:define name="tree">
+		<ui:include src="branch_tree.xhtml"></ui:include>
+	</ui:define>
+	<ui:define name="body">
+
+		<p:panel id="branchDepartmentType" header="#{branchDepartmentBean.departmentName}" style="margin-bottom:10px;">
+			<p:messages id="messages" globalOnly="true" />
+			<h:panelGrid columns="3" id="grid" cellpadding="4" style="border:0px;margin-bottom:10px;">
+
+				<p:outputLabel id="start_date_label" value="Start date" for="start_date" />
+				<p:calendar id="start_date" value="#{branchDepartmentBean.branchDepartment.startDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" />
+				<p:message id="start_date_msg" for="start_date" />
+
+				<p:outputLabel id="end_date_label" value="End date" for="end_date" />
+				<p:inputText id="end_date" value="#{branchDepartmentBean.branchDepartment.endDate}" disabled="true">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</p:inputText>
+				<p:message id="end_date_msg" for="end_date" />
+
+			</h:panelGrid>
+
+			<p:commandButton id="save" value="Save" action="#{branchDepartmentBean.saveBranchDepartment}" update="@all"
+				ajax="false" disabled="#{branchBean.disableActivate}" />
+			<p:commandButton id="cancel" value="Cancel" action="#{branchDepartmentBean.cancelAction}" ajax="false"
+				immediate="true" />
+			<p:commandButton id="end" value="End" action="#{branchDepartmentBean.endDepartment}" update="@all" ajax="false"
+				disabled="#{branchBean.disableActivate}" />
+
+		</p:panel>
+
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,145 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components" xmlns:pe="http://primefaces.org/ui/extensions">
+	
+	<f:facet name="header">Admission Level Fee</f:facet>
+
+	<c:if
+		test="#{admissionBean.admissionReservationFee.applicationFormFee != null and admissionBean.admissionReservationFee.applicationFormFee > 0.0 and !admissionBean.admissionReservationFee.applicationFeeAppliedToStudentFees}">
+
+		<div class="ui-apeironsol-note">
+			<p:outputLabel value="Note 1 : Application fee transactions will be showed on the student fee summary only after admiting the student."
+				style="font-weight:bold;" rendered="#{!admissionBean.admissionReservationFee.applicationFeeAppliedToStudentFees}" />
+		</div>
+
+	</c:if>
+
+	<c:if
+		test="#{admissionBean.admissionReservationFee.reservationFee != null and admissionBean.admissionReservationFee.reservationFee > 0.0 and  (admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED' ) and !admissionBean.admissionReservationFee.reservationFeeAppliedToStudentFees}">
+
+		<div class="ui-apeironsol-note">
+
+			<p:outputLabel
+				value=" Note 2.1 : if Reservation fee is no adjusted to class fee the then reservation transactions will be showed on the student fee after admiting the student." />
+		</div>
+
+		<div class="ui-apeironsol-note">
+
+			<p:outputLabel value=" Note 2.2 : If Reservation fee is adjusted to class fee , the reservation amount is showed as deductions on classes fees." />
+		</div>
+
+
+	</c:if>
+
+
+
+	<h:panelGrid columns="3" cellpadding="5" id="admission_level_fee_grid">
+
+
+		<p:outputLabel id="application_fee_label" value="Application fee" for="application_fee" />
+		<pe:inputNumber id="application_fee" value="#{admissionBean.admissionReservationFee.applicationFormFee}" disable="#{!admissionBean.showApplicationFormFee()}">
+			<p:ajax process="@this" />
+		</pe:inputNumber>
+		<p:message id="application_fee_msg" for="application_fee" />
+
+
+
+
+		<p:outputLabel id="app_fee_date_lbl" value="Application fee paid date" for="app_fee_date" />
+		<p:calendar id="app_fee_date" value="#{admissionBean.admissionReservationFee.applicationFeePaidDate}" navigator="true" display="inline" effect="drop"
+			pattern="dd/MM/yyyy" yearRange="1900" disabled="true">
+			<p:ajax event="dateSelect" process="@this" />
+		</p:calendar>
+		<p:message id="app_fee_date_msg" for="app_fee_date" />
+
+
+		<p:outputLabel value="Is application fee paid via external process ?" for="stu_app_fee_ext_tran_check" />
+		<p:selectBooleanCheckbox id="stu_app_fee_ext_tran_check" value="#{admissionBean.applicationFeeExternalTransaction}" onLabel="Yes" offLabel="No"
+			onIcon="ui-icon-check" offIcon="ui-icon-close" disable="#{!admissionBean.showApplicationFormFee()}">
+			<p:ajax update="admission_level_fee_grid" process="@this" listener="#{admissionBean.resetExistingApplicationFeeDetails()}" />
+		</p:selectBooleanCheckbox>
+		<p:message id="stu_app_fee_ext_tran_check_msg" for="stu_app_fee_ext_tran_check" />
+
+
+		<p:outputLabel id="ext_trans_number_lbl" value="Application fee external transaction number" for="ext_trans_number"
+			rendered="#{admissionBean.applicationFeeExternalTransaction}" />
+		<p:inputText id="ext_trans_number" value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionNr}" required="true"
+			rendered="#{admissionBean.applicationFeeExternalTransaction}" style="width:95%;">
+			<p:ajax process="@this" />
+		</p:inputText>
+		<p:message id="ext_trans_number_msg" for="ext_trans_number" rendered="#{admissionBean.applicationFeeExternalTransaction}" />
+
+
+
+
+		<p:outputLabel id="ext_trans_date_lbl" value="Application fee external transaction date" for="ext_trans_date"
+			rendered="#{admissionBean.applicationFeeExternalTransaction}" />
+		<p:calendar id="ext_trans_date" value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionDate}" navigator="true" display="inline"
+			effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" rendered="#{admissionBean.applicationFeeExternalTransaction}">
+			<p:ajax event="dateSelect" process="@this" />
+		</p:calendar>
+		<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.applicationFeeExternalTransaction}" />
+
+
+
+		<p:outputLabel id="stu_adm_reservation_fee_label" value="Reservation fee" for="stu_adm_reservation_fee"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED'}" />
+
+		<pe:inputNumber id="stu_adm_reservation_fee" value="#{admissionBean.admissionReservationFee.reservationFee}"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED'}">
+			<p:ajax process="@this" update="@this" />
+		</pe:inputNumber>
+
+		<p:message id="stu_adm_reservation_fee_msg" for="stu_adm_reservation_fee"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED' }" />
+
+		<p:outputLabel id="res_fee_date_lbl" value="Reservation fee paid date" for="res_fee_date"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}" />
+		<p:calendar id="res_fee_date" value="#{admissionBean.admissionReservationFee.reservationFeePaidDate}" navigator="true" display="inline" effect="drop"
+			pattern="dd/MM/yyyy" yearRange="1900" disabled="true"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}">
+			<p:ajax event="dateSelect" process="@this" />
+		</p:calendar>
+		<p:message id="res_fee_date_msg" for="res_fee_date"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED'}" />
+
+
+		<p:outputLabel id="stu_adm_reser_fee_ext_tran_check_lbl" value="Is reservation fee already paid ?" for="stu_adm_reser_fee_ext_tran_check"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}" />
+		<p:selectBooleanCheckbox id="stu_adm_reser_fee_ext_tran_check" value="#{admissionBean.reservationFeeExternalTransaction}" onLabel="Yes" offLabel="No"
+			onIcon="ui-icon-check" offIcon="ui-icon-close"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}">
+			<p:ajax process="@this" update="admission_level_fee_grid" listener="#{admissionBean.resetExistingAdmissionReservationFeeDetails()}" />
+		</p:selectBooleanCheckbox>
+		<p:message id="stu_stu_adm_reser_fee_ext_tran_check_msg" for="stu_adm_reser_fee_ext_tran_check"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}" />
+
+
+
+
+		<p:outputLabel id="ext_res_trans_number_lbl" value="Reservation fee external Transaction Number" for="ext_res_trans_number"
+			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />
+		<p:inputText id="ext_res_trans_number" value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionNr}" required="true"
+			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}">
+			<p:ajax process="@this" update="@this" />
+		</p:inputText>
+		<p:message id="ext_res_trans_number_msg" for="ext_res_trans_number" rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />
+
+
+
+		<p:outputLabel value="Reservation fee external Transaction Date" for="ext_res_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />
+		<p:calendar id="ext_res_trans_date" value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true" display="inline"
+			effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}">
+			<p:ajax event="dateSelect" process="@this" />
+		</p:calendar>
+		<p:message id="ext_res_trans_date_msg" for="ext_res_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />
+
+	</h:panelGrid>
+
+	<p:commandButton id="feeReset" value="Reset" update="@form" process="@this" style="width:80px;" icon="ui-icon-circle-triangle-w"
+		disabled="#{admissionBean.admissionDisabled}" action="#{admissionBean.resetAdmissionReservationFee()}" />
+	<p:spacer width="5px" />
+	<p:commandButton id="feeSave" value="Save" action="#{admissionBean.saveAdmissionReservationFee()}" process="@this" update="@form"
+		disabled="#{admissionBean.admissionDisabled}" icon="ui-icon-circle-check" style="width:80px;" />
+
+</ui:composition>

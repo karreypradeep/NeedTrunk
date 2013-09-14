@@ -1,0 +1,329 @@
+<!--  This document is a part of the source code and related artifacts for EEMS.
+      www.apeironsol.com  
+      Copyright © 2012 apeironsol
+ -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:accordionPanel rendered="#{accessBean.accessingBranch}" style="width:100%;" activeIndex="#{leftMenuBean.activeTabIndex}" id="branch_side_menu">
+
+		<p:tab title="#{msg.students}" id="left_students_tab">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.admissions}" process="branch_side_menu" update="@form" actionListener="#{admissionBean.performSearch()}"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessAdmissions}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_ADMISSIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{admissionBean.loadActiveAcademicYearsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{admissionBean.loadBranchStudentsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{admissionBean.newAction}" value="false" />
+					<f:setPropertyActionListener target="#{admissionBean.viewAction}" value="false" />
+					<f:setPropertyActionListener target="#{admissionBean.loadActiveClassesForCurrentBranchIndicator}" value="true" />
+					<f:setPropertyActionListener target="#{admissionBean.loadAcademicYearsForAdmissionsOpenedFlag}" value="true" />
+				</p:commandLink>
+				<p:commandLink value="#{msg.students}" process="branch_side_menu" update="@form" actionListener="#{studentBean.loadInitStudentProfileData()}"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessStudents}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_STUDENTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{studentBean.loadActiveAcademicYearsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{studentBean.loadBranchStudentsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{studentBean.viewAction}" value="false" />
+					<f:setPropertyActionListener target="#{studentBean.loadActiveClassesForCurrentBranchIndicator}" value="true" />
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.human_resource}" id="left_hrms_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessHRMInfo}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.employees}" process="branch_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_EMPLOYEES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{employeeBean.loadEmployeeBuildingBlockTypes}" value="true" />
+					<f:setPropertyActionListener target="#{employeeBean.viewAction}" value="false" />
+					<f:setPropertyActionListener target="#{employeeBean.newAction}" value="false" />
+					<f:setPropertyActionListener target="#{employeeBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{employeeCTCBean.loadEmployeeCTCDefinitionBB}" value="true" />
+				</p:commandLink>
+				<p:commandLink value="#{msg.salaries}" process="branch_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_SALARIES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{employeeSalaryBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{employeeSalaryBean.loadEmployeeBuildingBlockTypes}" value="true" />
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.academics}" id="left_academics_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessAcademics}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.promote_transfer_students}" process="branch_side_menu" update="@form" actionListener="#{studentsPromotionBean.reset()}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_PROMOTE_TRANSFER_DEMOTE_STUDENTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{studentsPromotionBean.loadActiveClassesInd}" value="true" />
+					<f:setPropertyActionListener target="#{studentsPromotionBean.loadActiveAcademicYearsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{studentsTransferBean.loadActiveClassesInd}" value="true" />
+					<f:setPropertyActionListener target="#{studentsTransferBean.loadActiveAcademicYearsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{studentsPromotionBean.activeTabIndex}" value="0" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.exams}" process="branch_side_menu" update="@form" rendered="#{grantedAuthorityBean.userAllowedToAccessExams}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_EXAMS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{examBean.loadExamsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{examBean.viewOrNewAction}" value="false" />
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.financials}" id="left_financials_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialData}">
+			<h:panelGrid columns="1" cellpadding="2">
+
+				<p:commandLink value="#{msg.asserts_and_liabilities}" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsAssertsAndLiabilities}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCES_ASSERTS_LIABILITIES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financialBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{financeAssertBean.loadAssertTypesFromDB}" value="true" />
+					<f:setPropertyActionListener target="#{financeLiabilityBean.loadLiabilityTypesFromDB}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.process_pending_fee_transactions}" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsProcessFeeTransactions}"
+					actionListener="#{studentFinancialBean.instantiateStudentFeeTransactionSearchCriteria()}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="APPROVE_REFUND_DEDUCT_FEE">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{studentFinancialBean.viewOrNewAction}" value="false" />
+				</p:commandLink>
+
+				<p:commandLink value="Fee details" process="branch_side_menu" update="@form" rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsFeeDetails}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCES_FEES_AND_SALARIES_DETAILS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financialBean.activeTabIndex}" value="0" />
+				</p:commandLink>
+
+
+				<p:commandLink value="#{msg.investment_and_expense}" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsIncomeAndExpenses}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCES_INCOME_EXPENSES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financialBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{financeExpensesBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{financeExpensesBean.financialExpenseWizardActiveStep}" value="expenseSearch" />
+					<f:setPropertyActionListener target="#{financeExpensesBean.loadExpenseTypesFromDB}" value="true" />
+					<f:setPropertyActionListener target="#{financeInvestmentBean.loadInvestmentTypesFromDB}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.financial_years}" process="branch_side_menu" update="@form" rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCIAL_YEARS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financialYearBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{financialYearBean.loadFinancialYearsFlag}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.purchases}" process="branch_side_menu" update="@form" rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsPurchases}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCES_PURCHASES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{purchaseOrderBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{purchaseOrderBean.loadPurchaseOrdersForCurrentBranch}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.invoice_suppliers}" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsInvoiceSuppliers}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCES_INVOICE_SUPPLIERS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financeSupplierBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{financeSupplierBean.loadSuppliersForCurrentBranchIndicator}" value="true" />
+					<f:setPropertyActionListener target="#{financeSupplierBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{purchaseInvoiceBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{purchaseInvoiceBean.loadPurchaseInvoicesForCurrentBranchIndicator}" value="true" />
+					<f:setPropertyActionListener target="#{purchaseInvoiceBean.viewOrNewAction}" value="false" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.bank_accounts}" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsBankAccounts}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCES_BANK_ACCOUNTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchBankAccountBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{branchBankAccountBean.loadBrachBankAccountInd}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.credit_accounts}" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsCreditAccounts}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCES_CREDIT_ACCOUNTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchCreditAccountBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{branchCreditAccountBean.loadBrachCreditAccountInd}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.balance_sheet}" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsBalanceSheet}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_FINANCES_BALANCE_SHEET">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchBalanceSheetBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{branchBalanceSheetBean.loadBrachBalanceSheetInd}" value="true" />
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.transportation}" id="left_transportation_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessTransportation}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.pickup_points}" process="branch_side_menu" update="@form" actionListener="#{pickUpPointBean.loadInitPickUpPointData()}"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessPickupPoints}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_TRANSPORTATION_PICKUP_POINTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{pickUpPointBean.newAction}" value="false" />
+					<f:setPropertyActionListener target="#{pickUpPointBean.viewAction}" value="false" />
+					<f:setPropertyActionListener target="#{pickUpPointFeeBean.viewOrNewAction}" value="false" />
+				</p:commandLink>
+				<p:commandLink value="#{msg.routes}" process="branch_side_menu" update="@form" actionListener="#{routeBean.loadInitRouteData()}"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessRoutes}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_TRANSPORTATION_ROUTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.vehicles}" process="branch_side_menu" update="@form" actionListener="#{vehicleBean.loadInitVehicleData()}"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessVehicals}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_TRANSPORTATION_VEHICLES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.notifications}" id="left_notifications_tab" rendered="false">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.exams}">
+				</p:commandLink>
+				<p:commandLink value="#{msg.fee}">
+				</p:commandLink>
+				<p:commandLink value="#{msg.general}">
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="Reports" id="left_reports_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessReports}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="Students" update="@form" process="branch_side_menu" rendered="#{grantedAuthorityBean.userAllowedToAccessStudentInfoReports}"
+					actionListener="#{studentReportBean.resetSearchCriteria()}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_REPORTS_STUDENTS_GENERAL">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<!-- <p:commandLink value="Financial" update="@form" process="branch_side_menu"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialReports}"
+					actionListener="#{financialReportBean.resetSearchCriteria()}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_REPORTS_FINANCIAL">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financialReportBean.loadExpenseTypesFromDB}" value="true" />
+				</p:commandLink> -->
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="Import" id="left_processes_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessImports}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="Import Admissons" update="@form" process="branch_side_menu" rendered="#{grantedAuthorityBean.userAllowedToAccessImportAdmissions}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_IMPORT">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{importAdmissionBean.loadActiveBatchesForBranchFlag}" value="true" />
+					<f:setPropertyActionListener target="#{importAdmissionBean.loadKlassesFlag}" value="true" />
+					<f:setPropertyActionListener target="#{importAdmissionBean.displayStatusTextArea}" value="false" />
+					<f:setPropertyActionListener target="#{importAdmissionBean.loadAcademicYearsForAdmissionsOpenedFlag}" value="true" />
+				</p:commandLink>
+				<p:commandLink value="Export" update="@form" process="branch_side_menu" rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_EXPORT">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchExportBean.branchExportTabModel.activeTab}" value="#{branchExportBean.branchExportTabModel.exportStudentsTab}" />
+					<f:setPropertyActionListener target="#{exportStudentsBean.loadActiveBatchesForBranchFlag}" value="true" />
+					<f:setPropertyActionListener target="#{exportStudentsBean.loadKlassesFlag}" value="true" />
+					<f:setPropertyActionListener target="#{exportAdmissionsBean.loadActiveBatchesForBranchFlag}" value="true" />
+					<f:setPropertyActionListener target="#{exportAdmissionsBean.loadKlassesFlag}" value="true" />
+					<f:setPropertyActionListener target="#{exportAdmissionsBean.loadAcademicYearsForAdmissionsOpenedFlag}" value="true" />
+					<f:setPropertyActionListener target="#{exportStudentsBean.loadAcademicYearsForAdmissionsOpenedFlag}" value="true" />
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.fee_definition}" id="left_fee_definations_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessFeeDefinitions}">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="Branch Fee Definitions" process="branch_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="FINANCIAL_BRANCH_LEVEL_FEES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchLevelFeeBean.newAction}" value="false" />
+					<f:setPropertyActionListener target="#{branchLevelFeeBean.viewAction}" value="false" />
+					<f:setPropertyActionListener target="#{branchLevelFeeBean.loadAcademicYearBranchLevelFeeDOsFlag}" value="true" />
+				</p:commandLink>
+				<p:commandLink value="Class Level Fees" process="branch_side_menu" update="@form" rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="FINANCIAL_KLASS_LEVEL_FEES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{examBean.loadExamsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{examBean.viewOrNewAction}" value="false" />
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
+		<p:tab title="#{msg.branch_definitions}" id="left_branch_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessBranchDefinitions}">
+			<h:panelGrid columns="1" cellpadding="2">
+
+				<p:commandLink value="#{msg.academic_years}" process="branch_side_menu" update="@form" rendered="#{grantedAuthorityBean.userAllowedToAccessAcademicYears}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_ACADEMIC_YEARS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{academicYearBean.displayNewacademicYear}" value="false" />
+					<f:setPropertyActionListener target="#{academicYearBean.loadAllAcademicYearsFlag}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.batches}" process="branch_side_menu" update="@form"
+					rendered="#{sessionBean.currentBranchRule.batchRequiredIndicator and grantedAuthorityBean.userAllowedToAccessBatches}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_BATCHES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{batchBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{batchBean.loadBatchesIndicator}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.classes}" process="branch_side_menu" update="@form" rendered="#{grantedAuthorityBean.userAllowedToAccessClasses}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_KLASSES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{klassBean.loadKlassesFlag}" value="true" />
+					<f:setPropertyActionListener target="#{klassBean.loadAllAcademicYearsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{klassBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="0" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.sections}" process="branch_side_menu" update="@form" rendered="#{grantedAuthorityBean.userAllowedToAccessSections}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_SECTIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{sectionBean.loadSectionsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{sectionBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{sectionBean.activeTabIndex}" value="0" />
+				</p:commandLink>
+
+			</h:panelGrid>
+		</p:tab>
+
+	</p:accordionPanel>
+
+</ui:composition>

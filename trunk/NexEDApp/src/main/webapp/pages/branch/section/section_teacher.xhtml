@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+	<c:choose>
+		<c:when test="#{sectionTeacherBean.viewOrNewAction}">
+			<p:panel id="section_teacher_panel" style="margin-bottom:10px;">
+
+				<h:panelGrid columns="3" id="section_teacher_grid" cellpadding="4" style="border:0px;">
+
+					<p:outputLabel id="teacher_label" value="Teacher" for="teacherId" />
+					<p:selectOneMenu id="teacherId" value="#{sectionTeacherBean.sectionTeacher.employee}" required="true"
+						converter="employeeConverter">
+						<f:selectItem itemLabel="Please select teacher" itemValue="" />
+						<f:selectItems value="#{sectionTeacherBean.teachers}" var="teacher" itemLabel="#{teacher.displayName}" />
+					</p:selectOneMenu>
+					<p:message id="teacher_Id_msg" for="teacherId" />
+
+					<p:outputLabel id="start_date_label" value="Start date" for="start_date" />
+					<p:calendar id="start_date" value="#{sectionTeacherBean.sectionTeacher.startDate}" navigator="true"
+						display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
+						maxdate="#{sectionBean.section.academicYear.endDate}" mindate="#{sectionBean.section.academicYear.startDate}" />
+					<p:message id="start_date_msg" for="start_date" />
+
+					<p:outputLabel id="end_date_label" value="End date" for="end_date" />
+					<p:calendar id="end_date" value="#{sectionTeacherBean.sectionTeacher.endDate}" navigator="true" display="inline"
+						effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" maxdate="#{sectionBean.section.academicYear.endDate}"
+						mindate="#{sectionBean.section.academicYear.startDate}" />
+					<p:message id="end_date_msg" for="end_date" />
+
+					<h:outputFormat id="incharge_label" value="Incharge" for="incharge_optional" />
+					<p:selectBooleanCheckbox id="incharge_optional" value="#{sectionTeacherBean.sectionTeacher.incharge}" />
+					<p:message id="incharge_label_msg" for="incharge_label" />
+
+				</h:panelGrid>
+				<p:commandButton id="subject_save" value="Save" action="#{sectionTeacherBean.saveSectionTeacher}" update="@form" />
+				<p:commandButton id="subject_clear" value="Cancel" immediate="true" update="@form"
+					action="#{sectionTeacherBean.calcelAction}" />
+			</p:panel>
+		</c:when>
+
+		<c:otherwise>
+			<p:toolbar style="margin-bottom:1px;">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText value="Teachers" style="font-size:20px;" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Assign teacher" icon="ui-icon-document"
+						action="#{sectionTeacherBean.assignSectionNewTeacher}" style="width:100%;" process="@this" update="@form"
+						disabled="#{sectionBean.section.active}">
+						<f:setPropertyActionListener target="#{sectionTeacherBean.viewOrNewAction}" value="true" />
+					</p:commandButton>
+
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{sectionTeacherBean.loadSectionsTeachers}" />
+			</f:metadata>
+
+			<p:panel style="margin-top:1px;">
+
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+				<b>Sections Management module allows to manage sections and students in sections.</b>
+				<br />
+				<br />
+				<b>Flowing activities can be done on the section.</b>
+
+				<ul id="hintList_list" class="ui-datalist-data" type="disc">
+					<li class="ui-datalist-item">A teacher can be assigned to section by clicking <strong>"Assign
+							teacher"</strong> button. Existing teachers assigned to section can be viewed by clicking the <strong>"View"</strong>
+						button
+					</li>
+					<li class="ui-datalist-item">Assigned teachers can be removed only if the teacher does not have any time table
+						with section.</li>
+				</ul>
+
+			</p:panel>
+
+			<p:dataTable id="section_teachers_datatable" var="sectionTeacher" value="#{sectionTeacherBean.sectionTeachers}"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+				<p:column headerText="Teacher" sortBy="#{sectionTeacher.employee.displayName}"
+					filterBy="#{sectionTeacher.employee.displayName}" filterMatchMode="contains">
+					<h:outputText value="#{sectionTeacher.employee.displayName}" />
+				</p:column>
+
+				<p:column headerText="Start date" sortBy="#{sectionTeacher.startDate}" filterBy="#{sectionTeacher.startDate}"
+					filterMatchMode="contains">
+					<h:outputText value="#{sectionTeacher.startDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="End date" sortBy="#{sectionTeacher.endDate}" filterBy="#{sectionTeacher.endDate}"
+					filterMatchMode="contains">
+					<h:outputText value="#{sectionTeacher.endDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column headerText="Incharge">
+
+					<center>
+						<h:outputText styleClass="ui-icon ui-icon-check" style="text-align: center;" rendered="#{sectionTeacher.incharge}" />
+					</center>
+
+				</p:column>
+
+				<p:column headerText="Options" styleClass="options-column">
+					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" action="#{sectionBean.viewSection}" title="View"
+						style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
+						<f:setPropertyActionListener value="#{sectionTeacher}" target="#{sectionTeacherBean.sectionTeacher}" />
+						<f:setPropertyActionListener target="#{sectionTeacherBean.viewOrNewAction}" value="true" />
+					</p:commandLink>
+					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+						title="Delete" process="@this" onclick="confirmation.show()">
+						<f:setPropertyActionListener value="#{sectionTeacher}" target="#{sectionTeacherBean.sectionTeacher}" />
+					</p:commandLink>
+				</p:column>
+
+			</p:dataTable>
+			<p:confirmDialog id="confirmDialog" message="Are you want to delete the section?" header="Confirmation"
+				severity="alert" widgetVar="confirmation">
+				<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
+					action="#{sectionTeacherBean.removeSectionTeacher}" />
+				<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />
+			</p:confirmDialog>
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

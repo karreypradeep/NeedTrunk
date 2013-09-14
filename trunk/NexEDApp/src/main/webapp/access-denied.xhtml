@@ -1,0 +1,43 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/main-login.xhtml">
+
+	<ui:define name="body">
+
+		<div class="registration">
+			<p:panel style="border:0px;">
+
+
+
+				<div class="ui-apeironsol-body-header">
+					<h:outputText value="Unauthorized access !!" />
+				</div>
+				<br />
+								Dear User, 
+									<br />
+				<br />
+				<p:spacer width="20" />You are trying to access unauthorized resources.
+									<br />
+				<p:spacer width="20" />Please contact your system administrator for more detais.
+									
+									<br />
+				<br />	
+									Best Regards,
+									<br />	
+									System Administrator.
+									<br />	
+									Powered by apeironsol.
+				
+				
+
+			</p:panel>
+
+		</div>
+
+	</ui:define>
+</ui:composition>
+</html>

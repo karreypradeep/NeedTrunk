@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{academicYearWeekEndBean.loadEventsForMonth}" />
+	</f:metadata>
+	<p:panel>
+		<p:schedule value="#{academicYearWeekEndBean.eventModel}" widgetVar="myschedule">
+			<p:ajax event="dateSelect" listener="#{academicYearWeekEndBean.onDateSelect}" update="eventDialog1" oncomplete="dlg.show()"/>
+			<p:ajax event="eventSelect" listener="#{academicYearWeekEndBean.onEventSelect}" update="eventDialog1" oncomplete="dlg.show()" />
+		</p:schedule>
+	</p:panel>
+	<p:dialog id="eventDialog1" header="Event" widgetVar="dlg" resizable="false" modal="true">
+
+
+		<p:messages id="dialogMessages" />
+
+		<h:panelGrid id="eventDetails" columns="2">
+
+			<h:outputLabel for="fromDate" value="Start date:" />
+			<p:calendar id="fromDate" value="#{academicYearWeekEndBean.scheduleStartDate}" pattern="dd/MM/yyyy"
+				disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}" />
+
+			<h:outputLabel for="toDate" value="End date:" />
+			<p:calendar id="toDate" value="#{academicYearWeekEndBean.scheduleEndDate}" pattern="dd/MM/yyyy"
+				disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}" />
+
+			<h:outputText value="Apply To Days: " />
+			<p:selectManyCheckbox value="#{academicYearWeekEndBean.selectedWeekDays}" converter="weekDayConverter"
+				disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}">
+				<f:selectItems value="#{enumConstantsBean.weekDayConstants}" var="weekDay" itemLabel="#{weekDay.label}" />
+			</p:selectManyCheckbox>
+
+			<f:facet name="footer">
+				<p:commandButton value="Save" actionListener="#{academicYearWeekEndBean.addEvent}" update="dialogMessages"
+					oncomplete="handleComplete(xhr, status, args);" process="eventDialog1" disabled="#{!grantedAuthorityBean.userAllowedToCreateWeekend}"/>
+				<p:commandButton value="Delete" actionListener="#{academicYearWeekEndBean.deleteEvent}"
+					oncomplete="myschedule.update();dlg.hide();" process="@this"
+					rendered="#{academicYearWeekEndBean.scheduleEventBeingUpdated}" disabled="#{!grantedAuthorityBean.userAllowedToRemoveWeekend}"/>
+				<p:commandButton value="Cancel" oncomplete="dlg.hide()" process="@this" />
+			</f:facet>
+		</h:panelGrid>
+	</p:dialog>
+
+	<script type="text/javascript">  
+	function handleComplete(xhr, status, args) {
+		if(!args.validationFailed) {
+	        if(args.isValid){
+        		myschedule.update();
+        		dlg.hide();
+	        }
+        } 
+     }
+    </script>
+</ui:composition>

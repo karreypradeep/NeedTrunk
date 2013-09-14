@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="New Employee" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+	<p:panel>
+		<p:wizard widgetVar="new_emp_wizard" showStepStatus="true" step="#{employeeBean.activeStep}" flowListener="#{employeeBean.onFlowProcess}">
+			<p:tab id="personal" title="Personal">
+				<ui:include src="/pages/branch/employee/employee_personal.xhtml" />
+			</p:tab>
+			<p:tab id="confirm" title="Confirmation">
+				<ui:include src="/pages/branch/employee/employee_confirmation.xhtml" />
+			</p:tab>
+		</p:wizard>
+	</p:panel>
+</ui:composition>

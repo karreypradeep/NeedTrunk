@@ -1,0 +1,270 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{sectionBean.handleSectionTabModel()}" />
+		<f:event type="preRenderView" listener="#{sectionBean.loadKlasses}" />
+		<f:event type="preRenderView" listener="#{sectionBean.loadAllAcademicYearsForCurrentBranch}" />
+	</f:metadata>
+
+	<p:tabMenu activeIndex="#{sectionBean.sectionTabModel.activeTabIndex}">
+		<p:menuitem value="Section" icon="ui-icon-home" action="#{sectionBean.onTabChange}" process="@this" update="@form">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.sectionTab}" />
+		</p:menuitem>
+
+		<p:menuitem value="Subjects" icon="ui-icon-bookmark" action="#{sectionBean.onTabChange}" process="@this"
+			update="@form" disabled="#{sectionBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.subjectsTab}" />
+			<f:setPropertyActionListener target="#{sectionBean.loadKlassElectiveSubjectsForSectionFlag}" value="true" />
+		</p:menuitem>
+
+		<p:menuitem value="Students" icon="ui-icon-person" action="#{sectionBean.onTabChange}" process="@this" update="@form"
+			disabled="#{sectionBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.studentsTab}" />
+			<f:setPropertyActionListener target="#{sectionBean.loadStudentsForSectionFlag}" value="true" />
+		</p:menuitem>
+
+		<p:menuitem value="Exams" icon="ui-icon-bookmark" process="@this" update="@form"
+			action="#{sectionExamsBean.onTabChange}" disabled="#{sectionBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.examsTab}" />
+			<f:setPropertyActionListener target="#{sectionExamsBean.buildSectionExamTreeFlag}" value="true" />
+			<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamSubjectFlag}" value="false" />
+		</p:menuitem>
+
+		<p:menuitem value="Attendance" icon="ui-icon-bookmark" action="#{sectionAttendanceSummaryBean.onTabChange}"
+			process="@this" update="@form" disabled="#{sectionBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.attendanceTab}" />
+		</p:menuitem>
+
+		<p:menuitem value="Facility" icon="ui-icon-bookmark" action="#{sectionTeacherBean.onTabChange}" process="@this"
+			update="@form" disabled="#{sectionBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.facilityTab}" />
+		</p:menuitem>
+
+		<p:menuitem value="Timetable" icon="ui-icon-bookmark" process="@this" update="@form"
+			action="#{sectionTimetableBean.onTabChange}" disabled="#{sectionBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.timetableTab}" />
+		</p:menuitem>
+
+		<p:menuitem value="Fee collected" icon="ui-icon-bookmark" action="#{sectionFeesCollectedBean.onTabChange}"
+			process="@this" update="@form"
+			disabled="#{sectionBean.disableSubTab or !sectionBean.section.active or !grantedAuthorityBean.userAllowedToAccessFeeCollected}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.feeCollectedTab}" />
+		</p:menuitem>
+
+		<p:menuitem value="Reports" icon="ui-icon-bookmark" action="#{sectionReportsBean.onTabChange}" process="@this"
+			update="@form" disabled="#{sectionBean.disableSubTab}" rendered="#{sectionBean.sectionTabModel.reportsTab.rendered}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.reportsTab}" />
+		</p:menuitem>
+
+		<p:menuitem value="Notifications" icon="ui-icon-bookmark" action="#{sectionNotificationsBean.onTabChange}"
+			process="@this" update="@form" disabled="#{sectionBean.disableSubTab}"
+			rendered="#{sectionBean.sectionTabModel.notificationsTab.rendered}">
+			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+				value="#{sectionBean.sectionTabModel.notificationsTab}" />
+		</p:menuitem>
+
+	</p:tabMenu>
+
+	<c:if test="#{not empty sectionBean.section.name}">
+		<div class="ui-apeironsol-menu-header">
+			<h:outputText
+				value="#{sectionBean.section.klass.name} > #{sectionBean.section.academicYear.displayLabel} > #{sectionBean.section.name}" />
+		</div>
+	</c:if>
+
+	<p:panel id="session_panel">
+		<p:messages id="global_messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+		<c:if test="#{sectionBean.sectionTabModel.sectionTabActive}">
+
+
+			<h:panelGrid columns="2" columnClasses="form-column,action-column" width="100%">
+
+				<h:panelGrid columns="3" id="section_grid" style="border:0px;margin-bottom:10px;" cellpadding="5">
+
+					<p:outputLabel id="section_name_label" value="Name" for="section_name" />
+					<p:inputText id="section_name" value="#{sectionBean.section.name}" required="true" />
+					<p:message id="section_name_msg" for="section_name" />
+
+					<p:outputLabel id="section_academic_year_label" value="Academic year" for="section_academic_year" />
+					<p:selectOneMenu id="section_academic_year" value="#{sectionBean.academicYearId}" required="true"
+						disabled="#{sectionBean.section.id != null}">
+						<f:selectItem itemLabel="Select academic year" itemValue="" />
+						<f:selectItems value="#{sectionBean.allAcademicYearsForCurrentBranch}" var="academicYear"
+							itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear.id}" />
+					</p:selectOneMenu>
+					<p:message id="section_academic_year_msg" for="section_academic_year" />
+
+
+					<p:outputLabel id="section_klass_label" value="Class" for="section_klass" />
+					<h:panelGrid columns="2">
+						<p:selectOneMenu id="section_klass" value="#{sectionBean.klassId}" required="true"
+							disabled="#{sectionBean.section.id != null}">
+							<f:selectItem itemLabel="Select class" itemValue="" />
+							<f:selectItems value="#{sectionBean.klasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass.id}" />
+						</p:selectOneMenu>
+						<p:commandLink id="linkButton" styleClass="ui-icon ui-icon-link" action="#{sectionBean.viewKlass}"
+							title="Navigate to class" process="@this" update="@form" rendered="#{sectionBean.section.klass != null}">
+							<f:setPropertyActionListener value="#{sectionBean.section.klass}" target="#{klassBean.klass}" />
+							<f:setPropertyActionListener value="true" target="#{klassTreeBean.loadKlassTreeFromDatabase}" />
+							<f:setPropertyActionListener value="0" target="#{klassBean.activeTabIndex}" />
+							<f:setPropertyActionListener target="#{klassBean.viewOrNewAction}" value="true" />
+						</p:commandLink>
+					</h:panelGrid>
+					<p:message id="section_klass_msg" for="section_klass" />
+
+				</h:panelGrid>
+				<h:panelGrid>
+					<p:commandButton value="Activate" update="@form" process="@this" style="width:100%"
+						action="#{sectionBean.activeSection}" rendered="#{!sectionBean.section.active}"
+						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" />
+					<p:commandButton value="Development" update="@form" process="@this" style="width:100%"
+						action="#{sectionBean.deactiveSection}" rendered="#{sectionBean.section.active}"
+						disabled="#{!grantedAuthorityBean.userAllowedToDeactivateSection}" />
+
+					<p:commandButton value="Open for admission" update="@form" process="@this" style="width:100%"
+						rendered="#{sectionBean.section.active and !sectionBean.section.openForAdmission}"
+						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" />
+					<p:commandButton value="Closed for admission" update="@form" process="@this" style="width:100%"
+						rendered="#{sectionBean.section.active and sectionBean.section.openForAdmission}"
+						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" />
+
+				</h:panelGrid>
+			</h:panelGrid>
+
+			<p:commandButton id="section_cancle" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
+				<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_SECTIONS">
+					<f:converter converterId="viewContentConverter" />
+				</f:setPropertyActionListener>
+				<f:setPropertyActionListener target="#{sectionBean.loadSectionsFlag}" value="true" />
+				<f:setPropertyActionListener target="#{sectionBean.viewOrNewAction}" value="false" />
+				<f:setPropertyActionListener target="#{sectionBean.activeTabIndex}" value="0" />
+			</p:commandButton>
+			<p:spacer width="5px" />
+			<p:commandButton id="section_clear" value="Reset" update="@form" process="@this"
+				disabled="#{sectionBean.section.active}" icon="ui-icon-circle-triangle-w" />
+			<p:spacer width="5px" />
+			<p:commandButton id="section_save" value="Save" action="#{sectionBean.saveSection}" update="@form" process="@form"
+				disabled="#{sectionBean.section.active || !grantedAuthorityBean.userAllowedToCreateSection}"
+				icon="ui-icon-circle-check" />
+
+
+		</c:if>
+
+		<c:if test="#{sectionBean.sectionTabModel.subjectsTabActive}">
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{sectionBean.loadUnassignedKlassSubjectsForSection}" />
+				<f:event type="preRenderView" listener="#{sectionBean.loadSectionSubjects}" />
+			</f:metadata>
+
+			<p:droppable for="subjects" tolerance="touch" activeStyleClass="ui-state-highlight" datasource="electiveSubjects"
+				disabled="#{sectionBean.section.active}">
+				<p:ajax listener="#{sectionBean.onSubjectDrop}" update="@form" />
+			</p:droppable>
+
+			<h:panelGrid columns="2" width="100%" columnClasses="subject-elective-column,subject-actual-column">
+
+				<p:dataTable id="electiveSubjects" var="electiveSubject" value="#{sectionBean.unassignedKlassSubjectsForSection}">
+
+					<f:facet name="header">
+						<dir style="height: 10px; padding-left: 0px; float: left;">
+							<h:outputText
+								value="#{sectionBean.section.active ? 'Drag option disabled (Section Active)' : 'Drag subjects to right !!'}"
+								style="font-size:12px;" />
+						</dir>
+
+					</f:facet>
+					<p:column style="width:20px">
+						<h:outputText id="dragIcon" styleClass="ui-icon ui-icon-arrow-4" />
+						<p:draggable for="dragIcon" revert="true" />
+					</p:column>
+
+					<p:column headerText="Elective subject">
+						<h:outputText value="#{electiveSubject.name}" />
+					</p:column>
+				</p:dataTable>
+
+				<p:dataTable id="subjects" var="sectionSubject" value="#{sectionBean.sectionSubjects}">
+
+					<f:facet name="header">
+						<dir style="height: 10px; padding-left: 0px; float: left;">
+							<h:outputText value="Assigned subjects to section" style="font-size:12px;" />
+						</dir>
+					</f:facet>
+
+					<p:column headerText="Subject" sortBy="#{sectionSubject.subject.name}" filterBy="#{sectionSubject.subject.name}"
+						filterMatchMode="contains">
+						<h:outputText value="#{sectionSubject.subject.name}" />
+					</p:column>
+					<p:column headerText="Elective" style="width:90px">
+						<center>
+							<h:outputText styleClass="ui-icon ui-icon-check" style="text-align: center;"
+								rendered="#{sectionSubject.subject.elective}" />
+						</center>
+					</p:column>
+					<p:column style="width:32px">
+						<p:commandLink update="@form" process="@this" styleClass="ui-icon-trash"
+							action="#{sectionBean.removeSectionSubject}" disabled="#{!sectionSubject.subject.elective}">
+							<f:setPropertyActionListener target="#{sectionBean.sectionSubject}" value="#{sectionSubject}" />
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>
+
+			</h:panelGrid>
+
+
+		</c:if>
+
+		<c:if test="#{sectionBean.sectionTabModel.studentsTabActive}">
+			<ui:include src="section/section_students.xhtml" />
+		</c:if>
+
+		<!-- Exams Tab -->
+		<c:if test="#{sectionBean.sectionTabModel.examsTabActive}">
+			<ui:include src="/pages/modules/academics/section_exams.xhtml" />
+		</c:if>
+
+		<!-- Attendance Tab -->
+		<c:if test="#{sectionBean.sectionTabModel.attendanceTabTabActive}">
+			<ui:include src="section/section_attendance.xhtml" />
+		</c:if>
+
+		<!-- Teacher Tab -->
+		<c:if test="#{sectionBean.sectionTabModel.facilityTabActive}">
+			<ui:include src="section/section_teacher.xhtml" />
+		</c:if>
+
+		<!-- Timetable Tab -->
+		<c:if test="#{sectionBean.sectionTabModel.timetableTabActive}">
+			<ui:include src="section/section_timetable.xhtml" />
+		</c:if>
+
+		<!-- Fee collected -->
+		<c:if test="#{sectionBean.sectionTabModel.feeCollectedTabActive}">
+			<ui:include src="section/fees_collected.xhtml" />
+		</c:if>
+
+		<!-- Reports Tab -->
+		<c:if test="#{sectionBean.sectionTabModel.reportsTabActive}">
+			<ui:include src="section/section_reports.xhtml" />
+		</c:if>
+
+		<!-- Reports Tab -->
+		<c:if test="#{sectionBean.sectionTabModel.notificationsTabActive}">
+			<ui:include src="section/section_notifications.xhtml" />
+		</c:if>
+	</p:panel>
+</ui:composition>

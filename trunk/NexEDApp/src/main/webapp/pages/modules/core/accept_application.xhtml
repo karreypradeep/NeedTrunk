@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel header="Accept Admission">
+	
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+	
+		<h:panelGrid columns="3" cellpadding="7">
+
+			<p:outputLabel id="assigned_batch_label" value="Applied for batch" for="assigned_batch" />
+			<h:outputLabel id="assigned_batch" value="#{admissionBean.student.appliedForBatch.name}" readonly="true" style="font-weight:bold;" />
+			<p:message id="assigned_batch_msg" for="assigned_batch" />
+
+			<p:outputLabel id="assigned_academic_year_label" value="Applied for academic year" for="assigned_academic_year" />
+			<h:outputLabel id="assigned_academic_year" value="#{admissionBean.student.appliedForAcademicYear.displayLabel}" readonly="true" style="font-weight:bold;" />
+			<p:message id="assigned_academic_year_msg" for="assigned_academic_year" />
+
+			<p:outputLabel id="assigned_klass_label" value="Applied for class" for="assigned_klass" />
+			<h:outputLabel id="assigned_klass" value="#{admissionBean.student.applyingForKlass.name}" readonly="true" style="font-weight:bold;" />
+			<p:message id="assigned_klass_msg" for="assigned_klass" />
+
+			<p:outputLabel id="assigned_class_label" value="Accepted for class" for="assigned_class" />
+			<p:selectOneMenu id="assigned_class" value="#{admissionBean.student.acceptedForKlass}" style="width:155px;" required="true">
+				<f:selectItem itemLabel="Select assigning class" />
+				<f:selectItems value="#{admissionBean.klasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
+				<f:converter converterId="klassConverter" />
+				<p:ajax process="@this" update="@this" />
+			</p:selectOneMenu>
+			<p:message id="assigned_class_msg" for="assigned_class" />
+
+			<p:outputLabel id="stu_adm_reservation_fee_label" value="Admission reservation fee" for="stu_adm_reservation_fee" />
+			<p:inputText id="stu_adm_reservation_fee" value="#{admissionBean.admissionReservationFee.reservationFee}">
+				<p:ajax process="@this" update="@this" />
+			</p:inputText>
+			<p:message id="stu_adm_reservation_fee_msg" for="stu_adm_reservation_fee" />
+
+			<p:outputLabel id="stu_adm_reser_fee_ext_tran_check_lbl" value="Is admission reservation fee already paid ?" for="stu_adm_reser_fee_ext_tran_check" />
+			<p:selectBooleanCheckbox id="stu_adm_reser_fee_ext_tran_check" value="#{admissionBean.reservationFeeExternalTransaction}" onLabel="Yes" offLabel="No"
+				onIcon="ui-icon-check" offIcon="ui-icon-close" immediate="true">
+				<p:ajax process="@this" update="@form" listener="#{admissionBean.resetExistingAdmissionReservationFeeDetails()}" />
+			</p:selectBooleanCheckbox>
+			<p:message id="stu_stu_adm_reser_fee_ext_tran_check_msg" for="stu_adm_reser_fee_ext_tran_check" />
+
+			<p:outputLabel id="ext_trans_number_lbl" value="External Transaction Number" for="ext_trans_number"
+				rendered="#{admissionBean.reservationFeeExternalTransaction}" />
+			<p:inputText id="ext_trans_number" value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionNr}" required="true"
+				rendered="#{admissionBean.reservationFeeExternalTransaction}" />
+			<p:message id="ext_trans_number_msg" for="ext_trans_number" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
+
+			<p:outputLabel value="External Transaction Date" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
+			<p:calendar id="ext_trans_date" value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true" display="inline"
+				effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
+			<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
+
+			<p:outputLabel id="comments_label" value="Comments" for="comments" />
+			<p:inputTextarea id="comments" rows="10" cols="100" required="true" value="#{admissionBean.actionComment}" />
+			<p:message id="comments_msg" for="comments" />
+		</h:panelGrid>
+
+		<p:commandButton id="accept_save" value="Accept" process="@form" update="@form" disabled="#{!admissionBean.admissionBeAccepted}" action="#{admissionBean.acceptAdmission}"
+			style="width:80px;" icon="ui-icon-circle-check">
+			<f:setPropertyActionListener target="#{admissionBean.loadStudentStatusHistoryFlag}" value="true" />
+			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
+		</p:commandButton>
+		<p:spacer width="10px" />
+		<p:commandButton value="Cancel" process="@this" update="@form" style="width:80px;" icon="ui-icon-circle-close">
+			<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="">
+				<f:converter converterId="admissionStatusConverter" />
+			</f:setPropertyActionListener>
+			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
+		</p:commandButton>
+	</p:panel>
+
+	<p:blockUI block="form" trigger="accept_save" >
+			Request is processing, please wait<br />
+				<p:graphicImage value="/images/ajax-loader.gif" />
+			
+		</p:blockUI>
+
+</ui:composition>

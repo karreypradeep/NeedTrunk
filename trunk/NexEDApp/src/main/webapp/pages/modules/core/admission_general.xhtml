@@ -1,0 +1,81 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions" xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{admissionBean.loadActiveKlassesForBranch()}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadAcademicYearsForAdmissionsOpened}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadActiveBatchesForBranch()}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadAcademicYearsForAdmission()}" />
+	</f:metadata>
+
+	<h:panelGrid id="admission_general_panel" columns="3" cellpadding="5">
+
+		<p:outputLabel id="exis_admission_nr_check_label" value="#{msg.is_existing_admission}" for="exis_admission_nr_check" />
+		<p:selectBooleanCheckbox id="exis_admission_nr_check" value="#{admissionBean.existingAdmissionNumber}">
+			<p:ajax event="change" update="@form" process="@this" listener="#{admissionBean.resetExistingAdmissionNumber()}" />
+		</p:selectBooleanCheckbox>
+		<p:message for="exis_admission_nr_check" />
+
+		<p:outputLabel id="exis_admission_nr_label" value="#{msg.existing_admission_number}" for="exis_admission_nr"
+			rendered="#{admissionBean.existingAdmissionNumber}" />
+		<p:inputText id="exis_admission_nr" value="#{admissionBean.student.externalAdmissionNr}"
+			rendered="#{admissionBean.existingAdmissionNumber}" required="true" style="width:95%;">
+			<p:ajax process="@this" />
+		</p:inputText>
+		<p:message id="exis_admission_nr_msg" for="exis_admission_nr" rendered="#{admissionBean.existingAdmissionNumber}" />
+
+		<c:if test="#{sessionBean.currentBranchRule.batchRequiredIndicator}">
+			<p:outputLabel id="add_batch_label" value="#{msg.batch}" for="add_batch" />
+			<p:selectOneMenu id="add_batch" value="#{admissionBean.appliedForBatch}" required="true" style="width:100%">
+				<f:selectItem itemLabel="Select batch" itemValue="" />
+				<f:selectItems value="#{admissionBean.activeBatchesForBranch}" var="batch" itemLabel="#{batch.name}"
+					itemValue="#{batch}" />
+				<f:converter converterId="batchConverter" />
+				<p:ajax update="add_academic_year" listener="#{admissionBean.loadAcademicYearsForBatch()}" />
+			</p:selectOneMenu>
+			<p:message id="add_batch_msg" for="add_batch" />
+		</c:if>
+		
+		<p:outputLabel id="add_academic_year_label" value="#{msg.academic_year}" for="add_academic_year" />
+		<p:selectOneMenu id="add_academic_year" value="#{admissionBean.appliedForAcademicYear}" required="true"
+			style="width:100%">
+			<f:selectItem itemLabel="Select academic year" itemValue="" />
+			<f:selectItems value="#{admissionBean.academicYearsForBatch}" var="academicYear"
+				itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+			<f:converter converterId="academicYearConverter" />
+			<p:ajax process="@this" />
+		</p:selectOneMenu>
+		<p:message id="add_academic_year_msg" for="add_academic_year" />
+
+		<p:outputLabel id="stu_applying_class_label" value="#{msg.applying_for_class}" for="stu_applying_class" />
+		<p:selectOneMenu id="stu_applying_class" value="#{admissionBean.applyingForClassId}"
+			style="min-width:165px;width:100%;" required="true">
+			<f:selectItem itemLabel="Select applying class" />
+			<f:selectItems value="#{admissionBean.activeKlassesForBranch}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass.id}" />
+			<p:ajax process="@this" />
+		</p:selectOneMenu>
+		<p:message id="stu_applying_class_msg" for="stu_applying_class" />
+
+		<p:outputLabel id="stu_current_kalss_label" value="#{msg.previous_qualified_education}" for="stu_current_class" />
+		<p:inputText id="stu_current_class" value="#{admissionBean.student.previousQualifiedEducation}" style="width:96%;">
+			<p:ajax process="@this" />
+		</p:inputText>
+		<p:message id="stu_current_class_msg" for="stu_current_class" />
+
+		<p:outputLabel id="stu_referenced_by_label" value="#{msg.referencedBy}" for="stu_referenced_by" />
+		<p:inputText id="stu_referenced_by" value="#{admissionBean.student.referencedBy}" style="width:96%;">
+			<p:ajax process="@this" />
+		</p:inputText>
+		<p:message id="stu_referenced_by_msg" for="stu_referenced_by" />
+
+		<p:outputLabel id="stu_admission_date_label" value="#{msg.admission_date}" for="stu_admission_date" />
+		<p:calendar id="stu_admission_date" value="#{admissionBean.student.admissionDate}" navigator="true" display="inline"
+			effect="drop" pattern="dd/MM/yyyy" yearRange="1990">
+			<p:ajax event="dateSelect" process="@this" />
+		</p:calendar>
+		<p:message id="stu_admission_date_msg" for="stu_admission_date" />
+
+	</h:panelGrid>
+
+</ui:composition>

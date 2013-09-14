@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{financeExpensesBean.loadExpensesBuildingBlocks}" />
+	</f:metadata>
+
+	<p:panel id="academic_year_expense_panel" style="margin-bottom:10px;">
+		<p:messages id="messages1" globalOnly="true" autoUpdate="true" closable="true" />
+
+		<h:panelGrid columns="2">
+			<h:panelGrid width="600px">
+				<h:panelGrid columns="3">
+					<p:outputLabel id="expense_type_label" value="Expense type" for="expense_type" />
+					<p:selectOneMenu id="expense_type" value="#{financeExpensesBean.branchExpense.expenseBuildingBlock}"
+						required="true" converter="buildingBlockConverter">
+						<f:selectItem itemLabel="Select expense type" itemValue="" />
+						<f:selectItems value="#{financeExpensesBean.expensesTypeBuildingBlocks}" var="expensesTypeBuildingBlock"
+							itemLabel="#{expensesTypeBuildingBlock.name}" itemValue="#{expensesTypeBuildingBlock}" />
+						<p:ajax process="@this" update="@this" />
+					</p:selectOneMenu>
+					<p:message id="expense_type_msg" for="expense_type" />
+
+					<p:outputLabel id="expense_name_label" value="Expense name" for="expense_name" />
+					<p:inputText id="expense_name" value="#{financeExpensesBean.branchExpense.name}" size="20" maxlength="20">
+						<p:ajax process="@this" update="@this" />
+					</p:inputText>
+					<p:message id="expense_name_msg" for="expense_name" />
+
+					<p:outputLabel value="Select payment mode" for="d_payment_type" />
+					<p:selectOneMenu id="d_payment_type" value="#{financeExpensesBean.branchExpense.paymentMethod}" required="true">
+						<f:selectItem itemLabel="Select payment method" itemValue="" />
+						<f:selectItems value="#{enumConstantsBean.paymentMethodsConstants}" var="paymentMethod"
+							itemLabel="#{paymentMethod.label}" itemValue="#{paymentMethod}" />
+						<p:ajax process="@this" update="@form" listener="#{financeExpensesBean.handlePaymentModeChange}" />
+					</p:selectOneMenu>
+					<p:message id="d_payment_type_msg" for="d_payment_type" />
+
+					<c:if test="${financeExpensesBean.branchExpense.paymentMethod == 'CHEQUE'}">
+
+						<p:outputLabel value="Select Account Type" for="account_type" />
+						<p:selectOneMenu id="account_type" value="#{financeExpensesBean.branchExpense.branchAccountType}" required="true">
+							<f:selectItem itemLabel="Select Account Type" itemValue="" />
+							<f:selectItems value="#{enumConstantsBean.branchAccountTypeConstants}" var="branchAccountType"
+								itemLabel="#{branchAccountType.label}" itemValue="#{branchAccountType}" />
+							<p:ajax process="@this" update="@form" listener="#{financeExpensesBean.handleBranchAccountTypeChange}" />
+						</p:selectOneMenu>
+						<p:message id="account_type_msg" for="account_type" />
+
+						<c:if test="${financeExpensesBean.branchExpense.branchAccountType == 'BANK_ACCOUNT'}">
+							<p:outputLabel id="bank_account_number_label" value="Bank Account Number" for="bank_account_number" />
+							<p:selectOneMenu id="bank_account_number" value="#{financeExpensesBean.branchExpense.branchBankAccount}"
+								required="true">
+								<f:selectItem itemLabel="Select bank account number" itemValue="" />
+								<f:selectItems value="#{financeExpensesBean.branchBakAccounts}" var="branchBakAccount"
+									itemLabel="#{branchBakAccount.bankName} - #{branchBakAccount.accountNumber}" itemValue="#{branchBakAccount}" />
+								<p:ajax process="@this" update="@form" />
+								<f:converter converterId="branchBankAccountConverter" />
+							</p:selectOneMenu>
+							<p:message id="bank_account_number_msg" for="bank_account_number" />
+
+							<p:outputLabel id="d_cheque_nd_label" value="Cheque number" for="d_cheque_nr" />
+							<p:inputText id="d_cheque_nr" value="#{financeExpensesBean.branchExpense.chequeNumber}" required="true">
+								<p:ajax process="@this" update="@this" />
+							</p:inputText>
+							<p:message id="d_cheque_nd_msg" for="d_cheque_nr" />
+						</c:if>
+						<c:if test="${financeExpensesBean.branchExpense.branchAccountType == 'CREDIT_ACCOUNT'}">
+							<p:outputLabel id="credit_account_number_label" value="Credit Account Number" for="credit_account_number" />
+							<p:selectOneMenu id="credit_account_number" value="#{financeExpensesBean.branchExpense.branchCreditAccount}"
+								required="true">
+								<f:selectItem itemLabel="Select credit account number" itemValue="" />
+								<f:selectItems value="#{financeExpensesBean.branchCreditAccounts}" var="branchCreditAccount"
+									itemLabel="#{branchCreditAccount.employee.displayName} - #{branchCreditAccount.accountNumber}"
+									itemValue="#{branchCreditAccount}" />
+								<p:ajax process="@this" update="@form" />
+								<f:converter converterId="branchCreditAccountConverter" />
+							</p:selectOneMenu>
+							<p:message id="credit_account_number_msg" for="credit_account_number" />
+						</c:if>
+					</c:if>
+					<p:outputLabel id="expense_date_label" value="Expense date" for="expense_date" />
+					<p:calendar id="expense_date" value="#{financeExpensesBean.branchExpense.expenseDate}" navigator="true"
+						pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button" />
+					<p:message id="expense_date_msg" for="expense_date" />
+
+					<p:outputLabel id="expense_amount_label" value="Expense amount" for="expense_amount" />
+					<p:inputText id="expense_amount" value="#{financeExpensesBean.branchExpense.amount}" size="20" maxlength="20"
+						required="true">
+						<f:convertNumber pattern="000.00" />
+						<p:ajax process="@this" update="@this" />
+					</p:inputText>
+					<p:message id="expense_amount_msg" for="expense_amount" />
+
+
+					<p:outputLabel id="description_label" value="Description" for="descriptionId" />
+					<p:inputTextarea id="descriptionId" value="#{financeExpensesBean.branchExpense.description}" maxlength="200"
+						rows="5" required="true">
+						<p:ajax process="@this" update="@this" />
+					</p:inputTextarea>
+					<p:message id="descriptionId_msg" for="descriptionId" />
+
+				</h:panelGrid>
+			</h:panelGrid>
+			<h:panelGrid width="500px" rendered="#{financeExpensesBean.branchExpense.branchBankAccount != null}">
+				<h:panelGrid columns="2">
+
+					<h:outputLabel id="employee_name_label" value="Bank Name :" />
+					<h:outputText value="#{financeExpensesBean.branchExpense.branchBankAccount.bankName}" />
+
+					<h:outputLabel id="employee_number_label" value="Bank Branch Number :" />
+					<h:outputText value="#{financeExpensesBean.branchExpense.branchBankAccount.bankBranch}" />
+
+					<h:outputLabel id="current_status_label" value="Account Number :" />
+					<h:outputText value="#{financeExpensesBean.branchExpense.branchBankAccount.accountNumber}" />
+
+				</h:panelGrid>
+			</h:panelGrid>
+		</h:panelGrid>
+
+		<p:commandButton id="academic_year_expense_save" value="Save" action="#{financeExpensesBean.saveBranchExpense}"
+			update="@form" disabled="#{financeExpensesBean.saveButtonDisabled}" />
+		<p:commandButton id="academic_year_expense_clear" value="Cancel" immediate="true" update="@form"
+			action="#{financeExpensesBean.calcelAction}" />
+	</p:panel>
+</ui:composition>

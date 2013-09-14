@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel header="Transaction">
+		<h:panelGrid id="parents_panel" columns="3">
+
+			<p:outputLabel id="current_balance_label" value="Current Balance" for="current_balance" />
+			<p:inputText id="current_balance" value="#{branchBankAccountBean.currentBranchBankAccount.currentBalance}" size="20"
+				maxlength="20" disabled="true">
+				<f:convertNumber pattern="000.00" />
+			</p:inputText>
+			<p:message id="current_balance_msg" for="current_balance" />
+
+			<p:outputLabel value="Transaction type" for="transaction_type" />
+			<p:selectOneMenu id="transaction_type" value="#{branchBankAccountBean.bankAccountTransactionType}" required="true">
+				<f:selectItem itemLabel="Select transaction type" itemValue="" />
+				<f:selectItems value="#{enumConstantsBean.bankAccountTransactionTypes}" var="bankAccountTransactionType"
+					itemLabel="#{bankAccountTransactionType.label}" itemValue="#{bankAccountTransactionType}" />
+				<p:ajax process="@this" update="@this" />
+			</p:selectOneMenu>
+			<p:message id="transaction_type_msg" for="transaction_type" />
+
+			<p:outputLabel id="transaction_amount_label" value="Amount" for="transaction_amount" />
+			<p:inputText id="transaction_amount" value="#{branchBankAccountBean.transactionAmount}" size="20" maxlength="20">
+				<f:convertNumber pattern="000.00" />
+			</p:inputText>
+			<p:message id="transaction_amount_msg" for="transaction_amount" />
+
+			<p:outputLabel id="description_label" value="Description" for="descriptionId" />
+			<p:inputTextarea id="descriptionId" value="#{branchBankAccountBean.transactionDescription}" maxlength="200" rows="5"
+				required="true">
+				<p:ajax process="@this" update="@this" />
+			</p:inputTextarea>
+			<p:message id="descriptionId_msg" for="descriptionId" />
+
+		</h:panelGrid>
+		<p:commandButton id="branch_bank_account_save" value="Save" action="#{branchBankAccountBean.processBankTransaction}"
+			update="@form" />
+		<p:commandButton id="branch_bank_account_clear" value="Cancel" immediate="true" update="@form"
+			action="#{branchBankAccountBean.calcelAction}" />
+	</p:panel>
+</ui:composition>

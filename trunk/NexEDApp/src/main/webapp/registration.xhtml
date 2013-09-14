@@ -1,0 +1,167 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/templates/main-login.xhtml">
+
+	<ui:define name="body">
+
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+				$('#page-content').css("background-image", "none");
+
+			});
+		</script>
+
+		<script type="text/javascript" src="http://www.google.com/recaptcha/api/js/recaptcha_ajax.js"></script>
+
+		<!-- Wrapping the Recaptcha create method in a javascript function -->
+		<script type="text/javascript">
+			function showRecaptcha(element) {
+				Recaptcha.create("6LfKU94SAAAAABFpvRO7WOV93gISjlEq1hPVYn5C",
+						element, {
+							theme : "red",
+							callback : Recaptcha.focus_response_field
+						});
+			}
+		</script>
+		<div class="registration">
+
+			<p:panel style="border:0px;">
+
+				<p:messages globalOnly="true" id="user_messages" />
+
+				<c:choose>
+					<c:when test="#{registrationBean.confirmation}">
+						<p:panel>
+
+							<div class="ui-apeironsol-body-header">
+								<h:outputText value="Your registration is sucessfull." />
+							</div>
+							<br />
+								Dear, #{registrationBean.firstName}   #{registrationBean.lastName}  your account is sucessfull activated.
+								You can use your credenticals to login the #{registrationBean.registrationType.label} portal.
+								<br />
+							<br />
+								In case if you any trouble while login please check with you branch admin or organization admin.
+
+							</p:panel>
+						<p:commandButton id="back" value="Back" process="@this" action="login" actionListener="#{registrationBean.reset()}" icon="ui-icon-circle-arrow-w" />
+
+					</c:when>
+
+					<c:otherwise>
+
+						<div class="ui-apeironsol-body-header">
+							<h:outputText value="New User Registration" />
+						</div>
+
+						<p:panel id="user_information" header="User Account">
+
+							<h:panelGrid columns="2" cellpadding="0" width="100%" columnClasses="column-vertical-align,column-vertical-align">
+
+								<h:panelGrid columns="3" cellpadding="5" id="useraccount_grid">
+
+									<p:outputLabel id="userNameLabel" for="userName" value="#{msg.usernameMand}" />
+									<p:inputText id="userName" value="#{registrationBean.username}" required="true" label="#{msg.username}"
+										validatorMessage="Min requried length is 8 , No space and special characters allowed username apart from  ' . ' or '_' .">
+										<f:validateLength minimum="8" />
+										<f:validateRegex pattern="^[a-z0-9_\.-]{8,15}$" />
+									</p:inputText>
+									<p:message id="userNameMessage" for="userName" />
+
+									<p:outputLabel id="passwordLabel" for="password" value="#{msg.passwordMand}" />
+									<p:password id="password" value="#{registrationBean.password}" required="true" label="#{msg.password}" feedback="true" match="reenterPassword"
+										requiredMessage="#{model.password_mandatory}">
+										<f:validateLength minimum="8" />
+									</p:password>
+									<p:message id="passwordMessage" for="password" />
+
+									<p:outputLabel id="reenterPasswordLabel" for="reenterPassword" value="#{msg.reenterPasswordMand}" />
+									<p:password id="reenterPassword" value="#{registrationBean.confirmPassword}" required="true" label="#{msg.reenterPassword}" />
+									<p:message id="reenterPasswordMessage" for="reenterPassword" />
+
+								</h:panelGrid>
+
+								<h:panelGrid id="user_info_grid" columns="3" cellpadding="5">
+
+									<p:outputLabel id="login_type_label" value="Registration type" for="login_type" />
+									<p:selectOneMenu id="login_type" value="#{registrationBean.registrationType}" required="true">
+										<f:selectItem itemLabel="Select login type" itemValue="" />
+										<f:selectItems value="#{enumConstantsBean.loginTypeConstants}" var="loginType" itemLabel="#{loginType.label}" itemValue="#{loginType}" />
+										<p:ajax process="@this" update="user_info_grid" />
+									</p:selectOneMenu>
+									<p:message id="login_type_msg" for="login_type" />
+
+									<p:outputLabel id="first_name_label" value="First name" for="first_name" />
+									<p:inputText id="first_name" value="#{registrationBean.firstName}" required="true" />
+									<p:message id="first_name_msg" for="first_name" />
+
+									<p:outputLabel id="last_name_label" value="Last name" for="last_name" />
+									<p:inputText id="last_name" value="#{registrationBean.lastName}" required="true" />
+									<p:message id="last_name_msg" for="last_name" />
+
+									<p:outputLabel id="dob_label" value="Date of birth" for="stu_dob" />
+									<p:calendar id="stu_dob" value="#{registrationBean.dateOfBirth}" navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900"
+										required="true" maxdate="#{sessionBean.systemDate}" />
+									<p:message id="stu_dob_msg" for="stu_dob" />
+
+									<p:outputLabel id="admissionNrLabel" for="admissionNr" value="Student admission Number"
+										rendered="#{registrationBean.registrationType == 'STUDENT' or registrationBean.registrationType == 'PARENT'}" />
+
+									<p:inputText id="admissionNr" value="#{registrationBean.admissionNumber}" required="true" label="#{msg.username}"
+										rendered="#{registrationBean.registrationType == 'STUDENT' or registrationBean.registrationType == 'PARENT'}" />
+									<p:message id="admissionNrMsg" for="admissionNr"
+										rendered="#{registrationBean.registrationType == 'STUDENT' or registrationBean.registrationType == 'PARENT'}" />
+
+									<p:outputLabel id="employeeNrLabel" for="employeeNr" value="Employee number" rendered="#{registrationBean.registrationType == 'EMPLOYEE'}" />
+									<p:inputText id="employeeNr" value="#{registrationBean.employeeNumber}" required="true" label="#{msg.username}"
+										rendered="#{registrationBean.registrationType == 'EMPLOYEE'}" />
+									<p:message id="employeeNrMsg" for="employeeNr" rendered="#{registrationBean.registrationType == 'EMPLOYEE'}" />
+
+								</h:panelGrid>
+							</h:panelGrid>
+
+						</p:panel>
+
+						<br />
+						<p:panel header="Captcha" id="captcha_panel">
+
+
+
+							
+
+								<div id="recaptcha_div"></div>
+				
+
+
+						</p:panel>
+
+						<div style="margin-top: 40px;">
+							<center>
+								<p:commandButton id="back" value="Back" process="@this" action="login" actionListener="#{registrationBean.reset()}" icon="ui-icon-circle-arrow-w" />
+								<p:spacer width="5px" />
+								<p:commandButton id="reset" value="Reset" process="@this" update="user_messages user_information" icon="ui-icon-circle-triangle-w"
+									oncomplete="showRecaptcha('recaptcha_div');" />
+								<p:spacer width="5px" />
+								<p:commandButton id="save" value="Create Account" update="@form" icon="ui-icon-person"
+									action="#{registrationBean.createNewAccount()}" oncomplete="showRecaptcha('recaptcha_div');"  />
+							</center>
+						</div>
+
+					</c:otherwise>
+
+				</c:choose>
+
+			</p:panel>
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function($) {
+
+				showRecaptcha('recaptcha_div');
+			});
+		</script>
+	</ui:define>
+</ui:composition>
+</html>

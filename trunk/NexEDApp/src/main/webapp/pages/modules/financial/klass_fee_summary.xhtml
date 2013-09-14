@@ -1,0 +1,133 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	
+	
+	
+	<p:panel header="Fee details">
+	
+		<h:panelGrid columns="2" cellpadding="5">
+		
+			<h:outputLabel value="Academic year" />
+			<h:outputLabel value="#{klassLevelFeeBean.currentAcademicYearKlassFeePO.academicYear.displayLabel}" style="font-weight:bold;"/>
+			
+			
+			<h:outputLabel value="Total fee for day scholar" />
+			<h:outputLabel value="#{klassLevelFeeBean.currentAcademicYearKlassFeePO.totalKlassFeeForDayScholar}" style="font-weight:bold;">
+				<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+			</h:outputLabel>
+			
+			<h:outputLabel value="Total fee for hosteler"/>
+			<h:outputLabel value="#{klassLevelFeeBean.currentAcademicYearKlassFeePO.totalKlassFeeForResidentialStudent}" style="font-weight:bold;">
+				<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+			</h:outputLabel>
+			
+			
+			
+			
+		</h:panelGrid>
+	
+	</p:panel>
+
+	<p:treeTable value="#{klassLevelFeeBean.root}" var="klassFeeTreeNode">
+
+		<f:facet name="header">
+			<h:outputLabel value="Fee Payment details" style="float:left"/>
+		</f:facet>
+
+		<p:column style="width:150px">
+			<f:facet name="header">  
+                		Fee Name	  
+            </f:facet>
+			<h:outputText value="#{klassFeeTreeNode.name}" />
+		</p:column>
+
+		<p:column style="width:100px">
+			<f:facet name="header">  
+                		Payment Frequency  
+            </f:facet>
+			<center>
+				<h:outputText value="#{klassFeeTreeNode.paymentFrequency.label}" />
+			</center>
+		</p:column>
+
+		<p:column style="width:100px">
+			<f:facet name="header">  
+                		Due date  
+            </f:facet>
+			<center>
+				<h:outputText value="#{klassFeeTreeNode.dueDate}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</center>
+		</p:column>
+
+		<p:column style="width:100px;">
+			<f:facet name="header">  
+               			 Amount  
+            </f:facet>
+			<h:outputText value="#{klassFeeTreeNode.totalAmount}" style="width:100px;float:right;">
+				<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+			</h:outputText>
+		</p:column>
+
+
+	</p:treeTable>
+
+	<br />
+	<br />
+
+	<p:dataTable id="academicYearKlassFeeTable" var="academicYearKlassFeePO"
+		value="#{klassLevelFeeBean.academicYearKlassFeePOs}">
+
+		<f:facet name="header">
+			<span style="float: left; font-size: 18px;">Fee per academic year </span>
+		</f:facet>
+
+		<p:column>
+			<f:facet name="header">
+				<h:outputLabel value="Academic year" />
+			</f:facet>
+			
+			<p:commandLink id="viewButton" value="#{academicYearKlassFeePO.academicYear.displayLabel}"
+				action="#{klassLevelFeeBean.viewKlassFeeForAcademicYear}" title="View" style="margin:0px 0px 0px;float:left;"
+				process="@this" update="@form">
+				<f:setPropertyActionListener target="#{klassLevelFeeBean.currentAcademicYearKlassFeePO}"
+					value="#{academicYearKlassFeePO}" />
+			</p:commandLink>
+		</p:column>
+
+		<p:column>
+			<f:facet name="header">
+				<h:outputLabel value="Start date" />
+			</f:facet>
+			<h:outputLabel value="#{academicYearKlassFeePO.academicYear.startDate}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column>
+			<f:facet name="header">
+				<h:outputLabel value="End date" />
+			</f:facet>
+			<h:outputLabel value="#{academicYearKlassFeePO.academicYear.endDate}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column style="text-align:right;">
+			<f:facet name="header">
+				<h:outputLabel value="Total fee" />
+			</f:facet>
+			<h:outputLabel value="#{academicYearKlassFeePO.totalKlassFeeForResidentialStudent}">
+				<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+			</h:outputLabel>
+		</p:column>
+
+
+	</p:dataTable>
+
+</ui:composition>

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="#{msg.vehicle}" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+	<p:messages id="vehiclesMessages" globalOnly="true" autoUpdate="true" closable="true" />
+	<p:panel>
+		<h:panelGrid id="newVehiclePanelgrid" columns="3" cellpadding="5" styleClass="columm-nowrap">
+			<p:outputLabel id="vehicleNumberLabel" value="#{msg.vehicleNumber}" for="vehicleNumber"  />
+			<p:inputText id="vehicleNumber" value="#{vehicleBean.vehicle.vehicleNumber}" required="true"
+				title="#{msg.vehicleNumberTitle}" requiredMessage="#{model.vehicle_number_mandatory}"/>
+			<p:message id="vehicleNumberMessage" for="vehicleNumber" />
+
+			<p:outputLabel id="vehicleTypeLabel" value="#{msg.vehicleType}" for="vehicleType" />
+			<p:inputText id="vehicleType" value="#{vehicleBean.vehicle.vehicleType}" required="true" title="#{msg.vehicleTypeTitle}"
+				requiredMessage="#{model.vehicle_type_mandatory}" />
+			<p:message id="vehicleTypeMessage" for="vehicleType" />
+
+			<p:outputLabel id="vehicleCapacityLabel" value="#{msg.vehicleCapacity}" for="vehicleCapacity" />
+			<p:inputText id="vehicleCapacity" value="#{vehicleBean.vehicle.capacity}" required="true" title="#{msg.vehicleCapacityTitle}"
+				requiredMessage="#{model.vehicle_capacity_mandatory}">
+			</p:inputText>
+			<p:message id="vehicleCapacityMessage" for="vehicleCapacity" />
+		</h:panelGrid>
+		<br />
+
+		<h:panelGrid id="sources" columns="2" width="100%">
+			<p:pickList id="sourcesPickList" value="#{vehicleBean.routeDualListModel}" var="routeEntity" itemLabel="#{routeEntity.name}"
+				itemValue="#{routeEntity}" converter="routeConverter" showSourceFilter="true" showTargetFilter="true"
+				filterMatchMode="contains">
+				<f:facet name="sourceCaption">#{msg.unAssignedRoutes}</f:facet>
+				<f:facet name="targetCaption">#{msg.assignedRoutes}</f:facet>
+			</p:pickList>
+		</h:panelGrid>
+
+		<br />
+		<p:commandButton id="vehicleSave" value="#{msg.save}" action="#{vehicleBean.saveVehicle}" update="@form" icon="ui-icon-check"
+			title="#{msg.save}" />
+		<p:commandButton id="vehicleCancel" value="#{msg.cancel}" action="#{vehicleBean.cancleVehicle}" update="@form"
+			immediate="true" icon="ui-icon-close" title="msg.cancel" />
+
+	</p:panel>
+</ui:composition>

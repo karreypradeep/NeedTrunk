@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel header="Credit Account Details">
+		<h:panelGrid id="father_panel_grid" columns="3" columnClasses="label, value, label" styleClass="grid" cellpadding="5">
+			<p:outputLabel id="account_number_label" value="Account Number" for="account_number" />
+			<p:inputText id="account_number" value="#{branchCreditAccountBean.currentBranchCreditAccount.accountNumber}"
+				size="20" maxlength="30" disabled="#{not branchCreditAccountBean.editBrachCreditAccountDetailsInd}">
+			</p:inputText>
+			<p:message id="account_number_msg" for="account_number" />
+
+			<p:outputLabel id="employee_label" value="Employee" for="employee" />
+			<p:selectOneMenu id="employee" value="#{branchCreditAccountBean.currentBranchCreditAccount.employee}" required="true"
+				converter="employeeConverter" disabled="#{branchCreditAccountBean.currentBranchCreditAccount.id != null}">
+				<f:selectItem itemLabel="Select employee" itemValue="" />
+				<f:selectItems value="#{branchCreditAccountBean.branchEmployees}" var="employee" itemLabel="#{employee.displayName}"
+					itemValue="#{employee}" />
+			</p:selectOneMenu>
+			<p:message id="employee_msg" for="employee" />
+
+			<p:outputLabel id="account_opening_date_label" value="Account opening date" for="account_opening_date" />
+			<p:calendar id="account_opening_date"
+				value="#{branchCreditAccountBean.currentBranchCreditAccount.accountOpeningDate}" navigator="true"
+				pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
+				disabled="#{not branchCreditAccountBean.editBrachCreditAccountDetailsInd}" showOn="button" />
+			<p:message id="account_opening_date_msg" for="account_opening_date" />
+
+			<p:outputLabel id="account_current_balance_label" value="Current balance" for="account_current_balance" />
+			<p:inputText id="account_current_balance"
+				value="#{branchCreditAccountBean.currentBranchCreditAccount.accountBalance}" size="20" maxlength="20"
+				disabled="true">
+				<f:convertNumber pattern="000.00" />
+			</p:inputText>
+			<p:message id="account_current_balance_msg" for="account_current_balance" />
+
+		</h:panelGrid>
+
+		<p:commandButton id="branch_bank_account_save" value="Save"
+			action="#{branchCreditAccountBean.saveBranchCreditAccount}" update="@form"
+			disabled="#{not branchCreditAccountBean.editBrachCreditAccountDetailsInd}" />
+		<p:commandButton id="branch_bank_account_edit" value="Edit Account Details" immediate="true" update="@form"
+			action="#{branchCreditAccountBean.editCreditAccountDetails}" />
+		<p:commandButton id="branch_bank_account_clear" value="Cancel" immediate="true" update="@form"
+			action="#{branchCreditAccountBean.calcelAction}" />
+	</p:panel>
+</ui:composition>

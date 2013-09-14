@@ -1,0 +1,1 @@
+Expense amount ${amount} is entered for branch ${branchName} on ${date} for ${expenseName} by user ${userName}.

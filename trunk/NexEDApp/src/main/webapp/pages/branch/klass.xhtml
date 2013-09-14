@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:tabMenu activeIndex="#{klassBean.activeTabIndex}">
+		<p:menuitem value="Class" icon="ui-icon-home" action="#{klassBean.onTabChange}" process="@this" update="@form">
+			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="0" />
+		</p:menuitem>
+
+		<p:menuitem value="Fee" icon="ui-icon-gear" action="#{klassLevelFeeBean.onTabChange}" process="@this" update="@form"
+			disabled="#{klassBean.disableSubTab or !grantedAuthorityBean.userAllowedToAccessFeeDefinitions}">
+			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="1" />
+			<f:setPropertyActionListener target="#{klassLevelFeeBean.loadKlassFeesForCurrentAcademicYearFlag}" value="true" />
+		</p:menuitem>
+
+		<p:menuitem value="Subjects" icon="ui-icon-bookmark" action="#{klassBean.onTabChange}" process="@this" update="@form"
+			disabled="#{klassBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="2" />
+		</p:menuitem>
+
+		<p:menuitem value="Sections" icon="ui-icon-note" action="#{klassBean.onTabChange}" process="@this" update="@form"
+			disabled="#{klassBean.disableSubTab}">
+			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="3" />
+			<f:setPropertyActionListener target="#{sectionBean.loadSectionsForKlassFlag}" value="true" />
+		</p:menuitem>
+
+		<p:menuitem value="Fees collected" icon="ui-icon-note" action="#{klassFeesCollectedBean.onTabChange}" process="@this"
+			update="@form" disabled="#{klassBean.disableSubTab or !klassBean.klass.active or !grantedAuthorityBean.userAllowedToAccessFeeCollected}">
+			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="4" />
+		</p:menuitem>
+
+		<p:menuitem value="Notifications" icon="ui-icon-note" action="#{klassNotificationsBean.onTabChange}" process="@this"
+			update="@form" disabled="#{klassBean.disableSubTab}" >
+			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="5" />
+		</p:menuitem>
+
+		<p:menuitem value="Reports" icon="ui-icon-bookmark" action="#{klassReportsBean.onTabChange}" process="@this"
+			update="@form" disabled="#{klassBean.disableSubTab}" rendered="false">
+			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="6" />
+		</p:menuitem>
+
+
+	</p:tabMenu>
+		
+	<c:if test="#{not empty klassBean.klass.name}">
+		<div class="ui-apeironsol-menu-header">
+			<h:outputText value="Class: #{klassBean.klass.name}" />
+		</div>
+	</c:if>	
+	
+	<p:panel id="klass_panel">
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+		<c:if test="#{klassBean.activeTabIndex == 0}">
+
+			<h:panelGrid columns="2" columnClasses="form-column,action-column" width="100%">
+				<h:panelGrid columns="3" id="klass_grid" style="border:0px;margin-bottom:10px;" cellpadding="5">
+					<p:outputLabel id="klass_code_label" value="Code" for="klass_code" />
+					<p:inputText id="klass_code" value="#{klassBean.klass.code}" required="true" />
+					<p:message id="klass_name_code" for="klass_code" />
+
+					<p:outputLabel id="klass_name_label" value="Name" for="klass_name" />
+					<p:inputText id="klass_name" value="#{klassBean.klass.name}" required="true" />
+					<p:message id="klass_name_msg" for="klass_name" />
+				</h:panelGrid>
+				<h:panelGrid>
+					<p:commandButton id="klass_activate" value="Activate" action="#{klassBean.activeKlass}" update="@form"
+						process="@this" rendered="#{!klassBean.klass.active and grantedAuthorityBean.userAllowedToActivateKlass}"
+						style="width:80px;" icon="ui-icon-play" />
+					<p:commandButton id="klass_dev" value="Development" action="#{klassBean.deactivateKlass}" update="@form"
+						process="@this" rendered="#{klassBean.klass.active and grantedAuthorityBean.userAllowedToDeactivateKlass}"
+						style="width:110px;" icon="ui-icon-wrench" />
+				</h:panelGrid>
+			</h:panelGrid>
+
+			<p:commandButton id="klass_cancle" value="Back" process="@this" update="@form" icon="ui-icon-circle-arrow-w">
+
+				<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_KLASSES">
+					<f:converter converterId="viewContentConverter" />
+				</f:setPropertyActionListener>
+				<f:setPropertyActionListener target="#{klassBean.loadKlassesFlag}" value="true" />
+				<f:setPropertyActionListener target="#{klassBean.loadAllAcademicYearsFlag}" value="true" />
+				<f:setPropertyActionListener target="#{klassBean.viewOrNewAction}" value="false" />
+				<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="0" />
+
+
+			</p:commandButton>
+			<p:spacer width="5px" />
+			<p:commandButton id="klass_clear" value="Reset" process="@this" update="@form"
+				disabled="#{klassBean.klass.active || !grantedAuthorityBean.userAllowedToCreateKlass}"
+				icon="ui-icon-circle-triangle-w" />
+			<p:spacer width="5px" />
+			<p:commandButton id="klass_save" value="Save" action="#{klassBean.saveKlass}" update="@form"
+				disabled="#{klassBean.klass.active || !grantedAuthorityBean.userAllowedToCreateKlass}" icon="ui-icon-circle-check" />
+
+
+			<p:blockUI block="form" trigger="klass_save klass_activate klass_dev">  
+        		Request is processing, please wait<br />
+				<p:graphicImage value="/images/ajax-loader.gif" />
+			</p:blockUI>
+
+		</c:if>
+
+		<c:if test="#{klassBean.activeTabIndex == 1}" >
+
+			<ui:include src="/pages/modules/financial/klass_fee_summary.xhtml" />
+
+		</c:if>
+
+
+		<c:if test="#{klassBean.activeTabIndex == 2}">
+
+			<ui:include src="subjects.xhtml" />
+
+		</c:if>
+
+
+		<c:if test="#{klassBean.activeTabIndex == 3}">
+
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{sectionBean.loadSectionsForKlass}" />
+			</f:metadata>
+
+			<p:dataTable id="sections_datatable" var="section" value="#{sectionBean.sections}" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+				<p:column headerText="Section" sortBy="#{section.name}" filterBy="#{section.name}" filterMatchMode="contains">
+					<h:outputText value="#{section.name}" />
+				</p:column>
+
+				<p:column headerText="Academic year" sortBy="#{section.academicYear.displayLabel}"
+					filterBy="#{section.academicYear.displayLabel}">
+					<h:outputText value="#{section.academicYear.displayLabel}" />
+				</p:column>
+
+				<p:column headerText="Active">
+
+					<center>
+						<h:outputText styleClass="ui-icon ui-icon-check" style="text-align: center;" rendered="#{section.active}" />
+					</center>
+
+				</p:column>
+
+				<p:column headerText="#{msg.options}" styleClass="options-column">
+					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" action="#{sectionBean.viewSection}"
+						title="View section" style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
+						<f:setPropertyActionListener value="#{section}" target="#{sectionBean.section}" />
+						<f:setPropertyActionListener target="#{sectionBean.loadAllAcademicYearsFlag}" value="true" />
+						<f:setPropertyActionListener target="#{sectionBean.loadKlassesFlag}" value="true" />
+						<f:setPropertyActionListener target="#{sectionBean.activeTabIndex}" value="0" />
+						<f:setPropertyActionListener target="#{sectionBean.viewOrNewAction}" value="true" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+		</c:if>
+
+		<c:if test="#{klassBean.activeTabIndex == 4}">
+			<ui:include src="/pages/branch/klass/fees_collected.xhtml" />
+		</c:if>
+		<c:if test="#{klassBean.activeTabIndex == 5}">
+			<ui:include src="/pages/branch/klass/klass_notifications.xhtml" />
+		</c:if>
+	</p:panel>
+</ui:composition>

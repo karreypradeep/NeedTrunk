@@ -1,0 +1,114 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<h:panelGrid columns="2" cellpadding="0" cellspacing="0" columnClasses="column-vertical-align,column-vertical-align">
+
+		<h:panelGrid columns="3" cellpadding="5">
+
+			<p:outputLabel value="Select payment mode" for="payment_type" />
+			<p:selectOneMenu id="payment_type" value="#{studentFinancialBean.studentFeeTransaction.paymentMethod}"
+				required="true">
+				<f:selectItem itemLabel="Select payment method" itemValue="" />
+				<f:selectItems value="#{enumConstantsBean.paymentMethodsConstants}" var="paymentMethod"
+					itemLabel="#{paymentMethod.label}" itemValue="#{paymentMethod}" />
+				<p:ajax process="@this" update="@form" />
+			</p:selectOneMenu>
+			<p:message id="payment_type_msg" for="payment_type" />
+
+			<c:if test="${studentFinancialBean.studentFeeTransaction.paymentMethod == 'CHEQUE'}">
+				<p:outputLabel id="cheque_nr_label" value="Cheque number" for="cheque_nr" />
+				<p:inputText id="cheque_nr" value="#{studentFinancialBean.studentFeeTransaction.chequeNumber}" required="true">
+					<p:ajax process="@this" update="@this" />
+				</p:inputText>
+				<p:message id="cheque_nr_msg" for="cheque_nr" />
+
+				<p:outputLabel id="bank_name_label" value="Bank name" for="bank_name" />
+				<p:inputText id="bank_name" value="#{studentFinancialBean.studentFeeTransaction.bankName}" required="true">
+					<p:ajax process="@this" update="@this" />
+				</p:inputText>
+				<p:message id="bank_name_msg" for="bank_name" />
+
+				<p:outputLabel id="bank_branch_label" value="Bank branch" for="bank_branch" />
+				<p:inputText id="bank_branch" value="#{studentFinancialBean.studentFeeTransaction.bankBranch}" required="true">
+					<p:ajax process="@this" update="@this" />
+				</p:inputText>
+				<p:message id="bank_branch_msg" for="bank_branch" />
+			</c:if>
+
+
+			<p:outputLabel value="Is this an external transaction" for="extTransCheck" />
+
+			<p:selectBooleanCheckbox id="extTransCheck" value="#{studentFinancialBean.externalTransaction}" onLabel="Yes"
+				offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close">
+				<p:ajax update="@form" process="@this" />
+			</p:selectBooleanCheckbox>
+			<p:message id="extTransCheckMsg" for="extTransCheck" />
+
+
+			<p:outputLabel value="Total paying amount" style="font-weight:bold;" />
+			<h:outputLabel value="#{studentFinancialBean.totalAmount}" style="font-weight:bold;color:blue;">
+				<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+			</h:outputLabel>
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="3" cellpadding="5" rendered="#{studentFinancialBean.externalTransaction}">
+
+			<p:outputLabel value="External Transaction Nr" for="extTransNum" />
+			<p:inputText id="extTransNum" value="#{studentFinancialBean.studentFeeTransaction.externalTransactionNr}"
+				required="true" />
+			<p:message id="extTransNumMsg" for="extTransNum" />
+
+
+			<p:outputLabel value="External Transaction Date" for="extTransDate" />
+			<p:calendar id="extTransDate" value="#{studentFinancialBean.studentFeeTransaction.externalTransactionDate}"
+				navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+			<p:message id="extTransDateMsg" for="extTransDate" />
+		</h:panelGrid>
+
+	</h:panelGrid>
+
+	<h:dataTable id="confirmPaymentTable" value="#{studentFinancialBean.confirmStudentFeeDetailsDOs}"
+		var="studentFeeDetailsDO" style="margin-top:10px;background-color:rgba(235, 236, 236, 0.69);border-radius:4px;"
+		width="100%" cellpadding="5" cellspacing="5">
+
+		<f:facet name="header">
+			<h:outputLabel value="Payment details" style="float:left;margin-top:5px;margin-bottom:5px;" />
+		</f:facet>
+
+		<h:column>
+
+			<f:facet name="header">
+				<h:outputLabel value="Fee name" style="float:left;" />
+			</f:facet>
+
+			<h:outputText value="#{studentFeeDetailsDO.feeName}" style="width:100%" />
+		</h:column>
+
+		<h:column>
+
+			<f:facet name="header">
+				<h:outputLabel value="Due date" style="float:left;" />
+			</f:facet>
+
+			<h:outputText value="#{studentFeeDetailsDO.klassLevelFeeCatalog.dueDate}" style="width:100%">
+				<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
+			</h:outputText>
+
+		</h:column>
+		<h:column>
+
+			<f:facet name="header">
+				<h:outputLabel value="Paying amount" style="float:right;" />
+			</f:facet>
+
+			<h:outputText value="#{studentFeeDetailsDO.payingAmount}" style="float:right;">
+				<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+			</h:outputText>
+
+		</h:column>
+
+	</h:dataTable>
+</ui:composition>

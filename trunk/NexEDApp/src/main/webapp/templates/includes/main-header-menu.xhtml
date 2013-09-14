@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+<ui:composition>
+		<ul id="pageNav" class="layout">
+
+			<c:if test="#{accessBean.sessionExists}">
+				<li class="navItem"><p:commandLink value="Logout" action="#{loginBean.logout}" process="@this"/></li>
+
+				<c:if test="#{sessionBean.currentBranch != null and accessBean.currentAccess == 'branch'}">
+					<li class="navItem"><p:commandLink value="Switch Branch" action="branch_index" rendered="false" process="@this">
+							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_STUDENTS">
+								<f:converter converterId="viewContentConverter" />
+							</f:setPropertyActionListener>
+							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="branch" />
+							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+							<f:setPropertyActionListener target="#{studentBean.loadBranchStudentsFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.viewAction}" value="false" />
+							<f:setPropertyActionListener target="#{sessionBean.currentBranch}" value="" />
+							<f:setPropertyActionListener target="#{loginBean.branchId}" value="" />
+						</p:commandLink></li>
+					<li class="navItem"><p:commandLink value="Organization" action="organization_index" process="@this">
+							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="organization" />
+							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="ORGANIZATION_ORGANIZATION">
+								<f:converter converterId="viewContentConverter" />
+							</f:setPropertyActionListener>
+						</p:commandLink></li>
+				</c:if>
+
+				<c:if test="#{accessBean.currentAccess == 'organization'}">
+					<li class="navItem"><p:commandLink value="Branch" action="branch_index" process="@this">
+							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_STUDENTS">
+								<f:converter converterId="viewContentConverter" />
+							</f:setPropertyActionListener>
+							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="branch" />
+							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+							<f:setPropertyActionListener target="#{studentBean.viewAction}" value="false" />
+							<f:setPropertyActionListener target="#{studentBean.loadBranchStudentsFlag}" value="true" />
+						</p:commandLink></li>
+
+					<li class="navItem" ><p:commandLink value="Organization" action="organization_index" rendered="false" process="@this">
+							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="organization" />
+							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="ORGANIZATION_ORGANIZATION">
+								<f:converter converterId="viewContentConverter" />
+							</f:setPropertyActionListener>
+						</p:commandLink></li>
+				</c:if>
+				
+				<c:if test="#{accessBean.currentAccess == 'student'}">
+					<li class="navItem"><p:commandLink value="Portal" action="student_index" process="@this">
+							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="STUDENT_PORTAL_PERSONAL">
+								<f:converter converterId="viewContentConverter" />
+							</f:setPropertyActionListener>
+							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="student" />
+							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+							<f:setPropertyActionListener target="#{studentBean.loadStudentByUserIdFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.loadAcademicYearsFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.loadLatestAcademicYearDetailsFlag}" value="true" />
+						</p:commandLink></li>
+				</c:if>
+				
+				<c:if test="#{accessBean.currentAccess == 'employee'}">
+					<li class="navItem"><p:commandLink value="Portal" action="employee_index" process="@this">
+							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="EMPLOYEE_PORTAL_PERSONAL">
+								<f:converter converterId="viewContentConverter" />
+							</f:setPropertyActionListener>
+							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="employee" />
+							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+							<f:setPropertyActionListener target="#{employeeBean.loadEmployeeByUserIdFlag}" value="true" />
+							<f:setPropertyActionListener target="#{employeeBean.loadCurrentEmployeeDesignationByEmpIdFlag}" value="true" />
+						</p:commandLink></li>
+				</c:if>
+			</c:if>
+
+		</ul>
+		<c:if test="#{accessBean.sessionExists}">
+			<ul id="pageNav" class="layout">
+			</ul>
+		</c:if>
+</ui:composition>
+</html>

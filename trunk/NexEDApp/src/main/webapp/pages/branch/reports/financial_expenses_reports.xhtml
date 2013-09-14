@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{financialReportBean.loadExpensesBuildingBlocks}" />
+	</f:metadata>
+
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="Branch expenses" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+	<p:panel style="margin-top:1px;margin-bottom:10px;">
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+		<h:panelGrid columns="2" id="expense_type_grid" cellpadding="5" style="border:0px;" cellspacing="5">
+			<h:panelGrid columns="2" id="expense_type_grid1" cellpadding="5" style="border:0px;" cellspacing="5">
+
+				<p:outputLabel id="expense_name_search_label" value="Expense name" for="expense_name_search" />
+				<p:inputText id="expense_name_search" value="#{financialReportBean.branchExpenseSearchCriteria.expenseName}"
+					size="20" maxlength="20">
+				</p:inputText>
+
+				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
+				<p:calendar id="from_date" value="#{financialReportBean.branchExpenseSearchCriteria.fromDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+					mindate="#{financialReportBean.minimumDateForCurrentBranch}" maxdate="#{financialReportBean.currentDate}" />
+
+				<p:outputLabel id="to_date_label" value="To date" for="to_date" />
+				<p:calendar id="to_date" value="#{financialReportBean.branchExpenseSearchCriteria.toDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+					mindate="#{financialReportBean.minimumDateForCurrentBranch}" maxdate="#{financialReportBean.currentDate}" />
+
+			</h:panelGrid>
+			<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
+
+				<p:outputLabel id="expense_type_search_label" value="Expense type" for="expense_type_search" />
+				<p:selectManyMenu id="expense_type_search"
+					value="#{financialReportBean.branchExpenseSearchCriteria.expenseTypeBuildingBlocks}"
+					converter="buildingBlockConverter" style="width:200px;height:120px">
+					<f:selectItems value="#{financialReportBean.expensesTypeBuildingBlocks}" var="expensesTypeBuildingBlock"
+						itemLabel="#{expensesTypeBuildingBlock.name}" itemValue="#{expensesTypeBuildingBlock}" />
+				</p:selectManyMenu>
+
+			</h:panelGrid>
+		</h:panelGrid>
+
+		<p:commandButton id="expense_type_search_buton" value="Generate Report" ajax="false"
+			onclick="PrimeFaces.monitorDownload(start, stop)" icon="ui-icon-document">
+			<p:fileDownload value="#{financialReportBean.generateExpensesReport()}" />
+		</p:commandButton>
+		<p:commandButton id="expense_type_reset" value="Reset" update="@form"
+			action="#{financialReportBean.resetSearchCriteria}" process="@this" icon="ui-icon-refresh"/>
+	</p:panel>
+
+</ui:composition>

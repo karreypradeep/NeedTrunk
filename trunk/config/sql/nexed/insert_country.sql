@@ -1,0 +1,8 @@
+/*
+-- Query: select * from country
+LIMIT 0, 1000
+
+-- Date: 2012-04-20 12:19
+*/
+INSERT INTO `COUNTRY` (`ISO3_CODE`,`ISO2_CODE`,`NAME`,`NUM_CODE`) VALUES ('IND','IN','India',356);
+INSERT INTO `COUNTRY` (`ISO3_CODE`,`ISO2_CODE`,`NAME`,`NUM_CODE`) VALUES ('USA','US','United States',840);

@@ -1,0 +1,1 @@
+All hrms related pages should go here.

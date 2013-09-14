@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	
+	<f:facet name="header">Attendance</f:facet>
+
+	<p:panel style="width:100%;border:0px">
+		<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
+			<p:commandButton id="attendanceSummary" value="Attendance summary" icon="ui-icon-calculator" process="@this"
+				update="@form" style="float:left;" action="#{studentAttendanceSummaryBean.buildSectionAttendanceColumns}">
+				<f:setPropertyActionListener target="#{studentAttendanceBean.attendanceWizardActiveStep}" value="attendanceSummary" />
+			</p:commandButton>
+			<p:commandButton id="attendanceReport" value="Attendance report" icon="ui-icon-calculator" process="@this"
+				update="@form" style="float:left;">
+				<f:setPropertyActionListener target="#{studentAttendanceBean.attendanceWizardActiveStep}" value="attendanceReport" />
+			</p:commandButton>
+		</h:panelGrid>
+	</p:panel>
+	<c:choose>
+		<c:when test="#{studentAttendanceBean.attendanceWizardActiveStep == 'attendanceSummary'}">
+			<ui:include src="student_attendance_summary.xhtml"></ui:include>
+		</c:when>
+		<c:when test="#{studentAttendanceBean.attendanceWizardActiveStep == 'attendanceReport'}">
+			<p:panel style="width:100%;">
+				<ui:include src="student_attendance_report.xhtml"></ui:include>
+			</p:panel>
+		</c:when>
+	</c:choose>
+
+</ui:composition>

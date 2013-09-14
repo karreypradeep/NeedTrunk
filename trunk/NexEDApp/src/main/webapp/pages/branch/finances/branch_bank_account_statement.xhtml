@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel header="Transaction">
+		<h:panelGrid id="parents_panel" columns="3">
+
+			<p:outputLabel id="from_date_label" value="From date" for="from_date" />
+			<p:calendar id="from_date" value="#{branchBankAccountBean.transactionFromDate}" showOn="button" pattern="dd/MMM/yyyy"
+				size="20" maxlength="20" required="true" />
+			<p:message id="from_date_msg" for="from_date" />
+
+			<p:outputLabel id="to_date_label" value="To date" for="to_date" />
+			<p:calendar id="to_date" value="#{branchBankAccountBean.transactionToDate}" pattern="dd/MMM/yyyy" size="20"
+				maxlength="20" showOn="button" required="true" />
+			<p:message id="to_date_msg" for="to_date" />
+
+			<p:commandButton id="branch_bank_account_search" value="Search"
+				action="#{branchBankAccountBean.searchBankAccountTransactions}" update="@form" />
+			<p:commandButton id="branch_bank_account_clear" value="Cancel" immediate="true" update="@form"
+				action="#{branchBankAccountBean.calcelAction}" />
+
+		</h:panelGrid>
+		<p:dataTable id="branchBanktransactions_table" var="branchBankAccountTransaction"
+			value="#{branchBankAccountBean.branchBankAccountTransactions}" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+			<p:column sortBy="#{branchBankAccountTransaction.transactionType.label}"
+				filterBy="#{branchBankAccountTransaction.transactionType.label}" filterMatchMode="contains">
+				<f:facet name="header">
+							Transaction Type
+						</f:facet>
+				<h:outputText value="#{branchBankAccountTransaction.transactionType.label}" />
+			</p:column>
+
+			<p:column sortBy="#{branchBankAccountTransaction.transactionDate}"
+				filterBy="#{branchBankAccountTransaction.transactionDate}" filterMatchMode="contains">
+				<f:facet name="header">
+							Transaction Date
+						</f:facet>
+				<h:outputText value="#{branchBankAccountTransaction.transactionDate}">
+					<f:convertDateTime pattern="dd/MMM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column sortBy="#{branchBankAccountTransaction.description}" filterBy="#{branchBankAccountTransaction.description}"
+				filterMatchMode="contains">
+				<f:facet name="header">
+							Description
+						</f:facet>
+				<h:outputText value="#{branchBankAccountTransaction.description}" />
+			</p:column>
+
+			<p:column sortBy="#{branchBankAccountTransaction.auditUsername}"
+				filterBy="#{branchBankAccountTransaction.auditUsername}" filterMatchMode="contains">
+				<f:facet name="header">
+							User name
+						</f:facet>
+				<h:outputText value="#{branchBankAccountTransaction.auditUsername}" />
+			</p:column>
+
+			<p:column sortBy="#{branchBankAccountTransaction.amount}" filterBy="#{branchBankAccountTransaction.amount}"
+				filterMatchMode="contains">
+				<f:facet name="header">
+							Amount
+						</f:facet>
+				<h:outputText value="#{branchBankAccountTransaction.amount}" />
+			</p:column>
+		</p:dataTable>
+	</p:panel>
+</ui:composition>

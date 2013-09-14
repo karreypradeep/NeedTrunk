@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components/notifications">
+	
+	<f:facet name="header">Notifications</f:facet>
+
+	<c:choose>
+		<c:when test="#{studentNotificationsBean.viewActionString == 'VIEW_SEND_NOTIFICATION'}">
+			<biz:send_notification notificationType="#{studentNotificationsBean.notificationTypeConstant}"
+				notificationSubType="#{studentNotificationsBean.notificationSubTypeConstant}"
+				notificationSubTypeConstants="#{studentNotificationsBean.notificationSubTypeAvailable}"
+				cancelActionMethod="#{studentNotificationsBean.setViewBatchLogMessages()}"
+				sendNotificationActionMethod="#{studentNotificationsBean.sendNotification()}"
+				notificationMessage="#{studentNotificationsBean.notificationText}"
+				notificationTypeConstants="#{enumConstantsBean.notificationTypeConstants}"
+				notificationTypeAjaxMethod="#{studentNotificationsBean.handleNotificationTypeChange()}"
+				sectionExams="#{studentNotificationsBean.sectionExams}"
+				notificationSubTypeAjaxMethod="#{studentNotificationsBean.handleNotificationSubTypeChange()}"
+				renderSectionExamIndicator="#{studentNotificationsBean.renderSectionExamIndicator}"
+				selectedSectionExam="#{studentNotificationsBean.selectedSectionExam}" />
+		</c:when>
+		<c:otherwise>
+			<p:poll listener="#{studentNotificationsBean.pollListener()}" stop="#{studentNotificationsBean.batchFinished}"
+				interval="#{studentNotificationsBean.batchPollInterval}" update="@form"
+				rendered="#{!studentNotificationsBean.batchFinished}"></p:poll>
+			<p:progressBar widgetVar="pbAjax" value="#{studentNotificationsBean.progressBarValue}" labelTemplate="{value}%"
+				styleClass="animated" rendered="#{!studentNotificationsBean.batchFinished}">
+			</p:progressBar>
+			<p:toolbar style="margin-bottom:1px;" rendered="#{studentNotificationsBean.batchFinished}">
+				<p:toolbarGroup align="right">
+					<p:commandButton id="view_send_notification" value="New notification" icon="ui-icon-document"
+						action="#{studentNotificationsBean.setViewSendNotification()}" update="@form"
+						disabled="#{!grantedAuthorityBean.userAllowedToSendNotificationsStudent}">
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:panel style="margin-botton:1px;margin-top:1px;">
+				<b>Notification send for the section.</b>
+				<br />
+				<br />
+				<b>Follow the steps to send a new notification</b>
+
+				<ul id="hintList_list" class="ui-datalist-data" type="disc">
+					<li class="ui-datalist-item">New notification can be send by clicking the <b>New notification</b> button.
+					</li>
+					<li class="ui-datalist-item">Notification details can be viewed by clicking the view icon.</li>
+				</ul>
+			</p:panel>
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{studentNotificationsBean.loadBatchLogMessagesByStudentAcademicYear}" />
+			</f:metadata>
+			<biz:batch_log_message_datatable batchLogMessages="#{studentNotificationsBean.studentBatchLogMessages}"
+				errorMessage="#{studentNotificationsBean.batchLogMessageErrorMessage}"
+				messageSent="#{studentNotificationsBean.batchLogMessageSentMessage}" />
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

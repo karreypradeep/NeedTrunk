@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:pe="http://primefaces.org/ui/extensions">
+<f:view contentType="text/html">
+
+
+
+	<h:head>
+		<!-- Mimic Internet Explorer 8 -->
+		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+		<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+		<meta http-equiv="EXPIRES" content="01 Jan 1970 00:00:00 GMT" />
+		<meta http-equiv="PRAGMA" content="NO-CACHE" />
+		<title>Education management system</title>
+		<script type="text/javascript">
+			function noBack() {
+				window.history.forward();
+			}
+		</script>
+	</h:head>
+	<h:body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
+		<h:outputStylesheet library="primefaces" name="schedule/schedule.css" target="head" />
+		<h:outputStylesheet library="css" name="apeironsol.css" target="head" />
+		<h:outputStylesheet library="css" name="syntaxhighlighter.css" target="head" />
+		<h:outputStylesheet library="css" name="application.css" target="head" />
+		<h:outputScript library="primefaces" name="schedule/schedule.js" target="head" />
+		<h:outputScript library="js" name="jquery.slider.min.js" target="head" />
+		<h:outputScript library="js" name="jquery.jqprint-0.3.js" target="head" />
+		<h:outputScript library="js" name="apeironsol-common.js" target="head" />
+
+
+
+		<script type="text/javascript">
+			/**
+			 *	Java script to handle the size the container
+			 */
+			function containerDynaHeight() {
+				var innerHeight = $('#page-content').height();
+				$('#content-container').css("height", innerHeight);
+				$('#side-bar').css("height", innerHeight);
+
+			};
+
+			jQuery(document).ready(function($) {
+				containerDynaHeight();
+			});
+
+			jQuery(window).resize(function($) {
+				containerDynaHeight();
+			});
+			
+			
+		</script>
+
+
+		<p:ajaxStatus oncomplete="containerDynaHeight();" />
+
+		<h:form id="form" prependId="false" style="height: 100%;">
+
+			<div id="page" style="height: 85%;">
+
+				<ui:include src="/templates/includes/ajax-error-handler.xhtml"/>
+
+				<div id="header" class="ui-apeironsol-page-header">
+					<div class="left">
+						<div id="company">
+							<div class="company-name">#{organizationBean.organization.name != null ? organizationBean.organization.name
+								: 'Your organization'}</div>
+						</div>
+					</div>
+
+					<div class="middle">
+
+						<h:panelGrid columns="2" style="float: left" cellspacing="5">
+							<h:outputLabel value=" Welcome: " style="color: white;" rendered="#{loginBean.loggedIn}" />
+
+							<h:outputLabel value="#{sessionBean.prinipal}" style="float: left; color: white; font-weight: bold;"
+								rendered="#{loginBean.loggedIn}" />
+
+							<h:outputLabel value=" Branch:" style="float: left; color: white; font-weight: bold;"
+								rendered="#{accessBean.currentAccess == 'branch'}" />
+
+							<h:outputLabel value="#{sessionBean.currentBranch.name}" style="float: left; color: white; font-weight: bold;"
+								rendered="#{accessBean.currentAccess == 'branch'}" />
+						</h:panelGrid>
+
+					</div>
+
+					<div class="right">
+						<ui:include src="/templates/includes/main-header-menu.xhtml" />
+						<ui:include src="/templates/includes/main-header-nav.xhtml" />
+					</div>
+				</div>
+
+				<div id="page-content" class="ui-widget">
+
+					<p:focus />
+					<div id="side-bar" class="side-bar">
+						<div class="side-bar-panel">
+							<ui:insert name="menu">
+								<ui:include src="/templates/includes/left-menu.xhtml" />
+							</ui:insert>
+						</div>
+						<c:if
+							test="#{branchTreeBean.displayBranchTree || klassTreeBean.displayKlassTree || studentTreeBean.displayStudentTree}">
+							<div class="side-bar-panel">
+								<ui:insert name="tree">
+
+								</ui:insert>
+							</div>
+						</c:if>
+					</div>
+					<div id="content-container" class="content-container">
+						<ui:insert name="body">[BODY]</ui:insert>
+					</div>
+					<div class="clear"></div>
+
+				</div>
+
+				<div id="footer" class="ui-apeironsol-footer">
+					<div style="padding-top: 10px;">
+						<ui:include src="/templates/includes/footer.xhtml" />
+					</div>
+				</div>
+
+			</div>
+		</h:form>
+		<p:dialog id="parents_lookup_dialog" widgetVar="parent_lokkup_widget" header="Students Lookup" resizable="false"
+			dynamic="true" modal="true" appendToBody="true">
+			<ui:include src="/pages/common/students_lookup.xhtml" />
+		</p:dialog>
+		<script language='javascript'>
+			function happycode() {
+				var days = document.getElementById('ui-datepicker-div')
+						.getElementsByTagName("tr");
+				if (days.length > 1) {
+					alert(days[4].innerHTML);
+				}
+			}
+		</script>
+
+
+	</h:body>
+</f:view>
+
+</html>

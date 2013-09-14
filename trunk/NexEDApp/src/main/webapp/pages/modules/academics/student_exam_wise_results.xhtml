@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components/notifications">
+	
+	<div class="ui-apeironsol-body-header">
+		<h:outputText value="Viewing Exam Wise Results" />
+	</div>
+
+	<p:lineChart id="examsPercentageChart" value="#{studentAcademicBean.studentAcademicExamsChart}" legendPosition="w"
+		title="Student Academic Progress" minY="0" maxY="100" style="height:300px;margin-top:20px;margin-bottom:15px;"
+		rendered="#{studentAcademicBean.studentAcademicExamDOs != null and studentAcademicBean.studentAcademicExamDOs.size() > 0}"
+		seriesColors="2163A8" shadow="false" yaxisLabel="Scored percentage" />
+
+	<p:dataTable id="studentAcademicResults" value="#{studentAcademicBean.studentAcademicExamDOs}"
+		var="studentAcademicExamDO" paginator="false" sortOrder="descending">
+
+
+		<f:facet name="header">
+			<h:outputText value="Exam wise Results" style="float:left;margin-top:5px;margin-bottom:5px;" />
+			<h:commandLink style="float:right;" rendered="#{studentAcademicBean.studentAcademicExamDOs.size()>0}">
+				<p:graphicImage value="/images/pdf.png" />
+				<p:dataExporter type="pdf" target="studentAcademicResults" fileName="Students Exam results" />
+			</h:commandLink>
+		</f:facet>
+
+
+		<p:column headerText="Exam" style="width:125px" sortBy="#{studentAcademicExamDO.exam.name}"
+			filterBy="#{studentAcademicExamDO.exam.name}">
+			<p:commandLink id="viewLink" value="#{studentAcademicExamDO.exam.name}" title="View" style="margin:0px 0px 0px;"
+				process="@this" update="@form" action="#{studentAcademicBean.viewStudentAcademicExamSubjectResults()}">
+				<f:setPropertyActionListener target="#{studentAcademicBean.studentExamSubjectDOs}"
+					value="#{studentAcademicExamDO.studentExamSubjectDOs}" />
+			</p:commandLink>
+		</p:column>
+
+		<p:column headerText="Start Date" style="width:125px" sortBy="#{studentAcademicExamDO.sectionExam.startDate}"
+			filterBy="#{studentAcademicExamDO.sectionExam.startDate}">
+			<h:outputText value="#{studentAcademicExamDO.sectionExam.startDate}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="End Date" style="width:125px" sortBy="#{studentAcademicExamDO.sectionExam.endDate}"
+			filterBy="#{studentAcademicExamDO.sectionExam.endDate}">
+			<h:outputText value="#{studentAcademicExamDO.sectionExam.endDate}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="Scheduled subjects" style="width:125px" sortBy="#{studentAcademicExamDO.totalSubjectsScheduled}"
+			filterBy="#{studentAcademicExamDO.totalSubjectsScheduled}">
+			<h:outputText value="#{studentAcademicExamDO.totalSubjectsScheduled}">
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="Maximum Marks" style="width:125px" sortBy="#{studentAcademicExamDO.totalMaximumMarks}"
+			filterBy="#{studentAcademicExamDO.totalMaximumMarks}">
+			<h:outputText value="#{studentAcademicExamDO.totalMaximumMarks}">
+				<f:convertNumber pattern="0.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="Scored Marks" style="width:125px" sortBy="#{studentAcademicExamDO.totalScoredMarks}"
+			filterBy="#{studentAcademicExamDO.totalScoredMarks}">
+			<h:outputText value="#{studentAcademicExamDO.totalScoredMarks}">
+				<f:convertNumber pattern="0.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="Percentage" style="width:125px" sortBy="#{studentAcademicExamDO.percentageScored}"
+			filterBy="#{studentAcademicExamDO.percentageScored}">
+			<h:outputText value="#{studentAcademicExamDO.percentageScored}">
+				<f:convertNumber pattern="0.00 %" />
+			</h:outputText>
+		</p:column>
+
+	</p:dataTable>
+
+
+
+</ui:composition>

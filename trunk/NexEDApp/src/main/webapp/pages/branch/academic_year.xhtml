@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel id="academic_year_panel" style="margin-bottom:1px;" cellpadding="10">
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+		<h:panelGrid columns="3" cellpadding="1" style="border:0px;margin-bottom:10px;">
+
+			<h:panelGrid columns="3" cellpadding="10" style="border:0px;margin-bottom:10px;">
+				<p:outputLabel id="start_date_label" value="Start date" for="start_date" style="white-space:nowrap;" />
+				<p:calendar id="start_date" value="#{academicYearBean.academicYear.startDate}" navigator="true" display="inline"
+					effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
+					mindate="#{sessionBean.currentBranch.startDate}" />
+				<p:message id="start_date_msg" for="start_date" />
+
+				<p:outputLabel id="end_date_label" value="End date" for="end_date" style="white-space:nowrap;" />
+				<p:calendar id="end_date" value="#{academicYearBean.academicYear.endDate}" navigator="true" display="inline"
+					effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+				<p:message id="end_date_msg" for="end_date" />
+			</h:panelGrid>
+
+			<h:panelGrid columns="3" cellpadding="10" style="border:0px;margin-bottom:10px;">
+
+				<p:outputLabel id="admission_start_date_label" value="Admissions start date" for="admission_start_date"
+					style="white-space:nowrap;" />
+				<p:calendar id="admission_start_date" value="#{academicYearBean.academicYear.admissionStartDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+				<p:message id="admission_start_date_msg" for="admission_start_date" />
+
+				<p:outputLabel id="admission_end_date_label" value="Admissions end date" for="admission_end_date"
+					style="white-space:nowrap;" />
+				<p:calendar id="admission_end_date" value="#{academicYearBean.academicYear.admissionEndDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+				<p:message id="admission_end_date_msg" for="admission_end_date" />
+
+			</h:panelGrid>
+
+			<h:panelGrid columns="3" cellpadding="10" style="border:0px;margin-bottom:10px;">
+
+				<p:outputLabel id="class_start_date_label" value="Classes start date" for="class_start_date"
+					style="white-space:nowrap;" />
+				<p:calendar id="class_start_date" value="#{academicYearBean.academicYear.classStartDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+				<p:message id="class_start_date_msg" for="class_start_date" />
+
+			</h:panelGrid>
+
+		</h:panelGrid>
+
+		<p:commandButton id="cancel" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
+			<f:setPropertyActionListener target="#{academicYearBean.displayNewacademicYear}" value="false" />
+		</p:commandButton>
+		<p:spacer width="2" />
+		<p:commandButton id="reset" value="Reset" update="@form" process="@this"
+			action="#{academicYearBean.resetAcademicYear}" icon="ui-icon-circle-triangle-w" />
+		<p:spacer width="2" />
+		<p:commandButton id="save" value="Save" action="#{academicYearBean.saveAcademicYear}" update="@form"
+			disabled="#{academicYearBean.academicYear.active || !grantedAuthorityBean.userAllowedToCreateAcademicYear}"
+			icon="ui-icon-circle-check">
+			<f:setPropertyActionListener target="#{academicYearBean.displayNewacademicYear}" value="true" />
+		</p:commandButton>
+		<p:spacer width="2" />
+		<p:commandButton id="activate" value="Activate" update="@form" process="@this"
+			actionListener="#{academicYearBean.activateAcademicYear}"
+			disabled="#{academicYearBean.academicYear == null or academicYearBean.academicYear.id == null or !grantedAuthorityBean.userAllowedToActivateAcademicYear}"
+			rendered="#{academicYearBean.academicYear != null and !academicYearBean.academicYear.active}" icon="ui-icon-play" />
+		<p:spacer width="2" />
+		<p:commandButton id="development" value="Development" update="@form" process="@this"
+			actionListener="#{academicYearBean.deactivateAcademicYear}"
+			disabled="#{academicYearBean.academicYear == null or academicYearBean.academicYear.id == null or !grantedAuthorityBean.userAllowedToDeactivateAcademicYear}"
+			rendered="#{academicYearBean.academicYear != null and academicYearBean.academicYear.active }" icon="ui-icon-wrench" />
+
+	</p:panel>
+
+	<p:blockUI block="academic_year_panel" trigger="save activate development">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
+
+</ui:composition>

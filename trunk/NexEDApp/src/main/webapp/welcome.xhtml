@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/templates/main-home.xhtml">
+	<ui:define name="body">
+		<p:imageSwitch effect="fade" slideshowSpeed="500" speed="3500">
+			<div class="slider">
+				<div>
+					<p:graphicImage value="/images/home/building-video.jpg"
+						onclick="collegeVideoDialog.show();" />
+				</div>
+				<div>
+					<p:graphicImage value="/images/home/soccer.jpg" />
+
+				</div>
+				<div>
+					<p:graphicImage value="/images/home/party.jpg" />
+				</div>
+			</div>
+		</p:imageSwitch>
+
+		<p:dialog id="collegeVideo" 
+			widgetVar="collegeVideoDialog" 
+			header="AMC promo" 
+			severity="alert" 
+			resizable="false"
+			modal="true" 
+			closable="true" 
+			onHide="hidePlayer();stopVideo();" 
+			onShow="showPlayer();" 
+			draggable="false"
+			position="top" 
+			width="670" 
+			height="390" 
+			style="left:400px;"
+			dynamic="true">
+
+			<div id="player" style="display:none"></div>
+			
+			
+			
+			<script>
+
+     	 	var tag = document.createElement('script');
+     	 	tag.src = "//www.youtube.com/iframe_api";
+      		var firstScriptTag = document.getElementsByTagName('script')[0];
+      		firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      		var player;
+     	 	function onYouTubeIframeAPIReady() {
+        	player = new YT.Player('player', {
+         	 height: '390',
+          	width: '640',
+         	 videoId: '8roD8B04yYM',
+          	events: {
+            		'onReady': onPlayerReady,
+         		   	'onStateChange': onPlayerStateChange
+         			 }
+        		});
+    	  	}
+
+
+     	 	function onPlayerReady(event) {
+	        	event.target.playVideo();
+	      	}
+
+	      var done = false;
+      		function onPlayerStateChange(event) {
+        		if (event.data == YT.PlayerState.PLAYING) {
+            		if(!done) {
+          				setTimeout(stopVideo, 0);
+        	  			done = true;
+            		}
+    	    	}
+	      	}
+	      	
+	      	function stopVideo() {
+		      	if(player != null) {
+
+		      		player.seekTo(0);
+	        		player.stopVideo();
+			    }
+      		}
+
+      	
+			function showPlayer() {
+				var player1 = $("#player");
+				player1.css('display','inherit');
+
+				var windowWidth = $(window).width();
+				var dialogWidth = $('#collegeVideo').width();
+
+			 	var leftSpace = 	(windowWidth - dialogWidth)/2;
+			 	$('#collegeVideo').css('left',leftSpace);	
+			}
+
+			function hidePlayer() {
+				var player = $("#player");
+				player.css('display','none');
+			}
+      		
+    		</script>
+		</p:dialog>
+
+
+		<div id="welcome-text">
+			<table style="border-spacing: 0px;">
+				<tr style="vertical-align: top;">
+					<td class="homeleft" colspan="4">
+						<div class="boxcopy">
+							<h1>Welcome to AMC Group of Institutions</h1>
+							<p>
+								<b>AMC College</b> was incepted in 1983. <b>Dr. K R Paramahamsa</b> is the visionary who has been spearheading
+								this noble enterprise under the banner of Paramahamsa Foundation. With a clear focus to provide the best
+								educational infrastructure and a corporate environment, the establishment has carved a niche for itself as a
+								vibrant institution that facilitates contemporary learning and character building.
+							</p>
+
+							<p>
+
+								The institution is affiliated to Visvesvaraya Technological University, recognized by the government of
+									Karnataka and has received approval from All India Council for Technical Education (AICTE), New Delhi.
+							</p>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td class="box">
+						<div class="boxdata">
+							<h1>
+								<a href="" class="title">Vision</a>
+							</h1>
+							<p>To be a global partner in building an economic and civil community contributing to the social and
+								industrial development of the country.</p>
+						</div>
+						<p>
+							<a href="" target="_blank" class="learnmore">Learn More</a>
+						</p>
+					</td>
+					<td class="box">
+						<div class="boxdata">
+							<h1>
+								<a href="" class="title">Mission</a>
+							</h1>
+							<p>To develop students to excel in their technical competence coupled with high degree of morals, a positive
+								attitude and professional ethics to meet the needs of the country.</p>
+						</div>
+						<p>
+							<a href="" class="learnmore">Learn More</a>
+						</p>
+					</td>
+					<td class="box">
+						<div class="boxdata">
+							<h1>
+								<a href="" class="title">Placements</a>
+							</h1>
+							<p>We believe that placement is perhaps one of the most important reasons for the existence of any academic
+								institution.</p>
+						</div>
+						<p>
+							<a href="" class="learnmore">Learn More</a>
+						</p>
+					</td>
+					<td class="box4">
+						<h1>
+							<a href="" class="title">News and upcoming events</a>
+						</h1>
+						<p>
+							<a href="" class="learnmore">A conference on cloud computing and enterprise networks.</a>
+						</p>
+					</td>
+				</tr>
+			</table>
+
+		</div>
+
+	</ui:define>
+</ui:composition>
+</html>

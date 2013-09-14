@@ -1,0 +1,86 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+
+	<c:choose>
+
+		<c:when test="#{branchBean.viewOrNewAction}">
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{branchTreeBean.showBranchTree}" />
+			</f:metadata>
+
+			<ui:include src="/pages/organization/branch.xhtml" />
+
+		</c:when>
+		<c:otherwise>
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{branchBean.loadBranches}" />
+			</f:metadata>
+			<p:toolbar style="margin-bottom:1px;">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText value="Branches" style="font-size:20px;" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton value="New Branch" icon="ui-icon-plus" action="#{branchBean.newBranch}" process="@this"
+						update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateBatch}">
+						<f:setPropertyActionListener value="false" target="#{branchTreeBean.displayBranchTree}" />
+						<f:setPropertyActionListener value="0" target="#{branchBean.activeTabIndex}" />
+						<f:setPropertyActionListener value="true" target="#{branchBean.viewOrNewAction}" />
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+			<p:dataTable id="branchs_datatable" var="branch" value="#{branchBean.branches}" paginator="true" rows="20"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,20" paginatorPosition="bottom" filteredValue="#{branchBean.filteredValues}">
+
+				<p:column headerText="Name" sortBy="#{branch.name}" filterBy="#{branch.name}" filterMatchMode="contains">
+					<p:commandLink id="viewButton" value="#{branch.name}" title="View" style="margin:0px 0px 0px;float:left;"
+						process="@this" update="@form">
+						<f:setPropertyActionListener value="#{branch}" target="#{branchBean.branchInfo}" />
+						<f:setPropertyActionListener value="0" target="#{branchBean.activeTabIndex}" />
+						<f:setPropertyActionListener value="true" target="#{branchTreeBean.displayBranchTree}" />
+						<f:setPropertyActionListener target="#{branchBean.viewOrNewAction}" value="true" />
+
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="Code" sortBy="#{branch.code}" filterBy="#{branch.code}" filterMatchMode="contains">
+					<h:outputText value="#{branch.code}" />
+				</p:column>
+
+				<p:column headerText="Active" style="width:50px;">
+					<center>
+						<h:outputText styleClass="ui-icon ui-icon-check" style="text-align: center;" rendered="#{branch.active}" />
+					</center>
+				</p:column>
+
+				<p:column headerText="#{msg.options}" styleClass="options-column">
+					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+						title="Delete" disabled="#{branch.active || !grantedAuthorityBean.userAllowedToRemoveBranch}" onclick="confirmation.show()">
+						<f:setPropertyActionListener value="#{branch}" target="#{branchBean.branch}" />
+						<f:setPropertyActionListener value="false" target="#{branchTreeBean.displayBranchTree}" />
+					</p:commandLink>
+				</p:column>
+
+			</p:dataTable>
+			<p:confirmDialog id="confirmDialog" message="Are you want to delete the branch?" header="Confirmation"
+				severity="alert" widgetVar="confirmation">
+				<p:commandButton id="confirm" value="Yes Sure" update="@form" oncomplete="confirmation.hide()"
+					action="#{branchBean.removeBranch}" />
+				<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />
+
+			</p:confirmDialog>
+
+		</c:otherwise>
+	</c:choose>
+
+</ui:composition>
+

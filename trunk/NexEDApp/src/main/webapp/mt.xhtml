@@ -1,0 +1,68 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:pm="http://primefaces.org/mobile" xmlns:c="http://java.sun.com/jsp/jstl/core" contentType="text/html"
+	renderKitId="PRIMEFACES_MOBILE">
+
+	<pm:page title="apeironsol">
+
+		<h:outputStylesheet library="css" name="mobile/template.css" target="head" />
+
+		<h:head>
+			<meta name="apple-mobile-web-app-capable" content="yes" />
+			<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+			<meta name="viewport" content="width=device-width, user-scalable=no" />
+		</h:head>
+		
+		<input type="checkbox" name="handler-right" class="handler" id="handler-right" onclick="null" />
+		<input type="checkbox" name="handler-left" class="handler" id="handler-left" onclick="null" />
+
+		<div id="menu">
+			<ul>
+				<li><a href="#">Home</a></li>
+				<li><a href="#">Our work</a></li>
+				<li><a href="#" class="active">Our clients</a></li>
+				<li><a href="#">Who are we ?</a></li>
+				<li><a href="#">Get in touch</a></li>
+			</ul>
+		</div>
+
+		<div id="favorites">
+			<ul>
+				<li><a href="#">Fav #1</a></li>
+				<li><a href="#">Fav #2</a></li>
+				<li><a href="#" class="active">Fav #3</a></li>
+				<li><a href="#">Fav #4</a></li>
+				<li><a href="#">Fav #5</a></li>
+				<li><a href="#">Fav #6</a></li>
+				<li><a href="#">Fav #7</a></li>
+				<li><a href="#">Fav #8</a></li>
+				<li><a href="#">Fav #9</a></li>
+				<li><a href="#">Fav #10</a></li>
+				<li><a href="#">Fav #12</a></li>
+				<li><a href="#">Fav #13</a></li>
+				<li><a href="#">Fav #14</a></li>
+				<li><a href="#">Fav #15</a></li>
+				<li><a href="#">Fav #16</a></li>
+				<li><a href="#">Fav #17</a></li>
+				<li><a href="#">Fav #18</a></li>
+			</ul>
+		</div>
+
+		<div id="wrapper">
+			<p id="button">
+				<label for="handler-right" id="right" href="#">Open right →</label> <label for="handler-left" id="left" href="#">←
+					Open left</label>
+			</p>
+
+			<div id="content">
+
+				<p>Cras sed ante. Phasellus in massa. Curabitur dolor eros, gravida et, hendrerit ac, cursus non, massa. Aliquam
+					lorem. In hac habitasse platea dictumst. Cras eu mauris. Quisque lacus. Donec ipsum. Nullam vitae sem at nunc
+					pharetra ultricies. Vivamus elit eros, ullamcorper a, adipiscing sit amet, porttitor ut, nibh. Maecenas adipiscing
+					mollis massa. Nunc ut dui eget nulla venenatis aliquet. Sed luctus posuere justo. Cras vehicula varius turpis.
+					Vivamus eros metus, tristique sit amet, molestie dignissim, malesuada et, urna.</p>
+
+			</div>
+		</div>
+	</pm:page>
+</f:view>

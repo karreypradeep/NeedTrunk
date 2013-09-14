@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+
+	<p:toolbar style="margin-bottom:1px;">
+
+		<c:choose>
+			<c:when test="#{examBean.viewOrNewAction}">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<c:choose>
+						<c:when test="#{sectionExamScheduleBean.scheduleExamFlag}">
+							<h:outputText value="Schedule Exam : #{examBean.exam.name}" style="font-size:20px;" />
+
+						</c:when>
+
+						<c:otherwise>
+							<h:outputText value="Exam details" style="font-size:20px;" />
+
+						</c:otherwise>
+					</c:choose>
+				</p:toolbarGroup>
+			</c:when>
+			<c:otherwise>
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText value="Exams" style="font-size:20px;" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="New exam" icon="ui-icon-document" action="#{examBean.resetExam}" update="@form"
+						disabled="#{!grantedAuthorityBean.userAllowedToCreateExam}">
+						<f:setPropertyActionListener target="#{examBean.viewOrNewAction}" value="true" />
+						<f:setPropertyActionListener target="#{examBean.loadExamTypeBuildingBlockFalg}" value="true" />
+					</p:commandButton>
+				</p:toolbarGroup>
+			</c:otherwise>
+		</c:choose>
+
+	</p:toolbar>
+	<c:choose>
+
+		<c:when test="#{examBean.viewOrNewAction}">
+
+			<ui:include src="/pages/modules/academics/exam.xhtml" />
+
+		</c:when>
+		<c:otherwise>
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{examBean.loadExams}" />
+			</f:metadata>
+			<p:panel style="margin-botton:1px;margin-top:1px;">
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+				<b>Exam details for branch per academic year</b>
+				<br />
+				<br />
+				<b>Follow the steps to create, update or delete exams</b>
+
+				<ul id="hintList_list" class="ui-datalist-data" type="disc">
+					<li class="ui-datalist-item">New exam can be created by clicking the <b>New exam</b> button.
+					</li>
+					<li class="ui-datalist-item">Exam derails can be modified by clicking the view/edit icon.</li>
+					<li class="ui-datalist-item">Exam can be deleted by clicking the delete icon.</li>
+				</ul>
+			</p:panel>
+			<p:dataTable id="datatable" var="exam" value="#{examBean.exams}" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+				<p:column headerText="Label" sortBy="#{exam.name}" filterBy="#{exam.name}" filterMatchMode="contains">
+					<p:commandLink id="viewButton" value="#{exam.name}" title="View" style="margin:0px 0px 0px;float:left;"
+						update="@form" process="@this">
+						<f:setPropertyActionListener value="#{exam}" target="#{examBean.exam}" />
+						<f:setPropertyActionListener target="#{examBean.viewOrNewAction}" value="true" />
+						<f:setPropertyActionListener target="#{examBean.loadSectionExamsFlag}" value="true" />
+						<f:setPropertyActionListener target="#{sectionExamScheduleBean.scheduleExamFlag}" value="false" />
+						<f:setPropertyActionListener target="#{examBean.loadExamTypeBuildingBlockFalg}" value="true" />
+					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="Options" styleClass="options-column">
+					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+						title="Delete" onclick="confirmation.show()" process="@this"
+						disabled="#{!grantedAuthorityBean.userAllowedToRemoveExam}">
+						<f:setPropertyActionListener value="#{exam}" target="#{examBean.exam}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+			<p:confirmDialog id="confirmDialog" message="Are you want to delete the exam?" header="Confirmation"
+				severity="alert" widgetVar="confirmation">
+				<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
+					action="#{examBean.removeExam}" />
+				<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />
+			</p:confirmDialog>
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

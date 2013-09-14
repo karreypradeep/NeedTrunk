@@ -1,0 +1,29 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel id="medical_history_panel" style="border:0px;">
+		<h:panelGrid columns="3" cellpadding="5" columnClasses="column-medical-hist-label,column-medical-hist-value">
+			<p:outputLabel id="stu_curr_using_medi_label" value="#{msg.currently_using_medicines}" for="stu_curr_using_medi" />
+			<p:inputTextarea id="stu_curr_using_medi" cols="75" rows="7" value="#{admissionBean.medicalHistory.currentlyUsingMedicines}" />
+			<p:message id="stu_curr_using_medi_msg" for="stu_curr_using_medi" />
+
+			<p:outputLabel id="stu_allergies_label" value="#{msg.known_allergies}" for="stu_allergies" />
+			<p:inputTextarea id="stu_allergies" cols="75" rows="7" value="#{admissionBean.medicalHistory.knownAllergies}" />
+			<p:message id="stu_allergies_msg" for="stu_allergies" />
+
+			<p:outputLabel id="stu_curr_medi_cond_label" value="#{msg.current_medical_condition}" for="stu_curr_medi_cond" />
+			<p:inputTextarea id="stu_curr_medi_cond" cols="75" rows="7" value="#{admissionBean.medicalHistory.currentMedicalCondition}" />
+			<p:message id="stu_curr_medi_cond_msg" for="stu_curr_medi_cond" />
+
+			<p:outputLabel id="stu_prev_opers_details_label" value="#{msg.previous_operation_details}" for="stu_prev_opers_details" />
+			<p:inputTextarea id="stu_prev_opers_details" cols="75" rows="7" value="#{admissionBean.medicalHistory.previousOperatationDetails}" />
+			<p:message id="stu_prev_opers_details_msg" for="stu_prev_opers_details" />
+
+			<p:outputLabel id="stu_relat_details_label" value="#{msg.relatives_health_condition}" for="stu_relat_details" />
+			<p:inputTextarea id="stu_relat_details" cols="75" rows="7" value="#{admissionBean.medicalHistory.relativesHealthDetails}" />
+			<p:message id="stu_relat_details_msg" for="stu_relat_details" />
+		</h:panelGrid>
+	</p:panel>
+
+</ui:composition>

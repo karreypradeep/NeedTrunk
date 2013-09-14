@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite">
+
+<composite:interface>
+	<composite:attribute name="id" required="true" displayName="id"/>
+	<composite:attribute name="relationModel" required="true" displayName="relation" type="com.apeironsol.nexed.core.model.Relation"/>
+	<composite:attribute name="countryCode" required="true" displayName="countryCde"/>
+	<composite:attribute name="disalbe" type="java.lang.Boolean"/>
+</composite:interface>
+
+<composite:implementation>
+	<h:panelGrid id="edu_panel_grid" columns="2"  cellpadding="5">
+
+			<p:outputLabel id="ed_school_name_label" value="Recent school name" for="ed_school_name"/>
+			<p:inputText id="ed_school_name" value="#{admissionBean.educationHistory.schoolName}" size="30"
+				disabled="#{cc.attrs.disalbe}" />
+			
+
+			<p:outputLabel id="stu_highist_class_label" value="Highest class promoted from school" for="stu_highist_class"  disabled="#{cc.attrs.disalbe}"/>
+			<p:inputText id="stu_highist_class" value="#{admissionBean.educationHistory.highestKlass}" disabled="#{cc.attrs.disalbe}"/>
+
+			
+			<p:outputLabel id="ed_school_type_label" value="Recent school type" for="ed_school_type"/>
+			<p:selectOneRadio id="ed_school_type" value="#{admissionBean.educationHistory.schoolType}" disabled="#{cc.attrs.disalbe}">
+				<f:selectItems value="#{enumConstantsBean.schoolTypes}" var="schoolType" itemLabel="#{schoolType.label}"
+					itemValue="#{schoolType}" />
+			</p:selectOneRadio>
+
+
+			<p:outputLabel id="ed_mediam_label" value="Mediam" for="ed_mediam" disabled="#{cc.attrs.disalbe}"/>
+			<p:selectOneRadio id="ed_mediam" value="#{admissionBean.educationHistory.medium}" disabled="#{cc.attrs.disalbe}">
+				<f:selectItems value="#{enumConstantsBean.mediams}" var="mediam" itemLabel="#{mediam.label}" itemValue="#{mediam}" />
+			</p:selectOneRadio>
+
+			<p:outputLabel id="ed_doj_label" value="Date of joining" for="ed_doj" disabled="#{cc.attrs.disalbe}"/>
+			<p:calendar id="ed_doj" value="#{admissionBean.educationHistory.dateOfjoining}" navigator="true" display="inline"
+				effect="drop" pattern="dd/MM/yyyy" yearRange="1947" disabled="#{cc.attrs.disalbe}"/>
+
+
+			<p:outputLabel id="ed_dor_label" value="Date of relieving" for="ed_dor" disabled="#{cc.attrs.disalbe}"/>
+			<p:calendar id="ed_dor" value="#{admissionBean.educationHistory.dateOfRelieving}" navigator="true" display="inline"
+				effect="drop" pattern="dd/MM/yyyy" yearRange="1947" disabled="#{cc.attrs.disalbe}"/>
+
+
+			<p:outputLabel id="ed_cp_name_label" value="Contact person" for="ed_cp_name" disabled="#{cc.attrs.disalbe}"/>
+			<p:inputText id="ed_cp_name" value="#{admissionBean.educationHistory.contactPersonName}" size="40" disabled="#{cc.attrs.disalbe}"/>
+
+			<h:outputText value="" style="font-weight:bold;" />
+			<h:outputText value="" />
+
+			<h:outputText value="Recent school contact details:" style="font-weight:bold;" />
+			<h:outputText value="" />
+
+			<p:outputLabel id="rec_sch_label" value="Address" for="rec_sch" disabled="#{cc.attrs.disalbe}"/>
+			<p:inputText id="rec_sch" value="#{admissionBean.educationHistory.address.address}" size="40" maxlength="100" disabled="#{cc.attrs.disalbe}"/>
+
+
+			<p:outputLabel id="rec_sch_city_label" value="City" for="rec_sch_city" disabled="#{cc.attrs.disalbe}"/>
+			<p:inputText id="rec_sch_city" value="#{admissionBean.educationHistory.address.city}" disabled="#{cc.attrs.disalbe}"/>
+
+
+			<p:outputLabel id="rec_sch_country_label" value="Country" for="rec_sch_country" disabled="#{cc.attrs.disalbe}"/>
+			<p:selectOneMenu id="rec_sch_country" value="#{admissionBean.recentSchoolCountryCode}" disabled="#{cc.attrs.disalbe}">
+				<f:selectItem itemLabel="Select country" itemValue="" />
+				<f:selectItems value="#{countryBean.countries}" var="country" itemLabel="#{country.name}"
+					itemValue="#{country.iso3Code}" />
+			</p:selectOneMenu>
+
+
+			<p:outputLabel id="rec_sch_state_label" value="State" for="rec_sch_state" disabled="#{cc.attrs.disalbe}"/>
+			<p:inputText id="rec_sch_state" value="#{admissionBean.educationHistory.address.state}" disabled="#{cc.attrs.disalbe}"/>
+
+
+			<p:outputLabel id="rec_sch_zipcode_label" value="Zip code" for="rec_sch_zipcode" disabled="#{cc.attrs.disalbe}"/>
+			<p:inputText id="rec_sch_zipcode" value="#{admissionBean.educationHistory.address.zipCode}" disabled="#{cc.attrs.disalbe}"/>
+
+
+			<p:outputLabel id="rec_sch_officephone_label" value="Office phone" for="rec_sch_officephone" disabled="#{cc.attrs.disalbe}"/>
+			<p:inputText id="rec_sch_officephone" value="#{admissionBean.educationHistory.address.officePhoneNr}" disabled="#{cc.attrs.disalbe}"/>
+
+
+			<p:outputLabel id="rec_sch_email_label" value="Email" for="rec_sch_email"/>
+			<p:inputText id="rec_sch_email" value="#{admissionBean.educationHistory.address.email}" disabled="#{cc.attrs.disalbe}"/>
+
+		</h:panelGrid>
+</composite:implementation>
+
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<c:choose>
+		<c:when test="#{purchaseOrderItemBean.viewOrNewAction}">
+			<p:panel id="purchase_order_item_panel" style="margin-bottom:10px;">
+
+				<h:panelGrid columns="3" id="purchase_order_item_grid" cellpadding="4" style="border:0px;">
+
+					<p:outputLabel id="purchase_order_item_name_label" value="Item name" for="purchase_order_item_name" />
+					<p:inputText id="purchase_order_item_name" value="#{purchaseOrderItemBean.purchaseOrderItem.name}" size="30" />
+					<p:message id="purchase_order_item_name_msg" for="purchase_order_item_name" />
+
+					<p:outputLabel id="quantity_label" value="Quantity" for="quantity" />
+					<p:inputText id="quantity" value="#{purchaseOrderItemBean.purchaseOrderItem.quantity}" size="20" maxlength="20">
+						<f:validateDoubleRange minimum="0" />
+						<f:convertNumber maxFractionDigits="0" groupingUsed="false" />
+						<p:ajax process="@this purchase_order_item_name" update="total_amount"
+							listener="#{purchaseOrderItemBean.onChangeQuantity}" />
+					</p:inputText>
+					<p:message id="quantity_msg" for="quantity" />
+
+					<p:outputLabel id="price_per_unit_label" value="Price per unit" for="price_per_unit" />
+					<p:inputText id="price_per_unit" value="#{purchaseOrderItemBean.purchaseOrderItem.pricePerItem}" size="20"
+						maxlength="20">
+						<f:validateDoubleRange minimum="0" />
+						<f:convertNumber maxFractionDigits="2" groupingUsed="false" pattern="000.00" />
+						<p:ajax process="@this purchase_order_item_name" update="total_amount"
+							listener="#{purchaseOrderItemBean.onChangePricePerUnit}" />
+					</p:inputText>
+					<p:message id="price_per_unit_msg" for="price_per_unit" />
+
+					<p:outputLabel id="total_amount_label" value="Total amount" for="total_amount" />
+					<p:inputText id="total_amount" value="#{purchaseOrderItemBean.totalAmountCostForItem}" size="20" maxlength="20"
+						disabled="true">
+						<f:convertNumber pattern="000.00" />
+					</p:inputText>
+					<p:message id="total_amount_msg" for="total_amount" />
+
+				</h:panelGrid>
+				<p:commandButton id="purchase_order_save" value="Save" action="#{purchaseOrderItemBean.savePurchaseOrderItem}"
+					update="@form" disabled="#{!purchaseOrderItemBean.purchaseOrderAllowedToChange}" />
+				<p:commandButton id="purchase_order_clear" value="Cancel" immediate="true" update="@form"
+					action="#{purchaseOrderItemBean.calcelAction}" />
+			</p:panel>
+		</c:when>
+
+		<c:otherwise>
+			<p:toolbar style="margin-bottom:1px;">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText value="Items for purchase order with number :  #{purchaseOrderBean.purchaseOrder.purchaseOrderNumber}"/>
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton value="New item" icon="ui-icon-document" action="#{purchaseOrderItemBean.newPurchaseOrderItem}"
+						style="width:100%;" process="@this" update="@form"
+						disabled="#{!purchaseOrderItemBean.purchaseOrderAllowedToChange}">
+						<f:setPropertyActionListener target="#{purchaseOrderItemBean.viewOrNewAction}" value="true" />
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panel style="margin-top:1px;">
+
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+				<b>Create purchase order item.</b>
+				<br />
+				<br />
+				<b>Flowing activities can be done on the purchase order items.</b>
+
+				<ul id="hintList_list" class="ui-datalist-data" type="disc">
+					<li class="ui-datalist-item">A purchase order item can be defined by clicking <strong>"New item"</strong>
+						button. Existing purchase order items defined can be viewed by clicking the <strong>"View"</strong>
+						button
+					</li>
+					<li class="ui-datalist-item">Defined purchase order items can be removed by clicking remove icon.</li>
+				</ul>
+
+			</p:panel>
+			<p:dataTable id="purchase_order_table" var="purchaseOrderItem"
+				value="#{purchaseOrderBean.purchaseOrderItemsForCurrentPurchseOrder}" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+				<p:column headerText="Name" sortBy="#{purchaseOrderItem.name}" filterBy="#{purchaseOrderItem.name}"
+					filterMatchMode="contains">
+					<h:outputText value="#{purchaseOrderItem.name}" />
+				</p:column>
+
+				<p:column headerText="Quantity" sortBy="#{purchaseOrderItem.quantity}" filterBy="#{purchaseOrderItem.quantity}"
+					filterMatchMode="contains">
+					<h:outputText value="#{purchaseOrderItem.quantity}" />
+				</p:column>
+
+				<p:column headerText="Price per unit" sortBy="#{purchaseOrderItem.pricePerItem}"
+					filterBy="#{purchaseOrderItem.pricePerItem}" filterMatchMode="contains">
+					<h:outputText value="#{purchaseOrderItem.pricePerItem}" />
+				</p:column>
+
+				<p:column headerText="Total cost">
+					<h:outputText value="#{purchaseOrderItem.toatlCost}" />
+				</p:column>
+
+					<p:column headerText="Options" styleClass="options-column" exportable="false">
+						<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" action="#{purchaseOrderItemBean.viewPurchaseOrderItem}"
+							title="View" style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
+						<f:setPropertyActionListener value="#{purchaseOrderItem}" target="#{purchaseOrderItemBean.purchaseOrderItem}" />
+					</p:commandLink>
+					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+							process="@this" title="Delete" onclick="confirmation.show()" rendered="#{purchaseOrderItemBean.purchaseOrderAllowedToChange}">
+						<f:setPropertyActionListener value="#{purchaseOrderItem}" target="#{purchaseOrderItemBean.purchaseOrderItem}" />
+					</p:commandLink>
+				</p:column>
+
+			</p:dataTable>
+
+			<p:confirmDialog id="confirmDialog" message="Are you want to delete the purchase order item?" header="Confirmation"
+				severity="alert" widgetVar="confirmation">
+				<p:commandButton id="confirm" value="Yes" update="@form" process="@this" oncomplete="confirmation.hide()"
+					action="#{purchaseOrderItemBean.removePurchaseOrderItem}" />
+				<p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />
+			</p:confirmDialog>
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

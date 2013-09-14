@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components/notifications">
+
+	<f:facet name="header">Academics</f:facet>
+
+	<c:choose>
+
+		<c:when test="#{studentAcademicBean.academicWizardActiveStep == 'examSubjectResults'}">
+
+
+			<h:panelGrid columns="1" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
+
+				<p:commandButton id="back1" value="Back" icon="ui-icon-circle-arrow-w" process="@this" update="@form"
+					style="float:left;">
+					<f:setPropertyActionListener target="#{studentAcademicBean.academicWizardActiveStep}" value="examWiseResults" />
+				</p:commandButton>
+
+
+			</h:panelGrid>
+
+		</c:when>
+
+		<c:when test="#{studentAcademicBean.academicWizardActiveStep == 'subjectExamResults'}">
+
+			<h:panelGrid columns="1" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
+
+				<p:commandButton id="back2" value="Back" icon="ui-icon-circle-arrow-w" process="@this" update="@form"
+					style="float:left;">
+					<f:setPropertyActionListener target="#{studentAcademicBean.academicWizardActiveStep}" value="subjectWiseResults" />
+				</p:commandButton>
+
+
+			</h:panelGrid>
+
+		</c:when>
+
+		<c:otherwise>
+
+			<div style="float: right; top: 4px; position: relative; right: 2px;">
+
+
+
+
+				<p:commandButton id="examWiseResults1" value="Also see exam wise results" icon="ui-icon-calculator" process="@form"
+					update="@form" style="float:left;" actionListener="#{studentAcademicBean.viewStudentExamWiseResults()}"
+					rendered="#{!(studentAcademicBean.academicWizardActiveStep == 'examWiseResults')}" />
+
+				<p:commandButton id="subjectWiseResults1" value="Also see subject wise results" icon="ui-icon-calculator" process="@form"
+					update="@form" style="float:left;" actionListener="#{studentAcademicBean.viewStudentSubjectWiseResults()}" 
+					rendered="#{!(studentAcademicBean.academicWizardActiveStep == 'subjectWiseResults')}" />
+
+
+
+			</div>
+
+		</c:otherwise>
+
+	</c:choose>
+
+
+
+	<p:wizard showNavBar="false" style="margin-top:0px;" step="#{studentAcademicBean.academicWizardActiveStep}"
+		showStepStatus="false">
+
+		<p:tab id="examWiseResults">
+
+			<ui:include src="/pages/modules/academics/student_exam_wise_results.xhtml" />
+		</p:tab>
+
+		<p:tab id="examSubjectResults">
+
+			<ui:include src="/pages/modules/academics/student_exam_subjects_results.xhtml" />
+		</p:tab>
+
+		<p:tab id="subjectWiseResults">
+
+			<ui:include src="/pages/modules/academics/student_subject_wise_results.xhtml" />
+
+		</p:tab>
+
+		<p:tab id="subjectExamResults">
+
+			<ui:include src="/pages/modules/academics/student_subject_exams_results.xhtml" />
+
+		</p:tab>
+
+
+	</p:wizard>
+
+
+
+</ui:composition>

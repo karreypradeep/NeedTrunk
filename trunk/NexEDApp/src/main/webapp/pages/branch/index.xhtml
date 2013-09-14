@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/templates/main.xhtml">
+
+	<ui:define name="tree">
+		<c:if
+			test="#{viewContentHandlerBean.viewContentBranchKlasses or viewContentHandlerBean.viewContentBranchKlassFee}">
+			<f:metadata>
+				<f:event type="preRenderView"
+					listener="#{klassTreeBean.loadKlassTree}" />
+			</f:metadata>
+			<ui:include src="klass_tree.xhtml" />
+		</c:if>
+	</ui:define>
+
+	<ui:define name="body">
+		<c:choose>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchDashboard}">
+				<ui:include src="/pages/branch/dashboard.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchAcademicYears}">
+				<ui:include src="/pages/branch/academic_years.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchBatches}">
+				<ui:include src="/pages/branch/batches.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancialYears}">
+				<ui:include src="/pages/branch/finances/financial_years.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchEmployees}">
+				<ui:include src="/pages/branch/employee/employees.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchSalaries}">
+				<ui:include src="/pages/branch/hrm/salaries.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchKlasses}">
+				<ui:include src="/pages/branch/klasses.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchKlassFee}">
+				<ui:include src="/pages/modules/financial/klass_fee.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchSections}">
+				<ui:include src="/pages/branch/sections.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancesAssertsAndLiabilities}">
+				<ui:include
+					src="/pages/branch/finances/financial_asserts_liabilities.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancesFeesAndSalariesDetails}">
+				<ui:include
+					src="/pages/branch/finances/finances_fees_and_salaries_details.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancesIncomeAndExpenses}">
+				<ui:include
+					src="/pages/branch/finances/financial_investment_and_expense.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancesPurchases}">
+				<ui:include src="/pages/branch/finances/financial_purchases.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancesInvoiceAndSuppliers}">
+				<ui:include
+					src="/pages/branch/finances/financial_invoice_suppliers.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchExams}">
+				<ui:include src="/pages/modules/academics/exams.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchAdmissions}">
+				<ui:include src="/pages/modules/core/admissions.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchStudents and grantedAuthorityBean.userAllowedToAccessStudents}">
+				<ui:include src="/pages/branch/students.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchTransportationPickupPoints}">
+				<ui:include src="/pages/branch/transportation/pickup_points.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchTransportationRoutes}">
+				<ui:include src="/pages/branch/transportation/routes.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchTransportationVehicals}">
+				<ui:include src="/pages/branch/transportation/vehicles.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentApproveRefundAndDeductFee}">
+				<ui:include
+					src="/pages/modules/financial/process_pending_fee_transactions.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchPromoteTransferDemoteStudents}">
+				<ui:include
+					src="/pages/branch/promote_transfer_demote_students.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentFinancialBranchLevelFee}">
+				<ui:include src="/pages/modules/financial/branch_level_fees.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentFinancialKlassLevelFee}">
+				<ui:include src="/pages/modules/financial/klass_level_fees.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchImport}">
+				<ui:include src="/pages/branch/import_admissions.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchExport}">
+				<ui:include src="/pages/branch/branch_export.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancesBankAccounts}">
+				<ui:include src="/pages/branch/finances/branch_bank_accounts.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancesCreditAccounts}">
+				<ui:include
+					src="/pages/branch/finances/branch_credit_accounts.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFinancesBalanceSheet}">
+				<ui:include src="/pages/branch/finances/branch_balance_sheets.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchReportsStudentsGeneral}">
+				<ui:include src="/pages/branch/reports/student_reports.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchReportsFinancial}">
+				<ui:include src="/pages/branch/reports/financial_reports.xhtml" />
+			</c:when>
+
+			<c:otherwise>
+				<p:panel header="Unauthorized access !!">
+
+
+
+					<div class="ui-apeironsol-body-header">
+						<h:outputText value="**Unauthorized access !!**" />
+					</div>
+					<br />
+								Dear User, 
+									<br />
+					<br />
+					<p:spacer width="20" />You are seeing this message because, you don't have access to students.
+									<br />
+					<p:spacer width="20" />Please contact your system administrator for more detais.
+									
+									<br />
+					<br />	
+									Best Regards,
+									<br />	
+									System Administrator.
+									<br />	
+									Powered by apeironsol, all copyrights reserved.
+				
+				
+
+			</p:panel>
+			</c:otherwise>
+
+		</c:choose>
+	</ui:define>
+
+</ui:composition>
+</html>

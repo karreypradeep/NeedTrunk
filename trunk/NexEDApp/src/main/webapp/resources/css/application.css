@@ -1,0 +1,472 @@
+/*
+ * apeironsol UI CSS Framework 1.0.0
+ *
+ * Copyright 2012, apeironsol (pradeep@apeironsol.com)
+ * 
+ */
+html {
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font: normal 12px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
+	height: 100%;
+	min-height: 100%;
+	-webkit-background-size: auto 50px;
+	-moz-background-size: auto 50px;
+	-o-background-size: auto 50px;
+	background-size: 100% 93px;
+}
+
+#page {
+	margin: 0 auto;
+	padding: 0px 2px;
+}
+
+#header { /**background-color: #3B5998;
+	border-bottom: 1px solid #133783;**/
+	height: 70px;
+	margin-bottom: 3px;
+	overflow: hidden;
+	min-width: 1160px;
+}
+
+#page-content {
+	min-width: 1160px;
+	clear: both;
+	padding: 1px .5px 0px;
+	clear: both;
+	height: 97%;
+	border-radius: 5px;
+	border-bottom: 1px solid #dddddd;
+}
+
+#page-content .side-bar {
+	box-shadow: 0px 8px 10px #888888;
+	float: left;
+	width: 15%;
+	overflow: auto;
+}
+
+#page-content .side-bar-panel {
+	border: 0px solid #dddddd;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	margin-right: 3px;
+}
+
+#page-content .content-container {
+	float: right;
+	width: 84.5%;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	overflow: auto;
+}
+
+.clear {
+	clear: both;
+	height: 0%;
+}
+
+#footer {
+	height: 40px;
+	text-align: center;
+	margin-top: 5px;
+	border-radius: 5px;
+	min-width: 1160px;
+}
+
+#header .left {
+	float: left;
+	width: 20%;
+	color: white;
+	box-shadow: 0px 0px 1px 0px rgba(255, 255, 255, 0.43);
+	height: 70px;
+	padding-right: 10px;
+}
+
+#header .middle {
+	float: left;
+	width: 18%;
+	margin-top: 5px;
+	padding-left: 10px;
+}
+
+#header .right {
+	float: right;
+	width: 59%;
+	height: 66px;
+}
+
+#company {
+	height: 40px;
+	margin-left: 7px;
+	float: left;
+	text-decoration: none;
+}
+
+#header .left-company {
+	margin-left: 7px;
+	float: left;
+	text-decoration: none;
+}
+
+#header .company-image {
+	height: 40px;
+	margin-left: 2px;
+	float: left;
+	text-decoration: none;
+}
+
+#header .company-image img {
+	margin-top: 1px;
+	max-width: 50px;
+	border: none;
+}
+
+#header .company-name {
+	height: 30px;
+	float: left;
+	margin-top: 10px;
+	color: white;
+	font-size: 18px;
+	overflow-y: hidden;
+}
+
+#header .slogan {
+	float: left;
+	margin-top: 5px;
+	color: white;
+	clear: left;
+}
+
+#top-links {
+	float: right;
+	margin: 5px 1px 0 0;
+	text-align: right;
+}
+
+#top-links li {
+	display: inline;
+	font-size: 11px;
+	display: inline-block;
+}
+
+#top-links li a {
+	color: #fff;
+	padding: 0 2px 0 2px;
+	text-decoration: none;
+	height: 20px;
+	line-height: 20px;
+	color: #d8dfea;
+	display: inline-block;
+	font-weight: bold;
+	text-decoration: none;
+	font: 11px "Lucida Sans Unicode", "Lucida Grande", Geneva, Verdana, Arial, sans-serif;
+}
+
+#top-links li a:hover,#top-links li a:focus,#top-links li a:active {
+	background-color: #4b67a1;
+	color: #fff;
+	outline: none;
+	z-index: 1;
+}
+
+#top-links li a:after {
+	background: #526da4;
+	content: " ";
+	display: block;
+	height: 14px;
+	position: absolute;
+	right: 0;
+	top: 9px;
+	width: 1px
+}
+
+#top-links li a:hover:after {
+	display: none
+}
+
+#nav {
+	clear: both;
+	float: right;
+	margin-top: 15px;
+}
+
+#nav ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+	line-height: 1;
+	z-index: 500;
+}
+
+#nav a {
+	background-image: url('#{facesContext.externalContext.requestContextPath}/images/white-plus.png');
+	background-repeat: no-repeat;
+	display: block;
+	text-decoration: none;
+	color: white;
+	font-size: 13px;
+	font-weight: normal;
+	margin: 0;
+	padding-left: 10px;
+	text-align: left;
+}
+
+#nav li ul {
+	padding-top: 8.4px;
+	back:;
+}
+
+#nav li ul a {
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: normal;
+	background-image: none;
+	color: white;
+	text-align: left;
+	margin: 0;
+	padding: 5px;
+}
+
+#nav li ul a:hover {
+	background-color: #ededed;
+	background-image: none;
+	color: #0263a8;
+	text-align: left;
+	margin: 0;
+	padding: 5px;
+}
+
+#nav li {
+	float: left;
+	padding-right: 15px;
+	list-style: none;
+}
+
+#nav li .submenu {
+	background-color: rgba(59, 89, 152, 0.85);
+}
+
+#nav li.dir {
+	background-image: url(../images/right-arrow.jpg);
+	background-position: right;
+	background-repeat: no-repeat;
+}
+
+#nav li ul {
+	position: absolute;
+	width: 180px;
+	left: -999em;
+}
+
+#nav li ul li {
+	width: 148px;
+	margin: 0;
+	padding: 5px;
+}
+
+#nav li ul ul {
+	margin: -15px 0 0 -163px;
+}
+
+#nav li:hover ul ul,#nav li.sfhover ul ul {
+	left: -999em;
+}
+
+#nav li:hover ul,#nav li li:hover ul,#nav li.sfhover ul,#nav li li.sfhover ul {
+	left: auto;
+}
+
+#nav li:hover,#nav li.sfhover {
+	color: #ffffff;
+}
+
+#nav li:hover,#nav li.sfhover {
+	
+}
+
+#pageNav {
+	margin-right: 1px;
+	float: right;
+	height: 10px;
+	padding-right: 15px;
+	margin-top: 5px;
+	padding-left: 0px;
+}
+
+#pageNav .navItem {
+	color: #fff;
+	float: left;
+	display: inline-block;
+}
+
+#pageNav .navItem a {
+	padding-left: 10px;
+	padding-right: 10px;
+	color: #ffffff;
+	display: inline-block;
+	font-weight: bold;
+	line-height: 25px;
+	position: relative;
+	text-decoration: none;
+	vertical-align: top;
+}
+
+#pageNav .navItem a:hover,#pageNav .navItem a:focus,#pageNav .navItem a:active {
+	color: #ffffff;
+	outline: none;
+	z-index: 1
+}
+
+#pageNav .navItem a::after {
+	background: white;
+	content: " ";
+	display: block;
+	height: 15px;
+	position: absolute;
+	right: 0;
+	top: 6px;
+	width: 1px;
+}
+
+#pageNav .navItem a:hover:after {
+	display: none
+}
+
+.column-vertical-align {
+	vertical-align: top;
+}
+
+.column-right-icon {
+	vertical-align: top;
+	width: 20px;
+}
+
+.form-column {
+	vertical-align: top;
+}
+
+.action-column {
+	margin-right: 10px;
+	float: right;
+	vertical-align: top;
+}
+
+.vertical-align-top-column {
+	vertical-align: top;
+}
+
+.options-column {
+	width: 60px;
+}
+
+.table-header-align-left {
+	text-align: left;
+}
+
+.table-header-align-center {
+	text-align: center;
+}
+
+.table-header-align-right {
+	text-align: right;
+}
+
+.table-column-align-center {
+	border: 0px;
+	text-align: center;
+}
+
+.table-row {
+	border: 0px;
+}
+
+.table-column-align-right {
+	text-align: right;
+}
+
+.branch-dashboard-column {
+	vertical-align: top;
+	width: 50%;
+}
+
+.subject-elective-column {
+	vertical-align: top;
+	width: 20%;
+}
+
+.subject-actual-column {
+	vertical-align: top;
+}
+
+.payments-data-column {
+	vertical-align: top;
+}
+
+.payments-menu-column {
+	vertical-align: top;
+	width: 17%;
+}
+
+.payments-menu-right-align {
+	vertical-align: top;
+	align: right;
+}
+
+.payment-grid-columm-nowrap {
+	white-space: nowrap;
+}
+
+.columm-nowrap {
+	white-space: nowrap;
+}
+
+.column-medical-hist-label {
+	width: 25%;
+}
+
+.column-medical-hist-value {
+	width: 40%;
+}
+
+.adm-conf-label {
+	width: 25%;
+}
+
+.adm-conf-value {
+	width: 75%;
+}
+
+.column-medical-hist-label {
+	width: 25%;
+}
+
+.column-medical-hist-value {
+	width: 70%;
+}
+
+.noheader.ui-datatable table thead {
+	display: none;
+}
+
+.ui-datatable.borderless .ui-datatable-data tr,.ui-datatable.borderless .ui-datatable-data-empty tr,.ui-datatable.borderless .ui-datatable-data td,.ui-datatable.borderless .ui-datatable-data-empty td,.ui-datatable.borderless .ui-datatable-data thead th,.ui-datatable.borderless .ui-datatable-data-empty thead th,.ui-datatable.borderless .ui-datatable-data thead,.ui-datatable.borderless .ui-datatable-data-empty thead
+	{
+	border-style: none;
+}
+
+.ui-biz-datatable-boderless.ui-datatable table tr {
+	border-style: none;
+	!
+	important;
+}
+
+.ui-biz-datatable-boderless table tr * {
+	border-radius: 0px !important;
+	text-align: left;
+}

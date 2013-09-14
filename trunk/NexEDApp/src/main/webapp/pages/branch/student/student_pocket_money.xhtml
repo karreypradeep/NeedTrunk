@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	
+	<f:facet name="header">Pocket Money</f:facet>
+	
+	<c:choose>
+		<c:when test="#{studentPocketMoneyBean.viewOrNewAction}">
+			<p:toolbar style="margin-bottom:1px;">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText
+						value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.studentPocketMoneyTransactionTypeConstant.label} pocket money" style="font-size: 16px; font-weight:bold"/>
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<p:panel id="student_pocket_money_panel" style="margin-bottom:10px;">
+				<f:facet name="header">
+					<span style="float: left"> <h:outputLabel value="Balance pocket money as of"
+							style="font-size: 12px; font-weight:bold;" /> <p:spacer width="5" /> <h:outputText
+							value="#{sessionBean.currentDate}" style="font-size: 12px; font-weight:bold">
+							<f:convertDateTime pattern="dd/MM/yyyy :" timeZone="#{sessionBean.defaultTimeZone}" />
+						</h:outputText> <p:spacer width="5" /> <h:outputText value="#{studentPocketMoneyBean.balancePocketMoney}"
+							style="font-size: 12px; font-weight:bold;color:red">
+							<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+						</h:outputText>
+					</span>
+				</f:facet>
+
+				<h:panelGrid columns="3" id="student_pocket_money_grid" cellpadding="4" style="border:0px;">
+
+					<p:outputLabel id="student_pocket_amount_label" value="Amount" for="student_pocket_amount" />
+					<p:inputText id="student_pocket_amount" value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.amount}"
+						required="true">
+						<p:ajax process="@this" update="@this" />
+					</p:inputText>
+					<p:message id="student_pocket_amount_msg" for="student_pocket_amount" />
+
+					<p:outputLabel id="student_pocket_money_date_label" value="Date" for="student_pocket_money_date" />
+					<p:calendar id="student_pocket_money_date"
+						value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.depositOrWithdrawDate}" navigator="true" display="inline"
+						effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" mindate="#{studentBean.studentAcademicYear.academicYear.startDate}" maxdate="#{sessionBean.currentDate}">
+						<p:ajax event="dateSelect" update="@this" process="@this" />
+					</p:calendar>
+					<p:message id="student_pocket_money_date_msg" for="student_pocket_money_date" />
+
+					<c:if test="#{studentPocketMoneyBean.displayPaymentMode}">
+						<p:outputLabel value="Select payment mode" for="payment_type" />
+						<p:selectOneMenu id="payment_type" value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.paymentMethod}"
+							required="true">
+							<f:selectItem itemLabel="Select payment method" itemValue="" />
+							<f:selectItems value="#{studentPocketMoneyBean.paymentMethodsConstants}" var="paymentMethod"
+								itemLabel="#{paymentMethod.label}" itemValue="#{paymentMethod}" />
+							<p:ajax process="@this" update="@form" />
+						</p:selectOneMenu>
+						<p:message id="payment_type_msg" for="payment_type" />
+					</c:if>
+					<c:if test="#{studentPocketMoneyBean.displayBankDetailsForPaymentTypeCheque}">
+						<p:outputLabel id="cheque_nr_label" value="Cheque number" for="cheque_nr" />
+						<p:inputText id="cheque_nr" value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.chequeNumber}"
+							required="true" />
+						<p:message id="cheque_nr_msg" for="cheque_nr" />
+
+						<p:outputLabel id="bank_name_label" value="Bank name" for="bank_name" />
+						<p:inputText id="bank_name" value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.bankName}"
+							required="true" />
+						<p:message id="bank_name_msg" for="bank_name" />
+
+						<p:outputLabel id="bank_branch_label" value="Bank branch" for="bank_branch" />
+						<p:inputText id="bank_branch" value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.bankBranch}"
+							required="true" />
+						<p:message id="bank_branch_msg" for="bank_branch" />
+					</c:if>
+
+				</h:panelGrid>
+				<p:commandButton id="purchase_order_save" value="Save"
+					action="#{studentPocketMoneyBean.saveStudentPocketMoneyTransaction}" update="@form" disabled="#{studentPocketMoneyBean.studentPocketMoneyTransaction.id != null}"/>
+				<p:commandButton id="purchase_order_clear" value="Cancel" immediate="true" update="@form"
+					action="#{studentPocketMoneyBean.calcelAction}" />
+			</p:panel>
+		</c:when>
+
+		<c:otherwise>
+			<ui:include src="student_pocket_money_table.xhtml" />
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

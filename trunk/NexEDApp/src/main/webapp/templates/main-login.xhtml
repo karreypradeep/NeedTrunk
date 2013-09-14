@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+<f:view contentType="text/html">
+	<h:head>
+		<!-- Mimic Internet Explorer 8 -->
+		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
+		<meta http-equiv="CACHE-CONTROL" content="NO-CACHE" />
+		<meta http-equiv="EXPIRES" content="01 Jan 1970 00:00:00 GMT" />
+		<meta http-equiv="PRAGMA" content="NO-CACHE" />
+		<title>Education management system</title>
+		<script type="text/javascript">
+			window.history.forward();
+			function noBack() {
+				window.history.forward();
+			}
+		</script>
+	</h:head>
+	<h:body onload="noBack();" onpageshow="if (event.persisted) noBack();" onunload="">
+		<h:outputStylesheet library="css" name="apeironsol.css" target="head" />
+		<h:outputStylesheet library="css" name="application.css" target="head" />
+		<h:outputStylesheet library="css" name="application-site.css" target="head" />
+		<h:outputScript library="js" name="jquery.slider.min.js" target="head" />
+
+		<div id="page">
+			<h:form id="form" prependId="false">
+			
+				<ui:include src="/templates/includes/session-timeout.xhtml" />
+
+
+				<!-- Custom CSS styles -->
+				<style type="text/css">
+						/*Red background*/
+						#ajaxErrorHandlerDialog\:modal {
+								background: #f60;
+						}
+				</style>
+
+				<ui:include src="/templates/includes/ajax-error-handler.xhtml"/>
+				
+				<div id="header" class="ui-apeironsol-page-header">
+					<div class="left">
+
+						<div id="company">
+
+							<div class="company-name">#{organizationBean.organization.name != null ? organizationBean.organization.name
+								: 'Your Organization'}</div>
+						</div>
+
+
+					</div>
+
+					<div class="middle">
+						<h:outputLabel value=" Welcome : #{sessionBean.prinipal}" style="float: left; color: white; font-weight: bold;"
+							rendered="#{loginBean.loggedIn}" />
+					</div>
+
+
+
+					<div class="right">
+
+
+						<ui:include src="/templates/includes/main-header-menu.xhtml" />
+
+
+
+						<ui:include src="/templates/includes/main-header-nav.xhtml" />
+
+
+					</div>
+				</div>
+				<div id="page-content" class="ui-apeironsol-welcome-img">
+					<div class="content-container">
+						<ui:insert name="body">
+                        [BODY]
+                    </ui:insert>
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div id="footer" class="ui-apeironsol-footer" style="margin-top: 7px;">
+					<div style="padding-top: 10px;">
+						<ui:include src="/templates/includes/footer.xhtml" />
+					</div>
+				</div>
+			</h:form>
+		</div>
+
+	</h:body>
+</f:view>
+</html>

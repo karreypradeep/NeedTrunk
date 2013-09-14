@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+
+	<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			//console.log("xhr : " +xhr);
+			//console.log("status : " +status);
+			//console.log("validationFailed   : " + args.isValid)
+			//console.log("isValid   : " + args.isValid)
+			if (!args.validationFailed) {
+				if (args.isValid) {
+					dlg.hide();
+					updatetable();
+					return;
+				} 
+			} 
+
+			dlg.show();
+			
+		}
+	</script>
+
+	<p:remoteCommand name="updatetable" process="@none" update="@form"/>
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{employeeBean.loadEmployeeBuildingBlocks}" />
+		<f:event type="preRenderView" listener="#{employeeDesignationBean.loadEmployeeDesignations()}" />
+	</f:metadata>
+
+	<p:panel id="emp_dsg_panel" widgetVar="">
+
+		<h:panelGrid columns="2" columnClasses="form-column,action-column" width="100%">
+
+			<h:panelGrid columns="6" cellpadding="5">
+
+				<p:outputLabel id="emp_desig_label" value="Designation" for="emp_desig" />
+				<p:selectOneMenu id="emp_desig" style="width:152px;" required="true" value="#{employeeDesignationBean.employeeDesignation.designation}"
+					converter="buildingBlockConverter">
+					<f:selectItem itemLabel="Select designation" itemValue="" />
+					<f:selectItems value="#{employeeBean.buildingBlockTypeDesignations}" var="designationTypeBuildingBlock" itemLabel="#{designationTypeBuildingBlock.name}"
+						itemValue="#{designationTypeBuildingBlock}" />
+				</p:selectOneMenu>
+				<p:message id="emp_desig_msg" for="emp_desig" />
+
+				<p:outputLabel id="emp_sd_label" value="Start date" for="emp_sd" />
+				<p:calendar id="emp_sd" value="#{employeeDesignationBean.employeeDesignation.startDate}" navigator="true" display="inline" effect="drop"
+					pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+				<p:message id="emp_sd_msg" for="emp_sd" />
+
+				<p:outputLabel id="emp_dept_label" value="Department" for="emp_dept" />
+				<p:selectOneMenu id="emp_dept" style="width:152px;" required="true" value="#{employeeDesignationBean.employeeDesignation.department}"
+					converter="buildingBlockConverter">
+					<f:selectItem itemLabel="Select department" itemValue="" />
+					<f:selectItems value="#{employeeBean.buildingBlockTypeDepartments}" var="designationTypeBuildingBlock" itemLabel="#{designationTypeBuildingBlock.name}"
+						itemValue="#{designationTypeBuildingBlock}" />
+				</p:selectOneMenu>
+				<p:message id="emp_dept_msg" for="emp_dept" />
+
+
+
+				<p:outputLabel id="emp_ed_label" value="End date" for="emp_ed" />
+				<p:calendar id="emp_ed" value="#{employeeDesignationBean.employeeDesignation.endDate}" navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy"
+					yearRange="1900" disabled="true" />
+				<p:message id="emp_ed_msg" for="emp_ed" />
+
+				<p:outputLabel id="emp_type_label" value="Employment Type" for="emp_type" />
+				<p:selectOneMenu id="emp_type" style="width:152px;" required="true" value="#{employeeDesignationBean.employeeDesignation.employmentType}">
+					<f:selectItem itemLabel="Select employment type" itemValue="" />
+					<f:selectItems value="#{enumConstantsBean.employmentTypes}" var="employeeType" itemLabel="#{employeeType.label}" itemValue="#{employeeType}" />
+				</p:selectOneMenu>
+				<p:message id="emp_type_msg" for="emp_type" />
+
+			</h:panelGrid>
+
+
+			<h:panelGrid columns="1" cellpadding="5">
+
+				<p:commandButton id="emp_des_close" value="Close designation" process="@this" icon="ui-icon-circle-close" title="Close current designation" update="dlgId"
+					oncomplete="dlg.show();">
+
+					<f:setPropertyActionListener target="#{employeeDesignationBean.designationCloseDate}" value="" />
+
+				</p:commandButton>
+
+			</h:panelGrid>
+
+		</h:panelGrid>
+		<br />
+
+
+		<p:commandButton id="emp_des_reset" value="Reset" update="@form" process="@this" icon="ui-icon-circle-arrow-w" title="#{msg.cancel}"
+			actionListener="#{employeeDesignationBean.resetEmployeeDesignation()}" />
+
+		<p:commandButton id="emp_des_new" value="New designation" process="emp_dsg_panel" action="#{employeeDesignationBean.createNewEmployeeDesignation()}"
+			update="@form" icon="ui-icon-circle-check" title="Creare new designation" />
+
+
+	</p:panel>
+
+	<p:blockUI block="form" trigger="emp_des_new">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
+
+
+	<br />
+	<br />
+
+
+	<p:dataTable id="designations_table" var="employeeDesignation" value="#{employeeDesignationBean.employeeDesignations}" paginator="true" rows="10"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;" widgetVar="employee_designations">
+
+		<f:facet name="header">
+			<h:outputLabel value="Designations history" style="float:left;padding:5px;" />
+		</f:facet>
+
+		<p:column headerText="Designation" sortBy="#{employeeDesignation.designation.name}" filterBy="#{employeeDesignation.designation.name}">
+
+			<p:commandLink id="descViewLink" value="#{employeeDesignation.designation.name}" title="View" process="@this" update="@form">
+				<f:setPropertyActionListener target="#{employeeDesignationBean.employeeDesignation}" value="#{employeeDesignation}" />
+			</p:commandLink>
+
+		</p:column>
+
+		<p:column headerText="Employment Type" sortBy="#{employeeDesignation.employmentType.label}" filterBy="#{employeeDesignation.employmentType.label}">
+			<h:outputText value="#{employeeDesignation.employmentType.label}" />
+		</p:column>
+
+
+		<p:column headerText="Start Date" sortBy="#{employeeDesignation.startDate}" filterBy="#{employeeDesignation.startDate}">
+			<h:outputLabel value="#{employeeDesignation.startDate}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputLabel>
+		</p:column>
+
+
+		<p:column headerText="End Date" sortBy="#{employeeDesignation.endDate}" filterBy="#{employeeDesignation.endDate}">
+			<h:outputLabel value="#{employeeDesignation.endDate}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputLabel>
+		</p:column>
+
+
+		<p:column headerText="Status">
+			<h:outputText value="#{employeeDesignation.endDate == null ? 'Active' : 'Closed'}" />
+		</p:column>
+
+
+		<p:column headerText="Options" styleClass="options-column">
+			<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;" process="@this" title="Delete"
+				onclick="confirmation.show()">
+				<f:setPropertyActionListener value="#{employeeDesignation}" target="#{employeeDesignationBean.employeeDesignation}" />
+			</p:commandLink>
+		</p:column>
+
+
+	</p:dataTable>
+
+	<p:confirmDialog id="confirmDialogEmployeeDesignation" message="Are you want to delete the employee designation?" header="Confirmation" severity="alert"
+		widgetVar="confirmation">
+		<p:commandButton id="confirmEmployeeDesignation" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
+			action="#{employeeDesignationBean.removeEmployeeDesignation()}" />
+		<p:commandButton id="declineEmployeeDesignation" value="Not Yet" onclick="confirmation.hide()" type="button"
+			action="#{employeeDesignationBean.resetEmployeeDesignation()}" />
+	</p:confirmDialog>
+
+
+	<p:dialog id="dlgId" header="Close current designation" widgetVar="dlg" resizable="false" modal="true">
+
+
+		<p:messages id="dialogMessages" globalOnly="true" autoUpdate="true" />
+
+		<h:panelGrid id="close_details_grid" columns="3">
+
+			<p:outputLabel id="dsg_cd_label" value="Enter designation close date" for="dsg_cd" />
+			<p:calendar id="dsg_cd" value="#{employeeDesignationBean.designationCloseDate}" navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy"
+				yearRange="1900" required="true" />
+			<p:message id="dsg_cd_msg" for="dsg_cd" />
+
+
+		</h:panelGrid>
+
+
+
+		<p:commandButton value="Close current designation" actionListener="#{employeeDesignationBean.closeCurrentDesignation()}"
+			oncomplete="handleComplete(xhr, status, args)" process="dlgId" icon="ui-icon-circle-close" update="dlgId" />
+
+	</p:dialog>
+
+</ui:composition>

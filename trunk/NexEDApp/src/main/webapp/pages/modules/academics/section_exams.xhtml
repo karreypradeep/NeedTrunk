@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<c:choose>
+
+		<c:when test="#{sectionExamsBean.sectionExamSubjectFlag}">
+				<ui:include src="/pages/modules/academics/section_exam_subject.xhtml"></ui:include>
+	
+		</c:when>
+
+		<c:otherwise>
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{sectionExamsBean.buildSectionExamTreeTable()}" />
+			</f:metadata>
+
+				<p:treeTable value="#{sectionExamsBean.root}" var="sectionExamTree">
+
+					<p:column headerText="Exam Name">
+						<p:commandLink value="#{sectionExamTree.name}" rendered="#{sectionExamTree.optionsNode}"
+							action="#{sectionExamsBean.viewSectionSubjectExamDetailsForStudents()}" process="@this" update="@form">
+							
+							
+							<f:setPropertyActionListener target="#{sectionExamsBean.sectionExam}"
+								value="#{sectionExamTree.sectionExam}" />
+								
+							<f:setPropertyActionListener target="#{sectionExamsBean.subject}"
+								value="#{sectionExamTree.subject}" />
+
+							<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamSubject}"
+								value="#{sectionExamTree.sectionExamSubject}" />
+
+						</p:commandLink>
+
+						<h:outputLabel value="#{sectionExamTree.name}" rendered="#{!sectionExamTree.optionsNode}" />
+					</p:column>
+
+					<p:column headerText="Scheduled Date">
+						<h:outputLabel value="#{sectionExamTree.scheduledDate}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputLabel>
+					</p:column>
+
+					<p:column headerText="Start time">
+						<h:outputLabel value="#{sectionExamTree.startTime}">
+							<f:convertDateTime pattern="hh:mm a" />
+						</h:outputLabel>
+					</p:column>
+
+					<p:column headerText="End time">
+						<h:outputLabel value="#{sectionExamTree.endTime}">
+							<f:convertDateTime pattern="hh:mm a" />
+						</h:outputLabel>
+					</p:column>
+
+					<p:column headerText="Pass marks">
+						<h:outputLabel value="#{sectionExamTree.passMarks}">
+							<f:convertNumber pattern="0.00" />
+						</h:outputLabel>
+					</p:column>
+
+					<p:column headerText="Maximim marks">
+						<h:outputLabel value="#{sectionExamTree.maximumMarks}">
+							<f:convertNumber pattern="0.00" />
+						</h:outputLabel>
+					</p:column>
+
+
+				</p:treeTable>
+
+
+
+		</c:otherwise>
+
+	</c:choose>
+
+
+
+
+</ui:composition>

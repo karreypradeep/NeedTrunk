@@ -1,0 +1,49 @@
+<!--  This document is a part of the source code and related artifacts for EMSystem.
+      www.apeironsol.com  
+      Copyright © 2012 apeironsol
+ -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:toolbar id="toolbar_header" style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="#{msg.organization}" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+
+	<p:messages id="org_msgs" />
+
+	<p:panel>
+		<h:panelGrid columns="2" id="org_grid" cellpadding="10">
+			<p:outputLabel id="org_name_label" value="#{msg.organization_name}" for="org_name" />
+			<p:inputText id="org_name" value="#{organizationBean.organization.name}" size="65" maxlength="100"
+				disabled="#{organizationBean.organization.locked}" required="true" />
+
+			<p:outputLabel id="org_type_label" value="#{msg.Organization_type}" for="org_type" />
+			<p:selectOneMenu id="org_type" value="#{organizationBean.organization.registrationType}"
+				disabled="#{organizationBean.organization.locked}" required="true">
+				<f:selectItem itemLabel="Select organization type" itemValue="" />
+				<f:selectItems value="#{organizationBean.registrationTypes}" var="registrationType"
+					itemLabel="#{registrationType.label}" itemValue="#{registrationTyped}" />
+			</p:selectOneMenu>
+		</h:panelGrid>
+
+
+		<p:commandButton id="org_save" value="#{msg.save}" update="@form" action="#{organizationBean.saveOrganization}"
+			disabled="#{organizationBean.organization.locked || !grantedAuthorityBean.userAllowedToCreateOrganization}"
+			style="width:80px;" icon="ui-icon-circle-check">
+			<f:setPropertyActionListener target="#{organizationBean.organization.locked}" value="true" />
+		</p:commandButton>
+		<p:commandButton id="org_lock" value="#{msg.lock}" update="@form" action="#{organizationBean.lockUnlockOrganization}"
+			rendered="#{organizationBean.disableOrganization and !organizationBean.organization.locked}" icon="ui-icon-locked"
+			disabled="#{!grantedAuthorityBean.userAllowedToLockOrganization}" />
+		<p:commandButton id="org_unlock" value="#{msg.unlock}" update="@form"
+			action="#{organizationBean.lockUnlockOrganization}"
+			rendered="#{organizationBean.disableOrganization and organizationBean.organization.locked}" icon="ui-icon-unlocked"
+			disabled="#{!grantedAuthorityBean.userAllowedToUnlockOrganization}" />
+
+	</p:panel>
+
+</ui:composition>

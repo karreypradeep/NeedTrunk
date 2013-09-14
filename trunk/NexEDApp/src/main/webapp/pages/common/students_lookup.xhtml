@@ -1,0 +1,90 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<h:form>
+		<p:panel style="margin-top:1px;margin-bottom:10px;" id="students_lookup_panel">
+			<f:facet name="header">
+				<h:outputLabel value="#{msg.search_criteria}" style="font-size: 16px; font-weight:bold;" />
+			</f:facet>
+			<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+			<h:panelGrid id="student_lookup_panel1" columns="2" cellpadding="5">
+
+				<h:panelGrid columns="2" id="student_lookup_panel2" cellpadding="4" style="border:0px;">
+					<p:outputLabel id="student_name_search_label" value="#{msg.student_name}" for="student_name_search" />
+					<p:inputText id="student_name_search" value="#{studentBean.studentSearchCriteria.name}" size="20">
+					</p:inputText>
+
+					<p:outputLabel id="date_of_birth_label" value="#{msg.date_of_birth}" for="date_of_birth" />
+					<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
+						display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
+				</h:panelGrid>
+
+				<h:panelGrid columns="2" id="student_lookup_panel3" cellpadding="4" style="border:0px;">
+					<p:outputLabel id="student_registration_number_search_label" value="#{msg.registration_number}"
+						for="student_registration_number_search" />
+					<p:inputText id="student_registration_number_search"
+						value="#{studentBean.studentSearchCriteria.registrationNumber}" size="20" />
+
+					<p:outputLabel id="student_admission_number_search_label" value="#{msg.admissonNr}"
+						for="student_admission_number_search" />
+					<p:inputText id="student_admission_number_search" value="#{studentBean.studentSearchCriteria.admissionNumber}"
+						size="20" />
+				</h:panelGrid>
+
+			</h:panelGrid>
+			<p:commandButton id="student_lookup_search_button" value="#{msg.search}"
+				action="#{studentBean.searchStudentSectionsBySearchCriteria()}" update="@form" icon="ui-icon-search" process="@form" />
+			<p:commandButton id="student_lookup_reset" value="Reset" update="students_lookup_panel"
+				action="#{studentBean.resetSearchCriteria}" process="@this" icon="ui-icon-refresh" />
+
+			<p:dataTable id="students_table" var="studentSection" value="#{studentBean.studentSectionsBySearchCriteria}"
+				paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="10,15,20" paginatorPosition="bottom" style="margin-top:15px;"
+				currentPageReportTemplate="(Displaying {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})">
+				<f:facet name="header">
+					<h:outputText value="Search Results" style="float:left;margin-top:5px;margin-bottom:5px;" />
+				</f:facet>
+				<p:column sortBy="#{studentSection.studentAcademicYear.student.displayName}"
+					filterBy="#{studentSection.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+					<f:facet name="header">
+							Student name
+				</f:facet>
+					<p:commandLink id="viewLink" value="#{studentSection.studentAcademicYear.student.displayName}" title="View"
+						style="margin:0px 0px 0px;" process="@this" update=":form:parents_panel" action="#{admissionBean.findStudentRelations(studentSection.studentAcademicYear.student)}" oncomplete="parent_lokkup_widget.hide();">
+					</p:commandLink>
+				</p:column>
+				<p:column sortBy="#{studentSection.studentAcademicYear.student.registrationNr}"
+					filterBy="#{studentSection.studentAcademicYear.student.registrationNr}" filterMatchMode="contains">
+					<f:facet name="header">
+							Registration Number
+						</f:facet>
+					<h:outputText value="#{studentSection.studentAcademicYear.student.registrationNr}" />
+				</p:column>
+				<p:column sortBy="#{studentSection.studentAcademicYear.student.admissionNr}"
+					filterBy="#{studentSection.studentAcademicYear.student.admissionNr}" filterMatchMode="contains">
+					<f:facet name="header">
+							Admission number
+						</f:facet>
+					<h:outputText value="#{studentSection.studentAcademicYear.student.admissionNr}" />
+				</p:column>
+				<p:column sortBy="#{studentSection.studentAcademicYear.student.dateOfBirth}"
+					filterBy="#{studentSection.studentAcademicYear.student.dateOfBirth}" filterMatchMode="contains">
+					<f:facet name="header">
+							Date of birth
+						</f:facet>
+					<h:outputText value="#{studentSection.studentAcademicYear.student.dateOfBirth}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputText>
+				</p:column>
+			</p:dataTable>
+		</p:panel>
+
+		<p:blockUI block="form" trigger="parent_lookup">  
+        		Request is processing, please wait<br />
+			<p:graphicImage value="/images/ajax-loader.gif" />
+		</p:blockUI>
+	</h:form>
+</ui:composition>

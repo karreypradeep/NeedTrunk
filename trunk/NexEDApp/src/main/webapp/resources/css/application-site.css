@@ -1,0 +1,146 @@
+/*
+ * apeironsol UI CSS Framework 1.0.0
+ *
+ * Copyright 2012, apeironsol (pradeep@apeironsol.com)
+ * 
+ */
+ 
+ #page {
+	margin: 0 auto;
+	width: 1000px;
+}
+
+#header {
+	min-width: 998px;
+	height: 70px;
+}
+
+#header .middle {
+	width: 18%;
+}
+
+#header .right {
+	float: right;
+	width: 59%;
+	height: 70px;
+}
+
+#page-content {
+	min-height: 520px;
+	min-width: 998px;
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	min-height: 520px;
+	box-shadow: 0px 0px 10px 1px #888888;
+}
+
+#page-content .content-container {
+	float: none;
+	width: 998px;
+	overflow: auto;
+}
+
+#page-content .login {
+	position: relative;
+	margin-top: 118.5px;
+	margin-right: auto;
+	margin-left: auto;
+	border-radius: 4px;
+	padding-right: 15px;
+	box-shadow: 0px 0px 10px 3px #888888;
+	background-color: rgba(255, 255, 255, 0.82);
+}
+
+#page-content .select-branch {
+	background: rgba(255, 255, 255, 0.61);
+	position: relative;
+	margin-top: 118.5px;
+	margin-right: auto;
+	margin-left: auto;
+	border-radius: 4px;
+	padding-right: 15px;
+	width: 300px;
+	box-shadow: 0px 0px 10px 3px #888888;
+}
+
+#footer {
+	min-width: 996px;	
+}
+
+#welcome-text {
+	padding: 0px;
+}
+
+#welcome-text h1 {
+	font-family: 'FS Joey Web Regular', Helvetica, Arial, Verdana, sans-serif;
+	font-size: 17px;
+	color: #154FB6;
+	padding: 1px;
+}
+
+#page-content .homeleft {
+	width: 657px;
+	padding-left: 10px;
+	padding-right: 10px;
+	background-color: #ffffff;
+}
+
+#page-content .homeright {
+	width: 287px;
+	padding: 0px;
+	margin: 0;
+	background-color: #ffffff;
+}
+
+#page-content a.title {
+	color: #154FB6;
+	font-size: 16px;
+}
+
+#page-content a.learnmore {
+	display: block;
+	height: 25px;
+	color: #0263a8;
+	padding-left: 10px;
+	background-image: url(../images/green-plus.gif);
+	background-repeat: no-repeat;
+}
+
+#page-content .boxcopy {
+	
+}
+
+#page-content .box {
+	vertical-align: top;
+	width: 203px;
+	height: 100px;
+	border-right: 1px solid #cccccc;
+	background-color: #ffffff;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 0px;
+}
+
+#page-content .box4 {
+	vertical-align: top;
+	height: 175px;
+	background-color: #ffffff;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-bottom: 0px;
+}
+
+#page-content .boxdata {
+	height: 150px;
+	border-bottom: 1px solid #efefef;
+	margin-bottom: 5px;
+}
+
+.home a:HOVER {
+	opacity: .7;
+}
+
+.home img {
+	border: 0;
+}

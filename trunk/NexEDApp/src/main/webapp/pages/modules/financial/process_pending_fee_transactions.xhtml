@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;font-size:20px;">
+			<h:outputText value="Process pending fee transactions" />
+		</p:toolbarGroup>
+	</p:toolbar>
+
+	<c:choose>
+		<c:when test="#{studentFinancialBean.viewAction}">
+
+			<c:choose>
+
+				<c:when test="#{studentFinancialBean.paymentWizardAciveStep == 'confirmAndSubmitPendingFeeTransaction'}">
+
+					<ui:include src="/pages/modules/financial/student_confirm_and_process_pending_transaction.xhtml" />
+
+				</c:when>
+
+				<c:otherwise>
+
+					<ui:include src="/pages/modules/financial/process_pending_fee_transaction.xhtml" />
+
+
+				</c:otherwise>
+			</c:choose>
+
+		</c:when>
+		<c:otherwise>
+			<p:panel style="margin-top:1px;margin-bottom:10px;">
+
+				<f:facet name="header">
+					<h:outputLabel value="Search Criteria" style="font-size: 16px; font-weight:bold;" />
+				</f:facet>
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+				<h:panelGrid columns="3" id="student_fee_transaction_grid" cellpadding="4" style="border:0px;">
+					<h:panelGrid columns="2" id="student_fee_transaction_grid1" cellpadding="4" style="border:0px;">
+						<p:outputLabel id="student_name_search_label" value="Student name" for="student_name_search" />
+						<p:inputText id="student_name_search" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.name}" size="20">
+						</p:inputText>
+
+						<p:outputLabel id="student_admission_number_search_label" value="Admission number" for="student_admission_number_search" />
+						<p:inputText id="student_admission_number_search" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.admissionNumber}" size="20">
+						</p:inputText>
+
+						<p:outputLabel id="transaction_number_search_label" value="Transaction number" for="transaction_number_search" />
+						<p:inputText id="transaction_number_search" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.transactionNumber}" size="20">
+						</p:inputText>
+
+						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
+						<p:calendar id="from_date" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.fromDate}" navigator="true" display="inline" effect="drop"
+							pattern="dd/MMM/yyyy" size="20" maxlength="20" mindate="{#{sessionBean.currentBranch.startDate}" maxdate="#{studentBean.currentDate}" />
+
+						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
+						<p:calendar id="to_date" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.toDate}" navigator="true" display="inline" effect="drop"
+							pattern="dd/MMM/yyyy" size="20" maxlength="20" mindate="{#{sessionBean.currentBranch.startDate}" maxdate="#{studentBean.currentDate}" />
+
+					</h:panelGrid>
+
+					<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
+
+						<p:outputLabel id="transaction_type_label" value="Transaction type" for="transaction_type" />
+						<p:selectManyMenu id="transaction_type" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.transactionTypes}"
+							style="width:150px;height:60px" converter="studentFeeTransactionTypeConverter">
+							<f:selectItems value="#{enumConstantsBean.studentFeeTransactionTypeConstants}" var="studentFeeTransactionType"
+								itemLabel="#{studentFeeTransactionType.label}" itemValue="#{studentFeeTransactionType}" />
+						</p:selectManyMenu>
+
+						<p:outputLabel id="transaction_status_label" value="Transaction status" for="transaction_status" />
+						<p:selectManyMenu id="transaction_status" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.studentDeeTransactionStatus}"
+							style="width:150px;height:100px" converter="studentFeeTransactionStatusConverter">
+							<f:selectItems value="#{enumConstantsBean.studentFeeTransactionStatusConstantsForRequestOrPending}" var="feesType" itemLabel="#{feesType.label}"
+								itemValue="#{feesType}" />
+						</p:selectManyMenu>
+
+					</h:panelGrid>
+				</h:panelGrid>
+
+				<p:commandButton id="student_fee_transaction_search_buton" value="Search" action="#{studentFinancialBean.searchStudentFeeTransactionsByRequest()}"
+					update="@form" style="width:80px;" icon="ui-icon-search" />
+				<p:spacer width="5px" />
+				<p:commandButton id="student_fee_transaction_reset" value="Reset" update="@form" action="#{studentFinancialBean.resetSearchCriteria}" process="@this"
+					style="width:80px;" icon="ui-icon-refresh" />
+
+				<p:dataTable id="request_for_approval_table" var="studentFeeTransaction" value="#{studentFinancialBean.studentFeeTransactions}" paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:10px;">
+
+					<f:facet name="header">
+						<h:outputLabel value="Search results" style="float:left;margin-top:5px;margin-bottom:5px;" />
+					</f:facet>
+
+					<p:column headerText="Transaction number" sortBy="#{studentFeeTransaction.transactionNr}" filterBy="#{studentFeeTransaction.transactionNr}"
+						filterMatchMode="contains">
+
+						<p:commandLink id="viewButton" value="#{studentFeeTransaction.transactionNr}" title="View" style="margin:0px 0px 0px;float:left;" process="@this"
+							update="@form" action="#{studentFinancialBean.viewStudentFeeTransaction}">
+
+							<f:setPropertyActionListener value="#{studentFeeTransaction}" target="#{studentFinancialBean.studentFeeTransaction}" />
+
+							<f:setPropertyActionListener target="#{studentFinancialBean.viewAction}" value="true" />
+
+							<f:setPropertyActionListener target="#{studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}" value="true" />
+
+						</p:commandLink>
+
+					</p:column>
+
+					<p:column headerText="Student name" sortBy="#{studentFeeTransaction.studentAcademicYear.student.displayName}"
+						filterBy="#{studentFeeTransaction.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+						<h:outputText value="#{studentFeeTransaction.studentAcademicYear.student.displayName}" />
+					</p:column>
+
+					<p:column headerText="Admission number" sortBy="#{studentFeeTransaction.studentAcademicYear.student.admissionNr}"
+						filterBy="#{studentFeeTransaction.studentAcademicYear.student.admissionNr}" filterMatchMode="contains">
+						<h:outputText value="#{studentFeeTransaction.studentAcademicYear.student.admissionNr}" />
+					</p:column>
+
+					<p:column headerText="Type" sortBy="#{studentFeeTransaction.studentFeeTransactionType.label}"
+						filterBy="#{studentFeeTransaction.studentFeeTransactionType.label}" filterMatchMode="contains">
+						<h:outputText value="#{studentFeeTransaction.studentFeeTransactionType.label}" />
+					</p:column>
+
+					<p:column headerText="Amount" sortBy="#{studentFeeTransaction.amount}" filterBy="#{studentFeeTransaction.amount}" filterMatchMode="contains">
+						<h:outputText value="#{studentFeeTransaction.amount}">
+							<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Transaction date" sortBy="#{studentFeeTransaction.transactionDate}" filterBy="#{studentFeeTransaction.transactionDate}"
+						filterMatchMode="contains">
+						<h:outputText value="#{studentFeeTransaction.transactionDate}">
+							<f:convertDateTime pattern="dd/MMM/yyyy" />
+						</h:outputText>
+					</p:column>
+
+					<p:column headerText="Status" sortBy="#{studentFeeTransaction.studentFeeTransactionStatus.label}"
+						filterBy="#{studentFeeTransaction.studentFeeTransactionStatus.label}" filterMatchMode="contains">
+						<h:outputText value="#{studentFeeTransaction.studentFeeTransactionStatus.label}" />
+					</p:column>
+
+				</p:dataTable>
+			</p:panel>
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components" xmlns:pe="http://primefaces.org/ui/extensions">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{admissionBean.loadAllAcademicYearsForCurrentBranch}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadKlasses}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadStudentStatusHistories}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadBatchesForBranch()}" />
+	</f:metadata>
+
+	<c:choose>
+
+		<c:when test="#{admissionBean.admissionStatusAction != null and admissionBean.admissionStatusAction.value == 'inreview'}">
+			<ui:include src="/pages/modules/core/application_review.xhtml" />
+		</c:when>
+
+		<c:when test="#{admissionBean.admissionStatusAction != null and admissionBean.admissionStatusAction.value == 'accepted'}">
+
+			<ui:include src="/pages/modules/core/accept_application.xhtml" />
+
+		</c:when>
+
+		<c:when test="#{admissionBean.admissionStatusAction != null and admissionBean.admissionStatusAction.value == 'admitted'}">
+			<ui:include src="/pages/modules/core/admit_student.xhtml" />
+		</c:when>
+
+		<c:when test="#{admissionBean.admissionStatusAction != null and admissionBean.admissionStatusAction.value == 'rejected'}">
+			<ui:include src="/pages/modules/core/reject_application.xhtml" />
+		</c:when>
+
+		<c:when test="#{admissionBean.admissionStateSetToRollback}">
+
+			<ui:include src="/pages/modules/core/rollback_application_state.xhtml"></ui:include>
+		</c:when>
+
+		<c:otherwise>
+
+			<p:tabMenu activeIndex="#{admissionBean.activeTabIndex}">
+			
+				<p:menuitem value="General" icon="ui-icon-home" action="#{admissionBean.onTabChange}" process="@this" update="@form">
+					<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
+				</p:menuitem>
+				
+				<p:menuitem value="Personal" icon="ui-icon-person" action="#{admissionBean.onTabChange}" process="@this" update="@form">
+					<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="1" />
+				</p:menuitem>
+				
+				<p:menuitem value="Parents" icon="ui-icon-person" action="#{admissionBean.onTabChange}" process="@this" update="@form">
+					<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="2" />
+				</p:menuitem>
+				
+				<p:menuitem value="Previous education" icon="ui-icon-clipboard" action="#{admissionBean.onTabChange}" process="@this" update="@form">
+					<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="3" />
+				</p:menuitem>
+				
+				<p:menuitem value="Contact details" icon="ui-icon-contact" action="#{admissionBean.onTabChange}" process="@this" update="@form">
+					<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="4" />
+				</p:menuitem>
+				
+				<p:menuitem value="Admission Level Fee" icon="ui-icon-note" action="#{admissionBean.onTabChange}" process="@this" update="@form">
+					<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="5" />
+				</p:menuitem>
+				
+				<p:menuitem value="Status History" icon="ui-icon-note" action="#{admissionBean.onTabChange}" process="@this" update="@form">
+					<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="6" />
+					<f:setPropertyActionListener target="#{admissionBean.loadStudentStatusHistoryFlag}" value="true" />
+				</p:menuitem>
+			</p:tabMenu>
+
+			<div class="ui-apeironsol-menu-header" style="padding-bottom: 13px; padding-right: 10px;">
+				<h:outputText value="#{admissionBean.student.displayName}" />
+				<h:outputText value=" / #{admissionBean.student.admissionStatus.label}" />
+				<h:outputText value=" / #{admissionBean.student.admissionNr}" rendered="#{not empty admissionBean.student.admissionNr}" />
+
+				<div style="float: right; margin-bottom: 5px; position: relative; top: -5px; padding-bottom: 3px;">
+					<p:menuButton value="Process Applicaton">
+						<p:menuitem value="Rollback current state" process="@this" update="@form" icon="ui-icon-cart"
+							disabled="#{!admissionBean.admissionStateRollbacked or !grantedAuthorityBean.userAllowedToRollbackAdmission}">
+
+							<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="4" />
+							<f:setPropertyActionListener target="#{admissionBean.admissionStateSetToRollback}" value="true" />
+							<f:setPropertyActionListener target="#{admissionBean.actionComment}" value="" />
+
+						</p:menuitem>
+
+
+						<p:menuitem value="Reject admission" process="@this" update="@form" style="width:160px"
+							disabled="#{!admissionBean.admissionBeRejected  or !grantedAuthorityBean.userAllowedToRejectAdmission}" action="#{admissionBean.resetBeforeReject}"
+							icon="ui-icon-scissors">
+							<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="4" />
+							<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="REJECTED">
+								<f:converter converterId="admissionStatusConverter" />
+							</f:setPropertyActionListener>
+						</p:menuitem>
+						<p:menuitem value="Review admission" process="@this" update="@form" style="width:160px"
+							disabled="#{!admissionBean.admissionBeReviewed  or !grantedAuthorityBean.userAllowedToReviewAdmission}" action="#{admissionBean.resetBeforeReview}"
+							icon="ui-icon-clipboard">
+							<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="4" />
+							<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="INREVIEW">
+								<f:converter converterId="admissionStatusConverter" />
+							</f:setPropertyActionListener>
+							<f:setPropertyActionListener target="#{admissionBean.loadKlassesFlag}" value="true" />
+						</p:menuitem>
+						<p:menuitem value="Accept admission" process="@this" update="@form" style="width:160px"
+							disabled="#{!admissionBean.admissionBeAccepted  or !grantedAuthorityBean.userAllowedToAcceptAdmission}" action="#{admissionBean.resetBeforeAccept}"
+							icon="ui-icon-scissors">
+							<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="4" />
+							<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="ACCEPTED">
+								<f:converter converterId="admissionStatusConverter" />
+							</f:setPropertyActionListener>
+						</p:menuitem>
+					
+						<p:menuitem value="Admit admission" process="@this" update="@form" style="width:160px"
+							disabled="#{!admissionBean.admissionBeAdmitted  or !grantedAuthorityBean.userAllowedToAdmitAdmission}" action="#{admissionBean.resetBeforeAdmit}"
+							icon="ui-icon-star">
+							<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="4" />
+							<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="ADMITTED">
+								<f:converter converterId="admissionStatusConverter" />
+							</f:setPropertyActionListener>
+						</p:menuitem>
+						
+					</p:menuButton>
+				</div>
+			</div>
+
+			<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+			<p:panel>
+			
+				<c:if test="#{admissionBean.activeTabIndex == 0}">
+
+					<ui:include src="/pages/modules/core/admission_details_general.xhtml"/>
+
+					
+				</c:if>
+				
+				<c:if test="#{admissionBean.activeTabIndex == 1}">
+
+					<ui:include src="/pages/modules/core/admission_details_personal.xhtml"/>
+
+					
+				</c:if>
+
+				<c:if test="#{admissionBean.activeTabIndex == 2}">
+				
+					<f:facet name="header">Parents</f:facet>
+				
+					<p:panel id="relation_panel">
+						<biz:input_relation id="relation" relationModel="#{admissionBean.relation}" addressModel="#{admissionBean.relationAddress}" />
+						<p:spacer width="10px" />
+						<p:commandButton id="relationSave" value="Save" update="@form" action="#{admissionBean.saveRelation}" disabled="#{admissionBean.admissionDisabled}"
+							icon="ui-icon-circle-check" style="width:80px;" />
+						<p:spacer width="10px" />
+						<p:commandButton id="relationReset" value="Reset" process="@this" update="relation_panel" style="width:80px;" icon="ui-icon-circle-triangle-w"
+							disabled="#{admissionBean.admissionDisabled}" />
+					</p:panel>
+
+					<p:dataTable id="relations_table" var="relation" value="#{admissionBean.relations}" paginator="true" rows="10"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:10px;">
+
+						<p:column headerText="Relation name">
+							<h:outputText value="#{relation.displayName}" />
+						</p:column>
+
+						<p:column headerText="Date of birth">
+							<h:outputText value="#{relation.dateOfBirth}">
+								<f:convertDateTime pattern="dd/MM/yyyy" />
+							</h:outputText>
+						</p:column>
+
+						<p:column headerText="Relation">
+							<h:outputText value="#{relation.relationType.label}" />
+						</p:column>
+
+						<p:column headerText="Address">
+							<h:outputText value="#{relation.address.displayAddress}" />
+						</p:column>
+
+						<p:column headerText="Region">
+							<h:outputText value="#{relation.address.displayRegion}" />
+						</p:column>
+
+						<p:column headerText="Contact">
+							<h:outputText value="#{relation.address.contactNumber}" />
+						</p:column>
+
+						<p:column headerText="Options" styleClass="options-column">
+							<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" title="View" style="margin:0px 0px 0px;float:left;" process="@this" update="@form"
+								action="#{admissionBean.viewRelation}">
+								<f:setPropertyActionListener value="#{relation}" target="#{admissionBean.relation}" />
+								<f:setPropertyActionListener value="false" target="#{admissionBean.loadRelationsFlag}" />
+							</p:commandLink>
+							<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" action="#{admissionBean.removeRelation}" style="margin:0px 0px 0px;float:right;"
+								title="Delete" process="@this" update="@form">
+								<f:setPropertyActionListener value="#{relation}" target="#{admissionBean.relation}" />
+								<f:setPropertyActionListener value="true" target="#{admissionBean.loadRelationsFlag}" />
+							</p:commandLink>
+						</p:column>
+					</p:dataTable>
+				</c:if>
+
+				<c:if test="#{admissionBean.activeTabIndex == 3}">
+					<ui:include src="/pages/common/education_history.xhtml" />
+
+					<p:commandButton id="educationReset" value="Reset" process="@this" update="@form" style="width:80px;" icon="ui-icon-circle-triangle-w"
+						disabled="#{admissionBean.admissionDisabled}" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton id="educationSave" value="Save" action="#{admissionBean.saveEducationHistory}" process="@form" update="@form"
+						disabled="#{admissionBean.admissionDisabled}" style="width:80px;" icon="ui-icon-circle-check" />
+
+
+
+				</c:if>
+
+				<c:if test="#{admissionBean.activeTabIndex == 4}">
+				
+					<f:facet name="header">Contact address</f:facet>
+					
+					<biz:address addressModel="#{admissionBean.primaryAddress}" />
+					<p:commandButton id="addressReset" value="Reset" process="@this" update="@form" style="width:80px;" icon="ui-icon-circle-triangle-w"
+						disabled="#{admissionBean.admissionDisabled}" />
+
+					<p:spacer width="10px" />
+
+					<p:commandButton id="addressSave" value="Save" action="#{admissionBean.savePrimaryAddress}" update="@form" disabled="#{admissionBean.admissionDisabled}"
+						style="width:80px;" icon="ui-icon-circle-check" />
+
+				</c:if>
+
+				<c:if test="#{admissionBean.activeTabIndex == 5}">
+
+					<ui:include src="/pages/modules/core/admission_level_fee.xhtml"/>
+
+				</c:if>
+
+				<c:if test="#{admissionBean.activeTabIndex == 6}">
+				
+					<f:facet name="header">Status History</f:facet>
+					
+					<p:dataTable id="status_table" var="studentStatusHistory" value="#{admissionBean.studentStatusHistories}" paginator="true" rows="15"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:10px;">
+
+						<p:column headerText="Action time">
+							<h:outputText value="#{studentStatusHistory.auditTimestamp}">
+								<f:convertDateTime pattern="dd/MM/yyyy : hh:mm:ss" />
+							</h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Action taken by">
+							<h:outputText value="#{studentStatusHistory.actionTakenBy}" />
+						</p:column>
+
+						<p:column headerText="Action">
+							<h:outputText value="#{studentStatusHistory.action}" />
+						</p:column>
+
+						<p:column headerText="Comments">
+							<p:commandLink value="View comments" oncomplete="actionDialog.show()" update="@form">
+								<f:setPropertyActionListener target="#{admissionBean.studentStatusHistory}" value="#{studentStatusHistory}" />
+							</p:commandLink>
+						</p:column>
+
+					</p:dataTable>
+				</c:if>
+
+			</p:panel>
+
+		</c:otherwise>
+
+	</c:choose>
+
+	<p:dialog header="Action details" widgetVar="actionDialog" resizable="false" showEffect="explode" hideEffect="explode" width="500" dynamic="true">
+		<h:panelGrid id="display" columns="2" cellpadding="4">
+
+			<h:outputText value="Action" />
+			<h:outputText value="#{admissionBean.studentStatusHistory.action}" />
+
+			<h:outputText value="Action time" />
+			<h:outputText value="#{admissionBean.studentStatusHistory.actionTakenTime}">
+				<f:convertDateTime pattern="dd/MM/yyyy : hh:mm:ss" />
+			</h:outputText>
+
+			<h:outputText value="Action taken by" />
+			<h:outputText value="#{admissionBean.studentStatusHistory.actionTakenBy}" />
+
+			<h:outputText value="Comments" />
+			<h:outputText value="#{admissionBean.studentStatusHistory.comments}" />
+
+		</h:panelGrid>
+	</p:dialog>
+
+</ui:composition>

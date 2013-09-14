@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:messages id="pups_msg1" globalOnly="true" autoUpdate="true" closable="true" />
+
+	<p:panel id="pup_fee_panel" style="margin-bottom:1px;">
+		<h:panelGrid id="new_pup_panelgrid" columns="3" cellpadding="5">
+
+			<p:outputLabel id="academic_year_label" value="#{msg.academicYear}" for="academic_year" />
+			<p:selectOneMenu id="academic_year" value="#{pickUpPointFeeBean.academicYearId}" required="true"
+				requiredMessage="#{model.academic_year_mandatory}">
+				<f:selectItem itemLabel="Select Academic year" itemValue="" />
+				<f:selectItems value="#{pickUpPointFeeBean.activeAcademicYears}" var="academicYear"
+					itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear.id}" />
+				<p:ajax process="@this" update="pickUpPointFeeCatalogsTable" listener="#{pickUpPointFeeBean.onChangeAcademicYear()}" />
+			</p:selectOneMenu>
+			<p:message id="academic_year_msg" for="academic_year" />
+
+			<p:outputLabel id="pup_amt_lbl" value="#{msg.pickUpPointAmount}" for="pup_amt" />
+			<p:inputText id="pup_amt" value="#{pickUpPointFeeBean.pickUpPointFee.amount}" required="true"
+				title="#{msg.pickUpPointAmountTitle}" requiredMessage="#{model.amount_mandatory}">
+				<f:validateDoubleRange minimum="0" />
+				<f:convertNumber maxFractionDigits="2" groupingUsed="false" pattern="000.00" />
+				<p:ajax process="@this" update="pickUpPointFeeCatalogsTable" listener="#{pickUpPointFeeBean.onChangeAmount}" />
+			</p:inputText>
+			<p:message id="pup_amt_msg" for="pup_amt" />
+
+			<p:outputLabel id="pup_pay_freq_lbl" value="#{msg.pickUpPointPaymentFrequency}" for="pup_pay_freq" />
+			<p:selectOneMenu id="pup_pay_freq" value="#{pickUpPointFeeBean.pickUpPointFee.paymentFrequency}" required="true"
+				requiredMessage="#{model.frequency_mandatory}">
+				<f:selectItem itemLabel="Select paymnet frequency" itemValue="" />
+				<f:selectItems value="#{enumConstantsBean.paymentFrequencies}" var="frequency" itemLabel="#{frequency.label}"
+					itemValue="#{frequency}" />
+				<p:ajax process="@this" update="@form" listener="#{pickUpPointFeeBean.onChangePaymentFrequency()}" />
+			</p:selectOneMenu>
+			<p:message id="pup_pay_freq_msg" for="pup_pay_freq" />
+
+			<p:outputLabel id="pup_pay_lbl" value="#{msg.noOfPayments}" for="pup_pay"
+				rendered="#{pickUpPointFeeBean.displayNoOfPayments}" />
+			<p:inputText id="pup_pay" value="#{pickUpPointFeeBean.noOfPayments}"
+				rendered="#{pickUpPointFeeBean.displayNoOfPayments}">
+				<f:validateLongRange minimum="1" maximum="12" />
+				<p:ajax process="@this" update="@form" listener="#{pickUpPointFeeBean.onChangeNumberOfPayments}" />
+			</p:inputText>
+			<p:message id="pup_pay_msg" for="pup_pay" rendered="#{pickUpPointFeeBean.displayNoOfPayments}" />
+
+		</h:panelGrid>
+
+		<p:dataTable id="pickUpPointFeeCatalogsTable" value="#{pickUpPointFeeBean.pickUpPointFeeCatalogs}"
+			var="pickUpPointFeeCatalog" editable="true" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" sortOrder="descending"
+			style="margin-top:10px;margin-bottom:10px;">
+			<p:ajax event="rowEdit" update="@this" />
+			<p:column headerText="Due date" style="width:125px">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{pickUpPointFeeCatalog.dueDate}" style="width:100%">
+							<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:calendar value="#{pickUpPointFeeCatalog.dueDate}" navigator="true" display="inline" effect="drop"
+							pattern="dd/MM/yyyy" mindate="#{pickUpPointFeeBean.academicYear.startDate}"
+							maxdate="#{pickUpPointFeeBean.academicYear.endDate}">
+							<p:ajax event="dateSelect" process="@this" />
+						</p:calendar>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column headerText="Amount" style="width:125px">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{pickUpPointFeeCatalog.amount}" style="width:100%;">
+							<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<f:facet name="input">
+							<p:inputText value="#{pickUpPointFeeCatalog.amount}">
+								<f:convertNumber pattern="000.00" />
+								<p:ajax process="@this" />
+							</p:inputText>
+						</f:facet>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column style="width:20px">
+				<p:rowEditor />
+			</p:column>
+		</p:dataTable>
+
+
+
+		<p:commandButton id="pup_save" value="#{msg.save}" action="#{pickUpPointFeeBean.savePickUpPointFee()}" update="@form"
+			icon="ui-icon-check" title="#{msg.save}" disabled="#{pickUpPointBean.pickUpPoint.active}"/>
+		<p:commandButton id="pup_cancel" value="#{msg.cancel}" update="@form" process="@this" icon="ui-icon-close"
+			title="#{msg.cancel}">
+			<f:setPropertyActionListener target="#{pickUpPointFeeBean.viewOrNewAction}" value="false" />
+		</p:commandButton>
+
+
+	</p:panel>
+
+
+
+
+</ui:composition>

@@ -1,0 +1,3 @@
+Dear Parent,
+We have received payment of ${amount} towards fee for your child ${studentName}.
+Please note transaction number ${transactionNr} for further reference.

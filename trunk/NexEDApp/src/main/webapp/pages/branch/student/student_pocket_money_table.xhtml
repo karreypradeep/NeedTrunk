@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<h:panelGrid columns="2" width="100%">
+		<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
+
+			<p:commandButton id="withdraw" value="With draw" icon="ui-icon-circle-arrow-s" process="@form" update="@form"
+				style="float:left;" action="#{studentPocketMoneyBean.processPocketMoneyWithDraw}"
+				rendered="#{studentPocketMoneyBean.renderWithDrawButton and grantedAuthorityBean.userAllowedToProcessStudentPocketMoneyWithdraw}"/>
+
+			<p:commandButton id="deposit" value="Deposit" icon="ui-icon-circle-arrow-n" process="@form" update="@form"
+				style="float:left;" action="#{studentPocketMoneyBean.processPocketMoneyDeposit}" rendered="#{grantedAuthorityBean.userAllowedToProcessStudentPocketMoneyDeposit}"/>
+
+		</h:panelGrid>
+	</h:panelGrid>
+	<p:dataTable id="purchase_order_table" var="studentPocketMoneyTransaction"
+		value="#{studentPocketMoneyBean.studentPocketMoneyTransactionsByStudentSection}" paginator="true" rows="10"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+		<f:facet name="header">
+			<span style="float: left"> <h:outputLabel value="Balance pocket money as of"
+					style="font-size: 16px; font-weight:bold;" /> <p:spacer width="5" /> <h:outputText
+					value="#{sessionBean.currentDate}" style="font-size: 16px; font-weight:bold">
+					<f:convertDateTime pattern="dd/MM/yyyy :" timeZone="#{sessionBean.defaultTimeZone}" />
+				</h:outputText> <p:spacer width="5" /> <h:outputText value="#{studentPocketMoneyBean.balancePocketMoney}"
+					style="font-size: 16px; font-weight:bold;color:red">
+					<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+				</h:outputText>
+			</span>
+		</f:facet>
+
+		<p:column headerText="Transaction number" sortBy="#{studentPocketMoneyTransaction.transactionNr}"
+			filterBy="#{studentPocketMoneyTransaction.transactionNr}" filterMatchMode="contains">
+			<h:outputText value="#{studentPocketMoneyTransaction.transactionNr}" />
+		</p:column>
+
+		<p:column headerText="Deposit/Withdraw Date" sortBy="#{studentPocketMoneyTransaction.depositOrWithdrawDate}"
+			filterBy="#{studentPocketMoneyTransaction.depositOrWithdrawDate}" filterMatchMode="contains">
+			<h:outputText value="#{studentPocketMoneyTransaction.depositOrWithdrawDate}">
+				<f:convertDateTime pattern="dd/MMM/yyyy" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="Amount" sortBy="#{studentPocketMoneyTransaction.amount}"
+			filterBy="#{studentPocketMoneyTransaction.amount}" filterMatchMode="contains">
+			<h:outputText value="#{studentPocketMoneyTransaction.amount}" />
+		</p:column>
+
+		<p:column headerText="Transaction type"
+			sortBy="#{studentPocketMoneyTransaction.studentPocketMoneyTransactionTypeConstant.label}"
+			filterBy="#{studentPocketMoneyTransaction.studentPocketMoneyTransactionTypeConstant.label}"
+			filterMatchMode="contains">
+			<h:outputText value="#{studentPocketMoneyTransaction.studentPocketMoneyTransactionTypeConstant.label}" />
+		</p:column>
+
+		<p:column headerText="Transaction date" sortBy="#{studentPocketMoneyTransaction.transactionDate}"
+			filterBy="#{studentPocketMoneyTransaction.transactionDate}" filterMatchMode="contains">
+			<h:outputText value="#{studentPocketMoneyTransaction.transactionDate}">
+				<f:convertDateTime pattern="dd/MMM/yyyy" />
+			</h:outputText>
+
+		</p:column>
+
+		<p:column headerText="Payment mode" sortBy="#{studentPocketMoneyTransaction.paymentMethod.label}"
+			filterBy="#{studentPocketMoneyTransaction.paymentMethod.label}" filterMatchMode="contains">
+			<h:outputText value="#{studentPocketMoneyTransaction.paymentMethod.label}" />
+		</p:column>
+
+
+		<p:column headerText="Options" styleClass="options-column">
+			<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search"
+				action="#{studentPocketMoneyBean.viewStudentPocketMoneyTransaction}" title="View"
+				style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
+				<f:setPropertyActionListener value="#{studentPocketMoneyTransaction}"
+					target="#{studentPocketMoneyBean.studentPocketMoneyTransaction}" />
+			</p:commandLink>
+			<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+				title="Delete" process="@this" onclick="confirmation.show()" rendered="false">
+				<f:setPropertyActionListener value="#{studentPocketMoneyTransaction}"
+					target="#{studentPocketMoneyBean.studentPocketMoneyTransaction}" />
+			</p:commandLink>
+		</p:column>
+
+	</p:dataTable>
+
+	<p:confirmDialog id="confirmDialog" message="Are you want to delete the pocket money transaction?"
+		header="Confirmation" severity="alert" widgetVar="confirmation">
+		<p:commandButton id="confirm" value="Yes" update="@form" process="@this" oncomplete="confirmation.hide()"
+			action="#{studentPocketMoneyBean.removeStudentPocketMoneyTransaction}" />
+		<p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />
+	</p:confirmDialog>
+</ui:composition>

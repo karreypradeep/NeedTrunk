@@ -1,0 +1,221 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<h:panelGrid columns="2" width="100%">
+		<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
+
+			<p:commandButton id="processPayment1" value="Make payment" icon="ui-icon-circle-arrow-s" process="@form"
+				update="@form" style="float:left;" actionListener="#{studentFinancialBean.selectFeeForProcessPayments}"
+				disabled="#{!grantedAuthorityBean.userAllowedToProcessFeePayment}" />
+
+			<p:commandButton id="processDeduction1" value="Waive fee" icon="ui-icon-circle-minus" process="@form" update="@form"
+				style="float:left;" actionListener="#{studentFinancialBean.selectFeeForProcessDeductibles}"
+				disabled="#{!grantedAuthorityBean.userAllowedToProcessFeeDeduction}" />
+
+			<p:commandButton id="giveRefund1" value="Refund fee" icon="ui-icon-circle-arrow-n" process="@form" update="@form"
+				style="float:left;" actionListener="#{studentFinancialBean.selectFeeForProcessRefunds}"
+				disabled="#{!grantedAuthorityBean.userAllowedToProcessFeeRefund}" />
+
+		</h:panelGrid>
+		<h:panelGrid columns="3" cellspacing="0" cellpadding="0" style="margin-bottom:10px;float:right;">
+
+			<p:commandButton id="viewFeeDetails1" value="View fee details" icon="ui-icon-circle-check" update="@form"
+				style="float:left;" action="#{studentFinancialBean.selectViewFeeDetails}" />
+
+			<p:commandButton id="viewTransactions1" value="View fee transactions" icon="ui-icon-circle-check" update="@form"
+				style="float:left;" action="#{studentFinancialBean.populateStudentFeeTransactions}" />
+
+		</h:panelGrid>
+	</h:panelGrid>
+
+	<p:dataTable id="paymentTable" var="studentFinancialDO" value="#{studentFinancialBean.studentFinancialDataModel}"
+		selection="#{studentFinancialBean.selectedStudentFinancialDOs}">
+
+
+
+		<f:facet name="header">
+
+			<span style="float: left"> <h:outputLabel value="Fee Due as of" style="font-size: 16px; font-weight:bold;" />
+				<p:spacer width="5" /> <h:outputText value="#{sessionBean.currentDate}" style="font-size: 16px; font-weight:bold">
+					<f:convertDateTime pattern="dd/MM/yyyy :" timeZone="#{sessionBean.defaultTimeZone}" />
+				</h:outputText> <p:spacer width="5" /> <h:outputText value="#{studentFinancialBean.feeDueAsOfToday}"
+					style="font-size: 16px; font-weight:bold;color:red">
+					<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+				</h:outputText>
+			</span>
+
+			<h:outputLabel value="#{studentFinancialBean.studentTotalFeeDue}"
+				style="float: right; font-size: 16px; font-weight:bold;color:blue">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+			<p:spacer width="10" style="float: right;" />
+			<h:outputLabel value="Total fee due: " style="float: right; font-size: 16px; font-weight:bold;" />
+
+		</f:facet>
+		<p:columnGroup type="header">
+			<p:row>
+				<p:column selectionMode="multiple" style="width:18px" rowspan="2" />
+				<p:column rowspan="2" headerText="Fee name" />
+				<p:column rowspan="2" headerText="Frequency" />
+				<p:column colspan="3" headerText="Payments" />
+				<p:column colspan="2" headerText="Waivers" />
+				<p:column colspan="3" headerText="Refunds" />
+				<p:column rowspan="2" headerText="FeeDue" />
+			</p:row>
+
+			<p:row>
+				<p:column colspan="1" headerText="Total" />
+				<p:column colspan="1" headerText="Paid" />
+				<p:column colspan="1" headerText="Pending" />
+				<p:column colspan="1" headerText="Waived" />
+				<p:column colspan="1" headerText="Requested" />
+				<p:column colspan="1" headerText="Refunded" />
+				<p:column colspan="1" headerText="Requested" />
+				<p:column colspan="1" headerText="Pending" />
+			</p:row>
+		</p:columnGroup>
+
+		<p:column selectionMode="multiple" style="width:18px" />
+		<p:column>
+			<center>
+				<h:outputLabel value="#{studentFinancialDO.feeName}" style="white-space: nowrap" />
+			</center>
+		</p:column>
+
+		<p:column>
+			<center>
+				<h:outputLabel value="#{studentFinancialDO.paymentFrequency.label}" />
+			</center>
+		</p:column>
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.fee}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.totalFeePaymentAmount}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.totalFeePaymentPendingAmount}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.totalFeeDeductedAmount}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.totalFeeDeductionRequestAmount}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.totalFeeRefundAmount}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.totalFeeRefundRequestAmount}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.totalFeeRefundPendingAmount}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:column style="width:100px;text-align:right;">
+			<h:outputLabel value="#{studentFinancialDO.netFeeDue}" style="white-space: nowrap">
+				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+			</h:outputLabel>
+		</p:column>
+
+		<p:columnGroup type="footer">
+			<p:row>
+				<p:column colspan="3" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="Totals:" style="white-space: nowrap">
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.fee}" style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.totalFeePaymentAmount}"
+						style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.totalFeePaymentPendingAmount}"
+						style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.totalFeeDeductedAmount}"
+						style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.totalFeeDeductionRequestAmount}"
+						style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.totalFeeRefundAmount}"
+						style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.totalFeeRefundRequestAmount}"
+						style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.totalFeeRefundPendingAmount}"
+						style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.netFeeDue}"
+						style="white-space: nowrap">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+				</p:column>
+			</p:row>
+		</p:columnGroup>
+	</p:dataTable>
+
+
+	<p:blockUI block="form" trigger="processPayment1 giveRefund1 processDeduction1 viewFeeDetails1 viewTransactions1">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
+
+
+
+</ui:composition>

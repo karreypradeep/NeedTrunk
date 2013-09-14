@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="StudentsDetails_StudentPersonal" language="groovy" pageWidth="710" pageHeight="802" columnWidth="710" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="067679a0-edb6-4527-8854-d262e71a618e">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="admissionNr" class="java.lang.String">
+		<fieldDescription><![CDATA[studentAcademicYear.student.admissionNr]]></fieldDescription>
+	</field>
+	<field name="displayName" class="java.lang.String">
+		<fieldDescription><![CDATA[studentAcademicYear.student.displayName]]></fieldDescription>
+	</field>
+	<field name="dateOfBirth" class="java.util.Date">
+		<fieldDescription><![CDATA[studentAcademicYear.student.dateOfBirth]]></fieldDescription>
+	</field>
+	<field name="residenceType" class="java.lang.String">
+		<fieldDescription><![CDATA[residenceType]]></fieldDescription>
+	</field>
+	<field name="gender" class="java.lang.String">
+		<fieldDescription><![CDATA[gender]]></fieldDescription>
+	</field>
+	<field name="externalAdmissionNr" class="java.lang.String">
+		<fieldDescription><![CDATA[studentAcademicYear.student.externalAdmissionNr]]></fieldDescription>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="b4fa1ef6-ad38-4e13-9dc5-8b7cbbb40b2b" mode="Opaque" x="0" y="0" width="224" height="20" backcolor="#E1E0A7"/>
+				<box leftPadding="3"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Student Name]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="303c9687-b2ae-46e4-a83a-bf833f76617a" mode="Opaque" x="224" y="0" width="115" height="20" backcolor="#E1E0A7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Admission Number]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="d2dfc29b-de5d-4124-b940-379799442699" mode="Opaque" x="423" y="0" width="118" height="20" backcolor="#E1E0A7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date of Birth]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f2099eb9-aaa5-4f60-8f87-91785d635a09" mode="Opaque" x="541" y="0" width="76" height="20" backcolor="#E1E0A7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Gender]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8d332e9d-a195-4db8-a080-1f2596d1ed15" mode="Opaque" x="617" y="0" width="93" height="20" backcolor="#E1E0A7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Residential Type]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="e00cd88a-89fa-4321-8b52-e14a98655068" mode="Opaque" x="339" y="0" width="84" height="20" backcolor="#E1E0A7"/>
+				<textElement verticalAlignment="Middle">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ext Adm No]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="5cce92f6-1024-4512-9651-7603db8efb54" x="0" y="0" width="224" height="20"/>
+				<box leftPadding="3" rightPadding="0">
+					<pen lineWidth="0.0" lineStyle="Dashed"/>
+					<topPen lineWidth="0.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{displayName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c87b25fa-8682-42ae-8471-0a002ccaf1f5" x="224" y="0" width="115" height="20"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.0" lineStyle="Dashed"/>
+					<topPen lineWidth="0.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{admissionNr}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement uuid="ac5a75c8-7d1a-4c33-9d56-6bede9d0c4a7" x="423" y="0" width="118" height="20"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.0" lineStyle="Dashed"/>
+					<topPen lineWidth="0.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{dateOfBirth}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="2f72993a-9cca-423c-bdab-8a58bc5a765b" x="541" y="0" width="76" height="20"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.0" lineStyle="Dashed"/>
+					<topPen lineWidth="0.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="acac3d49-1b22-4523-9296-32a7ab0908b8" x="617" y="0" width="93" height="20"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.0" lineStyle="Dashed"/>
+					<topPen lineWidth="0.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{residenceType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ec8dc722-f085-4d3a-b56f-699469ec8f28" x="339" y="0" width="84" height="20"/>
+				<box rightPadding="0">
+					<pen lineWidth="0.0" lineStyle="Dashed"/>
+					<topPen lineWidth="0.0" lineStyle="Dashed"/>
+					<leftPen lineWidth="0.0" lineStyle="Dashed"/>
+					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
+					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
+				</box>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{externalAdmissionNr}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

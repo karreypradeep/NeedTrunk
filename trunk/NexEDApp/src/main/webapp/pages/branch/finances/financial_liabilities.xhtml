@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<c:choose>
+		<c:when test="#{financeLiabilityBean.viewOrNewAction}">
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{financeLiabilityBean.loadLiabilitiesBuildingBlocks}" />
+			</f:metadata>
+
+			<p:panel id="liability_type_panel" style="margin-bottom:10px;">
+
+				<h:panelGrid columns="3" id="liability_type_grid" cellpadding="4" style="border:0px;">
+
+					<p:outputLabel id="liability_type_label" value="Liability type" for="liability_type" />
+					<p:selectOneMenu id="liability_type" value="#{financeLiabilityBean.branchLiability.liabilityTypeBuildingBlock}"
+						required="true" converter="buildingBlockConverter">
+						<f:selectItem itemLabel="Select liability type" itemValue="" />
+						<f:selectItems value="#{financeLiabilityBean.liabilitiesTypeBuildingBlocks}" var="liabilitiesTypeBuildingBlock"
+							itemLabel="#{liabilitiesTypeBuildingBlock.name}" itemValue="#{liabilitiesTypeBuildingBlock}" />
+					</p:selectOneMenu>
+					<p:message id="liability_type_msg" for="liability_type" />
+
+					<p:outputLabel id="name_label" value="Liability name" for="name" />
+					<p:inputText id="name" value="#{financeLiabilityBean.branchLiability.name}" size="20" maxlength="20">
+					</p:inputText>
+					<p:message id="name_msg" for="name" />
+
+					<p:outputLabel id="date_label" value="Date" for="date" />
+					<p:calendar id="date" value="#{financeLiabilityBean.branchLiability.date}" navigator="true" display="inline"
+						effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+					<p:message id="date_msg" for="date" />
+
+					<p:outputLabel id="total_amount_label" value="Liability amount" for="total_amount" />
+					<p:inputText id="total_amount" value="#{financeLiabilityBean.branchLiability.totalAmount}" size="20" maxlength="20">
+						<f:convertNumber pattern="000.00" />
+					</p:inputText>
+					<p:message id="total_amount_msg" for="total_amount" />
+
+
+					<p:outputLabel id="description_label" value="Description" for="descriptionId" />
+					<p:inputTextarea id="descriptionId" value="#{financeLiabilityBean.branchLiability.description}" maxlength="200"
+						rows="5"></p:inputTextarea>
+					<p:message id="descriptionId_msg" for="descriptionId" />
+
+				</h:panelGrid>
+				<p:commandButton id="liability_save" value="Save" action="#{financeLiabilityBean.saveBranchLiability}"
+					update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateLiability}"/>
+				<p:commandButton id="liability_clear" value="Cancel" immediate="true" update="@form"
+					action="#{financeLiabilityBean.calcelAction}" />
+			</p:panel>
+		</c:when>
+
+		<c:otherwise>
+			<p:toolbar style="margin-bottom:1px;">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText value="Branch liabilities" style="font-size:20px;" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton value="New liability" icon="ui-icon-document" action="#{financeLiabilityBean.newBranchLiability}"
+						style="width:100%;" process="@this" update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateLiability}">
+						<f:setPropertyActionListener target="#{financeLiabilityBean.viewOrNewAction}" value="true" />
+						<f:setPropertyActionListener target="#{financeLiabilityBean.loadLiabilityTypesFromDB}" value="true" />
+					</p:commandButton>
+
+				</p:toolbarGroup>
+			</p:toolbar>
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{financeLiabilityBean.loadLiabilitiesBuildingBlocks}" />
+			</f:metadata>
+
+			<p:panel style="margin-top:1px;border:0px;">
+
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+				<h:panelGrid columns="2" id="liability_type_grid" cellpadding="4" style="border:0px;">
+
+					<h:panelGrid columns="2" id="liability_type_grid1" cellpadding="4" style="border:0px;">
+
+						<p:outputLabel id="liability_name_search_label" value="Liability name" for="liability_name_search" />
+						<p:inputText id="liability_name_search"
+							value="#{financeLiabilityBean.branchLiabilitySearchCriteria.liabilityName}" size="20" maxlength="20">
+						</p:inputText>
+
+						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
+						<p:calendar id="from_date" value="#{financeLiabilityBean.branchLiabilitySearchCriteria.fromDate}" navigator="true"
+							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							mindate="#{financeLiabilityBean.minimumDateForCurrentBranch}" maxdate="#{financeLiabilityBean.currentDate}" />
+
+						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
+						<p:calendar id="to_date" value="#{financeLiabilityBean.branchLiabilitySearchCriteria.toDate}" navigator="true"
+							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							mindate="#{financeLiabilityBean.minimumDateForCurrentBranch}" maxdate="#{financeLiabilityBean.currentDate}" />
+
+					</h:panelGrid>
+
+
+					<h:panelGrid columns="2" id="liability_type_grid2" cellpadding="4" style="border:0px;">
+
+						<p:outputLabel id="liability_type_search_label" value="Liability type" for="liability_type_search" />
+						<p:selectManyMenu id="liability_type_search"
+							value="#{financeLiabilityBean.branchLiabilitySearchCriteria.liabilityTypeBuildingBlocks}"
+							converter="buildingBlockConverter" style="width:150px;height:100px">
+							<f:selectItems value="#{financeLiabilityBean.liabilitiesTypeBuildingBlocks}" var="liabilitysTypeBuildingBlock"
+								itemLabel="#{liabilitysTypeBuildingBlock.name}" itemValue="#{liabilitysTypeBuildingBlock}" />
+						</p:selectManyMenu>
+
+					</h:panelGrid>
+
+				</h:panelGrid>
+
+				<p:commandButton id="liability_type_search_buton" value="Search"
+					action="#{financeLiabilityBean.searchBranchLiabilitiesBySearchCriteria}" update="@form" />
+				<p:commandButton id="liability_type_reset" value="Reset" update="@form"
+					action="#{financeLiabilityBean.resetSearchCriteria}" process="@this" />
+			</p:panel>
+
+			<p:spacer height="10" />
+			<p:separator />
+			<p:spacer height="10" />
+
+			<p:dataTable id="liabilities_table" var="liability"
+				value="#{financeLiabilityBean.branchLiabilitiesBySearchCriteria}" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+				<f:facet name="header">
+					<h:outputText value="Search Results" style="float:left;margin-top:5px;margin-bottom:5px;" />
+					<h:commandLink style="float:right;" rendered="#{financeLiabilityBean.branchLiabilitiesBySearchCriteria.size()>0}">
+						<p:graphicImage value="/images/excel.png" />
+						<p:dataExporter type="xls" target="liabilities_table" fileName="Liabilities" />
+					</h:commandLink>
+					<h:commandLink style="float:right;" rendered="#{financeLiabilityBean.branchLiabilitiesBySearchCriteria.size()>0}">
+						<p:graphicImage value="/images/pdf.png" />
+						<p:dataExporter type="pdf" target="liabilities_table" fileName="Liabilities"
+							preProcessor="#{financeLiabilityBean.preProcessPDF}" />
+					</h:commandLink>
+				</f:facet>
+
+				<p:column sortBy="#{liability.name}" filterBy="#{liability.name}" filterMatchMode="contains">
+					<f:facet name="header">
+							Name
+						</f:facet>
+					<h:outputText value="#{liability.name}" />
+				</p:column>
+
+				<p:column sortBy="#{liability.liabilityTypeBuildingBlock.name}"
+					filterBy="#{liability.liabilityTypeBuildingBlock.name}" filterMatchMode="contains">
+					<f:facet name="header">
+							Liability type
+						</f:facet>
+					<h:outputText value="#{liability.liabilityTypeBuildingBlock.name}" />
+				</p:column>
+
+				<p:column sortBy="#{liability.date}" filterBy="#{liability.date}" filterMatchMode="contains">
+					<f:facet name="header">
+							Date
+						</f:facet>
+					<h:outputText value="#{liability.date}">
+						<f:convertDateTime pattern="dd/MMM/yyyy" />
+					</h:outputText>
+				</p:column>
+
+				<p:column sortBy="#{liability.totalAmount}" filterBy="#{liability.totalAmount}" filterMatchMode="contains">
+					<f:facet name="header">
+							Amount
+						</f:facet>
+					<h:outputText value="#{liability.totalAmount}" />
+				</p:column>
+
+				<p:column headerText="Options" styleClass="options-column" exportable="false">
+					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" action="#{financeLiabilityBean.viewBranchLiability}"
+						title="View" style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
+						<f:setPropertyActionListener value="#{liability}" target="#{financeLiabilityBean.branchLiability}" />
+					</p:commandLink>
+					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+						process="@this" title="Delete" onclick="confirmation.show()" disabled="#{!grantedAuthorityBean.userAllowedToRemoveLiability}">
+						<f:setPropertyActionListener value="#{liability}" target="#{financeLiabilityBean.branchLiability}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+			<p:confirmDialog id="confirmDialog" message="Are you want to delete the expense?" header="Confirmation"
+				severity="alert" widgetVar="confirmation">
+				<p:commandButton id="confirm" value="Yes" update="@form" process="@this" oncomplete="confirmation.hide()"
+					action="#{financeLiabilityBean.removeBranchLiability}" />
+				<p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />
+			</p:confirmDialog>
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

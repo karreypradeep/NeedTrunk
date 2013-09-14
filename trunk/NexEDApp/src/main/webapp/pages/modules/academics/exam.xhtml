@@ -1,0 +1,148 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<c:choose>
+		<c:when test="#{sectionExamScheduleBean.scheduleExamFlag}">
+
+			<ui:include src="/pages/modules/academics/schedule_exam.xhtml" />
+
+		</c:when>
+
+		<c:otherwise>
+
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{examBean.loadExamTypeBuildingBlocks()}" />
+				<f:event type="preRenderView" listener="#{examBean.loadSectionExams()}" />
+			</f:metadata>
+
+			<p:panel id="panel" style="margin-bottom:1px;">
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+				<h:panelGrid columns="2" columnClasses="form-column,action-column" width="100%">
+					<h:panelGrid columns="3" id="grid" cellpadding="4" style="border:0px;margin-bottom:10px;"
+						styleClass="columm-nowrap">
+
+
+						<p:outputLabel id="exam_type_label" value="Exam Type" for="exam_type" />
+						<p:selectOneMenu id="exam_type" value="#{examBean.exam.buildingBlock}" required="true" style="width:100%"
+							disabled="#{examBean.viewAction}">
+							<f:selectItem itemLabel="Select Exam Type" itemValue="" />
+							<f:selectItems value="#{examBean.examTypeBuildingBlocks}" var="examType" itemLabel="#{examType.name}"
+								itemValue="#{examType}" />
+							<f:converter converterId="buildingBlockConverter" />
+						</p:selectOneMenu>
+						<p:message id="exam_type_msg" for="exam_type" />
+
+						<p:outputLabel id="nameLabel" value="Exam name" for="name" />
+						<p:inputText id="name" value="#{examBean.exam.name}" required="true" />
+						<p:message id="nameMsg" for="name" />
+
+					</h:panelGrid>
+					<h:panelGrid>
+						<p:commandButton id="scheduleExams" value="Schedule exam" process="@this" update="@form" style="width:100%"
+							disabled="#{examBean.exam.id == null || !grantedAuthorityBean.userAllowedToScheduleExam}"
+							action="#{sectionExamScheduleBean.reset()}">
+							<f:setPropertyActionListener target="#{sectionExamScheduleBean.schedulingExam}" value="#{examBean.exam}" />
+							<f:setPropertyActionListener target="#{sectionExamScheduleBean.scheduleExamFlag}" value="true" />
+							<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadAllAcademicYearsFlag}" value="true" />
+							<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadActiveKlassesForBranchFlag}" value="true" />
+							<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadActiveSectionsForKlassAndAcademicYearFlag}"
+								value="true" />
+						</p:commandButton>
+					</h:panelGrid>
+				</h:panelGrid>
+
+
+				<p:commandButton id="exam_back" value="Back" process="@this" update="@form" icon="ui-icon-circle-arrow-w">
+					<f:setPropertyActionListener target="#{examBean.viewOrNewAction}" value="false" />
+				</p:commandButton>
+
+				<p:spacer width="5px" />
+
+				<p:commandButton id="exam_reset" value="Reset" update="@form" process="@this" icon="ui-icon-circle-triangle-w" />
+
+				<p:spacer width="5px" />
+
+				<p:commandButton id="exam_save" value="Save" action="#{examBean.saveExam}" update="@form"
+					icon="ui-icon-circle-check" disabled="#{!grantedAuthorityBean.userAllowedToCreateExam}">
+					<f:setPropertyActionListener target="#{examBean.viewOrNewAction}" value="true" />
+				</p:commandButton>
+
+
+
+				<p:blockUI block="panel" trigger="exam_save">  
+        		Request is processing, please wait<br />
+					<p:graphicImage value="/images/ajax-loader.gif" />
+				</p:blockUI>
+
+			</p:panel>
+
+
+			<p:dataTable id="datatable" var="sectionExamDO" value="#{examBean.sectionExamDOs}" paginator="true" rows="10"
+				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:20px;">
+
+
+
+				<f:facet name="header">
+					<h:outputText value="Exam schedules" style="float:left;margin-top:5px;margin-bottom:5px;" />
+					<h:commandLink style="float:right;" rendered="false">
+						<p:graphicImage value="/images/pdf.png" />
+						<p:dataExporter type="pdf" target="datatable" fileName="Exam schedules" />
+					</h:commandLink>
+				</f:facet>
+
+				<p:column headerText="Academic Year" sortBy="#{sectionExamDO.academicYear.displayLabel}"
+					filterBy="#{sectionExamDO.academicYear.displayLabel}" filterMatchMode="contains">
+					<h:outputLabel value="#{sectionExamDO.academicYear.displayLabel}" />
+				</p:column>
+
+				<p:column headerText="Class" sortBy="#{sectionExamDO.klass.name}" filterBy="#{sectionExamDO.klass.name}"
+					filterMatchMode="contains">
+					<h:outputLabel value="#{sectionExamDO.klass.name}" />
+				</p:column>
+
+				<p:column headerText="Section" sortBy="#{sectionExamDO.section.name}" filterBy="#{sectionExamDO.section.name}"
+					filterMatchMode="contains">
+					<h:outputLabel value="#{sectionExamDO.section.name}" />
+				</p:column>
+
+				<p:column headerText="Start date" sortBy="#{sectionExamDO.sectionExam.startDate}"
+					filterBy="#{sectionExamDO.sectionExam.startDate}" filterMatchMode="contains">
+					<h:outputLabel value="#{sectionExamDO.sectionExam.startDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+				</p:column>
+
+				<p:column headerText="End date" sortBy="#{sectionExamDO.sectionExam.endDate}"
+					filterBy="#{sectionExamDO.sectionExam.endDate}" filterMatchMode="contains">
+					<h:outputLabel value="#{sectionExamDO.sectionExam.endDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+				</p:column>
+
+
+				<p:column headerText="#{msg.options}" styleClass="options-column">
+					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+						process="@this" onclick="confirmation.show()" title="Delete"
+						disabled="#{!grantedAuthorityBean.userAllowedToScheduleExam}">
+						<f:setPropertyActionListener value="#{sectionExamDO.sectionExam}" target="#{sectionExamScheduleBean.sectionExam}" />
+					</p:commandLink>
+				</p:column>
+			</p:dataTable>
+
+			<p:confirmDialog id="confirmDialog" message="Are you want to un-schedule exam?" header="Confirmation" severity="alert"
+				widgetVar="confirmation">
+				<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
+					action="#{sectionExamScheduleBean.unScheduleExam()}" />
+				<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />
+			</p:confirmDialog>
+
+		</c:otherwise>
+
+	</c:choose>
+
+</ui:composition>

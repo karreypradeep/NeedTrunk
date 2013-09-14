@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{sectionBean.loadStudentsForSection}" />
+		</f:metadata>
+		<h:panelGrid columns="2" cellpadding="5" cellspacing="5">
+
+			<h:outputLabel value="Total strength" />
+			<h:outputLabel value="#{sectionBean.studentsForSection.size()}" style="font-weight:bold" />
+
+
+			<h:outputLabel value="Number of boys" />
+			<h:outputLabel value="#{sectionBean.numberOfBoysInSection}" style="font-weight:bold" />
+
+
+			<h:outputLabel value="Number of girls" />
+			<h:outputLabel value="#{sectionBean.numberOfGirlsInSection}" style="font-weight:bold" />
+
+		</h:panelGrid>
+
+		<p:dataTable id="students_table" var="student" value="#{sectionBean.studentsForSection}" paginator="true" rows="15"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+			<p:column headerText="Student name" sortBy="#{student.displayName}" filterBy="#{student.displayName}"
+				filterMatchMode="contains">
+				<h:outputText value="#{student.displayName}" />
+			</p:column>
+
+			<p:column headerText="Admission number" sortBy="#{student.admissionNr}" filterBy="#{student.admissionNr}"
+				filterMatchMode="contains">
+				<h:outputText value="#{student.admissionNr}" />
+			</p:column>
+
+			<p:column headerText="Date of birth" sortBy="#{student.dateOfBirth}" filterBy="#{student.dateOfBirth}"
+				filterMatchMode="contains">
+				<h:outputText value="#{student.dateOfBirth}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Gender" sortBy="#{student.gender.label}" filterBy="#{student.gender.label}">
+				<h:outputText value="#{student.gender.label}" />
+			</p:column>
+
+			<p:column headerText="Options" style="width:25px;">
+				<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" title="View"
+					style="margin:0px 0px 0px;float:right;" process="@this" update="@form" action="#{sectionBean.viewStudent()}">
+					<f:setPropertyActionListener value="#{student}" target="#{sectionBean.slectedStudentForDisplay}" />
+				</p:commandLink>
+			</p:column>
+
+		</p:dataTable>
+</ui:composition>

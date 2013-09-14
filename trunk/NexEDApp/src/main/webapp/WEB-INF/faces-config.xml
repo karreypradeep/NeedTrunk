@@ -1,0 +1,100 @@
+<?xml version="1.0"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xi="http://www.w3.org/2001/XInclude"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+	<!-- Global navigation rules/* -->
+	<navigation-rule>
+		<display-name>base</display-name>
+		<from-view-id>/*</from-view-id>
+		<!-- Welcome -->
+		<navigation-case>
+			<from-outcome>welcome</from-outcome>
+			<to-view-id>/welcome.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>login</from-outcome>
+			<to-view-id>/login.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>home</from-outcome>
+			<to-view-id>/home.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+
+		<navigation-case>
+			<from-outcome>registration</from-outcome>
+			<to-view-id>/registration.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+
+		<!-- Organization Resources -->
+		<navigation-case>
+			<from-outcome>organization_index</from-outcome>
+			<to-view-id>/pages/organization/index.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>branch_index</from-outcome>
+			<to-view-id>/pages/branch/index.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>student_index</from-outcome>
+			<to-view-id>/pages/student/index.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>employee_index</from-outcome>
+			<to-view-id>/pages/employee/index.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>parent_index</from-outcome>
+			<to-view-id>/pages/parent/index.xhtml</to-view-id>
+			<redirect />
+		</navigation-case>
+	</navigation-rule>
+	<application>
+		<el-resolver>org.springframework.web.jsf.el.SpringBeanFacesELResolver</el-resolver>
+		<resource-bundle>
+			<base-name>com.apeironsol.nexed.core.portal.messages.ViewMessages</base-name>
+			<var>msg</var>
+		</resource-bundle>
+		<resource-bundle>
+			<base-name>com.apeironsol.nexed.core.portal.messages.EnumTypeLabels</base-name>
+			<var>enumslabels</var>
+		</resource-bundle>
+		<resource-bundle>
+			<base-name>com.apeironsol.nexed.core.portal.messages.ModelValidationMessages</base-name>
+			<var>model</var>
+		</resource-bundle>
+		<resource-bundle>
+			<base-name>com.apeironsol.nexed.core.portal.messages.BusinessMessages</base-name>
+			<var>businessmsg</var>
+		</resource-bundle>
+		<resource-bundle>
+			<base-name>com.apeironsol.nexed.core.portal.messages.ViewFormats</base-name>
+			<var>format</var>
+		</resource-bundle>
+		<resource-bundle>
+			<base-name>com.apeironsol.nexed.core.portal.messages.OnlineHelp</base-name>
+			<var>helpProperties</var>
+		</resource-bundle>
+		<message-bundle>com.apeironsol.nexed.core.portal.messages.MessageBundle</message-bundle>
+		<locale-config>
+			<default-locale>en</default-locale>
+			<supported-locale>en</supported-locale>
+			<supported-locale>en_GB</supported-locale>
+			<supported-locale>hi_IN</supported-locale>
+		</locale-config>
+	</application>
+	<factory>
+		<exception-handler-factory>org.primefaces.extensions.component.ajaxerrorhandler.AjaxExceptionHandlerFactory</exception-handler-factory>
+	</factory>
+	<lifecycle>
+		<phase-listener id="nocache">com.apeironsol.nexed.core.portal.listener.CacheControlPhaseListener</phase-listener>
+	</lifecycle>
+</faces-config>

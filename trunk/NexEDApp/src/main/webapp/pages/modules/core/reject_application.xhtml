@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel header="Reject Admission">
+	
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+	
+		<h:panelGrid columns="3" cellpadding="5">
+			<p:outputLabel id="comments_label" value="Comments" for="comments" />
+			<p:inputTextarea id="comments" rows="10" cols="100" required="true" value="#{admissionBean.actionComment}" />
+			<p:message id="comments_msg" for="comments" />
+		</h:panelGrid>
+
+		<p:commandButton value="Reject" process="@form" update="@form" disabled="#{!admissionBean.admissionBeRejected}" action="#{admissionBean.rejectAdmisson}"
+			style="width:80px;" icon="ui-icon-scissors">
+			<f:setPropertyActionListener target="#{admissionBean.loadStudentStatusHistoryFlag}" value="true" />
+			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
+		</p:commandButton>
+		<p:spacer width="10px" />
+		<p:commandButton value="Cancel" process="@this" update="@form" style="width:80px;" icon="ui-icon-circle-close">
+			<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="">
+				<f:converter converterId="admissionStatusConverter" />
+			</f:setPropertyActionListener>
+			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
+		</p:commandButton>
+	</p:panel>
+
+</ui:composition>

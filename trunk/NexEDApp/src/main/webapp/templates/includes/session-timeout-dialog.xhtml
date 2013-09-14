@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+
+	<script type="text/javascript">
+		function Countdown(options) {
+			var timer, instance = this, seconds = options.seconds || 10, updateStatus = options.onUpdateStatus
+					|| function() {
+					}, counterEnd = options.onCounterEnd || function() {
+			};
+
+			function decrementCounter() {
+				updateStatus(seconds);
+				if (seconds === 0) {
+					counterEnd();
+					instance.stop();
+				}
+				seconds--;
+			}
+
+			this.start = function() {
+				clearInterval(timer);
+				timer = 0;
+				seconds = options.seconds;
+				timer = setInterval(decrementCounter, 1000);
+			};
+
+			this.stop = function() {
+				clearInterval(timer);
+			};
+		}
+
+		var sessionTimer = new Countdown({
+			seconds : 30, // number of seconds to count down
+			onUpdateStatus : function(sec) {
+				console.log(sec);
+				document.getElementById('timer').innerHTML = sec+" second(s)";
+			}, // callback for each second
+			onCounterEnd : function() {
+				console.log("Timer ended request to redirect");
+				remoteLogout();
+				
+			} // final action
+		});
+	</script>
+	
+	
+	<p:remoteCommand name="remoteLogout" actionListener="#{loginBean.logout()}"/>
+
+
+
+	<p:confirmDialog id="sessionDialog" message="Do you want to continue your session?" severity="alert"
+		widgetVar="timeoutDialog" closable="false" width="375">
+
+		<f:facet name="header">
+			<h:panelGrid columns="2" width="325">
+				<h:outputLabel value="Session will expire in :" style="font-size:20px;" />
+				<div style="float: right; font-size: 14px;">
+					<span id="timer"></span>
+				</div>
+			</h:panelGrid>
+		</f:facet>
+
+		<p:commandButton id="sessionConfirm" value="Yes Sure" update="@form" process="@this" onstart="location.reload();" oncomplete="timeoutDialog.hide()" />
+
+		<p:commandButton id="sessionLogout" value="Logout" update="@form" process="@this" oncomplete="sessionTimer.stop();timeoutDialog.hide()"
+			action="#{loginBean.logout()}" />
+
+
+
+	</p:confirmDialog>
+
+	<p:idleMonitor timeout="1800000" id="idleSessionsMonitor">
+
+		<p:ajax event="idle" oncomplete="sessionTimer.start();timeoutDialog.show();" />
+
+	</p:idleMonitor>
+
+
+</ui:composition>

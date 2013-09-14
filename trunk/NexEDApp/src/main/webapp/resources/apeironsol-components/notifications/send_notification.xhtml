@@ -1,0 +1,93 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+
+		<composite:attribute name="notificationType" required="true" />
+		<composite:attribute name="notificationTypeConstants" required="true" />
+
+		<composite:attribute name="academicYearForNotification" />
+		<composite:attribute name="academicYears" />
+		<composite:attribute name="renderAcademicYearIndicator" default="false" />
+		<composite:attribute name="academicYearAjaxMethod"  required="false" method-signature="java.lang.String action()" />
+
+		<composite:attribute name="notificationSubType" required="true" />
+		<composite:attribute name="notificationSubTypeConstants" required="true" />
+
+		<composite:attribute name="notificationMessage" required="true" />
+
+		<composite:attribute name="sendNotificationActionMethod" required="true" method-signature="java.lang.String action()" />
+		<composite:attribute name="cancelActionMethod" required="true" method-signature="java.lang.String action()" />
+
+		<composite:attribute name="notificationTypeAjaxMethod" required="true" method-signature="java.lang.String action()" />
+		<composite:attribute name="notificationSubTypeAjaxMethod"  required="true" method-signature="java.lang.String action()" />
+
+		<composite:attribute name="sectionExams" required="true" />
+		<composite:attribute name="renderSectionExamIndicator" default="true" />
+		<composite:attribute name="selectedSectionExam" required="true" />
+
+	</composite:interface>
+
+	<composite:implementation>
+
+		<p:panel id="notificationPanel" style="margin-bottom:10px;border:0px;">
+			<h:panelGrid columns="3" id="section_grid" style="border:0px;margin-bottom:10px;" cellpadding="5">
+
+				<p:outputLabel id="academic_year_label" value="Academic year" for="academic_year"
+					rendered="#{cc.attrs.renderAcademicYearIndicator}" />
+				<p:selectOneMenu id="academic_year" value="#{cc.attrs.academicYearForNotification}" required="true"
+					converter="academicYearConverter" rendered="#{cc.attrs.renderAcademicYearIndicator}">
+					<f:selectItem itemLabel="Select academic year" itemValue="" />
+					<f:selectItems value="#{cc.attrs.academicYears}" var="academicYear" itemLabel="#{academicYear.displayLabel}"
+						itemValue="#{academicYear}" />
+					<p:ajax process="@this" update="@parent" listener="#{cc.attrs.academicYearAjaxMethod}"></p:ajax>
+				</p:selectOneMenu>
+				<p:message id="academic_year_msg" for="academic_year" rendered="#{cc.attrs.renderAcademicYearIndicator}" />
+
+				<p:outputLabel id="notification_type_label" value="Notifications:" for="notification_type" />
+				<p:selectOneRadio id="notification_type" value="#{cc.attrs.notificationType}">
+					<f:selectItems value="#{cc.attrs.notificationTypeConstants}" var="notificationTypeVar"
+						itemLabel="#{notificationTypeVar.label}" itemValue="#{notificationTypeVar}" />
+					<p:ajax process="@this" update="@parent" listener="#{cc.attrs.notificationTypeAjaxMethod}"></p:ajax>
+				</p:selectOneRadio>
+				<p:message id="notification_type_msg" for="notification_type" />
+
+				<p:outputLabel id="notification_sub_type_label" value="Notifications for: " for="notification_sub_type" />
+				<p:selectOneListbox id="notification_sub_type" value="#{cc.attrs.notificationSubType}"
+					style="height:150px;width:300px" converter="notificationSubTypeConstantConverter">
+					<f:selectItems value="#{cc.attrs.notificationSubTypeConstants}" var="notificationForSubType"
+						itemLabel="#{notificationForSubType.label}" itemValue="#{notificationForSubType}" />
+					<p:ajax process="@this" update="@parent" listener="#{cc.attrs.notificationSubTypeAjaxMethod}"></p:ajax>
+				</p:selectOneListbox>
+				<p:message id="notification_sub_type_msg" for="notification_sub_type" />
+
+				<p:outputLabel id="message_text_label" value="Message text: " for="message_text" rendered="#{cc.attrs.notificationSubType.messageRequired}" />
+				<p:inputTextarea rows="5" cols="40" counter="counter" maxlength="200" counterTemplate="{0} characters remaining."
+					autoResize="false" value="#{cc.attrs.notificationMessage}" id="message_text" rendered="#{cc.attrs.notificationSubType.messageRequired}" required="true"/>
+				<h:outputText id="counter" rendered="#{cc.attrs.notificationSubType.messageRequired}" />
+
+				<p:outputLabel id="section_exam_label" value="Exam" for="section_exam"
+					rendered="#{cc.attrs.renderSectionExamIndicator}" />
+				<p:selectOneMenu id="section_exam" value="#{cc.attrs.selectedSectionExam}" required="true"
+					converter="sectionExamConverter" rendered="#{cc.attrs.renderSectionExamIndicator}">
+					<f:selectItem itemLabel="Select exam" itemValue="" />
+					<f:selectItems value="#{cc.attrs.sectionExams}" var="sectionExam" itemLabel="#{sectionExam.exam.name}"
+						itemValue="#{sectionExam}" />
+					<p:ajax process="@this" update="@parent"></p:ajax>
+				</p:selectOneMenu>
+				<p:message id="section_exam_msg" for="section_exam" rendered="#{cc.attrs.renderSectionExamIndicator}" />
+
+				<f:facet name="footer">
+					<h:panelGroup columns="3" id="send_notification_panelgrid" style="border:0px;margin-bottom:10px;" cellpadding="5">
+						<p:commandButton id="send_notification" value="Send notification"
+							action="#{cc.attrs.sendNotificationActionMethod}" update="@form" process="@form" />
+						<p:commandButton id="cancel" value="Cancel" action="#{cc.attrs.cancelActionMethod}" update="@form" process="@this" />
+					</h:panelGroup>
+				</f:facet>
+
+			</h:panelGrid>
+		</p:panel>
+	</composite:implementation>
+</ui:composition>

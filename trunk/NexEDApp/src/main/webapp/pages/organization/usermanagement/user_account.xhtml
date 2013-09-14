@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<h1 class="title ui-widget-header ui-corner-all">
+		<h:outputLabel value="#{msg.creatingNewUserAccount}" rendered="#{userAccountBean.creatingNewUser}" />
+		<h:outputLabel value="#{msg.modifyingUserAccount}" rendered="#{!userAccountBean.creatingNewUser}" />
+	</h1>
+
+	<p:messages id="userAccountMessages" globalOnly="true" />
+
+	<p:panel>
+		<h:panelGrid id="newUserPanelGrid" columns="3" cellpadding="5">
+
+			<p:outputLabel id="login_type_label" value="User account type" for="login_type" />
+			<p:selectOneMenu id="login_type" value="#{userAccountBean.userAccount.userAccountType}" required="true"
+				disabled="#{userAccountBean.userAccount.id != null}">
+				<f:selectItem itemLabel="Select login type" itemValue="" />
+				<f:selectItems value="#{enumConstantsBean.loginTypeConstants}" var="loginType" itemLabel="#{loginType.label}"
+					itemValue="#{loginType}" />
+			</p:selectOneMenu>
+			<p:message id="login_type_msg" for="login_type" />
+
+			<p:outputLabel id="userNameLabel" for="userName" value="#{msg.usernameMand}" />
+			<p:inputText id="userName" value="#{userAccountBean.userAccount.username}" required="true"
+				requiredMessage="#{model.user_name_mandatory}" label="#{msg.username}"
+				disabled="#{userAccountBean.userAccount.id != null}" />
+			<p:message id="userNameMessage" for="userName" />
+
+			<p:outputLabel id="passwordLabel" for="password" value="#{msg.passwordMand}"
+				rendered="#{userAccountBean.creatingNewUser}" />
+			<p:password id="password" value="#{userAccountBean.userAccount.password}" required="true" label="#{msg.password}"
+				feedback="true" rendered="#{userAccountBean.creatingNewUser}" match="reenterPassword"
+				requiredMessage="#{model.password_mandatory}" />
+			<p:message id="passwordMessage" for="password" rendered="#{userAccountBean.creatingNewUser}" />
+
+
+			<p:outputLabel id="reenterPasswordLabel" for="reenterPassword" value="#{msg.reenterPasswordMand}"
+				rendered="#{userAccountBean.creatingNewUser}" />
+			<p:password id="reenterPassword" value="#{userAccountBean.userAccount.password}" required="true"
+				label="#{msg.reenterPassword}" requiredMessage="#{model.reenter_password_mandatory}"
+				rendered="#{userAccountBean.creatingNewUser}" />
+			<p:message id="reenterPasswordMessage" for="reenterPassword" rendered="#{userAccountBean.creatingNewUser}" />
+
+			<p:outputLabel id="statusLabel" for="status" value="#{msg.active}" />
+			<p:selectBooleanCheckbox id="status" value="#{userAccountBean.userAccount.active}" />
+			<p:message id="statusMessage" for="status" />
+
+			<p:outputLabel id="accountLockedLabelDetails" for="accountLockedDetails" value="#{msg.accountLocked}" />
+			<p:selectBooleanCheckbox id="accountLockedDetails" value="#{userAccountBean.userAccount.accountLocked}" />
+			<p:message id="accountLockedDetailsMessage" for="accountLockedDetails" />
+
+			<p:outputLabel id="accountExpiredLabelDetails" for="accountExpiredDetails" value="#{msg.accountExpired}" />
+			<p:selectBooleanCheckbox id="accountExpiredDetails" value="#{userAccountBean.userAccount.accountExpired}"
+				disabled="true" />
+			<p:message id="accountExpiredDetailsMessage" for="accountExpiredDetails" />
+
+			<p:outputLabel id="credentialsExpiredLabelDetails" for="credentialsExpiredDetails" value="#{msg.credentialsExpired}" />
+			<p:selectBooleanCheckbox id="credentialsExpiredDetails" value="#{userAccountBean.userAccount.credentialsExpired}"
+				disabled="true" />
+			<p:message id="credentialsExpiredDetailsMessage" for="credentialsExpiredDetails" />
+
+			<c:if test="#{userAccountBean.userAccount.userAccountType == 'EMPLOYEE'}">
+
+
+				<p:outputLabel id="accessControlTypeLabel" for="accessControlTypeMenu" value="#{msg.accessControlType}" rendered="false"/>
+				<p:selectOneMenu id="accessControlTypeMenu" value="#{userAccountBean.selectedAccessControlType}" required="true"
+					requiredMessage="#{model.access_control_type}" rendered="false">
+					<f:selectItem itemLabel="select:" itemValue="" />
+					<f:selectItems value="#{enumConstantsBean.accessControlTypes}" var="accessControlType"
+						itemLabel="#{accessControlType.label}" itemValue="#{accessControlType}" />
+					<p:ajax process="@this" update="accessControlsPickList" listener="#{userAccountBean.updateAccessControlPickList}" />
+				</p:selectOneMenu>
+				<p:message id="accessControlTypeMenuMessage" for="accessControlTypeMenu" rendered="false"/>
+
+			</c:if>
+		</h:panelGrid>
+
+		<br />
+		<c:if test="#{userAccountBean.userAccount.userAccountType == 'EMPLOYEE'}">
+			<h:panelGrid id="userAccountGroups" columns="2" width="100%">
+				<p:pickList id="groupsPickList" value="#{userAccountBean.userGroupsDualListModel}" var="userGroupEntity"
+					itemLabel="#{userGroupEntity.name}" itemValue="#{userGroupEntity}" converter="userGroupConverter">
+					<f:facet name="sourceCaption">#{msg.unAssignedGroups}</f:facet>
+					<f:facet name="targetCaption">#{msg.assignedGroups}</f:facet>
+				</p:pickList>
+
+				<p:pickList id="accessControlsPickList" value="#{userAccountBean.accessControlNamesDualListModel}"
+					var="accessControlEntity" itemLabel="#{accessControlEntity}" itemValue="#{accessControlEntity}">
+					<f:facet name="sourceCaption">#{msg.unAssignedAccessControls}</f:facet>
+					<f:facet name="targetCaption">#{msg.assignedAccessControls}</f:facet>
+				</p:pickList>
+			</h:panelGrid>
+		</c:if>
+	</p:panel>
+
+	<br />
+
+	<center>
+		<p:commandButton id="userSave" value="#{msg.save}" action="#{userAccountBean.saveUserAccount}" update="@form"
+			icon="ui-icon-circle-check" title="Save/Update user account" style="width:80px;" />
+		<p:spacer width="10px" />
+		<p:commandButton id="userCancel" value="#{msg.cancel}" action="#{userAccountBean.cancelUserTask}" update="@form"
+			immediate="true" icon="ui-icon-circle-close" title="Cancel" style="width:80px;" />
+	</center>
+
+</ui:composition>

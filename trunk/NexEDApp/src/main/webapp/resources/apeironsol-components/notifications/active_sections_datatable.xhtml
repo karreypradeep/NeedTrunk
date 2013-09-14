@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:composite="http://java.sun.com/jsf/composite">
+
+	<composite:interface>
+		<composite:attribute name="activeSectionNotificationPOs" required="true" />
+		<composite:attribute name="backActionMethod" required="true" method-signature="java.lang.String action()" />
+		<composite:attribute name="loadBatchLogMessagesIndicator" required="true" />
+		<composite:attribute name="activeSectionSelected" required="true" />
+		<composite:attribute name="actionMethodViewBatchLogMessages" required="true" method-signature="java.lang.String action()" />
+		<composite:attribute name="loadBatchLogsIndicator" required="true" />
+	</composite:interface>
+
+	<composite:implementation>
+		<p:commandButton id="back" value="Back" action="#{cc.attrs.backActionMethod}" update="@form">
+			<f:setPropertyActionListener target="#{cc.attrs.loadBatchLogsIndicator}" value="true"></f:setPropertyActionListener>
+		</p:commandButton>
+		<p:dataTable id="active_sections_datatable" var="sectionNotificationPO" value="#{cc.attrs.activeSectionNotificationPOs}" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+			<p:column headerText="Section" sortBy="#{sectionNotificationPO.section.name}" filterBy="#{sectionNotificationPO.section.name}" filterMatchMode="contains">
+				<h:outputText value="#{sectionNotificationPO.section.name}" />
+			</p:column>
+
+			<p:column headerText="Number of messages" sortBy="#{sectionNotificationPO.nrOfNotificationsSent}" filterBy="#{sectionNotificationPO.nrOfNotificationsSent}"
+				filterMatchMode="contains">
+				<h:outputText value="#{sectionNotificationPO.nrOfNotificationsSent}" />
+			</p:column>
+
+			<p:column headerText="Options" styleClass="options-column">
+				<p:commandButton id="viewButton" icon="ui-icon-search" title="View" style="margin:0px 0px 0px;float:left;" update="@form"
+					process="@this" action="#{cc.attrs.actionMethodViewBatchLogMessages}">
+					<f:setPropertyActionListener target="#{cc.attrs.activeSectionSelected}" value="#{sectionNotificationPO}" />
+					<f:setPropertyActionListener target="#{cc.attrs.loadBatchLogMessagesIndicator}" value="true" />
+				</p:commandButton>
+			</p:column>
+		</p:dataTable>
+
+	</composite:implementation>
+</ui:composition>

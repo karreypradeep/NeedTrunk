@@ -1,0 +1,13 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel id="admit_confirmation_panel">
+		<h1>Need to display question from building blocks</h1>
+		<center>
+			<p:commandButton id="admit_save" value="Admit" action="#{admissionBean.admitStudent()}" update="@form" style="width:80px;"
+				icon="ui-icon-circle-check" />
+			<p:spacer width="10px" />
+			<p:commandButton id="admit_cancle" value="Cancel" update="@form" process="@this" style="width:80px;" icon="ui-icon-circle-close" />
+		</center>
+	</p:panel>
+</ui:composition>

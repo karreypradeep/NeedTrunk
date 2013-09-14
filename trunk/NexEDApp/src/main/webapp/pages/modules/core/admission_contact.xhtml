@@ -1,0 +1,107 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{admissionBean.loadKlasses}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadAcademicYearsForAdmissionsOpened}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadActiveBatchesForBranch()}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadAcademicYearsForAdmission()}" />
+	</f:metadata>
+
+	<h:panelGrid columns="3" cellpadding="5" id="admission_personal_panel">
+
+		<p:outputLabel id="exis_admission_nr_check_label" value="Is existing admission number ?" for="exis_admission_nr_check" />
+		<p:selectBooleanCheckbox id="exis_admission_nr_check" value="#{admissionBean.existingAdmissionNumber}"
+			immediate="true">
+			<p:ajax event="change" update="admission_personal_panel" process="exis_admission_nr_check" />
+		</p:selectBooleanCheckbox>
+		<p:message for="exis_admission_nr_check" />
+
+		<p:outputLabel id="exis_admission_nr_label" value="Existing admission number" for="exis_admission_nr"
+			rendered="#{admissionBean.existingAdmissionNumber}" />
+		<p:inputText id="exis_admission_nr" value="#{admissionBean.admission.externalAdmissionNr}"
+			rendered="#{admissionBean.existingAdmissionNumber}" required="true" />
+		<p:message id="exis_admission_nr_msg" for="exis_admission_nr" rendered="#{admissionBean.existingAdmissionNumber}" />
+
+		<c:if test="#{sessionBean.currentBranchRule.batchRequiredIndicator}">
+			<p:outputLabel id="add_batch_label" value="Batch" for="add_batch" />
+			<p:selectOneMenu id="add_batch" value="#{admissionBean.appliedForBatch}" required="true">
+				<f:selectItem itemLabel="Select batch" itemValue="" />
+				<f:selectItems value="#{admissionBean.activeBatchesForBranch}" var="batch" itemLabel="#{batch.name}"
+					itemValue="#{batch}" />
+				<f:converter converterId="batchConverter" />
+				<p:ajax update="@form" listener="#{admissionBean.loadAcademicYearsForBatch()}" />
+			</p:selectOneMenu>
+			<p:message id="add_batch_msg" for="add_batch" />
+		</c:if>
+		
+		<p:outputLabel id="add_academic_year_label" value="Academic year" for="add_academic_year" />
+		<p:selectOneMenu id="add_academic_year" value="#{admissionBean.appliedForAcademicYear}" required="true">
+			<f:selectItem itemLabel="Select academic year" itemValue="" />
+			<f:selectItems value="#{admissionBean.academicYearsForBatch}" var="academicYear"
+				itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+			<f:converter converterId="academicYearConverter" />
+		</p:selectOneMenu>
+		<p:message id="add_academic_year_msg" for="add_academic_year" />
+
+		<p:outputLabel id="stu_applying_class_label" value="Applying for class" for="stu_applying_class" />
+		<p:selectOneMenu id="stu_applying_class" value="#{admissionBean.applyingForClassId}" style="width:155px;"
+			required="true">
+			<f:selectItem itemLabel="Select applying class" />
+			<f:selectItems value="#{admissionBean.klasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass.id}" />
+		</p:selectOneMenu>
+		<p:message id="stu_applying_class_msg" for="stu_applying_class" />
+
+		<p:outputLabel id="stu_current_kalss_label" value="Previous qualified education" for="stu_current_class" />
+		<p:inputText id="stu_current_class" value="#{admissionBean.admission.previousQualifiedEducation}" />
+		<p:message id="stu_current_class_msg" for="stu_current_class" />
+
+		<p:outputLabel id="stu_first_name_label" value="Student first name" for="stu_first_name" />
+		<p:inputText id="stu_first_name" value="#{admissionBean.admission.firstName}" required="true" />
+		<p:message id="stu_first_name_msg" for="stu_first_name" />
+
+		<p:outputLabel id="stu_middle_name_label" value="Student middle name" for="stu_middle_name" />
+		<p:inputText id="stu_middle_name" value="#{admissionBean.admission.middleName}" />
+		<p:message id="stu_middle_name_msg" for="stu_middle_name" />
+
+		<p:outputLabel id="stu_last_name_label" value="Student last name" for="stu_last_name" />
+		<p:inputText id="stu_last_name" value="#{admissionBean.admission.lastName}" required="true" />
+		<p:message id="stu_last_name_msg" for="stu_last_name" />
+
+		<p:outputLabel id="stu_dob_label" value="Student date of birth" for="stu_dob" />
+		<p:calendar id="stu_dob" value="#{admissionBean.admission.dateOfBirth}" navigator="true" display="inline"
+			effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" maxdate="#{sessionBean.systemDate}" />
+		<p:message id="stu_dob_msg" for="stu_dob" />
+
+		<p:outputLabel id="stu_gender_label" value="Gender" for="stu_gender" />
+		<p:selectOneRadio id="stu_gender" value="#{admissionBean.admission.gender}" required="true">
+			<f:selectItems value="#{enumConstantsBean.gender}" var="gender" itemLabel="#{gender.label}" itemValue="#{gender}" />
+		</p:selectOneRadio>
+		<p:message id="stu_gender_msg" for="stu_gender" />
+
+		<p:outputLabel id="stu_nationality_label" value="Nationality" for="stu_nationality" />
+		<p:inputText id="stu_nationality" value="#{admissionBean.admission.nationality}" required="true" />
+		<p:message id="stu_nationality_msg" for="stu_nationality" />
+
+		<p:outputLabel id="stu_religion_label" value="Religion" for="stu_religion" />
+		<p:inputText id="stu_religion" value="#{admissionBean.admission.religion}" required="true" />
+		<p:message id="stu_religion_msg" for="stu_religion" />
+
+		<p:outputLabel id="stu_mother_tongue_label" value="Mother tongue" for="stu_mother_tongue" />
+		<p:inputText id="stu_mother_tongue" value="#{admissionBean.admission.motherTongue}" required="true" />
+		<p:message id="stu_mother_tongue_msg" for="stu_mother_tongue" />
+
+		<p:outputLabel id="stu_reservation_label" value="Reservation" for="stu_reservation" />
+		<p:inputText id="stu_reservation" value="#{admissionBean.admission.reservation}" required="true" />
+		<p:message id="stu_reservation_msg" for="stu_reservation" />
+
+		<p:outputLabel id="stu_residence_label" value="Residence type" for="stu_residence" />
+		<p:selectOneRadio id="stu_residence" value="#{admissionBean.admission.residence}" style="width:155px;" required="true">
+			<f:selectItems value="#{enumConstantsBean.residences}" var="redidence" itemLabel="#{redidence.label}"
+				itemValue="#{redidence}" />
+		</p:selectOneRadio>
+		<p:message id="stu_residence_label_msg" for="stu_residence" />
+	</h:panelGrid>
+
+</ui:composition>

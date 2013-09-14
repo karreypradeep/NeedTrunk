@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel header="Bank Account Details">
+		<h:panelGrid id="parents_panel" columns="2" width="100%" columnClasses="column-vertical-align, column-vertical-align">
+			<h:panelGrid id="father_panel_grid" columns="3" columnClasses="label, value, label" styleClass="grid" cellpadding="5">
+				<p:outputLabel id="account_number_label" value="Account Number" for="account_number" />
+				<p:inputText id="account_number" value="#{branchBankAccountBean.currentBranchBankAccount.accountNumber}" size="20"
+					maxlength="30" disabled="#{branchBankAccountBean.currentBranchBankAccount.id != null}">
+				</p:inputText>
+				<p:message id="account_number_msg" for="account_number" />
+
+				<p:outputLabel id="bank_name_label" value="Bank Name" for="bank_name" />
+				<p:inputText id="bank_name" value="#{branchBankAccountBean.currentBranchBankAccount.bankName}" size="20" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}">
+				</p:inputText>
+				<p:message id="bank_name_msg" for="bank_name" />
+
+				<p:outputLabel id="bank_branch_label" value="Bank Branch" for="bank_branch" />
+				<p:inputText id="bank_branch" value="#{branchBankAccountBean.currentBranchBankAccount.bankBranch}" size="20" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}">
+				</p:inputText>
+				<p:message id="bank_branch_msg" for="bank_branch" />
+
+				<p:outputLabel id="account_opening_date_label" value="Account opening date" for="account_opening_date" />
+				<p:calendar id="account_opening_date" value="#{branchBankAccountBean.currentBranchBankAccount.accountOpeningDate}"
+					navigator="true" display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}"/>
+				<p:message id="account_opening_date_msg" for="account_opening_date" />
+
+			</h:panelGrid>
+			<h:panelGrid id="father_address_grid" columns="3" columnClasses="label, value, label" styleClass="grid"
+				cellpadding="5">
+				<biz:address addressModel="#{branchBankAccountBean.currentBranchBankAccount.bankBranchAddress}" readOnly="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}"/>
+			</h:panelGrid>
+
+		</h:panelGrid>
+		<p:commandButton id="branch_bank_account_save" value="Save" action="#{branchBankAccountBean.saveBranchBankAccount}"
+			update="@form" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}"/>
+		<p:commandButton id="branch_bank_account_edit" value="Edit Account Details" immediate="true" update="@form"
+			action="#{branchBankAccountBean.editBankAccountDetails}" />
+		<p:commandButton id="branch_bank_account_clear" value="Cancel" immediate="true" update="@form"
+			action="#{branchBankAccountBean.calcelAction}" />
+	</p:panel>
+</ui:composition>

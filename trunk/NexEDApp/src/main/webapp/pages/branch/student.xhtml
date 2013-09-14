@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+
+	<c:choose>
+
+		<c:when test="#{studentBean.studentCurrentAction != null and studentBean.studentCurrentAction == 'PROMOTE_STUDENT'}">
+			<ui:include src="/pages/modules/core/promote_student.xhtml" />
+		</c:when>
+
+		<c:when test="#{studentBean.studentCurrentAction != null and studentBean.studentCurrentAction == 'TRANSFER_SECTION'}">
+
+			<ui:include src="/pages/modules/core/transfer_section.xhtml" />
+
+		</c:when>
+
+		<c:when test="#{studentBean.studentCurrentAction != null and studentBean.studentCurrentAction == 'DROPOUT_STUDENT'}">
+			<ui:include src="/pages/modules/core/dropout_student.xhtml" />
+		</c:when>
+
+		<c:when test="#{studentBean.studentCurrentAction != null and studentBean.studentCurrentAction == 'ROLLBACK_DROPOUT_STUDENT'}">
+			<ui:include src="/pages/modules/core/rollback_dropout_student.xhtml" />
+		</c:when>  
+
+		<c:when test="#{studentBean.studentCurrentAction != null and studentBean.studentCurrentAction == 'TERMINATE_STUDENT'}">
+			<ui:include src="/pages/modules/core/terminate_student.xhtml" />
+		</c:when>
+
+		<c:otherwise>
+
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{studentBean.handleStudentTabModel()}" />
+				<f:event type="preRenderView" listener="#{studentBean.loadStudentStatusHistories()}" />
+				<f:event type="preRenderView" listener="#{studentBean.loadStudentAcademicYears()}" />
+				<f:event type="preRenderView" listener="#{studentBean.loadSubmittedDocumentsMedicalDetails()}" />
+			</f:metadata>
+			<p:tabMenu activeIndex="#{studentBean.studentTabModel.activeTabIndex}">
+				<p:menuitem value="Personal" icon="ui-icon-home" process="@this" update="@form">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.personalTab}" />
+					<f:setPropertyActionListener target="#{studentBean.loadProfilePictureFlag}" value="true" />
+				</p:menuitem>
+
+				<p:menuitem value="Financials" icon="ui-icon-gear" action="#{studentFinancialBean.onTabChange}" process="@this"
+					update="@form" rendered="#{studentBean.studentTabModel.paymentsTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.paymentsTab}" />
+
+					<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="selectFeeType" />
+				</p:menuitem>
+
+				<p:menuitem value="Additional Fee" icon="ui-icon-tag" action="#{studentLevelFeeBean.onTabChange()}" process="@this"
+					update="@form" rendered="#{studentBean.studentTabModel.studentAdditionalFeeTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.studentAdditionalFeeTab}" />
+				</p:menuitem>
+
+				<p:menuitem value="Pocket money" icon="ui-icon-suitcase" action="#{studentPocketMoneyBean.onTabChange()}"
+					process="@this" update="@form" rendered="#{studentBean.studentTabModel.studentPocketMoneyTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.studentPocketMoneyTab}" />
+				</p:menuitem>
+
+				<p:menuitem value="Academics" icon="ui-icon-note" process="@this" update="@form"
+					action="#{studentAcademicBean.viewStudentExamWiseResults()}"
+					rendered="#{studentBean.studentTabModel.academicsTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.academicsTab}" />
+					<f:setPropertyActionListener target="#{studentBean.loadExamsFlag}" value="true" />
+				</p:menuitem>
+
+				<p:menuitem value="Attendance" icon="ui-icon-document-b" process="@this" update="@form"
+					action="#{studentAttendanceBean.onTabChange()}" rendered="#{studentBean.studentTabModel.attendanceTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.attendanceTab}" />
+				</p:menuitem>
+
+				<p:menuitem value="Transportation" icon="ui-icon-shuffle" action="#{studentTransportationBean.onTabChange()}"
+					process="@this" update="@form" rendered="#{studentBean.studentTabModel.transportationTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.transportationTab}" />
+				</p:menuitem>
+
+				<p:menuitem value="Notifications" icon="ui-icon-mail-closed" action="#{studentNotificationsBean.onTabChange()}"
+					process="@this" update="@form" rendered="#{studentBean.studentTabModel.notificationTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.notificationTab}" />
+				</p:menuitem>
+
+				<p:menuitem value="Status History" icon="ui-icon-comment" process="@this" update="@form"
+					rendered="#{studentBean.studentTabModel.statusHistoryTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.statusHistoryTab}" />
+					<f:setPropertyActionListener target="#{studentBean.loadStudentStatusHistoryFlag}" value="true" />
+				</p:menuitem>
+
+			</p:tabMenu>
+			<div class="ui-apeironsol-menu-header" style="padding-right: 10px;">
+				<h:outputText
+					value="#{studentBean.student.displayName} / #{studentBean.student.externalAdmissionNr!=null ? studentBean.student.externalAdmissionNr:studentBean.student.admissionNr}" />
+
+
+				<div style="float: right; margin-bottom: 5px; margin-left: 5px; position: relative; top: -8px; padding-bottom: 3px;">
+					<p:menuButton value="Take Action" rendered="#{grantedAuthorityBean.userAllowedToAccessStudentActions}">
+						<p:menuitem value="Promote Student" process="@this" update="@form" icon="ui-icon-star" disabled="true"
+							actionListener="#{studentBean.promoteStudentAction()}"
+							rendered="#{grantedAuthorityBean.userAllowedToPromoteStudent and studentBean.student.studentStatus == 'ACTIVE'}">
+						</p:menuitem>
+
+
+						<p:menuitem value="Transfer Section" process="@this" update="@form" style="width:160px" disabled="true"
+							icon="ui-icon-lightbulb" actionListener="#{studentBean.transferSectionAction()}"
+							rendered="#{grantedAuthorityBean.userAllowedToTransferStudent and studentBean.student.studentStatus == 'ACTIVE'}">
+						</p:menuitem>
+
+						<p:menuitem value="Dropout Student" process="@this" update="@form" style="width:160px" icon="ui-icon-clipboard"
+							actionListener="#{studentBean.dropoutStudentAction()}"
+							rendered="#{grantedAuthorityBean.userAllowedToAcceptForDropOutStudent || grantedAuthorityBean.userAllowedToDropOutStudent}">
+							<f:setPropertyActionListener target="#{studentBean.actionComment}" value="" />
+						</p:menuitem>
+
+						<p:menuitem value="Rollback Dropout" process="@this" update="@form" style="width:160px" icon="ui-icon-clipboard"
+							actionListener="#{studentBean.rollbackDropoutStudentAction()}"
+							rendered="#{grantedAuthorityBean.userAllowedToRollbackDropOutStudent and (studentBean.student.studentStatus == 'ACCEPT_FOR_DROPOUT' || studentBean.student.studentStatus == 'DROPOUT')}">
+							<f:setPropertyActionListener target="#{studentBean.actionComment}" value="" />
+						</p:menuitem>
+
+						<p:menuitem value="Terminate Student" process="@this" update="@form" style="width:160px" disabled="true"
+							icon="ui-icon-scissors" actionListener="#{studentBean.terminateStudentAction()}"
+							rendered="#{grantedAuthorityBean.userAllowedToTerminateAction and studentBean.student.studentStatus == 'ACTIVE'}">
+						</p:menuitem>
+
+						<p:separator />
+
+					</p:menuButton>
+				</div>
+
+				<div style="float: right; margin-bottom: 5px; position: relative; top: -5px;">
+					<h:outputText value="Change academic Year : " style="margin-right: 5px;position: relative; top: -8px;" />
+
+					<p:selectOneMenu id="student_academic_years" value="#{studentBean.studentAcademicYear}">
+						<f:selectItems value="#{studentBean.studentAcademicYears}" var="studentAcademicYear"
+							itemLabel="#{studentAcademicYear.academicYear.displayLabel}" itemValue="#{studentAcademicYear}" />
+						<f:converter converterId="studentAcademicYearConverter" />
+						<p:ajax update="@form" process="@this" listener="#{studentBean.studentAcademicYearChangeListner}" />
+					</p:selectOneMenu>
+				</div>
+
+			</div>
+			<p:panel id="studentPanel">
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+				<c:if test="#{studentBean.studentTabModel.personalTabActive}">
+					<ui:include src="student_profile.xhtml" />
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.paymentsTabActive}">
+					<ui:include src="/pages/modules/financial/student_payments.xhtml" />
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.studentAdditionalFeeTabActive}">
+					<ui:include src="/pages/modules/financial/student_level_fees.xhtml" />
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.studentPocketMoneyTabActive}">
+					<ui:include src="/pages/branch/student/student_pocket_money.xhtml" />
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.academicsTabActive}">
+					<ui:include src="/pages/modules/academics/student_academics.xhtml" />
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.transportationTabActive}">
+					<ui:include src="/pages/branch/transportation/student_transportation.xhtml" />
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.attendanceTabActive}">
+					<ui:include src="/pages/branch/student/student_attendance.xhtml" />
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.statusHistoryTabActive}">
+
+					<f:facet name="header">Status History</f:facet>
+
+					<p:dataTable id="status_table" var="studentStatusHistory" value="#{studentBean.studentStatusHistories}"
+						paginator="true" rows="15"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:10px;">
+
+						<p:column headerText="Action time" sortBy="#{studentStatusHistory.auditTimestamp}"
+							filterBy="#{studentStatusHistory.auditTimestamp}" filterMatchMode="contains">
+							<h:outputText value="#{studentStatusHistory.auditTimestamp}">
+								<f:convertDateTime pattern="dd/MM/yyyy : hh:mm:ss" />
+							</h:outputText>
+
+						</p:column>
+
+						<p:column headerText="Action taken by" sortBy="#{studentStatusHistory.actionTakenBy}"
+							filterBy="#{studentStatusHistory.actionTakenBy}" filterMatchMode="contains">
+							<h:outputText value="#{studentStatusHistory.actionTakenBy}" />
+						</p:column>
+
+						<p:column headerText="Action" sortBy="#{studentStatusHistory.action}" filterBy="#{studentStatusHistory.action}"
+							filterMatchMode="contains">
+							<h:outputText value="#{studentStatusHistory.action}" />
+						</p:column>
+
+						<p:column headerText="Comments">
+							<p:commandLink value="View comments" oncomplete="actionDialog.show()" update="@form">
+								<f:setPropertyActionListener target="#{studentBean.studentStatusHistory}" value="#{studentStatusHistory}" />
+							</p:commandLink>
+						</p:column>
+
+					</p:dataTable>
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.notificationTabActive}">
+					<ui:include src="/pages/branch/student/student_notifications.xhtml" />
+				</c:if>
+
+
+			</p:panel>
+
+			<p:dialog header="Action details" widgetVar="actionDialog" resizable="false" showEffect="explode"
+				hideEffect="explode" width="500">
+				<h:panelGrid id="display" columns="2" cellpadding="4">
+
+					<h:outputText value="Action" />
+					<h:outputText value="#{studentBean.studentStatusHistory.action}" />
+
+					<h:outputText value="Action time" />
+					<h:outputText value="#{studentBean.studentStatusHistory.actionTakenTime}">
+						<f:convertDateTime pattern="dd/MM/yyyy : hh:mm:ss" />
+					</h:outputText>
+
+					<h:outputText value="Action taken by" />
+					<h:outputText value="#{studentBean.studentStatusHistory.actionTakenBy}" />
+
+					<h:outputText value="Comments" />
+					<h:outputText value="#{studentBean.studentStatusHistory.comments}" />
+
+				</h:panelGrid>
+			</p:dialog>
+
+		</c:otherwise>
+	</c:choose>
+
+</ui:composition>

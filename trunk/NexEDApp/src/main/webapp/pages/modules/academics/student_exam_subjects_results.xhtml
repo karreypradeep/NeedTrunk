@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components/notifications">
+
+
+	<div class="ui-apeironsol-body-header">
+		<h:outputText value="Exam Results" />
+	</div>
+
+
+	<p:barChart id="examSubjectsPercentageChart" value="#{studentAcademicBean.studentExamSubjectChart}" legendPosition="ne"
+		title="Exam subject percentages" orientation="horizontal" min="0" max="100"
+		style="margin-top:20px;margin-bottom:15px;"
+		rendered="#{studentAcademicBean.studentExamSubjectDOs != null and studentAcademicBean.studentExamSubjectDOs.size() > 0}"
+		seriesColors="5dbd6b" />
+
+	<p:dataTable id="studentExamSubjectResults" value="#{studentAcademicBean.studentExamSubjectDOs}"
+		var="studentExamSubjectDO" paginator="false" sortOrder="descending">
+
+
+		<f:facet name="header">
+			<h:outputText value="Exam results for all subjects" style="float:left;margin-top:5px;margin-bottom:5px;" />
+			<h:commandLink style="float:right;" rendered="#{studentAcademicBean.studentExamSubjectDOs.size()>0}">
+				<p:graphicImage value="/images/pdf.png" />
+				<p:dataExporter type="pdf" target="studentExamSubjectResults" fileName="Exam subject results" />
+			</h:commandLink>
+		</f:facet>
+
+
+		<p:column headerText="Subject" style="width:125px" sortBy="#{studentExamSubjectDO.subject.name}">
+			<h:outputLabel value="#{studentExamSubjectDO.subject.name}" />
+		</p:column>
+
+		<p:column headerText="Scheduled Date" style="width:125px"
+			sortBy="#{studentExamSubjectDO.sectionExamSubject.scheduledDate}">
+			<h:outputText value="#{studentExamSubjectDO.sectionExamSubject.scheduledDate}">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="Maximum Marks" style="width:125px"
+			sortBy="#{studentExamSubjectDO.sectionExamSubject.maximumMarks}">
+			<h:outputText value="#{studentExamSubjectDO.sectionExamSubject.maximumMarks}">
+				<f:convertNumber pattern="0.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="Pass Marks" style="width:125px" sortBy="#{studentExamSubjectDO.sectionExamSubject.passMarks}">
+			<h:outputText value="#{studentExamSubjectDO.sectionExamSubject.passMarks}">
+				<f:convertNumber pattern="0.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column headerText="Scored Marks" style="width:125px"
+			sortBy="#{studentExamSubjectDO.studentExamSubject.scoredMarks}">
+			<h:outputText value="#{studentExamSubjectDO.studentExamSubject.scoredMarks}">
+				<f:convertNumber pattern="0.00" />
+			</h:outputText>
+		</p:column>
+
+	</p:dataTable>
+
+
+
+</ui:composition>

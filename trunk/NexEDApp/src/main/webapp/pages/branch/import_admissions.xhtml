@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{importAdmissionBean.loadKlasses}" />
+		<f:event type="preRenderView" listener="#{importAdmissionBean.loadActiveBatchesForBranch()}" />
+		<f:event type="preRenderView" listener="#{importAdmissionBean.loadAcademicYearsForAdmission()}" />
+	</f:metadata>
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputLabel value="Import Admissions" style="font-weight:bold;" />
+		</p:toolbarGroup>
+
+		<p:toolbarGroup align="right">
+			<p:commandButton id="downloadLink" value="Download Excel" icon="ui-icon ui-icon-arrowthichk-s" ajax="false"
+				immediate="true">
+				<p:fileDownload value="#{importAdmissionBean.excelFormatfile}" />
+			</p:commandButton>
+		</p:toolbarGroup>
+	</p:toolbar>
+	<p:panel style="margin-top:1px;">
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+		<h:panelGrid columns="3" id="expense_type_grid" cellpadding="4">
+
+			<c:if test="#{sessionBean.currentBranchRule.batchRequiredIndicator}">
+				<p:outputLabel id="add_batch_label" value="#{msg.batch}" for="add_batch" />
+				<p:selectOneMenu id="add_batch" value="#{importAdmissionBean.appliedForBatch}" required="true" style="width:100%">
+					<f:selectItem itemLabel="Select batch" itemValue="" />
+					<f:selectItems value="#{importAdmissionBean.activeBatchesForBranch}" var="batch" itemLabel="#{batch.name}"
+						itemValue="#{batch}" />
+					<f:converter converterId="batchConverter" />
+					<p:ajax update="add_academic_year" listener="#{importAdmissionBean.loadAcademicYearsForBatch()}" process="@this" />
+				</p:selectOneMenu>
+				<p:message id="add_batch_msg" for="add_batch" />
+			</c:if>
+
+			<p:outputLabel id="add_academic_year_label" value="#{msg.academic_year}" for="add_academic_year" />
+			<p:selectOneMenu id="add_academic_year" value="#{importAdmissionBean.appliedForAcademicYear}" required="true"
+				style="width:100%">
+				<f:selectItem itemLabel="Select academic year" itemValue="" />
+				<f:selectItems value="#{importAdmissionBean.academicYearsForBatch}" var="academicYear"
+					itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+				<f:converter converterId="academicYearConverter" />
+				<p:ajax process="@this" />
+			</p:selectOneMenu>
+			<p:message id="add_academic_year_msg" for="add_academic_year" />
+
+			<p:outputLabel id="stu_applying_class_label" value="#{msg.applying_for_class}" for="stu_applying_class" />
+			<p:selectOneMenu id="stu_applying_class" value="#{importAdmissionBean.applyingForClass}"
+				style="min-width:165px;width:100%;" required="true" converter="klassConverter">
+				<f:selectItem itemLabel="Select applying class" />
+				<f:selectItems value="#{importAdmissionBean.klasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
+				<p:ajax process="@this" />
+			</p:selectOneMenu>
+			<p:message id="stu_applying_class_msg" for="stu_applying_class" />
+
+		</h:panelGrid>
+
+		<p:fileUpload fileUploadListener="#{importAdmissionBean.importAdmissions}" mode="advanced" sizeLimit="100000"
+			allowTypes="/(\.|\/)(xls)$/" update="@form" uploadLabel="Import Admissions" />
+		<p:panel style="margin-top:1px;border:0px" rendered="#{importAdmissionBean.displayStatusTextArea}">
+			<h:panelGrid columns="1" cellpadding="4">
+				<p:inputTextarea value="#{importAdmissionBean.importStatusString}" rows="10" cols="200" autoResize="false"
+					style="border:0px;" />
+				<p:commandButton id="downloadStatusFile" value="Download Status Excel" icon="ui-icon ui-icon-arrowthichk-s"
+					ajax="false" immediate="true">
+					<p:fileDownload value="#{importAdmissionBean.excelAfterImport}" />
+				</p:commandButton>
+			</h:panelGrid>
+		</p:panel>
+	</p:panel>
+</ui:composition>

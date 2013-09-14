@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+
+	<p:panel header="Admit Admission">
+
+
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+
+
+		<h:panelGrid columns="2" cellpadding="5" cellspacing="5">
+
+			<h:outputText value="Skip Application Fee for this admission ? " rendered="#{admissionBean.applicationFeeDefinedInBranch}" />
+			<p:selectBooleanButton value="#{admissionBean.skipApplicationFee}" onLabel="Yes" offLabel="No" onIcon="ui-icon-circle-check" offIcon="ui-icon-circle-close"
+				rendered="#{admissionBean.applicationFeeDefinedInBranch}">
+				<p:ajax process="@this" update="@form" />
+			</p:selectBooleanButton>
+
+
+			<h:outputText value="Skip Reservation Fee for this admission ? "
+				rendered="#{admissionBean.reservationFeeDefinedInBranch}" />
+				
+			<p:selectBooleanButton value="#{admissionBean.skipReservationFee}" onLabel="Yes" offLabel="No" onIcon="ui-icon-circle-check" offIcon="ui-icon-circle-close"
+				rendered="#{admissionBean.reservationFeeDefinedInBranch}">
+				<p:ajax process="@this" update="@form" />
+			</p:selectBooleanButton>	
+
+
+		</h:panelGrid>
+
+		<p:dataTable id="feeDetails" value="#{admissionBean.admissionFeeDOs}" var="admissionFeeDo" editable="true"
+			rendered="#{admissionBean.admissionReservationFeePaid and (!admissionBean.reservationFeeDefinedInBranch or admissionBean.skipReservationFee)}" style="margin:5px;margin-bottom:15px;">
+			<p:ajax event="rowEdit" update="@this" />
+			<f:facet name="header">
+				<span style="float: left"> <h:outputLabel value="Paid Reservation fee :" style="font-size: 13px;padding-right:10px;" /> <h:outputText
+						value="#{admissionBean.admissionReservationFee.reservationFee}" style="font-size: 13px; font-weight:bold;color:red">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</span>
+				<h:outputLabel value="#{admissionBean.totalAdmissionReservationFeeAdjusted}" style="float: right; font-size: 16px; font-weight:bold;color:blue">
+					<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+				</h:outputLabel>
+				<p:spacer width="10" style="float: right;" />
+				<h:outputLabel value="Reservation fee adjusted amount : " style="float: right; font-size: 13px; font-weight:bold;" />
+			</f:facet>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Fee" />
+				</f:facet>
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{admissionFeeDo.feeName}">
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<h:outputText value="#{admissionFeeDo.feeName}">
+						</h:outputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Amount" />
+				</f:facet>
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{admissionFeeDo.amount}">
+							<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<h:outputText value="#{admissionFeeDo.amount}">
+							<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+						</h:outputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+							Frequency
+						    </f:facet>
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{admissionFeeDo.paymentFrequency.label}">
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<h:outputText value="#{admissionFeeDo.paymentFrequency.label}">
+						</h:outputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column style="width:150px;">
+				<f:facet name="header">
+							Adjusting Amount
+						    </f:facet>
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{admissionFeeDo.feePaidDuringAdmission}">
+							<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{admissionFeeDo.feePaidDuringAdmission}">
+							<f:validateDoubleRange minimum="0" />
+							<p:ajax process="@this" update="@form" event="change" />
+						</p:inputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column style="width:60px;text-align:center;no-wrap;">
+				<p:rowEditor />
+			</p:column>
+		</p:dataTable>
+
+		<p:panel header="Class and section details" style="border:0px;">
+			<h:panelGrid columns="3" cellpadding="5">
+				<p:outputLabel id="accepted_class_label" value="Accepted for class" for="accepted_class" />
+				<h:outputLabel id="accepted_class" value="#{admissionBean.student.acceptedForKlass.name}" readonly="true" style="font-weight:bold;" />
+				<p:message id="accepted_class_msg" for="accepted_class" />
+
+				<p:outputLabel id="student_classification_type_label" value="Student classification" for="student_classification_type" />
+				<p:selectOneMenu id="student_classification_type" value="#{admissionBean.student.studentClassificationType}" style="width:155px;"
+					converter="buildingBlockConverter">
+					<f:selectItem itemLabel="Select student classification" />
+					<f:selectItems value="#{admissionBean.buildingBlockTypeStudentClassifications}" var="buildingBlockTypeStudentClassification"
+						itemLabel="#{buildingBlockTypeStudentClassification.name}" itemValue="#{buildingBlockTypeStudentClassification}" />
+					<p:ajax process="@this" update="@this" />
+				</p:selectOneMenu>
+				<p:message id="student_classification_type_msg" for="student_classification_type" />
+
+				<p:outputLabel id="admit_section_label" value="Admit for section" for="admit_section" />
+				<p:selectOneMenu id="admit_section" value="#{admissionBean.admitForSectionId}" style="width:155px;" required="true">
+					<f:selectItem itemLabel="Select assigning section" />
+					<f:selectItems value="#{admissionBean.sectionsForKlass}" var="section" itemLabel="#{section.name}" itemValue="#{section.id}" />
+					<p:ajax process="@this" update="@this" />
+				</p:selectOneMenu>
+				<p:message id="admit_section_msg" for="admit_section" />
+			</h:panelGrid>
+		</p:panel>
+
+
+
+		<p:panel header=" Submitted documents
+									details" style="border:0px;">
+			<h:panelGrid columns="2" cellpadding="5" columnClasses="column-medical-hist-label,column-medical-hist-value">
+				<p:outputLabel id="submitted_documents_label" value="Submitted documents" for="submitted_documents" />
+				<p:selectManyCheckbox id="submitted_documents" converter="buildingBlockConverter" value="#{admissionBean.admissionSubmittedDocuments}"
+					layout="pageDirection">
+					<f:selectItems value="#{admissionBean.buildingBlockTypeAdmissionDocuments}" var="admissionDocumentsTypeBuildingBlock"
+						itemLabel="#{admissionDocumentsTypeBuildingBlock.name}" itemValue="#{admissionDocumentsTypeBuildingBlock}" />
+				</p:selectManyCheckbox>
+			</h:panelGrid>
+		</p:panel>
+
+		<p:panel header="Medical details" style="border:0px;">
+			<h:panelGrid columns="2" cellpadding="5" columnClasses="column-medical-hist-label,column-medical-hist-value">
+				<p:outputLabel id="stu_curr_using_medi_label" value="#{msg.currently_using_medicines}" for="stu_curr_using_medi" />
+				<p:inputTextarea id="stu_curr_using_medi" cols="100" rows="3" value="#{admissionBean.medicalHistory.currentlyUsingMedicines}" />
+
+				<p:outputLabel id="stu_allergies_label" value="#{msg.known_allergies}" for="stu_allergies" />
+				<p:inputTextarea id="stu_allergies" cols="100" rows="3" value="#{admissionBean.medicalHistory.knownAllergies}" />
+
+				<p:outputLabel id="stu_curr_medi_cond_label" value="#{msg.current_medical_condition}" for="stu_curr_medi_cond" />
+				<p:inputTextarea id="stu_curr_medi_cond" cols="100" rows="3" value="#{admissionBean.medicalHistory.currentMedicalCondition}" />
+
+				<p:outputLabel id="stu_prev_opers_details_label" value="#{msg.previous_operation_details}" for="stu_prev_opers_details" />
+				<p:inputTextarea id="stu_prev_opers_details" cols="100" rows="3" value="#{admissionBean.medicalHistory.previousOperatationDetails}" />
+
+				<p:outputLabel id="stu_relat_details_label" value="#{msg.relatives_health_condition}" for="stu_relat_details" />
+				<p:inputTextarea id="stu_relat_details" cols="100" rows="3" value="#{admissionBean.medicalHistory.relativesHealthDetails}" />
+			</h:panelGrid>
+		</p:panel>
+
+		<p:commandButton id="admit_save" value="Admit" action="#{admissionBean.admitStudent()}" update="@form" style="width:80px;" icon="ui-icon-circle-check">
+			<f:setPropertyActionListener target="#{admissionBean.loadStudentStatusHistoryFlag}" value="true" />
+			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
+		</p:commandButton>
+		<p:spacer width="10px" />
+		<p:commandButton id="admit_cancle" value="Cancel" update="@form" process="@this" style="width:80px;" icon="ui-icon-circle-close">
+			<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="">
+				<f:converter converterId="admissionStatusConverter" />
+			</f:setPropertyActionListener>
+			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
+		</p:commandButton>
+		
+		<p:blockUI block="form" trigger="admit_save" >
+			Request is processing, please wait<br />
+				<p:graphicImage value="/images/ajax-loader.gif" />
+			
+		</p:blockUI>
+	</p:panel>
+
+</ui:composition>

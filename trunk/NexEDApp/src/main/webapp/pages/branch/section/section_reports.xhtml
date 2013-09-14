@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
+	
+		<h:panelGrid columns="3" id="section_grid" style="border:0px;margin-bottom:10px;" cellpadding="5">
+			<p:outputLabel value="Select report type: " for="section_report_type" />
+			<p:selectOneListbox id="section_report_type" value="#{sectionReportsBean.sectionReportType}"
+				converter="sectionReportTypeConstantConverter" style="height:100px">
+				<f:selectItems value="#{enumConstantsBean.sectionReportsConstants}" var="sectionReport" itemLabel="#{sectionReport.label}"
+					itemValue="#{sectionReport}" />
+			</p:selectOneListbox>
+			<p:message id="scroll_klass_msg" for="section_report_type" />
+
+			<f:facet name="footer">
+				<p:commandButton id="downloadLink" value="Generate Report" ajax="false" onclick="PrimeFaces.monitorDownload(start, stop)"
+					icon="ui-icon-arrowthichk-s">
+					<p:fileDownload value="#{sectionReportsBean.generateStudentAdmissionReport}" />
+				</p:commandButton>
+
+			</f:facet>
+		</h:panelGrid>
+</ui:composition>

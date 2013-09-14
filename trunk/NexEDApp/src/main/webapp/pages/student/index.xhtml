@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+<ui:composition template="/templates/main.xhtml">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{studentBean.loadStudentByUserId()}" />
+		<f:event type="preRenderView" listener="#{studentBean.loadStudentAcademicYears()}" />
+		<f:event type="preRenderView" listener="#{studentBean.loadLatestAcademicYearDetailsForStudent()}" />
+	</f:metadata>
+
+	<ui:define name="body">
+		<div class="ui-apeironsol-body-header">
+			<h:outputText
+				value="#{studentBean.student.displayName} / #{studentBean.student.admissionNr} / #{studentBean.studentSection.section.klass.name} / #{studentBean.studentSection.section.name}" />
+		</div>
+		<c:choose>
+
+			<c:when test="#{viewContentHandlerBean.viewContentBranchDashboard}">
+				<ui:include src="/pages/student/dashboard.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentStudentPortalPersonal}">
+				<ui:include src="/pages/student/personal_details.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentStudentPortalParents}">
+				<ui:include src="/pages/student/student_portal_parents_details.xhtml" />
+			</c:when>
+
+			<c:when test="#{viewContentHandlerBean.viewContentStudentPortalMedical}">
+				<ui:include src="/pages/student/student_portal_medical_details.xhtml" />
+			</c:when>
+
+			<c:otherwise>
+				<ui:include src="/pages/student/personal_details.xhtml" />
+			</c:otherwise>
+
+		</c:choose>
+	</ui:define>
+
+</ui:composition>
+</html>

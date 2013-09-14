@@ -1,0 +1,15 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<h:panelGrid columns="2" cellpadding="5">
+
+		<p:outputLabel id="submitted_documents_label" value="Submitted documents" for="submitted_documents" />
+		<p:selectManyCheckbox id="submitted_documents" converter="buildingBlockConverter" layout="pageDirection"
+			value="#{admissionBean.admissionSubmittedDocuments}">
+			<f:selectItems value="#{admissionBean.buildingBlockTypeAdmissionDocuments}" var="admissionDocumentsTypeBuildingBlock"
+				itemLabel="#{admissionDocumentsTypeBuildingBlock.name}" itemValue="#{admissionDocumentsTypeBuildingBlock}" />
+		</p:selectManyCheckbox>
+		<p:message id="submitted_documents_msg" for="submitted_documents" />
+
+	</h:panelGrid>
+</ui:composition>

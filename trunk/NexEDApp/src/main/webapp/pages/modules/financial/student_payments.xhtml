@@ -1,0 +1,111 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	
+	<f:facet name="header">Financials</f:facet>
+	
+	<p:wizard showNavBar="false" style="margin-top:0px;" step="#{studentFinancialBean.paymentWizardAciveStep}"
+		showStepStatus="false">
+
+		<p:tab id="selectFeeType" title="Select fee type" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_select_fee.xhtml"/>
+
+		</p:tab>
+		<p:tab id="processPayment" title="Process payment" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_process_payment.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="confirmPayment" title="Confirm payment" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_confirm_payment.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="paymentRecipt" title="Process recipt" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_payment_receipt.xhtml"/>
+
+		</p:tab>
+
+		<p:tab id="processRefund" title="Process Refund" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_process_refund.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="confirmRefundRequest" title="Confirm refund request" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_confirm_refund.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="refundRequestRecipt" title="Refund request recipt" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_refund_receipt.xhtml"/>
+
+		</p:tab>
+
+		<p:tab id="processDeduction" title="Deduct payments" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_process_deduction.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="confirmDeductionRequest" title="Deduct payments" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_confirm_deduction.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="decutionRequestRecipt" title="Deduct payments" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_deduction_receipt.xhtml"/>
+
+		</p:tab>
+		
+		
+		<p:tab id="viewTransactions" title="Deduct payments" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_fee_transactions.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="viewFeeDetails" title="View fee details" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_view_fee_details.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="additionalFee" title="Student additional fee" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_additional_fee.xhtml"/>
+
+		</p:tab>
+
+		<p:tab id="revertFeeTransaction" title="Revert fee transaction" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_fee_transaction_cancel.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="processPendingFeeTransaction" title="Process fee transaction" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/process_pending_fee_transaction.xhtml"/>
+
+		</p:tab>
+		
+		<p:tab id="confirmAndSubmitPendingFeeTransaction" title="Process fee transaction" titleStyle="font-size: 12px;">
+
+			<ui:include src="/pages/modules/financial/student_confirm_and_process_pending_transaction.xhtml"/>
+
+		</p:tab>
+
+	</p:wizard>
+
+</ui:composition>

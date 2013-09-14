@@ -1,0 +1,169 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel style="margin-top:1px;margin-bottom:10px;">
+		<f:facet name="header">
+			<h:outputLabel value="Search Criteria" style="font-size: 16px; font-weight:bold;" />
+		</f:facet>
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+		<h:panelGrid columns="3" id="expense_type_grid" cellpadding="4" style="border:0px;">
+
+			<h:panelGrid columns="2" id="expense_type_grid1" cellpadding="4" style="border:0px;">
+
+				<p:outputLabel id="academic_year_label" value="Academic year" for="academic_year" />
+				<p:selectOneMenu id="academic_year" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear}"
+					converter="academicYearConverter">
+					<f:selectItem itemLabel="Select academic year" itemValue="" />
+					<f:selectItems value="#{financeFeesCollectedBean.activeAcademicYears}" var="academicYear"
+						itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+					<p:ajax process="@this" update="@form" listener="#{financeFeesCollectedBean.onChangeAcademicYear}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
+				<p:calendar id="from_date" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.fromDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{studentBean.currentDate}"
+					disabled="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear==null}" />
+
+				<p:outputLabel id="to_date_label" value="To date" for="to_date" />
+				<p:calendar id="to_date" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.toDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{studentBean.currentDate}"
+					disabled="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear==null}" />
+
+			</h:panelGrid>
+
+
+			<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
+
+				<p:outputLabel id="class_label" value="Class" for="class" />
+				<p:selectOneMenu id="class" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.klass}" converter="klassConverter">
+					<f:selectItem itemLabel="Select class" itemValue="" />
+					<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
+					<p:ajax update="expense_type_grid2" listener="#{financeFeesCollectedBean.handleFromKlassChange}" process="@this" />
+				</p:selectOneMenu>
+
+
+				<p:outputLabel id="section_label" value="Section" for="section" />
+				<p:selectOneMenu id="section" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.section}" converter="sectionConverter">
+					<f:selectItem itemLabel="Select section" itemValue="" />
+					<f:selectItems value="#{financeFeesCollectedBean.sectionsForSearhCriteriaByKlass}" var="section" itemLabel="#{section.name}"
+						itemValue="#{section}" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+		</h:panelGrid>
+		<p:commandButton id="expense_type_search_buton" value="Search"
+			action="#{financeFeesCollectedBean.searchFeesCollectedBySearchCriteria()}" update="@form" style="width:80px;"
+			icon="ui-icon-search" />
+		<p:spacer width="5px" />
+		<p:commandButton id="expense_type_reset" value="Reset" update="@form"
+			action="#{financeFeesCollectedBean.resetSearchCriteria}" process="@this" style="width:80px;" icon="ui-icon-refresh" />
+	</p:panel>
+
+	<p:dataTable id="request_for_approval_table" var="studentFeeTransaction"
+		value="#{financeFeesCollectedBean.studentFeeTransactionsProcessed}" paginator="true" rows="10"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="10,15,20" paginatorPosition="bottom" style="margin-top:15px;"
+		currentPageReportTemplate="(Displaying {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})">
+		<f:facet name="header">
+			<h:outputText value="Search Results" style="float:left;" />
+			<h:commandLink style="float:right;" rendered="#{financeFeesCollectedBean.studentFeeTransactionsProcessed.size()>0}">
+				<p:graphicImage value="/images/excel.png" />
+				<p:dataExporter type="xls" target="request_for_approval_table" fileName="FeesCollected" />
+			</h:commandLink>
+			<h:commandLink style="float:right;" rendered="#{financeFeesCollectedBean.studentFeeTransactionsProcessed.size()>0}">
+				<p:graphicImage value="/images/pdf.png" />
+				<p:dataExporter type="pdf" target="request_for_approval_table" fileName="FeesCollected"
+					preProcessor="#{financeFeesCollectedBean.preProcessPDF}" />
+			</h:commandLink>
+		</f:facet>
+
+		<p:column sortBy="#{studentFeeTransaction.studentAcademicYear.student.displayName}"
+			filterBy="#{studentFeeTransaction.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+			<f:facet name="header">
+				<h:outputText value="Student name" />
+			</f:facet>
+			<p:commandLink id="studentNameLink" title="View"
+				value="#{studentFeeTransaction.studentAcademicYear.student.displayName}" style="margin:0px 0px 0px;" process="@this"
+				update="@form" action="#{financeFeesCollectedBean.viewStudent()}">
+				<f:setPropertyActionListener value="#{studentFeeTransaction}"
+					target="#{financeFeesCollectedBean.studentFeeTransaction}" />
+			</p:commandLink>
+		</p:column>
+
+		<p:column sortBy="#{studentFeeTransaction.studentAcademicYear.student.admissionNr}"
+			filterBy="#{studentFeeTransaction.studentAcademicYear.student.admissionNr}" filterMatchMode="contains">
+			<f:facet name="header">
+				<h:outputText value="Admission number" />
+			</f:facet>
+			<p:commandLink id="admission_number_Link" title="View"
+				value="#{studentFeeTransaction.studentAcademicYear.student.admissionNr}" style="margin:0px 0px 0px;" process="@this"
+				update="@form" action="#{financeFeesCollectedBean.viewStudent()}">
+				<f:setPropertyActionListener value="#{studentFeeTransaction}"
+					target="#{financeFeesCollectedBean.studentFeeTransaction}" />
+			</p:commandLink>
+		</p:column>
+
+		<p:column sortBy="#{studentFeeTransaction.transactionNr}" filterBy="#{studentFeeTransaction.transactionNr}"
+			filterMatchMode="contains">
+			<f:facet name="header">
+				<h:outputText value="Transaction number" />
+			</f:facet>
+			<h:outputText value="#{studentFeeTransaction.transactionNr}" />
+		</p:column>
+
+		<p:column sortBy="#{studentFeeTransaction.transactionDate}" filterBy="#{studentFeeTransaction.transactionDate}"
+			filterMatchMode="contains">
+			<f:facet name="header">
+				<h:outputText value="Transaction date" />
+			</f:facet>
+			<h:outputText
+				value="#{studentFeeTransaction.externalTransactionDate!=null? studentFeeTransaction.externalTransactionDate : studentFeeTransaction.transactionDate}">
+				<f:convertDateTime pattern="dd/MMM/yyyy" />
+			</h:outputText>
+		</p:column>
+		<p:column sortBy="#{studentFeeTransaction.amount}" filterBy="#{studentFeeTransaction.amount}"
+			filterMatchMode="contains">
+			<f:facet name="header">
+				<h:outputText value="Amount" />
+			</f:facet>
+			<h:outputText value="#{studentFeeTransaction.amount}" >
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+		<p:column headerText="#{msg.options}" styleClass="options-column" exportable="false">
+			<f:facet name="header">
+				<h:outputText value="#{msg.options}" />
+			</f:facet>
+			<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" title="View"
+				style="margin:0px 0px 0px;float:left;" process="@this" update="@form" oncomplete="dlg.show()"
+				action="#{financeFeesCollectedBean.loadStudentFinancialDOByTransaction}">
+				<f:setPropertyActionListener value="#{studentFeeTransaction}"
+					target="#{financeFeesCollectedBean.studentFeeTransaction}" />
+			</p:commandLink>
+		</p:column>
+
+		<p:columnGroup type="footer" rendered="false">
+			<p:row>
+				<p:column colspan="4" footerText="Total fee collected:" style="font-size: 12px; font-weight:bold;text-align:right" />
+
+				<p:column footerText="#{financeFeesCollectedBean.totalFeeCollected}" colspan="2"
+					style="font-size: 12px; font-weight:bold;text-align:left" />
+
+			</p:row>
+		</p:columnGroup>
+	</p:dataTable>
+	<p:dialog header="Transactoin details" widgetVar="dlg" showEffect="explode" resizable="false" dynamic="true"
+		modal="true">
+		<biz:student_fee_transaction_receipt
+			studentFeeTransactionDOModel="#{financeFeesCollectedBean.studentFeeTransactionDO}"
+			organizationName="#{sessionBean.currentOrganization.name}" branchName="#{sessionBean.currentBranch.name}"
+			className="#{financeFeesCollectedBean.studentSection.section.klass.name}"
+			sectionName="#{financeFeesCollectedBean.studentSection.section.name}"
+			receiptHeaer="#{financeFeesCollectedBean.studentFeeTransactionDO.studentFeeTransaction.studentFeeTransactionType.label} receipt"
+			showSignature="false" parentName="#{financeFeesCollectedBean.studentParentOrGuardianName}"/>
+		<f:facet name="footer">
+			<p:commandButton value="Calcel" oncomplete="dlg.hide();" update=":form" process="@this" />
+		</f:facet>
+	</p:dialog>
+</ui:composition>

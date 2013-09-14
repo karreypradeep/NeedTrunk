@@ -1,0 +1,126 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<f:facet name="header">Additional Fee</f:facet>
+
+	<c:if test="#{studentLevelFeeBean.newAction || studentLevelFeeBean.viewAction }">
+		<ui:include src="/pages/modules/financial/student_level_fee.xhtml"></ui:include>
+	</c:if>
+
+
+	<c:if test="#{!studentLevelFeeBean.newAction and !studentLevelFeeBean.viewAction}">
+
+		<f:metadata>
+			<f:event type="preRenderView" listener="#{studentLevelFeeBean.loadStudentLevelFees()}" />
+		</f:metadata>
+
+		<p:panel style="margin-botton:1px;margin-top:1px;margin-bottom:10px;">
+			<b>Student level fees can be defined here.</b>
+			<br />
+			<br />
+			<b>Flowing activities can be done.</b>
+
+			<ul id="hintList_list" class="ui-datalist-data" type="disc">
+				<li class="ui-datalist-item">New student fee definition can be created by clicking <strong>"New
+						Student Fee Definition"</strong> button. 
+					link
+				</li>
+				<li>
+					Existing student level fees details can be viewed by clicking the <strong>View</strong>
+				</li>
+				<li class="ui-datalist-item">Existing branch level fees can be removed by clicking the delete option on the
+					record.
+				</li>
+
+				<li class="ui-datalist-item"><strong>Student level fee can be delete only if it is not associated to
+						any student in the branch.</strong></li>
+			</ul>
+
+			<p:commandButton value="New Student Fee Definition" icon="ui-icon-document" update="@form" process="@this"
+				action="#{studentLevelFeeBean.reset()}" disabled="#{!grantedAuthorityBean.userAllowedToCreateFeeDefinitions}">
+				<f:setPropertyActionListener target="#{studentLevelFeeBean.newAction}" value="true" />
+				<f:setPropertyActionListener target="#{studentLevelFeeBean.viewAction}" value="false" />
+				<f:setPropertyActionListener target="#{studentLevelFeeBean.loadStudentLevelFeeTypeBuildingBlocksFlag}" value="true" />
+
+			</p:commandButton>
+
+		</p:panel>
+
+
+		<p:treeTable value="#{studentLevelFeeBean.root}" var="studentLevelFeeTreeNode" rendered="#{studentLevelFeeBean.root.children != null and studentLevelFeeBean.root.children.size() > 0}">
+
+
+
+			<p:column headerText="Name">
+				<p:commandLink value="#{studentLevelFeeTreeNode.name}" rendered="#{studentLevelFeeTreeNode.optionsNode}"
+					process="@this" update="@form">
+					<f:setPropertyActionListener target="#{studentLevelFeeBean.studentLevelFee}"
+						value="#{studentLevelFeeTreeNode.studentLevelFee}" />
+					<f:setPropertyActionListener target="#{studentLevelFeeBean.newAction}" value="false" />
+					<f:setPropertyActionListener target="#{studentLevelFeeBean.viewAction}" value="true" />
+					
+					<f:setPropertyActionListener target="#{studentLevelFeeBean.loadStudentLevelFeeTypeBuildingBlocksFlag}" value="true" />
+					<f:setPropertyActionListener target="#{studentLevelFeeBean.studentLevelFee}"
+						value="#{studentLevelFeeTreeNode.studentLevelFee}" />
+					<f:setPropertyActionListener target="#{studentLevelFeeBean.studentLevelFeeCatalogs}"
+						value="#{studentLevelFeeTreeNode.studentLevelFee.studentLevelFeeCatalogs}" />
+
+				</p:commandLink>
+				<h:outputLabel value="#{studentLevelFeeTreeNode.name}" rendered="#{!studentLevelFeeTreeNode.optionsNode}" />
+			</p:column>
+
+			<p:column headerText="Payment Frequency">
+				<f:facet name="header">
+					<h:outputLabel value="Payment Frequency	" />
+				</f:facet>
+				<h:outputText value="#{studentLevelFeeTreeNode.paymentFrequency.label}" />
+			</p:column>
+
+			<p:column headerText="Due date">
+
+				<h:outputText value="#{studentLevelFeeTreeNode.dueDate}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Due amount">
+
+				<h:outputText value="#{studentLevelFeeTreeNode.dueAmount}">
+					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Total Amount">
+				<h:outputText value="#{studentLevelFeeTreeNode.totalAmount}" style="width:100px;float:right;">
+					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+				</h:outputText>
+			</p:column>
+
+			<p:column style="width:10px">
+				<p:commandLink styleClass="ui-icon ui-icon-trash" rendered="#{studentLevelFeeTreeNode.optionsNode}"
+					onclick="confirmation.show()" disabled="#{!grantedAuthorityBean.userAllowedToRemoveFeeDefinitions}">
+					<f:setPropertyActionListener target="#{studentLevelFeeBean.studentLevelFee}"
+						value="#{studentLevelFeeTreeNode.studentLevelFee}" />
+				</p:commandLink>
+			</p:column>
+
+		</p:treeTable>
+
+
+
+
+		<p:confirmDialog id="confirmDialog" message="Are you want to delete student fee definition?" header="Confirmation"
+			severity="alert" widgetVar="confirmation">
+			<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
+				action="#{studentLevelFeeBean.removeStudentLevelFee()}" />
+			<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />
+		</p:confirmDialog>
+
+
+	</c:if>
+
+</ui:composition>

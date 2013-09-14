@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui" xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<c:if test="#{!vehicleBean.renderNewVehicleButton}">
+		<ui:include src="/pages/branch/transportation/vehicle.xhtml"></ui:include>
+	</c:if>
+
+	<c:if test="#{vehicleBean.renderNewVehicleButton}">
+		<p:toolbar style="margin-bottom:1px;">
+			<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+				<h:outputText value="#{msg.vehicles}" style="font-size:20px;" />
+			</p:toolbarGroup>
+			<p:toolbarGroup align="right">
+				<p:commandButton value="#{msg.newVehicle}" icon="ui-icon-document" action="#{vehicleBean.addNewVehicle}" update="@form" />
+			</p:toolbarGroup>
+		</p:toolbar>
+		<p:messages id="vehiclesMessages" globalOnly="true" autoUpdate="true" closable="true" />
+		<p:panel style="margin-top:1px;">
+			<b>Transportation allows manage vehicles for the branch.</b>
+			<br />
+			<br />
+			<b>Follow the steps to create, update or delete a vehicle.</b>
+			<ul id="userAccountForm:hintList_list" class="ui-datalist-data" type="disc">
+				<li class="ui-datalist-item">New vehicle can be created by clicking the <b>New vehicle</b> button.
+				</li>
+				<li class="ui-datalist-item">Existing vehicle can be modified by clicking the view/edit vehicle icon.</li>
+				<li class="ui-datalist-item">Existing vehicle can be deleted by clicking the delete vehicle icon.</li>
+			</ul>
+		</p:panel>
+		<p:dataTable id="vehiclesDataTable" paginator="true" rows="10" value="#{vehicleBean.vehicles}" var="vehicle"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+			<p:column headerText="#{msg.vehicleNumber}" sortBy="#{vehicle.vehicleNumber}" filterBy="#{vehicle.vehicleNumber}"
+				filterMatchMode="contains">
+				<h:outputText  />
+				<p:commandLink id="viewButton" value="#{vehicle.vehicleNumber}" title="#{msg.viewVehicleTitle}"
+					style="margin:0px 0px 0px;float:left;" update="@form" action="#{vehicleBean.showVehicle(vehicle)}" />
+				
+			</p:column>
+			<p:column headerText="#{msg.vehicleType}" sortBy="#{vehicle.vehicleType}" filterBy="#{vehicle.vehicleType}"
+				filterMatchMode="contains">
+				<h:outputText value="#{vehicle.vehicleType}" />
+			</p:column>
+			<p:column headerText="#{msg.vehicleCapacity}" sortBy="#{vehicle.capacity}" filterBy="#{vehicle.capacity}"
+				filterMatchMode="contains">
+				<h:outputText value="#{vehicle.capacity}" />
+			</p:column>
+			<p:column headerText="#{msg.options}" styleClass="options-column">
+				<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" action="#{vehicleBean.deleteVehicle(vehicle)}"
+					style="margin:0px 0px 0px;float:right;" update="@form" title="#{msg.deleteVehicleTitle}" />
+			</p:column>
+		</p:dataTable>
+	</c:if>
+
+</ui:composition>

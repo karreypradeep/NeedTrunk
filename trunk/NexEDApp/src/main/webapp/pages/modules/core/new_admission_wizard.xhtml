@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="New Admission" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+	<p:panel>
+		<p:wizard widgetVar="new_admission_wizard" flowListener="#{admissionBean.flowAction}" showStepStatus="true" step="#{admissionBean.activeStep}">
+		
+		
+			<p:tab id="general" title="General">
+				<p:panel header="General Details">
+					<ui:include src="/pages/modules/core/admission_general.xhtml" />
+				</p:panel>
+			</p:tab>
+
+			<p:tab id="personal" title="Personal">
+				<p:panel header="Personal Details">
+					<ui:include src="/pages/modules/core/admission_personal.xhtml" />
+				</p:panel>
+			</p:tab>
+
+			<p:tab id="contact" title="Contact">
+				<p:messages id="address_messages" autoUpdate="true" />
+				<p:panel header="Adress Details">
+					<biz:address addressModel="#{admissionBean.primaryAddress}" />
+				</p:panel>
+			</p:tab>
+
+			<p:tab id="parents" title="Parents">
+				<p:panel header="Parents Details">
+					<ui:include src="/pages/modules/core/admission_parents.xhtml" />
+				</p:panel>
+			</p:tab>
+
+			<p:tab id="education" title="Education">
+				<p:panel header="Education Details">
+					<ui:include src="/pages/modules/core/admission_education_history.xhtml" />
+				</p:panel>
+			</p:tab>
+
+			<p:tab id="confirm" title="Confirmation">
+				<p:panel header="Confirmation">
+					<ui:include src="/pages/modules/core/admission_confirmation.xhtml" />
+				</p:panel>
+			</p:tab>
+
+		</p:wizard>
+	</p:panel>
+</ui:composition>

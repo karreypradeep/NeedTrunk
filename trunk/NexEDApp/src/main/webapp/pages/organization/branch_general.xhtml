@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel id="branch_panel" toggleTitle="Branch Details" header="Branch Details" style="border:0px;">
+		<h:panelGrid columns="2" columnClasses="form-column,action-column" width="100%">
+			<h:panelGrid columns="3" id="branch_grid" cellpadding="4" style="border:0px;">
+				<p:outputLabel id="branch_name_label" value="#{msg.branch_name}" for="branch_name" />
+				<p:inputText id="branch_name" value="#{branchBean.branch.name}" size="40" maxlength="100" required="true" />
+				<p:message id="branch_name_msg" for="branch_name" />
+
+				<p:outputLabel id="branch_code_label" value="#{msg.branch_code}" for="branch_code" />
+				<p:inputText id="branch_code" value="#{branchBean.branch.code}" size="10" maxlength="10" required="true" />
+				<p:message id="branch_code_msg" for="branch_code" />
+
+				<p:outputLabel id="branch_type_label" value="#{msg.branch_type}" for="branch_type" />
+				<p:selectOneMenu id="branch_type" value="#{branchBean.branch.branchTypeConstant}" required="true">
+					<f:selectItem itemLabel="Select branch type" itemValue="" />
+					<f:selectItems value="#{enumConstantsBean.branchTypeConstants}" var="branchType" itemLabel="#{branchType.label}"
+						itemValue="#{branchType}" />
+				</p:selectOneMenu>
+				<p:message id="branch_type_msg" for="branch_type" />
+
+				<p:outputLabel id="branch_start_date_label" value="#{msg.branch_start_date}" for="branch_start_date" />
+				<p:calendar id="branch_start_date" value="#{branchBean.branch.startDate}" navigator="true" display="inline"
+					effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+				<p:message id="branch_start_date_msg" for="branch_start_date" />
+
+				<p:outputLabel id="branch_registration_type_label" value="#{msg.branch_registration_type}"
+					for="branch_registration_type" />
+				<p:selectOneMenu id="branch_registration_type" value="#{branchBean.branch.registrationTypeConstant}" required="true">
+					<f:selectItem itemLabel="Select registration type" itemValue="" />
+					<f:selectItems value="#{enumConstantsBean.registrationTypes}" var="registrationType"
+						itemLabel="#{registrationType.label}" itemValue="#{registrationType}" />
+				</p:selectOneMenu>
+				<p:message id="branch_registration_type_msg" for="branch_registration_type" />
+
+				<p:outputLabel id="branch_registration_date_label" value="#{msg.branch_registration_date}"
+					for="branch_registration_date" />
+				<p:calendar id="branch_registration_date" value="#{branchBean.branch.registrationDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+				<p:message id="branch_registration_date_msg" for="branch_registration_date" />
+
+				<p:outputLabel id="branch_recognised_by_label" value="#{msg.recognised_by}" for="branch_recognised_by" />
+				<p:inputText id="branch_recognised_by" value="#{branchBean.branch.recognisedBy}" size="40" maxlength="100"
+					required="true" />
+				<p:message id="branch_recognised_by_msg" for="branch_recognised_by" />
+			</h:panelGrid>
+			<h:panelGrid>
+				<p:commandButton value="Sanity check" immediate="true" action="#{branchBean.performSanityCheck}" update="@form"
+					style="width:100%" process="@this" icon="ui-icon-clipboard" />
+				<p:spacer width="10px" />
+				<p:commandButton id="branch_activate" value="Activate" action="#{branchBean.activateBranch}" update="@form"
+					style="width:100%" disabled="#{branchBean.disableActivate || !grantedAuthorityBean.userAllowedToActivateBranch}"
+					icon="ui-icon-play"  process="@this"/>
+				<p:spacer width="10px" />
+				<p:commandButton id="branch_development" value="Development" action="#{branchBean.inactivateBranch}" update="@form"
+					style="width:100%"
+					disabled="#{branchBean.disableInActivate || !grantedAuthorityBean.userAllowedToDeactivateBranch}"
+					icon="ui-icon-wrench" process="@this"/>
+			</h:panelGrid>
+		</h:panelGrid>
+		<p:panel header="Branch Address" style="border:0px;">
+			<h:panelGrid id="branch_address_grid" cellpadding="4" style="border:0px;">
+				<biz:address addressModel="#{branchBean.branch.address}" personAddress="false" />
+			</h:panelGrid>
+		</p:panel>
+	</p:panel>
+	<p:commandButton id="branch_save" value="Save" action="#{branchBean.saveBranch}" update="@form"
+		disabled="#{branchBean.disableActivate}" icon="ui-icon-circle-check" />
+	<p:commandButton id="branch_cancle" value="Cancel" update="@form" process="@this" icon="ui-icon-circle-close">
+		<f:setPropertyActionListener target="#{branchBean.viewOrNewAction}" value="false" />
+		<f:setPropertyActionListener target="#{branchBean.loadBranchesFlag}" value="true" />
+	</p:commandButton>
+	<p:blockUI block="form" trigger="branch_save branch_activate branch_development">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
+
+</ui:composition>

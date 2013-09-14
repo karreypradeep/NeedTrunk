@@ -1,0 +1,367 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:messages id="parent_messages" globalOnly="true" />
+
+	<p:commandLink id="parent_lookup_link" style="margin:0px 0px 0px;font-weight:bold;"
+		onclick="parent_lokkup_widget.show()" value="Parents Lookup" />
+
+	<div class="ui-apeironsol-body-header" style="margin-top:15px;">
+		<h:outputText value="Father : " style="font-weight:bold;" />
+		<p:selectBooleanCheckbox value="#{admissionBean.displayFatherInfo}" style="margin-left:15px;float:right">
+			<p:ajax update="parent_messages father_panel_grid father_address_grid  guardian_panel_grid guardian_address_grid"
+				listener="#{admissionBean.fatherInfoCheck}" />
+		</p:selectBooleanCheckbox>
+	</div>
+
+	<h:panelGrid id="parents_panel" columns="2" width="100%" columnClasses="column-vertical-align, column-vertical-align">
+		<h:panelGrid id="father_panel_grid" columns="3" columnClasses="label, value, label" styleClass="grid" cellpadding="5">
+			<p:outputLabel id="father_first_name_label" value="First name" for="father_first_name"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:inputText id="father_first_name" value="#{admissionBean.studentFather.firstName}"
+				rendered="#{admissionBean.displayFatherInfo}" required="true" />
+			<p:message id="father_first_name_msg" for="father_first_name" rendered="#{admissionBean.displayFatherInfo}" />
+
+			<p:outputLabel id="father_middle_name_label" value="Middle name" for="father_middle_name"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:inputText id="father_middle_name" value="#{admissionBean.studentFather.middleName}"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:message id="father_middle_name_msg" for="father_middle_name" rendered="#{admissionBean.displayFatherInfo}" />
+
+			<p:outputLabel id="father_last_name_label" value="Last name" for="father_last_name"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:inputText id="father_last_name" value="#{admissionBean.studentFather.lastName}"
+				rendered="#{admissionBean.displayFatherInfo}" required="true" />
+			<p:message id="father_last_name_msg" for="father_last_name" rendered="#{admissionBean.displayFatherInfo}" />
+
+			<p:outputLabel id="father_dob_label" value="Date of birth" for="father_dob"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:calendar id="father_dob" value="#{admissionBean.studentFather.dateOfBirth}" navigator="true" display="inline"
+				effect="drop" pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayFatherInfo}" />
+			<p:message id="father_dob_msg" for="father_dob" rendered="#{admissionBean.displayFatherInfo}" />
+
+			<p:outputLabel id="father_occupation_label" value="Occupation" for="father_occupation"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:inputText id="father_occupation" value="#{admissionBean.studentFather.occupation}"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:message id="father_occupation_msg" for="father_occupation" rendered="#{admissionBean.displayFatherInfo}" />
+
+			<p:outputLabel id="father_annual_income_label" value="Annual Income" for="father_annual_income"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:inputText id="father_annual_income" value="#{admissionBean.studentFather.annualIncome}"
+				rendered="#{admissionBean.displayFatherInfo}" />
+			<p:message id="father_annual_income_msg" for="father_annual_income" rendered="#{admissionBean.displayFatherInfo}" />
+
+			<p:outputLabel id="father_address_check_lable" value="Address same as primary" for="father_address_check"
+				rendered="#{admissionBean.displayFatherInfo}" style="font-weight:bold;" />
+			<p:selectBooleanCheckbox id="father_address_check" value="#{admissionBean.fatherAddressSameAsPrimary}" onLabel="Yes"
+				offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" rendered="#{admissionBean.displayFatherInfo}">
+				<p:ajax update="parent_messages father_address_grid" listener="#{admissionBean.fatherAddressInfoCheck}" />
+			</p:selectBooleanCheckbox>
+
+		</h:panelGrid>
+		<h:panelGrid id="father_address_grid" columns="3" columnClasses="label, value, label" styleClass="grid"
+			cellpadding="5">
+			<h:outputText value="Father contact:" rendered="#{admissionBean.renderFatherAddress}" style="font-weight:bold;" />
+			<h:outputText value="" rendered="#{admissionBean.renderFatherAddress}" />
+			<h:outputText value="" rendered="#{admissionBean.renderFatherAddress}" />
+
+			<p:outputLabel id="father_address_label" value="Address" for="father_address"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:inputTextarea id="father_address" value="#{admissionBean.fatherAddress.address}" rows="5" cols="20"
+				counter="counter" maxlength="200" counterTemplate="{0} characters remaining." autoResize="false" required="true"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<h:panelGrid columns="1">
+				<h:outputText id="counter" />
+				<p:message id="father_address_msg" for="father_address" rendered="#{admissionBean.renderFatherAddress}" />
+			</h:panelGrid>
+
+			<p:outputLabel id="father_address_city_label" value="City" for="father_address_city"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:inputText id="father_address_city" value="#{admissionBean.fatherAddress.city}"
+				rendered="#{admissionBean.renderFatherAddress}" required="true" />
+			<p:message for="father_address_city" rendered="#{admissionBean.renderFatherAddress}" />
+
+			<p:outputLabel id="father_address_country_label" value="Country" for="father_address_country"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:selectOneMenu id="father_address_country" value="#{admissionBean.fatherAddress.country}"
+				rendered="#{admissionBean.renderFatherAddress}" converter="countryConverter" required="true">
+				<f:selectItem itemLabel="Select country" itemValue="" />
+				<f:selectItems value="#{countryBean.countries}" var="country" itemLabel="#{country.name}" itemValue="#{country}" />
+			</p:selectOneMenu>
+			<p:message for="father_address_country" rendered="#{admissionBean.renderFatherAddress}" />
+
+			<p:outputLabel id="father_address_state_label" value="State" for="father_address_state"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:inputText id="father_address_state" value="#{admissionBean.fatherAddress.state}"
+				rendered="#{admissionBean.renderFatherAddress}" required="true" />
+			<p:message id="father_address_state_msg" for="father_address_state" rendered="#{admissionBean.renderFatherAddress}" />
+
+			<p:outputLabel id="father_address_zipcode_label" value="Pincode" for="father_address_zipcode"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:inputText id="father_address_zipcode" value="#{admissionBean.fatherAddress.zipCode}"
+				rendered="#{admissionBean.renderFatherAddress}" required="true" />
+			<p:message id="father_address_zipcode_label_msg" for="father_address_zipcode"
+				rendered="#{admissionBean.renderFatherAddress}" />
+
+			<p:outputLabel id="father_address_mobilephone_label" value="Mobile phone" for="father_address_mobilephone"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:inputText id="father_address_mobilephone" value="#{admissionBean.fatherAddress.mobileNr}"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:message id="father_address_mobilephone_msg" for="father_address_mobilephone"
+				rendered="#{admissionBean.renderFatherAddress}" />
+
+			<p:outputLabel id="father_address_homephone_label" value="#{msg.alternativeNumber}" for="father_address_homephone"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:inputText id="father_address_homephone" value="#{admissionBean.fatherAddress.homePhoneNr}"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:message id="father_address_homephone_msg" for="father_address_homephone"
+				rendered="#{admissionBean.renderFatherAddress}" />
+
+			<p:outputLabel id="father_address_email_label" value="Email" for="father_address_email"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:inputText id="father_address_email" value="#{admissionBean.fatherAddress.email}"
+				rendered="#{admissionBean.renderFatherAddress}" />
+			<p:message id="father_address_email_msg" for="father_address_email" rendered="#{admissionBean.renderFatherAddress}" />
+
+		</h:panelGrid>
+
+	</h:panelGrid>
+
+	<div class="ui-apeironsol-body-header">
+
+		<h:outputText value="Mother : " />
+		<p:selectBooleanCheckbox value="#{admissionBean.displayMotherInfo}" style="margin-left:15px;float:right">
+			<p:ajax update="parent_messages mother_panel_grid mother_address_grid guardian_panel_grid guardian_address_grid"
+				listener="#{admissionBean.motherInfoCheck}" />
+		</p:selectBooleanCheckbox>
+
+	</div>
+	<h:panelGrid columns="2" width="100%" columnClasses="column-vertical-align, column-vertical-align">
+		<h:panelGrid id="mother_panel_grid" columns="3" columnClasses="label, value, label" styleClass="grid" cellpadding="5">
+			<p:outputLabel id="mother_first_name_label" value="First name" for="mother_first_name"
+				rendered="#{admissionBean.displayMotherInfo}" />
+			<p:inputText id="mother_first_name" value="#{admissionBean.studentMother.firstName}"
+				rendered="#{admissionBean.displayMotherInfo}" required="true" />
+			<p:message id="mother_first_name_msg" for="mother_first_name" rendered="#{admissionBean.displayMotherInfo}" />
+
+			<p:outputLabel id="mother_middle_name_label" value="Middle name" for="mother_middle_name"
+				rendered="#{admissionBean.displayMotherInfo}" />
+			<p:inputText id="mother_middle_name" value="#{admissionBean.studentMother.middleName}"
+				rendered="#{admissionBean.displayMotherInfo}" />
+			<p:message id="mother_middle_name_msg" for="mother_middle_name" rendered="#{admissionBean.displayMotherInfo}" />
+
+			<p:outputLabel id="mother_last_name_label" value="Last name" for="mother_last_name"
+				rendered="#{admissionBean.displayMotherInfo}" />
+			<p:inputText id="mother_last_name" value="#{admissionBean.studentMother.lastName}"
+				rendered="#{admissionBean.displayMotherInfo}" required="true" />
+			<p:message id="mother_last_name_msg" for="mother_last_name" rendered="#{admissionBean.displayMotherInfo}" />
+
+			<p:outputLabel id="mother_dob_label" value="Date of birth" for="mother_dob"
+				rendered="#{admissionBean.displayMotherInfo}" />
+			<p:calendar id="mother_dob" value="#{admissionBean.studentMother.dateOfBirth}" navigator="true" display="inline"
+				effect="drop" pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayMotherInfo}" />
+			<p:message id="mother_dob_msg" for="mother_dob" rendered="#{admissionBean.displayMotherInfo}" />
+
+			<p:outputLabel id="mother_address_check_lable" value="Address same as primary" for="mother_address_check"
+				rendered="#{admissionBean.displayMotherInfo}" style="font-weight:bold;" />
+			<p:selectBooleanCheckbox id="mother_address_check" value="#{admissionBean.motherAddressSameAsPrimary}" onLabel="Yes"
+				offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close" rendered="#{admissionBean.displayMotherInfo}">
+				<p:ajax update="parent_messages mother_address_grid" listener="#{admissionBean.motherAddressInfoCheck}" />
+			</p:selectBooleanCheckbox>
+			<p:message id="mother_address_check_msg" for="mother_address_check" rendered="#{admissionBean.displayMotherInfo}" />
+		</h:panelGrid>
+
+		<h:panelGrid id="mother_address_grid" columns="3" columnClasses="label, value, label" styleClass="grid"
+			cellpadding="5">
+			<h:outputText value="Mother contact:" rendered="#{admissionBean.renderMotherAddress}" style="font-weight:bold;" />
+			<h:outputText value="" rendered="#{admissionBean.renderMotherAddress}" />
+			<h:outputText value="" rendered="#{admissionBean.renderMotherAddress}" />
+
+			<p:outputLabel id="mother_address_label" value="Address" for="mother_address"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:inputTextarea id="mother_address" value="#{admissionBean.motherAddress.address}" rows="5" cols="20"
+				counter="countermother" maxlength="200" counterTemplate="{0} characters remaining." autoResize="false"
+				required="true" rendered="#{admissionBean.renderMotherAddress}" />
+			<h:panelGrid columns="1">
+				<h:outputText id="countermother" />
+				<p:message id="mother_address_msg" for="mother_address" rendered="#{admissionBean.renderMotherAddress}" />
+			</h:panelGrid>
+
+			<p:outputLabel id="mother_address_city_label" value="City" for="mother_address_city"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:inputText id="mother_address_city" value="#{admissionBean.motherAddress.city}"
+				rendered="#{admissionBean.renderMotherAddress}" required="true" />
+			<p:message for="mother_address_city" rendered="#{admissionBean.renderMotherAddress}" />
+
+			<p:outputLabel id="mother_address_country_label" value="Country" for="mother_address_country"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:selectOneMenu id="mother_address_country" value="#{admissionBean.motherAddress.country}"
+				rendered="#{admissionBean.renderMotherAddress}" converter="countryConverter" required="true">
+				<f:selectItem itemLabel="Select country" itemValue="" />
+				<f:selectItems value="#{countryBean.countries}" var="country" itemLabel="#{country.name}" itemValue="#{country}" />
+			</p:selectOneMenu>
+			<p:message for="mother_address_country" rendered="#{admissionBean.renderMotherAddress}" />
+
+			<p:outputLabel id="mother_address_state_label" value="State" for="mother_address_state"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:inputText id="mother_address_state" value="#{admissionBean.motherAddress.state}"
+				rendered="#{admissionBean.renderMotherAddress}" required="true" />
+			<p:message id="mother_address_state_msg" for="mother_address_state" rendered="#{admissionBean.renderMotherAddress}" />
+
+			<p:outputLabel id="mother_address_zipcode_label" value="Pincode" for="mother_address_zipcode"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:inputText id="mother_address_zipcode" value="#{admissionBean.motherAddress.zipCode}"
+				rendered="#{admissionBean.renderMotherAddress}" required="true" />
+			<p:message id="mother_address_zipcode_label_msg" for="mother_address_zipcode"
+				rendered="#{admissionBean.renderMotherAddress}" />
+
+			<p:outputLabel id="mother_address_mobilephone_label" value="Mobile phone" for="mother_address_mobilephone"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:inputText id="mother_address_mobilephone" value="#{admissionBean.motherAddress.mobileNr}"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:message id="mother_address_mobilephone_msg" for="mother_address_mobilephone"
+				rendered="#{admissionBean.renderMotherAddress}" />
+
+			<p:outputLabel id="mother_address_homephone_label" value="#{msg.alternativeNumber}" for="mother_address_homephone"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:inputText id="mother_address_homephone" value="#{admissionBean.motherAddress.homePhoneNr}"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:message id="mother_address_homephone_msg" for="mother_address_homephone"
+				rendered="#{admissionBean.renderMotherAddress}" />
+
+			<p:outputLabel id="mother_address_email_label" value="Email" for="mother_address_email"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:inputText id="mother_address_email" value="#{admissionBean.motherAddress.email}"
+				rendered="#{admissionBean.renderMotherAddress}" />
+			<p:message id="mother_address_email_msg" for="mother_address_email" rendered="#{admissionBean.renderMotherAddress}" />
+
+		</h:panelGrid>
+	</h:panelGrid>
+
+	<div class="ui-apeironsol-body-header">
+
+
+
+		<h:outputText value="Guardian : " />
+		<p:selectBooleanCheckbox value="#{admissionBean.displayGuardianInfo}" style="margin-left:15px;float:right">
+			<p:ajax update="@this guardian_panel_grid guardian_address_grid" listener="#{admissionBean.guardianInfoCheck}"
+				style="width:100%" />
+		</p:selectBooleanCheckbox>
+
+
+
+
+	</div>
+
+
+	<h:panelGrid columns="2" width="100%" columnClasses="column-vertical-align, column-vertical-align">
+		<h:panelGrid id="guardian_panel_grid" columns="3" columnClasses="label, value, label" styleClass="grid"
+			cellpadding="5">
+			<p:outputLabel id="guardian_first_name_label" value="First name" for="guardian_first_name"
+				rendered="#{admissionBean.displayGuardianInfo}" />
+			<p:inputText id="guardian_first_name" value="#{admissionBean.studentGuardian.firstName}"
+				rendered="#{admissionBean.displayGuardianInfo}" required="true" />
+			<p:message id="guardian_first_name_msg" for="guardian_first_name" rendered="#{admissionBean.displayGuardianInfo}" />
+
+			<p:outputLabel id="guardian_middle_name_label" value="Middle name" for="guardian_middle_name"
+				rendered="#{admissionBean.displayGuardianInfo}" />
+			<p:inputText id="guardian_middle_name" value="#{admissionBean.studentGuardian.middleName}"
+				rendered="#{admissionBean.displayGuardianInfo}" />
+			<p:message id="guardian_middle_name_msg" for="guardian_middle_name" rendered="#{admissionBean.displayGuardianInfo}" />
+
+			<p:outputLabel id="guardian_last_name_label" value="Last name" for="guardian_last_name"
+				rendered="#{admissionBean.displayGuardianInfo}" />
+			<p:inputText id="guardian_last_name" value="#{admissionBean.studentGuardian.lastName}"
+				rendered="#{admissionBean.displayGuardianInfo}" required="true" />
+			<p:message id="guardian_last_name_msg" for="guardian_last_name" rendered="#{admissionBean.displayGuardianInfo}" />
+
+			<p:outputLabel id="guardian_dob_label" value="Date of birth" for="guardian_dob"
+				rendered="#{admissionBean.displayGuardianInfo}" />
+			<p:calendar id="guardian_dob" value="#{admissionBean.studentGuardian.dateOfBirth}" navigator="true" display="inline"
+				effect="drop" pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayGuardianInfo}" />
+			<p:message id="guardian_dob_msg" for="guardian_dob" rendered="#{admissionBean.displayGuardianInfo}" />
+
+			<p:outputLabel id="guardian_address_check_lable" value="Address same as primary" for="guardian_address_check"
+				rendered="#{admissionBean.displayGuardianInfo}" style="font-weight:bold;" />
+			<p:selectBooleanCheckbox id="guardian_address_check" value="#{admissionBean.guardianAddressSameAsPrimary}"
+				onLabel="Yes" offLabel="No" onIcon="ui-icon-check" offIcon="ui-icon-close"
+				rendered="#{admissionBean.displayGuardianInfo}">
+				<p:ajax update="parent_messages guardian_address_grid" listener="#{admissionBean.guardianAddressInfoCheck}" />
+			</p:selectBooleanCheckbox>
+			<p:message id="guardian_address_check_msg" for="guardian_address_check"
+				rendered="#{admissionBean.displayGuardianInfo}" />
+
+		</h:panelGrid>
+
+		<h:panelGrid id="guardian_address_grid" columns="3" columnClasses="label, value, label" styleClass="grid"
+			cellpadding="5">
+			<h:outputText value="Guardian contact:" rendered="#{admissionBean.renderGuardianAddress}" style="font-weight:bold;" />
+			<h:outputText value="" rendered="#{admissionBean.renderGuardianAddress}" />
+			<h:outputText value="" rendered="#{admissionBean.renderGuardianAddress}" />
+
+			<p:outputLabel id="guardian_address_label" value="Address" for="guardian_address"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:inputTextarea id="guardian_address" value="#{admissionBean.guardianAddress.address}" rows="5" cols="20"
+				counter="counterguardian" maxlength="200" counterTemplate="{0} characters remaining." autoResize="false"
+				required="true" rendered="#{admissionBean.renderGuardianAddress}" />
+			<h:panelGrid columns="1">
+				<h:outputText id="counterguardian" />
+				<p:message id="guardian_address_msg" for="guardian_address" rendered="#{admissionBean.renderGuardianAddress}" />
+			</h:panelGrid>
+
+			<p:outputLabel id="guardian_address_city_label" value="City" for="guardian_address_city"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:inputText id="guardian_address_city" value="#{admissionBean.guardianAddress.city}"
+				rendered="#{admissionBean.renderGuardianAddress}" required="true" />
+			<p:message for="guardian_address_city" rendered="#{admissionBean.renderGuardianAddress}" />
+
+			<p:outputLabel id="guardian_address_country_label" value="Country" for="guardian_address_country"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:selectOneMenu id="guardian_address_country" value="#{admissionBean.guardianAddress.country}"
+				rendered="#{admissionBean.renderGuardianAddress}" converter="countryConverter" required="true">
+				<f:selectItem itemLabel="Select country" itemValue="" />
+				<f:selectItems value="#{countryBean.countries}" var="country" itemLabel="#{country.name}" itemValue="#{country}" />
+			</p:selectOneMenu>
+			<p:message for="guardian_address_country" rendered="#{admissionBean.renderGuardianAddress}" />
+
+			<p:outputLabel id="guardian_address_state_label" value="State" for="guardian_address_state"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:inputText id="guardian_address_state" value="#{admissionBean.guardianAddress.state}"
+				rendered="#{admissionBean.renderGuardianAddress}" required="true" />
+			<p:message id="guardian_address_state_msg" for="guardian_address_state"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+
+			<p:outputLabel id="guardian_address_zipcode_label" value="Pincode" for="guardian_address_zipcode"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:inputText id="guardian_address_zipcode" value="#{admissionBean.guardianAddress.zipCode}"
+				rendered="#{admissionBean.renderGuardianAddress}" required="true" />
+			<p:message id="guardian_address_zipcode_label_msg" for="guardian_address_zipcode"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+
+			<p:outputLabel id="guardian_address_mobilephone_label" value="Mobile phone" for="guardian_address_mobilephone"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:inputText id="guardian_address_mobilephone" value="#{admissionBean.guardianAddress.mobileNr}"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:message id="guardian_address_mobilephone_msg" for="guardian_address_mobilephone"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+
+			<p:outputLabel id="guardian_address_homephone_label" value="#{msg.alternativeNumber}"
+				for="guardian_address_homephone" rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:inputText id="guardian_address_homephone" value="#{admissionBean.guardianAddress.homePhoneNr}"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:message id="guardian_address_homephone_msg" for="guardian_address_homephone"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+
+			<p:outputLabel id="guardian_address_email_label" value="Email" for="guardian_address_email"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:inputText id="guardian_address_email" value="#{admissionBean.guardianAddress.email}"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+			<p:message id="guardian_address_email_msg" for="guardian_address_email"
+				rendered="#{admissionBean.renderGuardianAddress}" />
+
+		</h:panelGrid>
+	</h:panelGrid>
+</ui:composition>

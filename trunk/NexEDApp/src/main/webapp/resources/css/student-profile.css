@@ -1,0 +1,169 @@
+/*
+ * apeironsol UI CSS Framework 1.0.0
+ *
+ * Copyright 2012, apeironsol (pradeep@apeironsol.com)
+ * 
+ */
+
+.ui-panel .ui-panel-titlebar {
+	-webkit-border-radius: 3px 3px 3px 3px;
+	-moz-border-radius: 0 0 3px 3px;
+	border-radius: 3px 3px 3px 3px;
+	-webkit-box-shadow: 0 1px 0 rgba(101, 101, 101, .1);
+	-moz-box-shadow: 0 1px 0 rgba(101, 101, 101, .1);
+	box-shadow: 0 1px 0 rgba(101, 101, 101, .1);
+	/**background-color: #F9F9F9;**/
+	border-right: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	border-top: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+	margin: 0 3px 0 3px;
+	position: relative;
+	z-index: 11;
+	padding: 10px;
+}
+
+.ui-panel .ui-panel-content {
+	padding: 1px;
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-content {
+	padding-top: 0px;
+}
+
+.fileupload-content {
+	min-height: 250px;
+}
+
+.profile-right-column {
+	vertical-align: top;
+	width: 261px;
+	background-color: transparent;
+	background-color: white;
+	position: relative;
+	z-index: 12;
+}
+
+.photo-outer {
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	-webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+	-moz-box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .1);
+	background-color: white;
+	border: 1px solid #CCC;
+	padding: 5px;
+	position: relative;
+	z-index: 12;
+}
+
+.photo-border {
+	background-color: #E9ECEE;
+	display: table;
+	line-height: 0;
+}
+
+.photo {
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+}
+
+.link-hide {
+	display: none;
+}
+
+.link-position {
+	margin-top: -30px;
+	position: relative;
+	width: 250px;
+}
+
+.link-style {
+	background-color: rgba(0, 0, 0, 0.6);
+	color: white;
+	cursor: pointer;
+	font-weight: bold;
+	line-height: 30px;
+	text-align: center;
+	text-decoration: none;
+}
+
+.link-style a {
+	color: white;
+	cursor: pointer;
+	font-weight: bold;
+	text-align: center;
+	text-decoration: none;
+}
+
+.Oka {
+	-webkit-border-radius: 0 0 3px 3px;
+	-moz-border-radius: 0 0 3px 3px;
+	border-radius: 0 0 3px 3px;
+	-webkit-box-shadow: 0 1px 0 rgba(101, 101, 101, .1);
+	-moz-box-shadow: 0 1px 0 rgba(101, 101, 101, .1);
+	box-shadow: 0 1px 0 rgba(101, 101, 101, .1);
+	background-color: #F9F9F9;
+	border-right: 1px solid #CCC;
+	border-left: 1px solid #CCC;
+	border-bottom: 1px solid #CCC;
+	margin: 0 3px 0 3px;
+	position: relative;
+	z-index: 11;
+}
+
+.KC {
+	padding: 10px 10px 5px 15px;
+}
+
+.Tta {
+	color: #343434;
+	line-height: 21px;
+	margin-bottom: 7px;
+}
+
+.Vta {
+	margin-right: 5px;
+	vertical-align: top;
+	width: 21px;
+}
+
+.pga {
+	width: 200px;
+}
+
+.biz-ui-dialog-right {
+	float: left;
+	width: 150px;
+	margin-top: 10px;
+	
+}
+
+.biz-ui-dialog-left {
+	border-left: 1px solid rgb(207, 207, 218);
+	float: left; width: 590px;
+}
+
+.biz-ui-dialog-left-fileupload {
+	margin-top: 10px;
+	margin-left: 15px;
+	margin-bottom: 10px;
+}
+
+.biz-ui-dialog-left-fileupload-fill-show {
+	margin-top: 144px;
+}
+
+.biz-ui-dialog-left-fileupload-fill-hide {
+	display: none;	
+}
+
+.biz-ui-dialog-left-fileupload-hint {
+	position: relative; margin-top: -150px;
+}
+
+.biz-ui-dialog-left-fileupload-hint-hide {
+	display: none;
+}

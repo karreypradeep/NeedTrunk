@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+	<persistence-unit name="NexEDAppPU" transaction-type="RESOURCE_LOCAL">
+		<provider>org.hibernate.ejb.HibernatePersistence</provider>
+		<class>com.apeironsol.framework.BaseEntity</class>
+		<class>com.apeironsol.nexed.transportation.model.VehicleRoutePK</class>
+		<class>com.apeironsol.nexed.transportation.model.VehicleRoute</class>
+		<class>com.apeironsol.nexed.transportation.model.Vehicle</class>
+		<class>com.apeironsol.nexed.transportation.model.RoutePickUpPointPK</class>
+		<class>com.apeironsol.nexed.transportation.model.RoutePickUpPoint</class>
+		<class>com.apeironsol.nexed.transportation.model.Route</class>
+		<class>com.apeironsol.nexed.transportation.model.PickUpPointFeeCatalog</class>
+		<class>com.apeironsol.nexed.transportation.model.PickUpPointFee</class>
+		<class>com.apeironsol.nexed.transportation.model.PickUpPoint</class>
+		<class>com.apeironsol.nexed.security.model.UserRole</class>
+		<class>com.apeironsol.nexed.security.model.UserGroupAuthority</class>
+		<class>com.apeironsol.nexed.security.model.UserGroup</class>
+		<class>com.apeironsol.nexed.security.model.UserAccount</class>
+		<class>com.apeironsol.nexed.security.model.AccessControl</class>
+		<class>com.apeironsol.nexed.procurement.model.Supplier</class>
+		<class>com.apeironsol.nexed.procurement.model.PurchaseOrderStatus</class>
+		<class>com.apeironsol.nexed.procurement.model.PurchaseOrderItem</class>
+		<class>com.apeironsol.nexed.procurement.model.PurchaseOrder</class>
+		<class>com.apeironsol.nexed.procurement.model.PurchaseInvoice</class>
+		<class>com.apeironsol.nexed.payroll.model.EmployeeSalary</class>
+		<class>com.apeironsol.nexed.payroll.model.EmployeeSalaryComponent</class>
+		<class>com.apeironsol.nexed.payroll.model.EmployeeSalaryDeduction</class>
+		<class>com.apeironsol.nexed.notifications.model.BranchNotification</class>
+		<class>com.apeironsol.nexed.notifications.model.BatchLogMessage</class>
+		<class>com.apeironsol.nexed.notifications.model.BatchLog</class>
+		<class>com.apeironsol.nexed.inventory.model.BranchLiability</class>
+		<class>com.apeironsol.nexed.inventory.model.BranchAssert</class>
+		<class>com.apeironsol.nexed.hrms.model.EmployeeCTC</class>
+		<class>com.apeironsol.nexed.hrms.model.EmployeeCTCDetails</class>
+		<class>com.apeironsol.nexed.hrms.model.EmployeeDesignation</class>
+		<class>com.apeironsol.nexed.hrms.model.Employee</class>
+		<class>com.apeironsol.nexed.financial.model.StudentPocketMoneyTransaction</class>
+		<class>com.apeironsol.nexed.financial.model.StudentLevelFeeCatalog</class>
+		<class>com.apeironsol.nexed.financial.model.StudentLevelFee</class>
+		<class>com.apeironsol.nexed.financial.model.StudentFeeTransactionDetails</class>
+		<class>com.apeironsol.nexed.financial.model.StudentFeeTransaction</class>
+		<class>com.apeironsol.nexed.financial.model.StudentFee</class>
+		<class>com.apeironsol.nexed.financial.model.KlassLevelFeeCatalog</class>
+		<class>com.apeironsol.nexed.financial.model.KlassLevelFee</class>
+		<class>com.apeironsol.nexed.financial.model.FinancialYear</class>
+		<class>com.apeironsol.nexed.financial.model.FinancialAccount</class>
+		<class>com.apeironsol.nexed.financial.model.BranchLevelFeeCatalog</class>
+		<class>com.apeironsol.nexed.financial.model.BranchLevelFee</class>
+		<class>com.apeironsol.nexed.financial.model.BranchInvestment</class>
+		<class>com.apeironsol.nexed.financial.model.BranchExpense</class>
+		<class>com.apeironsol.nexed.financial.model.BranchBalanceSheet</class>
+		<class>com.apeironsol.nexed.financial.model.BranchBankAccount</class>
+		<class>com.apeironsol.nexed.financial.model.BranchCreditAccount</class>
+		<class>com.apeironsol.nexed.financial.model.BranchBankAccountTransaction</class>
+		<class>com.apeironsol.nexed.core.model.Attendance</class>
+		<class>com.apeironsol.nexed.core.model.Transaction</class>
+		<class>com.apeironsol.nexed.core.model.Subject</class>
+		<class>com.apeironsol.nexed.core.model.StudentTransportation</class>
+		<class>com.apeironsol.nexed.core.model.StudentStatusHistory</class>
+		<class>com.apeironsol.nexed.core.model.StudentSection</class>
+		<class>com.apeironsol.nexed.core.model.StudentRelationPK</class>
+		<class>com.apeironsol.nexed.core.model.StudentRelation</class>
+		<class>com.apeironsol.nexed.core.model.StudentAbsent</class>
+		<class>com.apeironsol.nexed.core.model.StudentAcademicYear</class>
+		<class>com.apeironsol.nexed.core.model.StudentAcademicYearFeeSummary</class>
+		<class>com.apeironsol.nexed.core.model.Student</class>
+		<class>com.apeironsol.nexed.core.model.State</class>
+		<class>com.apeironsol.nexed.core.model.SequenceGenerator</class>
+		<class>com.apeironsol.nexed.core.model.SectionTimetable</class>
+		<class>com.apeironsol.nexed.core.model.SectionTeacher</class>
+		<class>com.apeironsol.nexed.core.model.SectionSubject</class>
+		<class>com.apeironsol.nexed.core.model.Section</class>
+		<class>com.apeironsol.nexed.core.model.SMSProvider</class>
+		<class>com.apeironsol.nexed.core.model.Relation</class>
+		<class>com.apeironsol.nexed.core.model.ProfilePicture</class>
+		<class>com.apeironsol.nexed.core.model.Person</class>
+		<class>com.apeironsol.nexed.core.model.Organization</class>
+		<class>com.apeironsol.nexed.core.model.MedicalHistory</class>
+		<class>com.apeironsol.nexed.core.model.Klass</class>
+		<class>com.apeironsol.nexed.core.model.EducationHistory</class>
+		<class>com.apeironsol.nexed.core.model.Country</class>
+		<class>com.apeironsol.nexed.core.model.BuildingBlock</class>
+		<class>com.apeironsol.nexed.core.model.BranchRule</class>
+		<class>com.apeironsol.nexed.core.model.BranchReservationCategory</class>
+		<class>com.apeironsol.nexed.core.model.BranchFeeTypePeriodical</class>
+		<class>com.apeironsol.nexed.core.model.BranchExpenseTypePeriodical</class>
+		<class>com.apeironsol.nexed.core.model.BranchDepartment</class>
+		<class>com.apeironsol.nexed.core.model.BranchAssembly</class>
+		<class>com.apeironsol.nexed.core.model.Branch</class>
+		<class>com.apeironsol.nexed.core.model.Batch</class>
+		<class>com.apeironsol.nexed.core.model.AdmissionSubmittedDocuments</class>
+		<class>com.apeironsol.nexed.core.model.AdmissionStatusHistory</class>
+		<class>com.apeironsol.nexed.core.model.AdmissionRelationPK</class>
+		<class>com.apeironsol.nexed.core.model.AdmissionRelation</class>
+		<class>com.apeironsol.nexed.core.model.AdmissionEducationHistory</class>
+		<class>com.apeironsol.nexed.core.model.Admission</class>
+		<class>com.apeironsol.nexed.core.model.Address</class>
+		<class>com.apeironsol.nexed.core.model.AcademicYearWeekEnd</class>
+		<class>com.apeironsol.nexed.core.model.AcademicYearHoliday</class>
+		<class>com.apeironsol.nexed.core.model.AcademicYear</class>
+		<class>com.apeironsol.nexed.academics.model.StudentExamSubject</class>
+		<class>com.apeironsol.nexed.academics.model.SectionExamSubject</class>
+		<class>com.apeironsol.nexed.academics.model.SectionExam</class>
+		<class>com.apeironsol.nexed.academics.model.Exam</class>
+		<class>com.apeironsol.nexed.core.model.AdmissionReservationFee</class>
+		<exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<properties>
+			<!-- property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/apeironsol/XADatasourceSMS" / -->
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="false" />
+			<property name="hibernate.use_sql_comments" value="false" />
+			<property name="hibernate.c3p0.acquire_increment" value="2" />
+			<property name="hibernate.c3p0.idle_test_period" value="3000" />
+			<property name="hibernate.c3p0.max_size" value="100" />
+			<property name="hibernate.c3p0.min_size" value="10" />
+			<property name="hibernate.c3p0.timeout" value="-1" />
+			<property name="hibernate.max_fetch_depth" value="3" />
+			<property name="hibernate.default_batch_fetch_size" value="16" />
+            <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver" />
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/test" />
+            <property name="hibernate.connection.username" value="root" />
+            <property name="hibernate.connection.password" value="root" />
+		</properties>
+	</persistence-unit>
+
+</persistence>

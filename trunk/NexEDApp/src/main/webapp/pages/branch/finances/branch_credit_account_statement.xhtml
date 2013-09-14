@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel header="Transaction">
+		<h:panelGrid columns="2" id="expense_type_grid" cellpadding="4" style="border:0px;">
+			<h:panelGrid id="panel_grid1" columns="3">
+				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
+				<p:calendar id="from_date" value="#{branchCreditAccountBean.transactionFromDate}" showOn="button"
+					pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+				<p:message id="from_date_msg" for="from_date" />
+
+				<p:outputLabel id="to_date_label" value="To date" for="to_date" />
+				<p:calendar id="to_date" value="#{branchCreditAccountBean.transactionToDate}" pattern="dd/MMM/yyyy" size="20"
+					maxlength="20" showOn="button" required="true" />
+				<p:message id="to_date_msg" for="to_date" />
+			</h:panelGrid>
+			<h:panelGrid id="panel_grid2" columns="3">
+				<p:outputLabel value="Transaction type" for="transaction_type" />
+				<p:selectOneMenu id="transaction_type" value="#{branchCreditAccountBean.creditAccountTransactionTypeForStatement}">
+					<f:selectItem itemLabel="Select transaction type" itemValue="" />
+					<f:selectItems value="#{enumConstantsBean.creditAccountTransactionTypes}" var="creditAccountTransactionType"
+						itemLabel="#{creditAccountTransactionType.label}" itemValue="#{creditAccountTransactionType}" />
+				</p:selectOneMenu>
+				<p:message id="transaction_type_msg" for="transaction_type" />
+			</h:panelGrid>
+		</h:panelGrid>
+		<p:commandButton id="branch_credit_account_search" value="Search"
+			action="#{branchCreditAccountBean.searchCreditAccountTransactions}" update="@form" />
+		<p:commandButton id="branch_credit_account_clear" value="Cancel" immediate="true" update="@form"
+			action="#{branchCreditAccountBean.calcelAction}" />
+
+		<p:dataTable id="branchCredittransactions_table" var="branchCreditAccountTransaction"
+			value="#{branchCreditAccountBean.branchCreditAccountTransactions}" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+			<p:column sortBy="#{branchCreditAccountTransaction.transactionType.label}"
+				filterBy="#{branchCreditAccountTransaction.transactionType.label}" filterMatchMode="contains">
+				<f:facet name="header">
+							Transaction Type
+						</f:facet>
+				<h:outputText value="#{branchCreditAccountTransaction.transactionType.label}" />
+			</p:column>
+
+			<p:column sortBy="#{branchCreditAccountTransaction.transactionDate}"
+				filterBy="#{branchCreditAccountTransaction.transactionDate}" filterMatchMode="contains">
+				<f:facet name="header">
+							Transaction Date
+						</f:facet>
+				<h:outputText value="#{branchCreditAccountTransaction.transactionDate}">
+					<f:convertDateTime pattern="dd/MMM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+			<p:column sortBy="#{branchCreditAccountTransaction.description}"
+				filterBy="#{branchCreditAccountTransaction.description}" filterMatchMode="contains">
+				<f:facet name="header">
+							Description
+						</f:facet>
+				<h:outputText value="#{branchCreditAccountTransaction.description}" />
+			</p:column>
+
+			<p:column sortBy="#{branchCreditAccountTransaction.auditUsername}"
+				filterBy="#{branchCreditAccountTransaction.auditUsername}" filterMatchMode="contains">
+				<f:facet name="header">
+							User name
+						</f:facet>
+				<h:outputText value="#{branchCreditAccountTransaction.auditUsername}" />
+			</p:column>
+
+			<p:column sortBy="#{branchCreditAccountTransaction.amount}" filterBy="#{branchCreditAccountTransaction.amount}"
+				filterMatchMode="contains">
+				<f:facet name="header">
+							Amount
+						</f:facet>
+				<h:outputText value="#{branchCreditAccountTransaction.amount}" />
+			</p:column>
+		</p:dataTable>
+	</p:panel>
+</ui:composition>

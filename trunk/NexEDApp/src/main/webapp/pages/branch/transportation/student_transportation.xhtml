@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui" xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	
+		<f:facet name="header">Transportation</f:facet>
+	
+			<h:panelGrid id="transportationPanel" columns="3" cellpadding="5">
+			
+				<p:outputLabel id="pickUpPointLabel" value="#{msg.pickUpPointLabel}" for="pickUpPoints" />
+				<p:selectOneMenu id="pickUpPoints" value="#{studentTransportationBean.studentTransportation.pickUpPoint}" required="true">
+					<f:selectItem itemLabel="select pickup point:" />
+					<f:selectItems value="#{studentTransportationBean.activePickUpPoints}" var="pickUpPoint" itemLabel="#{pickUpPoint.name}" itemValue="#{pickUpPoint}" />
+					<p:ajax event="change" update="routes vehicles" listener="#{studentTransportationBean.onPickUpPointChange()}" process="@this" />
+					<f:converter converterId="pickUpPointConverter" />
+				</p:selectOneMenu>		
+				<p:message id="pickUpPointMessage" for="pickUpPoints" />
+
+
+
+				<p:outputLabel id="routeLabel" value="#{msg.routeLabel}" for="routes" />
+				<p:selectOneMenu id="routes" value="#{studentTransportationBean.studentTransportation.route}" required="true">
+					<f:selectItem itemLabel="select route:" />
+					<f:selectItems value="#{studentTransportationBean.routesForPickUpPoint}" var="route" itemLabel="#{route.name}" itemValue="#{route}" />
+					<p:ajax event="change" update="vehicles" listener="#{studentTransportationBean.onRouteChange()}" process="@this" />
+					<f:converter converterId="routeConverter" />
+				</p:selectOneMenu>
+				<p:message id="routeMessage" for="routes" />
+
+				
+				
+				<p:outputLabel id="vehicleLabel" value="#{msg.vehicleLabel}" for="vehicles" />
+				<p:selectOneMenu id="vehicles" value="#{studentTransportationBean.studentTransportation.vehicle}" required="true">
+					<f:selectItem itemLabel="select vehicle:" />
+					<f:selectItems value="#{studentTransportationBean.vehiclesForRoute}" var="vehicle" itemLabel="#{vehicle.vehicleNumber}" itemValue="#{vehicle}" />
+					<f:converter converterId="vehicleConverter" />
+				</p:selectOneMenu>
+				<p:message id="vehicleMessage" for="vehicles" />
+				
+			</h:panelGrid>
+			<p:commandButton id="assign" value="Assign" action="#{studentTransportationBean.assignStudentTransportation()}" update="@form"  icon="ui-icon-circle-plus" title="#{msg.save}" rendered="#{studentTransportationBean.studentTransportation.id == null}"/>
+			<p:commandButton id="unassign" value="Unassign" action="#{studentTransportationBean.unassignStudentTransportation()}" update="@form" process="@this" icon="ui-icon-circle-minus"
+				title="#{msg.cancel}" rendered="#{studentTransportationBean.studentTransportation.id != null}"/>
+			<p:commandButton id="close" value="Close" action="#{studentTransportationBean.closeStudentTransportation()}" update="@form" icon="ui-icon-circle-close" title="#{msg.save}" rendered="#{studentTransportationBean.studentTransportation.id != null and false}"/>	
+</ui:composition>

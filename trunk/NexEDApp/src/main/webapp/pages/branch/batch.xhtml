@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{batchBean.loadAllAcademicYearsForCurrentBranch()}" />
+	</f:metadata>
+	
+	
+	<p:panel id="batch" style="margin-bottom:10px;">
+		<f:facet name="header">
+			Batch
+		</f:facet>
+		<p:messages id="messages" globalOnly="true" />
+		<h:panelGrid columns="3" id="grid" cellpadding="4" style="border:0px;margin-bottom:10px;">
+
+			<p:outputLabel id="name_label" value="#{msg.batch_name}" for="batch_name" />
+			<p:inputText id="batch_name" value="#{batchBean.batch.name}" required="true" />
+			<p:message id="batch_name_msg" for="batch_name" />
+
+			<p:outputLabel id="start_academic_year_label" value="Start academic year" for="start_academic_year" />
+			<p:selectOneMenu id="start_academic_year" value="#{batchBean.batch.startAcademicYear}" required="true"
+				converter="academicYearConverter">
+				<f:selectItem itemLabel="Select academic year" itemValue="" />
+				<f:selectItems value="#{batchBean.allAcademicYearsForCurrentBranch}" var="academicYear"
+					itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+			</p:selectOneMenu>
+			<p:message id="start_academic_year_msg" for="start_academic_year" />
+
+			<p:outputLabel id="end_academic_year_label" value="End academic year" for="end_academic_year" />
+			<p:selectOneMenu id="end_academic_year" value="#{batchBean.batch.endAcademicYear}" required="true"
+				converter="academicYearConverter">
+				<f:selectItem itemLabel="Select academic year" itemValue="" />
+				<f:selectItems value="#{batchBean.allAcademicYearsForCurrentBranch}" var="academicYear"
+					itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+			</p:selectOneMenu>
+			<p:message id="end_academic_year_msg" for="end_academic_year" />
+
+
+		</h:panelGrid>
+
+		<p:commandButton id="batch_cancle" value="Back" process="@this" update="@form" icon="ui-icon-circle-arrow-w">
+			<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_BATCHES">
+				<f:converter converterId="viewContentConverter" />
+			</f:setPropertyActionListener>
+			<f:setPropertyActionListener target="#{batchBean.viewOrNewAction}" value="false" />
+		</p:commandButton>
+		<p:spacer width="5px" />
+		<p:commandButton id="save" value="Save" action="#{batchBean.saveBatch}" update="@form" icon="ui-icon-circle-check"
+			disabled="#{batchBean.batch.locked || !grantedAuthorityBean.userAllowedToCreateBatch}" />
+		<p:commandButton id="bacth_lock" value="#{msg.lock}" update="@form" action="#{batchBean.lockUnlockBatch()}"
+			disabled="#{!grantedAuthorityBean.userAllowedToCreateBatch}" rendered="#{batchBean.disableBatch and !batchBean.batch.locked}" icon="ui-icon-locked" />
+		<p:commandButton id="bacth_unlock" value="#{msg.unlock}" update="@form" action="#{batchBean.lockUnlockBatch()}"
+			disabled="#{!grantedAuthorityBean.userAllowedToCreateBatch}" rendered="#{batchBean.disableBatch and batchBean.batch.locked}" icon="ui-icon-unlocked" />
+
+	</p:panel>
+</ui:composition>

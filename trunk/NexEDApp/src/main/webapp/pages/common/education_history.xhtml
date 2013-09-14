@@ -1,0 +1,89 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	
+	<f:facet name="header">Previous Education</f:facet>
+
+	<p:outputPanel id="edu_panel_grid">
+
+		<h:panelGrid columns="2" width="100%" columnClasses="column-vertical-align, column-vertical-align">
+
+			<h:panelGrid id="recent_school_details_panel_grid" columns="2" cellpadding="3">
+
+				<p:outputLabel id="ed_school_name_label" value="Recent school name" for="ed_school_name" />
+				<p:inputText id="ed_school_name" value="#{admissionBean.educationHistory.schoolName}" size="40" disabled="#{admissionBean.disableRecentSchoolInfo}"
+					required="true" />
+
+				<p:outputLabel id="stu_highist_class_label" value="Highest class promoted from school" for="stu_highist_class" />
+				<p:inputText id="stu_highist_class" value="#{admissionBean.educationHistory.highestKlass}" disabled="#{admissionBean.disableRecentSchoolInfo}" />
+
+				<p:outputLabel id="ed_school_type_label" value="Recent school type" for="ed_school_type" />
+				<p:selectOneRadio id="ed_school_type" value="#{admissionBean.educationHistory.schoolType}" disabled="#{admissionBean.disableRecentSchoolInfo}">
+					<f:selectItems value="#{enumConstantsBean.schoolTypes}" var="schoolType" itemLabel="#{schoolType.label}" itemValue="#{schoolType}" />
+				</p:selectOneRadio>
+
+				<p:outputLabel id="ed_mediam_label" value="Mediam" for="ed_mediam" />
+				<p:selectOneRadio id="ed_mediam" value="#{admissionBean.educationHistory.medium}" disabled="#{admissionBean.disableRecentSchoolInfo}">
+					<f:selectItems value="#{enumConstantsBean.mediams}" var="mediam" itemLabel="#{mediam.label}" itemValue="#{mediam}" />
+				</p:selectOneRadio>
+
+				<p:outputLabel id="ed_doj_label" value="Date of joining" for="ed_doj" />
+				<p:calendar id="ed_doj" value="#{admissionBean.educationHistory.dateOfjoining}" navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy"
+					yearRange="1947" disabled="#{admissionBean.disableRecentSchoolInfo}" />
+
+				<p:outputLabel id="ed_dor_label" value="Date of relieving" for="ed_dor" />
+				<p:calendar id="ed_dor" value="#{admissionBean.educationHistory.dateOfRelieving}" navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy"
+					yearRange="1947" disabled="#{admissionBean.disableRecentSchoolInfo}" />
+
+
+				<p:outputLabel id="ed_cp_name_label" value="Contact person" for="ed_cp_name" />
+				<p:inputText id="ed_cp_name" value="#{admissionBean.educationHistory.contactPersonName}" size="40" disabled="#{admissionBean.disableRecentSchoolInfo}" />
+				
+				<h:outputText value="School address available: " style="font-weight:bold;"/>
+				<p:selectBooleanCheckbox id="recent_school_address_available" value="#{admissionBean.recentSchoolAddressAvailable}"
+					onIcon="ui-icon-check" offIcon="ui-icon-close" disabled="#{admissionBean.disableRecentSchoolInfo}">
+					<p:ajax update="recent_school_address_panel_grid" listener="#{admissionBean.recentSchoolAddressCheck()}"/>
+				</p:selectBooleanCheckbox>
+
+			</h:panelGrid>
+
+			<h:panelGrid id="recent_school_address_panel_grid" columns="2" cellpadding="3">
+
+				<p:outputLabel id="rec_sch_label" value="Address" for="rec_sch" rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+				<h:panelGrid columns="1" rendered="#{admissionBean.recentSchoolAddressAvailable}">
+					<p:inputTextarea id="rec_sch" value="#{admissionBean.educationHistory.address.address}" rows="3" cols="30" counter="recshcounter" maxlength="200"
+						counterTemplate="{0} characters remaining." autoResize="false" disabled="#{admissionBean.disableRecentSchoolInfo}" required="true" />
+					<h:outputText id="recshcounter" />
+				</h:panelGrid>
+
+				<p:outputLabel id="rec_sch_city_label" value="City" for="rec_sch_city" rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+				<p:inputText id="rec_sch_city" value="#{admissionBean.educationHistory.address.city}" disabled="#{admissionBean.disableRecentSchoolInfo}" required="true"
+					rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+
+				<p:outputLabel id="rec_sch_country_label" value="Country" for="rec_sch_country" rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+				<p:selectOneMenu id="rec_sch_country" value="#{admissionBean.educationHistory.address.country}" disabled="#{admissionBean.disableRecentSchoolInfo}"
+					required="true" converter="countryConverter" rendered="#{admissionBean.recentSchoolAddressAvailable}">
+					<f:selectItem itemLabel="Select country" itemValue="" />
+					<f:selectItems value="#{countryBean.countries}" var="country" itemLabel="#{country.name}" itemValue="#{country}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel id="rec_sch_state_label" value="State" for="rec_sch_state" rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+				<p:inputText id="rec_sch_state" value="#{admissionBean.educationHistory.address.state}" disabled="#{admissionBean.disableRecentSchoolInfo}" required="true"
+					rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+
+				<p:outputLabel id="rec_sch_zipcode_label" value="Zip code" for="rec_sch_zipcode" rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+				<p:inputText id="rec_sch_zipcode" value="#{admissionBean.educationHistory.address.zipCode}" disabled="#{admissionBean.disableRecentSchoolInfo}"
+					required="true" rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+
+				<p:outputLabel id="rec_sch_officephone_label" value="Office phone" for="rec_sch_officephone" rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+				<p:inputText id="rec_sch_officephone" value="#{admissionBean.educationHistory.address.officePhoneNr}" disabled="#{admissionBean.disableRecentSchoolInfo}"
+					rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+
+				<p:outputLabel id="rec_sch_email_label" value="Email" for="rec_sch_email" rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+				<p:inputText id="rec_sch_email" value="#{admissionBean.educationHistory.address.email}" disabled="#{admissionBean.disableRecentSchoolInfo}"
+					rendered="#{admissionBean.recentSchoolAddressAvailable}" />
+
+			</h:panelGrid>
+		</h:panelGrid>
+	</p:outputPanel>
+</ui:composition>

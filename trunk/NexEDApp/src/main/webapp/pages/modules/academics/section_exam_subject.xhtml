@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<h:panelGrid columns="2" cellpadding="5" cellspacing="5">
+
+		<h:outputLabel value="Exam name" />
+		<h:outputLabel value="#{sectionExamsBean.sectionExam.exam.name}" style="font-weight:bold" />
+
+
+		<h:outputLabel value="Subject name" />
+		<h:outputLabel value="#{sectionExamsBean.subject.name}" style="font-weight:bold" />
+
+
+		<h:outputLabel value="Subject exam scheduled date" />
+		<h:outputLabel value="#{sectionExamsBean.sectionExamSubject.scheduledDate}" style="font-weight:bold">
+			<f:convertDateTime pattern="dd/MM/yyyy" />
+		</h:outputLabel>
+
+
+		<h:outputLabel value="Pass marks " />
+		<h:outputLabel value="#{sectionExamsBean.sectionExamSubject.passMarks}" style="font-weight:bold">
+			<f:convertNumber pattern="0.00" />
+		</h:outputLabel>
+
+
+		<h:outputLabel value="Maximum marks " />
+		<h:outputLabel value="#{sectionExamsBean.sectionExamSubject.maximumMarks}" style="font-weight:bold">
+			<f:convertNumber pattern="0.00" />
+		</h:outputLabel>
+
+	</h:panelGrid>
+
+
+	<p:dataTable id="feeDetails" value="#{sectionExamsBean.studentExamSubjects}" var="studentExamSubject" editable="true"
+		style="margin-top : 15px;margin-bottom:10px;" rendered="#{sectionExamsBean.studentExamSubjects.size() > 0}">
+		<f:facet name="header">
+			<h:outputText value="Exam Results" style="float:left;margin-top:5px;margin-bottom:5px;" />
+			<h:commandLink style="float:right;" rendered="#{sectionExamsBean.studentExamSubjects.size()>0}">
+				<p:graphicImage value="/images/excel.png" />
+				<p:dataExporter type="xls" target="feeDetails" fileName="StudentsSubjectExams" />
+			</h:commandLink>
+			<h:commandLink style="float:right;" rendered="#{sectionExamsBean.studentExamSubjects.size()>0}">
+				<p:graphicImage value="/images/pdf.png" />
+				<p:dataExporter type="pdf" target="feeDetails" fileName="StudentsSubjectExams" />
+			</h:commandLink>
+		</f:facet>
+		<p:column sortBy="#{studentExamSubject.studentAcademicYear.student.displayName}"
+			filterBy="#{studentExamSubject.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+			<f:facet name="header">
+							Student name
+						</f:facet>
+			<h:outputText value="#{studentExamSubject.studentAcademicYear.student.displayName}" style="width:100%;" />
+		</p:column>
+
+		<p:column
+			sortBy="#{studentExamSubject.studentAcademicYear.student.externalAdmissionNr!=null ? studentExamSubject.studentAcademicYear.student.externalAdmissionNr :studentExamSubject.studentAcademicYear.student.admissionNr}"
+			filterBy="#{studentExamSubject.studentAcademicYear.student.externalAdmissionNr!=null ? studentExamSubject.studentAcademicYear.student.externalAdmissionNr :studentExamSubject.studentAcademicYear.student.admissionNr}"
+			filterMatchMode="contains">
+			<f:facet name="header">
+							Admission Number
+						</f:facet>
+			<h:outputText
+				value="#{studentExamSubject.studentAcademicYear.student.externalAdmissionNr!=null ? studentExamSubject.studentAcademicYear.student.externalAdmissionNr :studentExamSubject.studentAcademicYear.student.admissionNr}"
+				style="width:100%;" />
+		</p:column>
+
+		<p:column>
+			<f:facet name="header">
+							Exam attendance
+						</f:facet>
+			<p:selectOneMenu id="emp_type" style="width:152px;" required="true"
+				value="#{studentExamSubject.studentExamSubjectStatus}">
+				<f:selectItems value="#{enumConstantsBean.studentExamSubjectStatus}" var="stuExamSubStatus"
+					itemLabel="#{stuExamSubStatus.label}" itemValue="#{stuExamSubStatus}" />
+			</p:selectOneMenu>
+		</p:column>
+
+		<p:column style="width:150px;">
+			<f:facet name="header">
+							Scored marks
+						</f:facet>
+			<p:inputText value="#{studentExamSubject.scoredMarks}" style="border:0px;">
+				<f:convertNumber pattern="0.00" />
+			</p:inputText>
+		</p:column>
+	</p:dataTable>
+
+	<p:commandButton id="submit_marks_cancle" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
+		<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamSubjectFlag}" value="false" />
+	</p:commandButton>
+
+	<p:commandButton id="submit_marks_save" value="Save" update="@form" icon="ui-icon-circle-check"
+		action="#{sectionExamsBean.submitMarksObtained}" />
+
+
+
+
+
+</ui:composition>

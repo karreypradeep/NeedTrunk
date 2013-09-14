@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:tabMenu activeIndex="0">
+
+		<p:menuitem value="User Group" icon="ui-icon-home">
+		</p:menuitem>
+
+	</p:tabMenu>
+	<p:panel>
+		<p:messages id="userGroupsMessages" globalOnly="true" />
+
+
+		<h:panelGrid id="newUserGroupPanelGrid" columns="3" cellpadding="5">
+			<p:outputLabel id="userGroupLabel" for="userGroup" value="#{msg.userGroupNameMand}" />
+			<p:inputText id="userGroup" value="#{userGroupBean.userGroup.name}" required="true" label="#{msg.userGroupName}"
+				requiredMessage="#{model.user_group_name_mandatory}" />
+			<p:message id="userGroupMessage" for="userGroup" />
+		</h:panelGrid>
+
+		<p:dataTable var="auth" value="#{userGroupBean.authorities}" selection="#{userGroupBean.grantedAuthorities}"
+			style="float:left;margin:5px;width:100%">
+
+			<p:ajax event="rowSelectCheckbox" />
+			<p:ajax event="rowUnselectCheckbox" />
+			<p:ajax event="toggleSelect" />
+
+			<p:column selectionMode="multiple" style="width:10px;">
+
+			</p:column>
+
+			<p:column headerText="Authority" filterBy="#{auth.label}" filterMatchMode="contains">
+				<h:outputLabel value="#{auth.label}" />
+			</p:column>
+			
+			<p:column headerText="Authority Category"  filterBy="#{auth.authorityCategory.label}" filterMatchMode="contains">
+				<h:outputLabel value="#{auth.authorityCategory.label}" />
+			</p:column>
+			
+			<p:column headerText="Authority Subcategory" filterBy="#{auth.authoritySubCategory.label}" filterMatchMode="contains">
+				<h:outputLabel value="#{auth.authoritySubCategory.label}" />
+			</p:column>
+
+		</p:dataTable>
+
+		<p:commandButton id="userGroupSave" value="#{msg.save}" action="#{userGroupBean.saveUserGroup}" update="@form"
+			icon="ui-icon-circle-check" title="Save/Update user group" />
+		<p:commandButton id="userCancel" value="#{msg.cancel}" action="#{userGroupBean.cancelNewUserGroup}" update="@form"
+			immediate="true" icon="ui-icon-circle-close" title="Cancel">
+			<f:setPropertyActionListener target="#{userGroupBean.viewOrNewAction}" value="false" />
+		</p:commandButton>
+	</p:panel>
+</ui:composition>
