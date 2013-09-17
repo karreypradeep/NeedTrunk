@@ -166,6 +166,7 @@ public class FinanceFeesCollectedDueDetailsBean extends AbstractTabbedBean imple
 			branchFeeCollectedTreeNode.setTotalFee(this.branchFinancialDO.getTotalFeeExpected());
 			branchFeeCollectedTreeNode.setFeePaid(this.branchFinancialDO.getTotalFeeCollectedAmount());
 			branchFeeCollectedTreeNode.setFeeWaived(this.branchFinancialDO.getTotalFeeDeductedAmount());
+			branchFeeCollectedTreeNode.setNetfeeExpected(this.branchFinancialDO.getNetFee());
 			branchFeeCollectedTreeNode.setFeeDue(this.branchFinancialDO.getNetFeeDue());
 			branchTreeNode.setExpanded(true);
 			for (ClassFinancialDO classFinancialDO : this.branchFinancialDO.getClassFinancialDOs()) {
@@ -175,6 +176,7 @@ public class FinanceFeesCollectedDueDetailsBean extends AbstractTabbedBean imple
 				classFeeCollectedTreeNode.setTotalFee(classFinancialDO.getTotalFeeExpected());
 				classFeeCollectedTreeNode.setFeePaid(classFinancialDO.getTotalFeeCollectedAmount());
 				classFeeCollectedTreeNode.setFeeWaived(classFinancialDO.getTotalFeeDeductedAmount());
+				classFeeCollectedTreeNode.setNetfeeExpected(classFinancialDO.getNetFee());
 				classFeeCollectedTreeNode.setFeeDue(classFinancialDO.getNetFeeDue());
 				classTreeNode.setExpanded(false);
 				for (SectionFinancialDO sectionFinancialDO : classFinancialDO.getSectionFinancialDOs()) {
@@ -184,6 +186,7 @@ public class FinanceFeesCollectedDueDetailsBean extends AbstractTabbedBean imple
 					sectionFeeCollectedTreeNode.setTotalFee(sectionFinancialDO.getTotalFeeExpected());
 					sectionFeeCollectedTreeNode.setFeePaid(sectionFinancialDO.getTotalFeeCollectedAmount());
 					sectionFeeCollectedTreeNode.setFeeWaived(sectionFinancialDO.getTotalFeeDeductedAmount());
+					sectionFeeCollectedTreeNode.setNetfeeExpected(sectionFinancialDO.getNetFee());
 					sectionFeeCollectedTreeNode.setFeeDue(sectionFinancialDO.getNetFeeDue());
 					sectionTreeNode.setExpanded(false);
 				}

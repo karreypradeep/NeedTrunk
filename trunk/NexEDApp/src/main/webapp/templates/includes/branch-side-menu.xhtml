@@ -94,7 +94,7 @@
 				</p:commandLink>
 
 				<p:commandLink value="#{msg.process_pending_fee_transactions}" process="branch_side_menu" update="@form"
-					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsProcessFeeTransactions}"
+					rendered="false"
 					actionListener="#{studentFinancialBean.instantiateStudentFeeTransactionSearchCriteria()}">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="APPROVE_REFUND_DEDUCT_FEE">
 						<f:converter converterId="viewContentConverter" />

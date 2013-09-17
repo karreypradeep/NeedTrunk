@@ -8,7 +8,7 @@ package com.apeironsol.nexed.financial.portal;
 
 /**
  * View student class.
- *
+ * 
  * @author Pradeep
  * @author pradeep
  */
@@ -26,6 +26,8 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.nexed.core.model.BuildingBlock;
 import com.apeironsol.nexed.core.model.StudentSection;
 import com.apeironsol.nexed.core.portal.AbstractStudentBean;
@@ -52,8 +54,6 @@ import com.apeironsol.nexed.util.dataobject.StudentFinancialDataModel;
 import com.apeironsol.nexed.util.portal.ViewExceptionHandler;
 import com.apeironsol.nexed.util.portal.ViewUtil;
 import com.apeironsol.nexed.util.searchcriteria.StudentFeeTransactionSearchCriteria;
-import com.apeironsol.framework.exception.ApplicationException;
-import com.apeironsol.framework.exception.BusinessException;
 
 @Named
 @Scope("session")
@@ -333,6 +333,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 	@Override
 	public void onTabChange() {
 		this.setLoadStudentFinancialDetailsFlag(true);
+		this.setSelectedStudentFinancialDOs(null);
 		this.loadStudentFinancialDetails();
 	}
 
@@ -536,7 +537,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 	 * Cancel transaction.
 	 */
 	public void processTransactionForCancellation() {
-		this.studentFinancialService.revertStudentFeeTransaction(this.studentFeeTransaction);
+		this.studentFeeTransaction = this.studentFinancialService.revertStudentFeeTransaction(this.studentFeeTransaction);
 		this.studentFeeTransactionDO = this.studentFinancialService.retriveStudentFeeTransactionDetailsByTransactionNr(this.studentFeeTransaction
 				.getTransactionNr());
 
@@ -558,7 +559,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 	 * method selected. If fee transaction type is deduct and if status is for
 	 * request then request deduction is called. If fee transaction type is
 	 * refund and if status is for request then request refund is called.
-	 *
+	 * 
 	 * @param studentFeeTransactionType
 	 *            studentFeeTransactionType.
 	 * @param nextPaymentWizard

@@ -15,7 +15,7 @@
 				<p:outputLabel id="academic_year_label" value="Academic year" for="academic_year" />
 				<p:selectOneMenu id="academic_year" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.academicYear}"
 					required="true" converter="academicYearConverter">
-					<f:selectItem itemLabel="Select academic year" itemValue=""/>
+					<f:selectItem itemLabel="Select academic year" itemValue="" />
 					<f:selectItems value="#{financeFeesDefaultersBean.activeAcademicYears}" var="academicYear"
 						itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
 					<p:ajax process="@this" update="@form" listener="#{financeFeesDefaultersBean.onChangeAcademicYear}" />
@@ -28,13 +28,17 @@
 					maxdate="#{studentBean.currentDate}"
 					disabled="#{financeFeesDefaultersBean.feeDueSearchCriteria.academicYear==null}" />
 
-				<p:outputLabel id="minimum_due_amount_label" value="Minimum due amount" for="minimum_due_amount" />
-				<p:inputText id="minimum_due_amount" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.minimumDueAmount}">
-				</p:inputText>
+				<p:outputLabel id="fee_due_perentage_label" value="Minimum Fee due %" for="fee_due_perentage_amount" />
+				<p:inputText id="fee_due_perentage_amount" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.feeDuePercetage}"
+					size="20" maxlength="3" >
+					<f:convertNumber pattern="000" maxFractionDigits="0" maxIntegerDigits="3" />
+				</p:inputText> 
+
 			</h:panelGrid>
 			<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
 				<p:outputLabel id="class_label" value="Class" for="class" />
-				<p:selectOneMenu id="class" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.klass}" converter="klassConverter">
+				<p:selectOneMenu id="class" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.klass}"
+					converter="klassConverter">
 					<f:selectItem itemLabel="Select class" itemValue="" />
 					<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
 					<p:ajax update="expense_type_grid2" listener="#{financeFeesDefaultersBean.handleFromKlassChange}" process="@this" />
@@ -42,15 +46,21 @@
 
 
 				<p:outputLabel id="section_label" value="Section" for="section" />
-				<p:selectOneMenu id="section" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.section}" converter="sectionConverter">
+				<p:selectOneMenu id="section" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.section}"
+					converter="sectionConverter">
 					<f:selectItem itemLabel="Select section" itemValue="" />
-					<f:selectItems value="#{financeFeesDefaultersBean.sectionsForSearhCriteriaByKlass}" var="section" itemLabel="#{section.name}"
-						itemValue="#{section}" />
+					<f:selectItems value="#{financeFeesDefaultersBean.sectionsForSearhCriteriaByKlass}" var="section"
+						itemLabel="#{section.name}" itemValue="#{section}" />
 				</p:selectOneMenu>
 
+				<p:outputLabel id="minimum_due_amount_label" value="Minimum due amount" for="minimum_due_amount" />
+				<p:inputText id="minimum_due_amount" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.minimumDueAmount}"
+					size="20" maxlength="20">
+					<f:convertNumber pattern="000.00" />
+				</p:inputText>
 			</h:panelGrid>
 		</h:panelGrid>
-		<p:commandButton id="expense_type_search_buton" value="Search" process="@form" 
+		<p:commandButton id="expense_type_search_buton" value="Search" process="@form"
 			action="#{financeFeesDefaultersBean.searchFeesDueBySearchCriteria()}" update="@form" style="width:80px;"
 			icon="ui-icon-search" />
 		<p:spacer width="5px" />
@@ -117,17 +127,7 @@
 			<f:facet name="header">
 				<h:outputText value="Total fee" />
 			</f:facet>
-			<h:outputText value="#{studentFinancialAcademicYearDO.fee}" >
-				<f:convertNumber pattern="#,##,##,##,###.00" />
-			</h:outputText>
-		</p:column>
-
-		<p:column sortBy="#{studentFinancialAcademicYearDO.netFeePaid}"
-			filterBy="#{studentFinancialAcademicYearDO.netFeePaid}" filterMatchMode="contains">
-			<f:facet name="header">
-				<h:outputText value="Fee paid" />
-			</f:facet>
-			<h:outputText value="#{studentFinancialAcademicYearDO.netFeePaid}" >
+			<h:outputText value="#{studentFinancialAcademicYearDO.fee}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>
@@ -137,7 +137,27 @@
 			<f:facet name="header">
 				<h:outputText value="Fee deducted" />
 			</f:facet>
-			<h:outputText value="#{studentFinancialAcademicYearDO.totalFeeDeductedAmount}" >
+			<h:outputText value="#{studentFinancialAcademicYearDO.totalFeeDeductedAmount}">
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column sortBy="#{studentFinancialAcademicYearDO.netFee}"
+			filterBy="#{studentFinancialAcademicYearDO.netFee}" filterMatchMode="contains">
+			<f:facet name="header">
+				<h:outputText value="Net Fee" />
+			</f:facet>
+			<h:outputText value="#{studentFinancialAcademicYearDO.netFee}">
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column sortBy="#{studentFinancialAcademicYearDO.netFeePaid}"
+			filterBy="#{studentFinancialAcademicYearDO.netFeePaid}" filterMatchMode="contains">
+			<f:facet name="header">
+				<h:outputText value="Fee paid" />
+			</f:facet>
+			<h:outputText value="#{studentFinancialAcademicYearDO.netFeePaid}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>
@@ -147,7 +167,7 @@
 			<f:facet name="header">
 				<h:outputText value="Fee due" />
 			</f:facet>
-			<h:outputText value="#{studentFinancialAcademicYearDO.netFeeDue}" >
+			<h:outputText value="#{studentFinancialAcademicYearDO.netFeeDue}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>

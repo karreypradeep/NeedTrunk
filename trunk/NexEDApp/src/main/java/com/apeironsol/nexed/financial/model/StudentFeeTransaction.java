@@ -15,11 +15,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
+import com.apeironsol.framework.BaseEntity;
 import com.apeironsol.nexed.core.model.StudentAcademicYear;
 import com.apeironsol.nexed.util.constants.PaymentMethodConstant;
 import com.apeironsol.nexed.util.constants.StudentFeeTransactionStatusConstant;
 import com.apeironsol.nexed.util.constants.StudentFeeTransactionTypeConstant;
-import com.apeironsol.framework.BaseEntity;
 
 /**
  * Entity class for class fee
@@ -239,5 +239,8 @@ public class StudentFeeTransaction extends BaseEntity implements Serializable {
 				|| StudentFeeTransactionStatusConstant.PAYMENT_PROCESSED.equals(this.studentFeeTransactionStatus);
 	}
 
+	public boolean isStatusTransactionCancelled() {
+		return StudentFeeTransactionStatusConstant.TRANSACTOIN_CANCELLED.equals(this.studentFeeTransactionStatus) ;
+	}
 
 }

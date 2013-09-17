@@ -57,7 +57,7 @@ public class ClassFinancialServiceImpl implements ClassFinancialService {
 	public ClassFinancialDO getClassFeeFinancialDetailsByClassIdAndAcademicYearIdForDueDate(final Long classId, final Collection<Long> sectionIds,
 			final Long academicYearId, final Date dueDate, final StudentStatusConstant studentStatus) {
 		final Collection<Section> sections = this.sectionService.findActiveSectionsByKlassIdAndAcademicYearId(classId, academicYearId);
-		final ClassFinancialDO classFinancialDO = new ClassFinancialDO();
+		ClassFinancialDO classFinancialDO = null;
 		final Collection<Long> newSectionIds = new ArrayList<Long>();
 		if (sectionIds == null || sectionIds.isEmpty()) {
 			for (final Section section : sections) {
@@ -67,6 +67,7 @@ public class ClassFinancialServiceImpl implements ClassFinancialService {
 			newSectionIds.addAll(sectionIds);
 		}
 		if (newSectionIds != null && !newSectionIds.isEmpty()) {
+			classFinancialDO = new ClassFinancialDO();
 			classFinancialDO.setSectionFinancialDOs(this.sectionFinancialService.getSectionFeeFinancialDetailsBySectionIdAndAcademicYearIdForDueDate(
 					newSectionIds, academicYearId, dueDate, studentStatus));
 			classFinancialDO.setName(this.klassService.findKlassById(classId).getName());
@@ -80,8 +81,11 @@ public class ClassFinancialServiceImpl implements ClassFinancialService {
 			final Collection<Long> sectionIds, final Long academicYearId, final Date dueDate, final StudentStatusConstant studentStatus) {
 		final Collection<ClassFinancialDO> classFinancialDOs = new ArrayList<ClassFinancialDO>();
 		for (final Long classId : classIds) {
-			classFinancialDOs.add(this.getClassFeeFinancialDetailsByClassIdAndAcademicYearIdForDueDate(classId, sectionIds, academicYearId, dueDate,
-					studentStatus));
+			ClassFinancialDO classFinancialDO = this.getClassFeeFinancialDetailsByClassIdAndAcademicYearIdForDueDate(classId, sectionIds, academicYearId,
+					dueDate, studentStatus);
+			if (classFinancialDO != null) {
+				classFinancialDOs.add(classFinancialDO);
+			}
 		}
 		return classFinancialDOs;
 	}

@@ -3,7 +3,7 @@
  * SMSystem.
  * www.apeironsol.com
  * Copyright © 2012 apeironsol
- *
+ * 
  */
 package com.apeironsol.nexed.financial.service;
 
@@ -18,6 +18,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.nexed.core.dao.StudentAcademicYearDao;
 import com.apeironsol.nexed.core.dao.StudentDao;
 import com.apeironsol.nexed.core.dao.StudentSectionDao;
@@ -75,15 +77,13 @@ import com.apeironsol.nexed.util.searchcriteria.FeeCollectedSearchCriteria;
 import com.apeironsol.nexed.util.searchcriteria.FeeDueSearchCriteria;
 import com.apeironsol.nexed.util.searchcriteria.StudentFeeTransactionSearchCriteria;
 import com.apeironsol.nexed.util.searchcriteria.StudentSearchCriteria;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 /**
  * Service implementation for student financial details.
- *
+ * 
  * @author pradeep
  * @author pradeep
- *
+ * 
  */
 @Service("studentFinancialService")
 @Transactional
@@ -179,7 +179,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param studentFeeTransactionDetailsCollection
 	 * @param studentAdditionalFee
 	 * @return
@@ -194,7 +194,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param studentFee
 	 * @param studentLevelFeeCatalog
 	 * @return
@@ -209,7 +209,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param studentFeeTransactionDetailsCollection
 	 * @param studentFeeType
 	 * @param studentFee
@@ -363,7 +363,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 	/**
 	 * This method compute the student financial details and
-	 *
+	 * 
 	 * @param studentFinancialDOs
 	 * @param studentId
 	 * @param academicYearId
@@ -438,7 +438,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 	/**
 	 * This method compute the student financial details and
-	 *
+	 * 
 	 * @param studentFinancialDOs
 	 * @param studentId
 	 * @param academicYearId
@@ -512,7 +512,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 	/**
 	 * This method compute the student financial details and
-	 *
+	 * 
 	 * @param studentFinancialDOs
 	 * @param studentId
 	 * @param academicYearId
@@ -585,7 +585,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param studentFinancialDOs
 	 * @param studentFee
 	 * @param dueDate
@@ -657,7 +657,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param studentId
 	 * @param academicYearId
 	 * @param dueDate
@@ -705,7 +705,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param studentFeeTransactionDetailsCollection
 	 * @param studentAdditionalFee
 	 * @return
@@ -721,7 +721,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 	/**
 	 * Create batch log for the messages to be sent.
-	 *
+	 * 
 	 * @param batchSize
 	 *            batch size.
 	 * @param branchId
@@ -748,7 +748,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param studentFee
 	 * @param feeType
 	 * @param totalPaymentAmount
@@ -964,7 +964,14 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		final Collection<StudentFinancialAcademicYearDO> allStudentFinancialAcademicYearDO = this
 				.getStudnetFeeFinancialAcademicYearDetailsByAcademicYearIdForDueDate(studentSections, feeDueSearchCriteria.getDueDate());
 		for (final StudentFinancialAcademicYearDO studentFinancialAcademicYearDO : allStudentFinancialAcademicYearDO) {
-			if (feeDueSearchCriteria.getMinimumDueAmount() > 0 && studentFinancialAcademicYearDO.getNetFeeDue() >= feeDueSearchCriteria.getMinimumDueAmount()) {
+			if (feeDueSearchCriteria.getFeeDuePercetage() > 0 && feeDueSearchCriteria.getFeeDuePercetage() < 100) {
+				if (studentFinancialAcademicYearDO.getNetFeeDue() * 100 / studentFinancialAcademicYearDO.getNetFee() >= feeDueSearchCriteria
+						.getFeeDuePercetage()) {
+					studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
+				}
+
+			} else if (feeDueSearchCriteria.getMinimumDueAmount() > 0
+					&& studentFinancialAcademicYearDO.getNetFeeDue() >= feeDueSearchCriteria.getMinimumDueAmount()) {
 				studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
 			} else if (feeDueSearchCriteria.getMinimumDueAmount() == 0 && studentFinancialAcademicYearDO.getNetFeeDue() > 0) {
 				studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
@@ -1104,7 +1111,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param student
 	 * @param academicYearId
 	 * @param dueDate
@@ -1234,7 +1241,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param studentId
 	 * @param studentFeeTransaction
 	 * @param studentFeeDetailsDOs
@@ -1452,6 +1459,9 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	public StudentFeeTransaction updateStudentFeeTransactionStatus(final StudentFeeTransaction studentFeeTransaction,
 			final StudentFeeTransactionStatusConstant transactionStatus, final boolean updateStudentAcademicYearFeeSummary) throws BusinessException,
 			SystemException {
+		if (transactionStatus != null) {
+			studentFeeTransaction.setStudentFeeTransactionStatus(transactionStatus);
+		}
 		final StudentFeeTransaction result = this.studentFeeTransactionDao.persist(studentFeeTransaction);
 
 		if (updateStudentAcademicYearFeeSummary) {
@@ -1498,7 +1508,6 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	@Override
 	public StudentFeeTransaction rejectRefundRequest(final StudentFeeTransaction studentFeeTransaction) throws BusinessException, SystemException {
 
-
 		if (StudentFeeTransactionTypeConstant.REFUND.equals(studentFeeTransaction.getStudentFeeTransactionType())
 				&& StudentFeeTransactionStatusConstant.REFUND_REQUEST.equals(studentFeeTransaction.getStudentFeeTransactionStatus())) {
 
@@ -1509,16 +1518,13 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 			throw new BusinessException("Transactions status can be changed to refund rejected only if the current transactions is status is refund request.");
 		}
 
-
 	}
 
 	@Override
 	public StudentFeeTransaction approveRefundRequest(final StudentFeeTransaction studentFeeTransaction) throws BusinessException, SystemException {
 
-
 		if (StudentFeeTransactionTypeConstant.REFUND.equals(studentFeeTransaction.getStudentFeeTransactionType())
 				&& StudentFeeTransactionStatusConstant.REFUND_REQUEST.equals(studentFeeTransaction.getStudentFeeTransactionStatus())) {
-
 
 			studentFeeTransaction.setStudentFeeTransactionStatus(StudentFeeTransactionStatusConstant.REFUND_PENDING);
 			return this.studentFeeTransactionDao.persist(studentFeeTransaction);
@@ -1531,19 +1537,16 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	@Override
 	public StudentFeeTransaction rejectDeductionRequest(final StudentFeeTransaction studentFeeTransaction) throws BusinessException, SystemException {
 
-
 		if (StudentFeeTransactionTypeConstant.DEDUCT.equals(studentFeeTransaction.getStudentFeeTransactionType())
 				&& StudentFeeTransactionStatusConstant.DEDUCTION_REQUEST.equals(studentFeeTransaction.getStudentFeeTransactionStatus())) {
-
 
 			studentFeeTransaction.setStudentFeeTransactionStatus(StudentFeeTransactionStatusConstant.REJECT_DEDUCTION);
 			return this.studentFeeTransactionDao.persist(studentFeeTransaction);
 
 		} else {
-			throw new BusinessException("Transactions status can be changed to reject deduction only if the current transactions is status is deduction request.");
+			throw new BusinessException(
+					"Transactions status can be changed to reject deduction only if the current transactions is status is deduction request.");
 		}
-
-
 
 	}
 
@@ -1553,29 +1556,27 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		if (StudentFeeTransactionTypeConstant.DEDUCT.equals(studentFeeTransaction.getStudentFeeTransactionType())
 				&& StudentFeeTransactionStatusConstant.DEDUCTION_REQUEST.equals(studentFeeTransaction.getStudentFeeTransactionStatus())) {
 
-
 			studentFeeTransaction.setStudentFeeTransactionStatus(StudentFeeTransactionStatusConstant.DEDUCTION_PROCESSED);
 			return this.studentFeeTransactionDao.persist(studentFeeTransaction);
 
 		} else {
-			throw new BusinessException("Transactions status can be changed to deduction approved only if the current transactions is status is deduction request.");
+			throw new BusinessException(
+					"Transactions status can be changed to deduction approved only if the current transactions is status is deduction request.");
 		}
-
 
 	}
 
 	@Override
 	public StudentFeeTransaction processPaymentRequest(final StudentFeeTransaction studentFeeTransaction) throws BusinessException, SystemException {
 
-
 		if (StudentFeeTransactionTypeConstant.PAYMENT.equals(studentFeeTransaction.getStudentFeeTransactionType())
 				&& StudentFeeTransactionStatusConstant.PAYMENT_PENDING.equals(studentFeeTransaction.getStudentFeeTransactionStatus())) {
 			studentFeeTransaction.setStudentFeeTransactionStatus(StudentFeeTransactionStatusConstant.PAYMENT_PROCESSED);
 			return this.studentFeeTransactionDao.persist(studentFeeTransaction);
 		} else {
-			throw new BusinessException("Transactions status can be changed to payment processed only if the current transactions is status is payment pending.");
+			throw new BusinessException(
+					"Transactions status can be changed to payment processed only if the current transactions is status is payment pending.");
 		}
-
 
 	}
 
@@ -1591,7 +1592,6 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		} else {
 			throw new BusinessException("Transactions status can be changed to refund processed only if the current transactions is status is refund pending.");
 		}
-
 
 	}
 }

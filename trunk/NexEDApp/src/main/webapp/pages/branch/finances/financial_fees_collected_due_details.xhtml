@@ -77,18 +77,27 @@
 
 		<p:column style="width:100px">
 			<f:facet name="header">  
-               			 Fees collected  
+               			 Fees waived  
             </f:facet>
-			<h:outputText value="#{branchFeeCollectedTreeNode.feePaid}" >
+			<h:outputText value="#{branchFeeCollectedTreeNode.feeWaived}" >
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>
 
 		<p:column style="width:100px">
 			<f:facet name="header">  
-               			 Fees waived  
+               			 Net Fee  
             </f:facet>
-			<h:outputText value="#{branchFeeCollectedTreeNode.feeWaived}" >
+			<h:outputText value="#{branchFeeCollectedTreeNode.netfeeExpected}" >
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column style="width:100px">
+			<f:facet name="header">  
+               			 Fees collected  
+            </f:facet>
+			<h:outputText value="#{branchFeeCollectedTreeNode.feePaid}" >
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>

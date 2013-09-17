@@ -14,8 +14,8 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-import com.apeironsol.nexed.academics.model.StudentExamSubject;
 import com.apeironsol.framework.BaseDaoImpl;
+import com.apeironsol.nexed.academics.model.StudentExamSubject;
 
 /**
  * Service interface implementation for StudentExamSubjectDao.
@@ -120,14 +120,18 @@ public class StudentExamSubjectDaoImpl extends BaseDaoImpl<StudentExamSubject> i
 	@Override
 	public StudentExamSubject findStudentExamSubjectByStudentAcademicYearIdAndSectionExamSubjectId(final Long studentAcademicYearId,
 			final Long sectionExamSubjectId) {
-		TypedQuery<StudentExamSubject> query = this
-				.getEntityManager()
-				.createQuery(
-						"select e from StudentExamSubject e where e.studentAcademicYear.id = :studentAcademicYearId and e.sectionExamSubject.id = :sectionExamSubjectId",
-						StudentExamSubject.class);
-		query.setParameter("studentAcademicYearId", studentAcademicYearId);
-		query.setParameter("sectionExamSubjectId", sectionExamSubjectId);
-		return query.getSingleResult();
+		try {
+			TypedQuery<StudentExamSubject> query = this
+					.getEntityManager()
+					.createQuery(
+							"select e from StudentExamSubject e where e.studentAcademicYear.id = :studentAcademicYearId and e.sectionExamSubject.id = :sectionExamSubjectId",
+							StudentExamSubject.class);
+			query.setParameter("studentAcademicYearId", studentAcademicYearId);
+			query.setParameter("sectionExamSubjectId", sectionExamSubjectId);
+			return query.getSingleResult();
+		} catch (NoResultException e) {
+			return null;
+		}
 	}
 
 	@Override

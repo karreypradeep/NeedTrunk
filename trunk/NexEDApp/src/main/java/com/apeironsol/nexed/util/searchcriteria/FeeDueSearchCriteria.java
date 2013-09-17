@@ -35,6 +35,7 @@ public class FeeDueSearchCriteria implements SearchCriteria {
 	 * @param branch
 	 *            the branch to set
 	 */
+	@Override
 	public void setBranch(final Branch branch) {
 		this.branch = branch;
 	}
@@ -53,6 +54,11 @@ public class FeeDueSearchCriteria implements SearchCriteria {
 	 * Minimum due amount.
 	 */
 	private double			minimumDueAmount;
+
+	/**
+	 * Minimum due amount.
+	 */
+	private double			feeDuePercetage;
 
 	/**
 	 * Klass.
@@ -173,6 +179,14 @@ public class FeeDueSearchCriteria implements SearchCriteria {
 	 */
 	public void setSection(final Section section) {
 		this.section = section;
+	}
+
+	public double getFeeDuePercetage() {
+		return this.feeDuePercetage;
+	}
+
+	public void setFeeDuePercetage(final double feeDuePercetage) {
+		this.feeDuePercetage = feeDuePercetage;
 	}
 
 }
