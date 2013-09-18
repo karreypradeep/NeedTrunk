@@ -47,7 +47,7 @@ import com.apeironsol.nexed.util.searchcriteria.StudentSearchCriteria;
 
 /**
  * @author sunny
- *
+ * 
  */
 @Named
 @Scope("session")
@@ -70,13 +70,13 @@ public class StudentReportBean extends AbstractPortalBean implements Serializabl
 
 	private JReportType					reportType;
 
-	private StudentSection	currentStudentSection;
+	private StudentSection				currentStudentSection;
 
 	@Resource
-	private StudentBean	studentBean;
+	private StudentBean					studentBean;
 
 	@Resource
-	private ViewContentHandlerBean	viewContentHandlerBean;
+	private ViewContentHandlerBean		viewContentHandlerBean;
 
 	/**
 	 * @return the reportType

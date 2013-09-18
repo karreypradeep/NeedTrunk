@@ -33,42 +33,42 @@
 				<reportElement uuid="b4fa1ef6-ad38-4e13-9dc5-8b7cbbb40b2b" mode="Opaque" x="0" y="0" width="224" height="20" backcolor="#E1E0A7"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Student Name]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="303c9687-b2ae-46e4-a83a-bf833f76617a" mode="Opaque" x="224" y="0" width="115" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Admission Number]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="d2dfc29b-de5d-4124-b940-379799442699" mode="Opaque" x="423" y="0" width="118" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Date of Birth]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="f2099eb9-aaa5-4f60-8f87-91785d635a09" mode="Opaque" x="541" y="0" width="76" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Gender]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="8d332e9d-a195-4db8-a080-1f2596d1ed15" mode="Opaque" x="617" y="0" width="93" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Residential Type]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="e00cd88a-89fa-4321-8b52-e14a98655068" mode="Opaque" x="339" y="0" width="84" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font size="12" isBold="true"/>
+					<font fontName="Arial" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ext Adm No]]></text>
 			</staticText>
@@ -85,7 +85,9 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{displayName}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -97,7 +99,9 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{admissionNr}]]></textFieldExpression>
 			</textField>
 			<textField pattern="MMMMM dd, yyyy">
@@ -109,7 +113,9 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{dateOfBirth}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -121,7 +127,9 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{gender}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -133,7 +141,9 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{residenceType}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -145,7 +155,9 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 					<rightPen lineWidth="0.0" lineStyle="Dashed"/>
 				</box>
-				<textElement verticalAlignment="Middle"/>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Arial"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{externalAdmissionNr}]]></textFieldExpression>
 			</textField>
 		</band>

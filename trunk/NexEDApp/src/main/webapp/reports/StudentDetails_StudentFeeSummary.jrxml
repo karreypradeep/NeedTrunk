@@ -39,49 +39,49 @@
 				<reportElement uuid="57649b5f-3a79-4f32-a8f2-f45613f0451f" mode="Opaque" x="0" y="0" width="150" height="20" backcolor="#E1E0A7"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Student Name]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="f2cef42f-bee4-479e-8aa8-0d3b98fcabc2" mode="Opaque" x="150" y="0" width="72" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Adm No]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="f4ff0b68-82e1-42fd-b11b-2e2b3d7e6648" mode="Opaque" x="479" y="0" width="78" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Total Fee]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="1e12aa98-9247-46ca-acd3-6c14359a688b" mode="Opaque" x="624" y="0" width="86" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fee Due]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="9c92cebf-346e-4c78-97f6-31a8cf63630f" mode="Opaque" x="557" y="0" width="67" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fee Paid]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="31cda318-0167-440c-93ef-19e900812544" mode="Opaque" x="222" y="0" width="50" height="20" backcolor="#E1E0A7"/>
 				<textElement verticalAlignment="Middle">
-					<font isBold="true"/>
+					<font fontName="Arial" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Ext Adm]]></text>
 			</staticText>
 			<staticText>
 				<reportElement uuid="793d3663-1b2a-4429-b0e3-ab10d0f66eea" mode="Opaque" x="272" y="0" width="116" height="20" forecolor="#000000" backcolor="#E1E0A7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Parent/Guardian]]></text>
@@ -89,7 +89,7 @@
 			<staticText>
 				<reportElement uuid="35215819-e833-4f19-a58b-de898e6e3340" mode="Opaque" x="388" y="0" width="91" height="20" forecolor="#000000" backcolor="#E1E0A7"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="Arial" size="10" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<text><![CDATA[Contact No]]></text>
@@ -104,7 +104,7 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{displayName}]]></textFieldExpression>
 			</textField>
@@ -114,7 +114,7 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{admissionNr}]]></textFieldExpression>
 			</textField>
@@ -124,7 +124,7 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{netFee}]]></textFieldExpression>
 			</textField>
@@ -134,7 +134,7 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{netFeeDue}]]></textFieldExpression>
 			</textField>
@@ -144,7 +144,7 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{netFeePaid}]]></textFieldExpression>
 			</textField>
@@ -154,7 +154,7 @@
 					<bottomPen lineWidth="0.25" lineStyle="Solid"/>
 				</box>
 				<textElement verticalAlignment="Middle">
-					<font size="8"/>
+					<font fontName="Arial" size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{externalAdmissionNr}]]></textFieldExpression>
 			</textField>
@@ -164,7 +164,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{parentOrGuardianName}]]></textFieldExpression>
@@ -175,7 +175,7 @@
 					<bottomPen lineWidth="0.25"/>
 				</box>
 				<textElement textAlignment="Left" verticalAlignment="Middle" rotation="None" markup="none">
-					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<font fontName="Arial" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
 					<paragraph lineSpacing="Single"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{contactNumber}]]></textFieldExpression>

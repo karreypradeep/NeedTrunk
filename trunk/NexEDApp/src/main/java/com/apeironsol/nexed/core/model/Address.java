@@ -166,15 +166,15 @@ public class Address extends BaseEntity implements Serializable {
 
 	public String getContactNumber() {
 		if (!StringUtils.isEmpty(this.mobileNr)) {
-			return this.mobileNr + " (M)";
+			return this.mobileNr;
 		}
 
 		if (!StringUtils.isEmpty(this.homePhoneNr)) {
-			return this.homePhoneNr + " (H)";
+			return this.homePhoneNr;
 		}
 
 		if (!StringUtils.isEmpty(this.officePhoneNr)) {
-			return this.officePhoneNr + " (O)";
+			return this.officePhoneNr;
 		}
 
 		return "";

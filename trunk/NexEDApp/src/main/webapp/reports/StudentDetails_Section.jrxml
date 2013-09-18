@@ -27,7 +27,7 @@
 				<reportElement uuid="c6f03655-bd99-4703-af5e-d64bc55af006" mode="Opaque" x="0" y="0" width="200" height="20"/>
 				<box leftPadding="3"/>
 				<textElement verticalAlignment="Middle">
-					<font fontName="Serif" size="12" isBold="true" isUnderline="false"/>
+					<font fontName="Arial" size="12" isBold="true" isUnderline="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Section: " + $F{section}.getName()]]></textFieldExpression>
 			</textField>

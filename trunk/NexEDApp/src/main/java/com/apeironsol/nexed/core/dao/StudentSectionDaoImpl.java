@@ -12,11 +12,11 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
+import com.apeironsol.framework.BaseDaoImpl;
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.nexed.core.model.StudentSection;
 import com.apeironsol.nexed.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.nexed.util.searchcriteria.StudentSearchCriteria;
-import com.apeironsol.framework.BaseDaoImpl;
-import com.apeironsol.framework.exception.BusinessException;
 
 @Repository("studentSectionDao")
 public class StudentSectionDaoImpl extends BaseDaoImpl<StudentSection> implements StudentSectionDao {
@@ -163,7 +163,7 @@ public class StudentSectionDaoImpl extends BaseDaoImpl<StudentSection> implement
 		queryString = queryString.append(" ss.studentSectionStatus in :stuSectionStatus ");
 		whereClasuseAdded = true;
 
-		if ((studentSearchCriteria.getName() != null) && !studentSearchCriteria.getName().trim().isEmpty()) {
+		if (studentSearchCriteria.getName() != null && !studentSearchCriteria.getName().trim().isEmpty()) {
 			if (!whereClasuseAdded) {
 				queryString = queryString.append(" where ");
 			} else {
@@ -177,7 +177,7 @@ public class StudentSectionDaoImpl extends BaseDaoImpl<StudentSection> implement
 			whereClasuseAdded = true;
 		}
 
-		if ((studentSearchCriteria.getAdmissionNumber() != null) && !studentSearchCriteria.getAdmissionNumber().trim().isEmpty()) {
+		if (studentSearchCriteria.getAdmissionNumber() != null && !studentSearchCriteria.getAdmissionNumber().trim().isEmpty()) {
 			if (!whereClasuseAdded) {
 				queryString = queryString.append(" where ");
 			} else {
@@ -191,7 +191,7 @@ public class StudentSectionDaoImpl extends BaseDaoImpl<StudentSection> implement
 			whereClasuseAdded = true;
 		}
 
-		if ((studentSearchCriteria.getRegistrationNumber() != null) && !studentSearchCriteria.getRegistrationNumber().trim().isEmpty()) {
+		if (studentSearchCriteria.getRegistrationNumber() != null && !studentSearchCriteria.getRegistrationNumber().trim().isEmpty()) {
 			if (!whereClasuseAdded) {
 				queryString = queryString.append(" where ");
 			} else {
@@ -298,12 +298,18 @@ public class StudentSectionDaoImpl extends BaseDaoImpl<StudentSection> implement
 	 */
 	@Override
 	public StudentSection findStudentSectionByStudentAcademicYearIdAndActiveStatus(final Long studentAcademicYearId) {
-		final TypedQuery<StudentSection> query = this.getEntityManager().createQuery(
-				"select s from StudentSection s where s.studentAcademicYear.id = :studentAcademicYearId and s.studentSectionStatus = :studentSectionStatus",
-				StudentSection.class);
-		query.setParameter("studentAcademicYearId", studentAcademicYearId);
-		query.setParameter("studentSectionStatus", StudentSectionStatusConstant.ACTIVE);
-		return query.getSingleResult();
+		try {
+			final TypedQuery<StudentSection> query = this
+					.getEntityManager()
+					.createQuery(
+							"select s from StudentSection s where s.studentAcademicYear.id = :studentAcademicYearId and s.studentSectionStatus = :studentSectionStatus",
+							StudentSection.class);
+			query.setParameter("studentAcademicYearId", studentAcademicYearId);
+			query.setParameter("studentSectionStatus", StudentSectionStatusConstant.ACTIVE);
+			return query.getSingleResult();
+		} catch (final NoResultException e) {
+			return null;
+		}
 	}
 
 	@Override

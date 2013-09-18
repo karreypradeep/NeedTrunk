@@ -3,7 +3,7 @@
  * SMSystem.
  * www.apeironsol.com
  * Copyright © 2012 apeironsol
- *
+ * 
  */
 package com.apeironsol.nexed.reporting.service;
 
@@ -46,9 +46,9 @@ import com.apeironsol.nexed.util.searchcriteria.StudentSearchCriteria;
 
 /**
  * Data access interface for supplier entity implementation.
- *
+ * 
  * @author sunny
- *
+ * 
  */
 @Service("studentReportService")
 @Transactional
@@ -107,23 +107,20 @@ public class StudentReportServiceImpl implements StudentReportService {
 			}
 			final SectionRO sectionRO = new SectionRO();
 			sectionRO.setSection(sectionFinancialDO.getSection());
-			if ((sectionFinancialDO.getStudentFinancialAcademicYearDOs() != null) && !sectionFinancialDO.getStudentFinancialAcademicYearDOs().isEmpty()) {
+			if (sectionFinancialDO.getStudentFinancialAcademicYearDOs() != null && !sectionFinancialDO.getStudentFinancialAcademicYearDOs().isEmpty()) {
 				for (final StudentFinancialAcademicYearDO studentFinancialAcademicYearDO : sectionFinancialDO.getStudentFinancialAcademicYearDOs()) {
 					final StudentRO studentRO = new StudentRO();
 
 					studentRO.setStudentAcademicYear(studentFinancialAcademicYearDO.getStudentSection().getStudentAcademicYear());
 
-					studentRO.setGender(genderConstants.get(studentFinancialAcademicYearDO.getStudentSection().getStudentAcademicYear().getStudent().getGender()));
+					studentRO.setGender(genderConstants.get(studentFinancialAcademicYearDO.getStudentSection().getStudentAcademicYear().getStudent()
+							.getGender()));
 
 					studentRO.setStudentFinancialAcademicYearDO(studentFinancialAcademicYearDO);
 
 					studentRO.setResidenceType(residenceTypeConstants.get(studentRO.getStudentAcademicYear().getStudent().getResidence()));
 
 					this.setParentOrGuardianName(studentRO.getStudentAcademicYear().getStudent(), studentRO);
-
-					StudentSection studentSection = this.studentService.findStudentSectionByStudentAcademicYearIdAndActiveStatus(studentRO.getStudentAcademicYear().getId());
-
-					studentRO.setStudentSection(studentSection);
 
 					sectionRO.addStudentRO(studentRO);
 				}
@@ -137,7 +134,7 @@ public class StudentReportServiceImpl implements StudentReportService {
 
 		if (branchRO.getKlassROList() != null) {
 			for (final KlassRO klassRO : branchRO.getKlassROList()) {
-				if ((klassRO.getClassFinancialDO() != null) && (klassRO.getClassFinancialDO().getSectionFinancialDOs() != null)) {
+				if (klassRO.getClassFinancialDO() != null && klassRO.getClassFinancialDO().getSectionFinancialDOs() != null) {
 					klassRO.getClassFinancialDO().calculateClassFee();
 					klassRO.getClassFinancialDO().setSectionFinancialDOs(null);
 				}
@@ -256,7 +253,7 @@ public class StudentReportServiceImpl implements StudentReportService {
 	 * object.
 	 * TODO Need to optimize code as we are hitting database for each and every
 	 * student.
-	 *
+	 * 
 	 * @param student
 	 *            student.
 	 * @param studentRO
@@ -308,7 +305,7 @@ public class StudentReportServiceImpl implements StudentReportService {
 
 	/**
 	 * Retrieve section for search criteria.
-	 *
+	 * 
 	 * @param branch
 	 *            branch.
 	 * @param studentSearchCriteria
