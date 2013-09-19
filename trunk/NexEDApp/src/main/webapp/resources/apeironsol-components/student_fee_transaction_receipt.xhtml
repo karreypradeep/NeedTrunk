@@ -96,8 +96,10 @@
 					value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionType.label} (#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionStatus.label } )" />
 			</p:column>
 			<p:column>
-				<h:outputLabel value="Payment method : " style="font-weight:bold;" />
-				<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}" />
+				<h:outputLabel value="Payment method : " style="font-weight:bold;"
+					rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}" />
+				<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}"
+					rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}" />
 			</p:column>
 			<c:if test="${cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod == 'CHEQUE'}">
 				<p:column>
