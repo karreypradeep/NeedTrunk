@@ -29,14 +29,14 @@
 					<reportElement uuid="69a90a60-4340-4060-aaa7-2a817d7ae232" x="0" y="5" width="150" height="20" forecolor="#F9F7F7"/>
 					<box leftPadding="3"/>
 					<textElement textAlignment="Left" verticalAlignment="Bottom">
-						<font fontName="Arial" size="16" isBold="true"/>
+						<font fontName="SansSerif" size="16" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{org_name}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement uuid="b462f504-9476-4151-b450-a8ada267050e" mode="Opaque" x="228" y="5" width="264" height="20" forecolor="#F9F7F7" backcolor="#177ECA"/>
 					<textElement textAlignment="Center" verticalAlignment="Bottom">
-						<font fontName="Arial" size="16" isBold="true" isUnderline="false"/>
+						<font fontName="SansSerif" size="16" isBold="true" isUnderline="false"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$P{branch_name}]]></textFieldExpression>
 				</textField>
@@ -48,7 +48,7 @@
 			<textField>
 				<reportElement uuid="96d52399-e624-4f7e-a691-ba30600cf2ae" x="246" y="8" width="229" height="20"/>
 				<textElement textAlignment="Center">
-					<font fontName="Arial" size="16" isBold="true" isUnderline="true"/>
+					<font fontName="SansSerif" size="16" isBold="true" isUnderline="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{report_title}]]></textFieldExpression>
 			</textField>
@@ -66,21 +66,21 @@
 				<textField>
 					<reportElement uuid="6547bca7-6b83-4c43-b92b-13132d8df197" x="609" y="3" width="80" height="20" forecolor="#F6EEEE"/>
 					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="Arial" isBold="true"/>
+						<font fontName="SansSerif" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA["Page "+$V{PAGE_NUMBER}+" of"]]></textFieldExpression>
 				</textField>
 				<textField evaluationTime="Report">
 					<reportElement uuid="d0f2b044-3d5f-4a39-a24a-c905ce59c5a5" x="690" y="3" width="29" height="20" forecolor="#F6EEEE"/>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" isBold="true"/>
+						<font fontName="SansSerif" isBold="true"/>
 					</textElement>
 					<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement uuid="36ae6151-7895-417f-9aa0-798fbc277ff8" x="230" y="2" width="261" height="20" forecolor="#F6EEEE"/>
 					<textElement verticalAlignment="Middle">
-						<font fontName="Arial" isBold="true"/>
+						<font fontName="SansSerif" isBold="true"/>
 					</textElement>
 					<text><![CDATA[All copyrights reserved to www.apeironsol.com]]></text>
 				</staticText>
