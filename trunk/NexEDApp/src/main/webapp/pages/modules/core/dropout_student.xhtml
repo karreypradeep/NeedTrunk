@@ -23,7 +23,7 @@
 
 		<p:commandButton value="Prepare for dropout" id="dropout_save1" process="@form" update="@form"
 			action="#{studentBean.processDropoutStudent()}" icon="ui-icon-circle-check"    
-			rendered="#{grantedAuthorityBean.userAllowedToAcceptForDropOutStudent and studentBean.student.studentStatus == 'ACTIVE' and studentBean.outstandingFeeDue }">
+			rendered="#{grantedAuthorityBean.userAllowedToAcceptForDropOutStudent and studentBean.student.studentStatus == 'ACTIVE'}">
 			<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 				value="#{studentBean.studentTabModel.personalTab}" />
 		</p:commandButton>

@@ -15,6 +15,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.nexed.academics.dao.ExamDao;
 import com.apeironsol.nexed.academics.dao.SectionExamDao;
 import com.apeironsol.nexed.academics.model.SectionExam;
@@ -30,8 +32,7 @@ import com.apeironsol.nexed.core.model.SectionTimetable;
 import com.apeironsol.nexed.core.model.StudentSection;
 import com.apeironsol.nexed.core.model.Subject;
 import com.apeironsol.nexed.core.portal.messages.BusinessMessages;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
+import com.apeironsol.nexed.util.searchcriteria.SectionSearchCriteria;
 
 /**
  * Service interface implementation for section.
@@ -69,6 +70,9 @@ public class SectionServiceImpl implements SectionService {
 
 	@Resource
 	private SectionExamService		sectionExamService;
+
+	@Resource
+	private KlassService			klassService;
 
 	/**
 	 * {@inheritDoc}
@@ -341,6 +345,18 @@ public class SectionServiceImpl implements SectionService {
 	@Override
 	public Collection<Section> findAllSectionsByKlassIdAndAcademicYearId(final Long klassId, final Long academicYearId) {
 		return this.sectionDao.findAllSectionsByKlassIdAndAcademicYearId(klassId, academicYearId);
+	}
+
+	@Override
+	public Collection<Section> findSectionsBySearchCriteria(final SectionSearchCriteria sectionSearchCriteria) {
+		Collection<Section> sections = null;
+		if (sectionSearchCriteria.getKlass() != null) {
+			sections = this.sectionDao.findAllSectionsByKlassIdAndAcademicYearId(sectionSearchCriteria.getKlass().getId(), sectionSearchCriteria
+					.getAcademicYear().getId());
+		} else {
+			sections = this.sectionDao.findAllSectionsByAcademicYearId(sectionSearchCriteria.getAcademicYear().getId());
+		}
+		return sections;
 	}
 
 }

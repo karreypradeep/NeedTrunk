@@ -10,12 +10,13 @@ package com.apeironsol.nexed.core.service;
 
 import java.util.Collection;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.nexed.academics.model.SectionExam;
 import com.apeironsol.nexed.core.model.AcademicYear;
 import com.apeironsol.nexed.core.model.Klass;
 import com.apeironsol.nexed.core.model.Section;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
+import com.apeironsol.nexed.util.searchcriteria.SectionSearchCriteria;
 
 /**
  * Service interface for section.
@@ -202,5 +203,17 @@ public interface SectionService {
 	 *         id.
 	 */
 	Collection<Section> findAllSectionsByKlassIdAndAcademicYearId(Long klassId, Long academicYearId);
+
+	/**
+	 * Find all active sections by class ids and academic year id.
+	 * 
+	 * @param klassIds
+	 *            class ids.
+	 * @param academicYearId
+	 *            academic year id.
+	 * @return collection of all active sections by class id and academic year
+	 *         id.
+	 */
+	Collection<Section> findSectionsBySearchCriteria(SectionSearchCriteria sectionSearchCriteria);
 
 }

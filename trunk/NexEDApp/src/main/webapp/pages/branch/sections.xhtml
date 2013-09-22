@@ -29,74 +29,82 @@
 				</p:toolbarGroup>
 			</p:toolbar>
 
-			<f:metadata>
-				<f:event type="preRenderView" listener="#{sectionBean.loadSections}" />
-			</f:metadata>
-
 			<p:panel style="margin-top:1px;">
-
+				<f:facet name="header">
+					<h:outputLabel value="#{msg.search_criteria}" style="font-size: 16px; font-weight:bold;" />
+				</f:facet>
 				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
 
-				<b>Sections Management module allows to manager sections and students in sections.</b>
-				<br />
-				<br />
-				<b>Flowing activities can be done on the section.</b>
+				<h:panelGrid columns="2" id="expense_type_grid" cellpadding="4" style="border:0px;"
+					columnClasses="column-vertical-align,column-vertical-align">
+					<p:outputLabel id="academic_year_label" value="#{msg.academicYear}" for="academic_year" />
+					<p:selectOneMenu id="academic_year" value="#{sectionBean.sectionSearchCriteria.academicYear}"
+						converter="academicYearConverter" style="width:165px;">
+						<f:selectItem itemLabel="Select academic year" itemValue="" />
+						<f:selectItems value="#{sectionBean.activeAcademicYears}" var="academicYear"
+							itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+						<p:ajax process="@this" />
+					</p:selectOneMenu>
 
-				<ul id="hintList_list" class="ui-datalist-data" type="disc">
-					<li class="ui-datalist-item">New section can be created by clicking <strong>"New section"</strong> button.
-						Existing section details can be viewed by clicking the <strong>"View"</strong> button
-					</li>
-					<li class="ui-datalist-item">Existing classes can be removed only if the classes state is in <strong>Development
-							and no students associated to the section.</strong></li>
-				</ul>
+					<p:outputLabel id="class_label" value="#{msg.class_students}" for="class" />
+					<p:selectOneMenu id="class" value="#{sectionBean.sectionSearchCriteria.klass}" converter="klassConverter"
+						style="width:165px;">
+						<f:selectItem itemLabel="Select class" itemValue="" />
+						<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
+					</p:selectOneMenu>
+				</h:panelGrid>
 
+				<p:commandButton id="expense_type_search_buton" value="#{msg.search}"
+					action="#{sectionBean.searchSectionsBySearchCriteria()}" update="@form" icon="ui-icon-search" />
+				<p:commandButton id="expense_type_reset" value="Reset" update="@form" action="#{sectionBean.resetSearchCriteria}"
+					process="@this" icon="ui-icon-refresh" />
+
+				<p:dataTable id="sections_datatable" var="section" value="#{sectionBean.sections}" paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
+
+
+					<p:column headerText="Section" sortBy="#{section.name}" filterBy="#{section.name}" filterMatchMode="contains">
+
+						<p:commandLink id="secNameLink" value="#{section.name}" action="#{sectionBean.viewSection}" title="View"
+							style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
+							<f:setPropertyActionListener value="#{section}" target="#{sectionBean.section}" />
+							<f:setPropertyActionListener target="#{sectionBean.loadAllAcademicYearsFlag}" value="true" />
+							<f:setPropertyActionListener target="#{sectionBean.loadKlassesFlag}" value="true" />
+							<f:setPropertyActionListener target="#{sectionBean.viewOrNewAction}" value="true" />
+							<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+								value="#{sectionBean.sectionTabModel.sectionTab}" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="Class" sortBy="#{section.klass.name}" filterBy="#{section.klass.name}"
+						filterMatchMode="contains">
+						<h:outputText value="#{section.klass.name}" />
+					</p:column>
+
+					<p:column headerText="Academic year" sortBy="#{section.academicYear.displayLabel}"
+						filterBy="#{section.academicYear.displayLabel}">
+						<h:outputText value="#{section.academicYear.displayLabel}" />
+					</p:column>
+
+					<p:column headerText="Active">
+
+						<center>
+							<h:outputText styleClass="ui-icon ui-icon-check" style="text-align: center;" rendered="#{section.active}" />
+						</center>
+
+					</p:column>
+
+					<p:column headerText="#{msg.options}" styleClass="options-column">
+						<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+							title="Delete" process="@this" onclick="confirmation.show()"
+							disabled="#{!grantedAuthorityBean.userAllowedToRemoveSection}">
+							<f:setPropertyActionListener value="#{section}" target="#{sectionBean.section}" />
+						</p:commandLink>
+					</p:column>
+
+				</p:dataTable>
 			</p:panel>
-
-			<p:dataTable id="sections_datatable" var="section" value="#{sectionBean.sections}" paginator="true" rows="10"
-				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
-
-
-				<p:column headerText="Section" sortBy="#{section.name}" filterBy="#{section.name}" filterMatchMode="contains">
-
-					<p:commandLink id="secNameLink" value="#{section.name}" action="#{sectionBean.viewSection}" title="View"
-						style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
-						<f:setPropertyActionListener value="#{section}" target="#{sectionBean.section}" />
-						<f:setPropertyActionListener target="#{sectionBean.loadAllAcademicYearsFlag}" value="true" />
-						<f:setPropertyActionListener target="#{sectionBean.loadKlassesFlag}" value="true" />
-						<f:setPropertyActionListener target="#{sectionBean.viewOrNewAction}" value="true" />
-						<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
-							value="#{sectionBean.sectionTabModel.sectionTab}" />
-					</p:commandLink>
-				</p:column>
-
-				<p:column headerText="Class" sortBy="#{section.klass.name}" filterBy="#{section.klass.name}"
-					filterMatchMode="contains">
-					<h:outputText value="#{section.klass.name}" />
-				</p:column>
-
-				<p:column headerText="Academic year" sortBy="#{section.academicYear.displayLabel}"
-					filterBy="#{section.academicYear.displayLabel}">
-					<h:outputText value="#{section.academicYear.displayLabel}" />
-				</p:column>
-
-				<p:column headerText="Active">
-
-					<center>
-						<h:outputText styleClass="ui-icon ui-icon-check" style="text-align: center;" rendered="#{section.active}" />
-					</center>
-
-				</p:column>
-
-				<p:column headerText="#{msg.options}" styleClass="options-column">
-					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
-						title="Delete" process="@this" onclick="confirmation.show()"
-						disabled="#{!grantedAuthorityBean.userAllowedToRemoveSection}">
-						<f:setPropertyActionListener value="#{section}" target="#{sectionBean.section}" />
-					</p:commandLink>
-				</p:column>
-
-			</p:dataTable>
 			<p:confirmDialog id="confirmDialog" message="Are you want to delete the section?" header="Confirmation"
 				severity="alert" widgetVar="confirmation">
 				<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"

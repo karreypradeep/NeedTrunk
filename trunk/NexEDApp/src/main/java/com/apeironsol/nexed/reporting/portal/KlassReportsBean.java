@@ -25,8 +25,9 @@ import org.primefaces.model.StreamedContent;
 import org.springframework.context.annotation.Scope;
 
 import com.apeironsol.nexed.core.model.Student;
-import com.apeironsol.nexed.core.model.StudentAcademicYear;
 import com.apeironsol.nexed.core.model.StudentAbsent;
+import com.apeironsol.nexed.core.model.StudentAcademicYear;
+import com.apeironsol.nexed.core.model.StudentSection;
 import com.apeironsol.nexed.core.portal.AbstractTabbedBean;
 import com.apeironsol.nexed.core.portal.SectionBean;
 import com.apeironsol.nexed.core.portal.SessionBean;
@@ -108,13 +109,13 @@ public class KlassReportsBean extends AbstractTabbedBean {
 		if (this.sectionReportType == null) {
 			FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please select report type to generate.",
 					"Please select report type to generate.");
-			addMessage(message);
+			this.addMessage(message);
 		} else {
 			try {
-				getGenerateStudentAdmissionReport();
+				this.getGenerateStudentAdmissionReport();
 			} catch (JRException e) {
 				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
-				addMessage(message);
+				this.addMessage(message);
 			}
 
 		}
@@ -125,18 +126,23 @@ public class KlassReportsBean extends AbstractTabbedBean {
 
 		this.sectionBean.setLoadStudentsForSectionFlag(true);
 		this.sectionBean.loadStudentsForSection();
-		Collection<Student> sectionStudents = this.sectionBean.getStudentsForSection();
+		Collection<Student> sectionStudents = new ArrayList<Student>();
+		if (this.sectionBean.getStudentsForSection() != null) {
+			for (StudentSection studentSection : this.sectionBean.getStudentsForSection()) {
+				sectionStudents.add(studentSection.getStudentAcademicYear().getStudent());
+			}
+		}
 		List<StudentReportBean> studentReportBeans = new ArrayList<StudentReportBean>();
-		if (SectionReportsConstant.ATTENDANCE_REPORT.equals(getSectionReportType())) {
-			studentReportBeans = loadSectionStudentsAttendanceReportDetails(sectionStudents);
-		} else if (SectionReportsConstant.FINANCIAL_REPORT.equals(getSectionReportType())) {
-			studentReportBeans = loadSectionStudentsFinancialReportDetails(sectionStudents);
+		if (SectionReportsConstant.ATTENDANCE_REPORT.equals(this.getSectionReportType())) {
+			studentReportBeans = this.loadSectionStudentsAttendanceReportDetails(sectionStudents);
+		} else if (SectionReportsConstant.FINANCIAL_REPORT.equals(this.getSectionReportType())) {
+			studentReportBeans = this.loadSectionStudentsFinancialReportDetails(sectionStudents);
 		}
 
 		final JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(studentReportBeans);
 		StreamedContent file;
 		SectionReportParameterBean adRoPaBean = new SectionReportParameterBean();
-		adRoPaBean.setSectionReportsConstant(getSectionReportType());
+		adRoPaBean.setSectionReportsConstant(this.getSectionReportType());
 		adRoPaBean.setAcademicYear(this.sectionBean.getAcademicYearById(this.sectionBean.getAcademicYearId()).getDisplayLabel());
 		adRoPaBean.setClassName(this.sectionBean.getSection().getKlass().getName());
 		adRoPaBean.setSectioName(this.sectionBean.getSection().getName());
@@ -175,7 +181,7 @@ public class KlassReportsBean extends AbstractTabbedBean {
 	 */
 	private List<StudentReportBean> loadSectionStudentsAttendanceReportDetails(final Collection<Student> sectionStudents) {
 		List<StudentReportBean> studentReportBeans = new ArrayList<StudentReportBean>();
-		int totalNoOfDays = getNoOfAttendanceDaysForCurrentBranchAndAcademisYearById(this.sectionBean.getAcademicYearId());
+		int totalNoOfDays = this.getNoOfAttendanceDaysForCurrentBranchAndAcademisYearById(this.sectionBean.getAcademicYearId());
 		for (Student student : sectionStudents) {
 			StudentAcademicYear studentAcademicYear = this.studentAcademicYearService.findStudentAcademicYearByStudentIdAndAcademicYearId(student.getId(),
 					this.sectionBean.getAcademicYearId());

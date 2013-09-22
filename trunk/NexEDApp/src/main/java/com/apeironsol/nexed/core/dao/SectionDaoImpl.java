@@ -13,8 +13,8 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-import com.apeironsol.nexed.core.model.Section;
 import com.apeironsol.framework.BaseDaoImpl;
+import com.apeironsol.nexed.core.model.Section;
 
 /**
  * Data access interface for course implementation entity.
@@ -107,6 +107,15 @@ public class SectionDaoImpl extends BaseDaoImpl<Section> implements SectionDao {
 		TypedQuery<Section> query = this.getEntityManager().createQuery(
 				"select s from Section s where s.klass.id = :klassId and s.academicYear.id = :academicYearId", Section.class);
 		query.setParameter("klassId", klassId);
+		query.setParameter("academicYearId", academicYearId);
+		return query.getResultList();
+	}
+
+	@Override
+	public Collection<Section> findAllSectionsByKlassIdsAndAcademicYearId(final Collection<Long> klassIds, final Long academicYearId) {
+		TypedQuery<Section> query = this.getEntityManager().createQuery(
+				"select s from Section s where s.klass.id in :klassIds and s.academicYear.id = :academicYearId", Section.class);
+		query.setParameter("klassIds", klassIds);
 		query.setParameter("academicYearId", academicYearId);
 		return query.getResultList();
 	}

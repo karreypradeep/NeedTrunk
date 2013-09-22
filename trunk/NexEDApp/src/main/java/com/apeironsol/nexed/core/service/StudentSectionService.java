@@ -9,6 +9,7 @@ package com.apeironsol.nexed.core.service;
 
 import java.util.Collection;
 
+import com.apeironsol.nexed.core.model.Section;
 import com.apeironsol.nexed.core.model.StudentSection;
 import com.apeironsol.nexed.util.constants.StudentSectionStatusConstant;
 
@@ -59,4 +60,13 @@ public interface StudentSectionService {
 	 * @return
 	 */
 	Collection<StudentSection> findStudentSectionsByStudentAcademicYearId(final Long studentAcademicYearId);
+
+	/**
+	 * Find student sections by student academic year.
+	 * 
+	 * @param studentAcademicYearId
+	 *            student academic year id.
+	 * @return
+	 */
+	Collection<StudentSection> findStudentStudentSectionStatusAndSection(final StudentSectionStatusConstant studentSectionStatus, final Section section);
 }

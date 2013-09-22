@@ -22,12 +22,15 @@ import javax.inject.Named;
 import org.primefaces.event.DragDropEvent;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.nexed.core.model.AcademicYear;
 import com.apeironsol.nexed.core.model.Branch;
 import com.apeironsol.nexed.core.model.Klass;
 import com.apeironsol.nexed.core.model.Section;
 import com.apeironsol.nexed.core.model.SectionSubject;
 import com.apeironsol.nexed.core.model.Student;
+import com.apeironsol.nexed.core.model.StudentSection;
 import com.apeironsol.nexed.core.model.Subject;
 import com.apeironsol.nexed.core.portal.util.ViewContentHandlerBean;
 import com.apeironsol.nexed.core.service.SectionService;
@@ -36,12 +39,12 @@ import com.apeironsol.nexed.core.service.StudentSectionService;
 import com.apeironsol.nexed.core.service.StudentService;
 import com.apeironsol.nexed.core.service.SubjectService;
 import com.apeironsol.nexed.util.constants.GenderConstant;
+import com.apeironsol.nexed.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.nexed.util.constants.ViewContentConstant;
 import com.apeironsol.nexed.util.portal.SectionTabModel;
 import com.apeironsol.nexed.util.portal.ViewExceptionHandler;
 import com.apeironsol.nexed.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
-import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.nexed.util.searchcriteria.SectionSearchCriteria;
 
 @Named
 @Scope("session")
@@ -50,67 +53,98 @@ public class SectionBean extends AbstractKlassBean {
 	/**
 	 * Unique serial version id for this class.
 	 */
-	private static final long			serialVersionUID	= -6282397725805720672L;
+	private static final long				serialVersionUID							= -6282397725805720672L;
 
 	@Resource
-	private SectionService				sectionService;
+	private SectionService					sectionService;
 
 	@Resource
-	private StudentService				studentService;
+	private StudentService					studentService;
 
 	@Resource
-	private KlassBean					klassBean;
+	private KlassBean						klassBean;
 
 	@Resource
-	private SubjectService				subjectService;
+	private SubjectService					subjectService;
 
 	@Resource
-	private ViewContentHandlerBean		viewContentHandlerBean;
+	private ViewContentHandlerBean			viewContentHandlerBean;
 
 	@Resource
-	private StudentBean					studentBean;
+	private StudentBean						studentBean;
 
 	@Resource
-	private StudentSectionService		studentSectionService;
+	private StudentSectionService			studentSectionService;
 
-	private Section						section;
+	private Section							section;
 
-	private Collection<Section>			sections;
+	private Collection<Section>				sections;
 
-	private Long						klassId;
+	private Long							klassId;
 
-	private boolean						loadSectionsFlag;
+	private boolean							loadSectionsFlag;
 
-	private boolean						loadSectionsForKlassFlag;
+	private boolean							loadSectionsForKlassFlag;
 
-	private Collection<Student>			studentsForSection;
+	private Collection<StudentSection>		studentsForSection;
 
-	private boolean						loadStudentsForSectionFlag;
+	private boolean							loadStudentsForSectionFlag;
 
-	private boolean						loadUnassignedKlassSubjectsForSectionFlag;
+	private boolean							loadUnassignedKlassSubjectsForSectionFlag;
 
-	private Collection<Subject>			unassignedKlassSubjectsForSection;
+	private Collection<Subject>				unassignedKlassSubjectsForSection;
 
-	private boolean						loadSectionSubjectsFlag;
+	private boolean							loadSectionSubjectsFlag;
 
-	private Collection<SectionSubject>	sectionSubjects		= new ArrayList<SectionSubject>();
+	private Collection<SectionSubject>		sectionSubjects								= new ArrayList<SectionSubject>();
 
-	private SectionSubject				sectionSubject;
+	private SectionSubject					sectionSubject;
 
 	@Resource
-	SectionSubjectService				sectionSubjectService;
+	SectionSubjectService					sectionSubjectService;
 
-	private Student						slectedStudentForDisplay;
+	private Student							slectedStudentForDisplay;
 
-	private SectionTabModel				sectionTabModel		= new SectionTabModel();
+	private SectionTabModel					sectionTabModel								= new SectionTabModel();
 
-	private int							numberOfBoysInSection;
+	private int								numberOfBoysInSection;
 
-	private int							numberOfGirlsInSection;
+	private int								numberOfGirlsInSection;
+
+	private SectionSearchCriteria			sectionSearchCriteria						= null;
+
+	private StudentSectionStatusConstant	studentSectionStatusConstantForSecStudents	= null;
+
+	/**
+	 * @return the sectionSearchCriteria
+	 */
+	public SectionSearchCriteria getSectionSearchCriteria() {
+		return this.sectionSearchCriteria;
+	}
+
+	/**
+	 * @param sectionSearchCriteria
+	 *            the sectionSearchCriteria to set
+	 */
+	public void setSectionSearchCriteria(final SectionSearchCriteria sectionSearchCriteria) {
+		this.sectionSearchCriteria = sectionSearchCriteria;
+	}
+
+	public String resetSearchCriteria() {
+		this.sectionSearchCriteria.resetSeacrhCriteria();
+		return null;
+	}
+
+	public void initializeSearchCriteria() {
+		if (this.sectionSearchCriteria == null) {
+			this.sectionSearchCriteria = new SectionSearchCriteria(this.sessionBean.getCurrentBranch());
+		}
+	}
 
 	@PostConstruct
 	public void init() {
 		this.section = new Section();
+		this.initializeSearchCriteria();
 	}
 
 	public Section getSection() {
@@ -192,9 +226,11 @@ public class SectionBean extends AbstractKlassBean {
 			if (this.loadStudentsForSectionFlag) {
 				this.numberOfBoysInSection = 0;
 				this.numberOfGirlsInSection = 0;
-				this.studentsForSection = this.studentService.findActiveStudentsBySectionId(this.section.getId());
-				for (Student student : this.studentsForSection) {
-					if (GenderConstant.MALE.equals(student.getGender())) {
+				this.studentsForSection = this.studentSectionService.findStudentStudentSectionStatusAndSection(StudentSectionStatusConstant.ACTIVE,
+						this.getSection());
+				this.studentService.findActiveStudentsBySectionId(this.section.getId());
+				for (StudentSection studentSection : this.studentsForSection) {
+					if (GenderConstant.MALE.equals(studentSection.getStudentAcademicYear().getStudent().getGender())) {
 						this.numberOfBoysInSection++;
 					} else {
 						this.numberOfGirlsInSection++;
@@ -254,11 +290,11 @@ public class SectionBean extends AbstractKlassBean {
 		this.loadStudentsForSectionFlag = loadStudentsForSectionFlag;
 	}
 
-	public Collection<Student> getStudentsForSection() {
+	public Collection<StudentSection> getStudentsForSection() {
 		return this.studentsForSection;
 	}
 
-	public void setStudentsForSection(final Collection<Student> studentsForSection) {
+	public void setStudentsForSection(final Collection<StudentSection> studentsForSection) {
 		this.studentsForSection = studentsForSection;
 	}
 
@@ -463,6 +499,54 @@ public class SectionBean extends AbstractKlassBean {
 	 */
 	public void setNumberOfGirlsInSection(final int numberOfGirlsInSection) {
 		this.numberOfGirlsInSection = numberOfGirlsInSection;
+	}
+
+	/**
+	 * @param sections
+	 *            the sections to set
+	 */
+	public void setSections(final Collection<Section> sections) {
+		this.sections = sections;
+	}
+
+	public String searchSectionsBySearchCriteria() {
+
+		if (this.sectionSearchCriteria.getAcademicYear() == null) {
+			ViewUtil.addMessage("Please select Academic year.", FacesMessage.SEVERITY_ERROR);
+		} else {
+			this.sectionSearchCriteria.setBranch(this.sessionBean.getCurrentBranch());
+			this.setSections(this.sectionService.findSectionsBySearchCriteria(this.sectionSearchCriteria));
+			if (this.getSections() == null || this.getSections().isEmpty()) {
+				ViewUtil.addMessage("No Sections found for entered search criteria..", FacesMessage.SEVERITY_INFO);
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * @return the studentSectionStatusConstantForSecStudents
+	 */
+	public StudentSectionStatusConstant getStudentSectionStatusConstantForSecStudents() {
+		return this.studentSectionStatusConstantForSecStudents;
+	}
+
+	/**
+	 * @param studentSectionStatusConstantForSecStudents
+	 *            the studentSectionStatusConstantForSecStudents to set
+	 */
+	public void setStudentSectionStatusConstantForSecStudents(final StudentSectionStatusConstant studentSectionStatusConstantForSecStudents) {
+		this.studentSectionStatusConstantForSecStudents = studentSectionStatusConstantForSecStudents;
+	}
+
+	public String searchSectionStudentsByStatus() {
+
+		if (this.studentSectionStatusConstantForSecStudents == null) {
+			ViewUtil.addMessage("Please select student status.", FacesMessage.SEVERITY_ERROR);
+		} else {
+			this.studentsForSection = this.studentSectionService.findStudentStudentSectionStatusAndSection(this.studentSectionStatusConstantForSecStudents,
+					this.getSection());
+		}
+		return null;
 	}
 
 }

@@ -66,7 +66,7 @@
 
 	<h:panelGrid columns="1" cellpadding="0" width="100%">
 
-		<h:panelGrid columns="3" cellspacing="10" cellpadding="2" width="100%">
+		<h:panelGrid columns="2" cellspacing="10" cellpadding="2" width="100%">
 
 			<p:column>
 				<h:outputLabel value="Admission Number : " style="font-weight:bold;" />
@@ -83,35 +83,28 @@
 				<h:outputLabel value="#{cc.attrs.parentName}" />
 			</p:column>
 			<p:column>
-				<h:outputLabel value="Class : " style="font-weight:bold;" />
-				<h:outputLabel value=" #{cc.attrs.className}" />
+				<h:outputLabel value="Class/Section : " style="font-weight:bold;" />
+				<h:outputLabel value=" #{cc.attrs.className} / #{cc.attrs.sectionName}" />
 			</p:column>
-			<p:column>
-				<h:outputLabel value="Section : " style="font-weight:bold;" />
-				<h:outputLabel value="#{cc.attrs.sectionName}" />
-			</p:column>
+
 			<p:column>
 				<h:outputLabel value="Transaction Type : " style="font-weight:bold;" />
 				<h:outputLabel
 					value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionType.label} (#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionStatus.label } )" />
 			</p:column>
-			<p:column>
-				<h:outputLabel value="Payment method : " style="font-weight:bold;"
-					rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}" />
-				<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}"
-					rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}" />
+			<p:column rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}">
+				<h:outputLabel value="Payment method : " style="font-weight:bold;" />
+				<c:choose>
+					<c:when  test="${cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod == 'CHEQUE'}">
+						<h:outputLabel
+							value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}/#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.chequeNumber}/#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.bankName} / #{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.bankBranch}" />
+					</c:when>
+					<c:otherwise>
+						<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}"
+							rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}" />
+					</c:otherwise>
+				</c:choose>
 			</p:column>
-			<c:if test="${cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod == 'CHEQUE'}">
-				<p:column>
-					<h:outputLabel value="Check number : " style="font-weight:bold;" />
-					<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.chequeNumber}" />
-				</p:column>
-				<p:column>
-					<h:outputLabel value="Bank Name : " style="font-weight:bold;" />
-					<h:outputLabel
-						value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.bankName / cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.bankBranch}" />
-				</p:column>
-			</c:if>
 		</h:panelGrid>
 
 		<h:dataTable value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransactionDetailsDOs}"

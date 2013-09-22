@@ -9,8 +9,8 @@ package com.apeironsol.nexed.core.dao;
 
 import java.util.Collection;
 
-import com.apeironsol.nexed.core.model.Section;
 import com.apeironsol.framework.BaseDao;
+import com.apeironsol.nexed.core.model.Section;
 
 /**
  * Data access interface for course entity.
@@ -102,4 +102,6 @@ public interface SectionDao extends BaseDao<Section> {
 	 *         id.
 	 */
 	Collection<Section> findAllSectionsByKlassIdAndAcademicYearId(Long klassId, Long academicYearId);
+
+	Collection<Section> findAllSectionsByKlassIdsAndAcademicYearId(final Collection<Long> klassIds, final Long academicYearId);
 }

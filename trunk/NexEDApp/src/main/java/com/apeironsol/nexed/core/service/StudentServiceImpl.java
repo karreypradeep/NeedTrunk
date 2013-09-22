@@ -25,6 +25,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.nexed.core.dao.AddressDao;
 import com.apeironsol.nexed.core.dao.EducationHistoryDao;
 import com.apeironsol.nexed.core.dao.RelationDao;
@@ -46,8 +48,6 @@ import com.apeironsol.nexed.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.nexed.util.constants.StudentStatusConstant;
 import com.apeironsol.nexed.util.portal.ViewUtil;
 import com.apeironsol.nexed.util.searchcriteria.StudentSearchCriteria;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 @Service("studentService")
 @Transactional
@@ -202,7 +202,7 @@ public class StudentServiceImpl implements StudentService {
 	public Collection<StudentSection> findActiveStudentSectionsForAcademicYearId(final Long academicYearId) throws BusinessException {
 		Collection<StudentSection> totalActiveStudentSections = null;
 		final Collection<Section> totalActiveSections = this.sectionService.findAllSectionsByAcademicYearIdAndStatus(academicYearId, true);
-		if ((totalActiveSections != null) && !totalActiveSections.isEmpty()) {
+		if (totalActiveSections != null && !totalActiveSections.isEmpty()) {
 			final List<Long> sectionIds = new ArrayList<Long>();
 			for (final Section activeSection : totalActiveSections) {
 				sectionIds.add(activeSection.getId());
@@ -277,7 +277,7 @@ public class StudentServiceImpl implements StudentService {
 
 	@Override
 	public boolean isActiveStudentsForBranchId(final Long branchId) {
-		return (this.studentDao.findActiveStudentsCountForBranchId(branchId) != null) && (this.studentDao.findActiveStudentsCountForBranchId(branchId) > 0) ? true
+		return this.studentDao.findActiveStudentsCountForBranchId(branchId) != null && this.studentDao.findActiveStudentsCountForBranchId(branchId) > 0 ? true
 				: false;
 	}
 
@@ -327,16 +327,16 @@ public class StudentServiceImpl implements StudentService {
 
 		this.studentSectionDao.persist(studentSection);
 
-		this.createStudentStatusHistory(actionComment, studentLocal);
+		this.createStudentStatusHistory("Accept for dropout", actionComment, studentLocal);
 
 		return studentLocal;
 	}
 
-	private void createStudentStatusHistory(final String actionComment, final Student studentLocal) {
+	private void createStudentStatusHistory(final String action, final String actionComment, final Student studentLocal) {
 		final StudentStatusHistory studentStatusHistory = new StudentStatusHistory();
 		studentStatusHistory.setActionTakenTime(new Timestamp(DateUtil.getSystemDate().getTime()));
 		studentStatusHistory.setActionTakenBy(ViewUtil.getPrincipal());
-		studentStatusHistory.setAction("Accept for dropout");
+		studentStatusHistory.setAction(action);
 		studentStatusHistory.setStudent(studentLocal);
 		studentStatusHistory.setComments(actionComment);
 		this.studentStatusHistoryDao.persist(studentStatusHistory);
@@ -366,7 +366,7 @@ public class StudentServiceImpl implements StudentService {
 
 		this.studentSectionDao.persist(studentSection);
 
-		this.createStudentStatusHistory(actionComment, studentLocal);
+		this.createStudentStatusHistory("Drop out", actionComment, studentLocal);
 
 		return studentLocal;
 
@@ -402,7 +402,7 @@ public class StudentServiceImpl implements StudentService {
 
 		this.studentSectionDao.persist(studentSection);
 
-		this.createStudentStatusHistory(actionComment, studentLocal);
+		this.createStudentStatusHistory("Roll back Drop Out", actionComment, studentLocal);
 
 		return studentLocal;
 

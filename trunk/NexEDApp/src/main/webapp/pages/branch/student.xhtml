@@ -21,9 +21,10 @@
 			<ui:include src="/pages/modules/core/dropout_student.xhtml" />
 		</c:when>
 
-		<c:when test="#{studentBean.studentCurrentAction != null and studentBean.studentCurrentAction == 'ROLLBACK_DROPOUT_STUDENT'}">
+		<c:when
+			test="#{studentBean.studentCurrentAction != null and studentBean.studentCurrentAction == 'ROLLBACK_DROPOUT_STUDENT'}">
 			<ui:include src="/pages/modules/core/rollback_dropout_student.xhtml" />
-		</c:when>  
+		</c:when>
 
 		<c:when test="#{studentBean.studentCurrentAction != null and studentBean.studentCurrentAction == 'TERMINATE_STUDENT'}">
 			<ui:include src="/pages/modules/core/terminate_student.xhtml" />
@@ -118,7 +119,7 @@
 
 						<p:menuitem value="Dropout Student" process="@this" update="@form" style="width:160px" icon="ui-icon-clipboard"
 							actionListener="#{studentBean.dropoutStudentAction()}"
-							rendered="#{grantedAuthorityBean.userAllowedToAcceptForDropOutStudent || grantedAuthorityBean.userAllowedToDropOutStudent}">
+							rendered="#{(grantedAuthorityBean.userAllowedToAcceptForDropOutStudent || grantedAuthorityBean.userAllowedToDropOutStudent)  and (studentBean.student.studentStatus == 'ACCEPT_FOR_DROPOUT' || studentBean.student.studentStatus == 'ACTIVE') }">
 							<f:setPropertyActionListener target="#{studentBean.actionComment}" value="" />
 						</p:menuitem>
 

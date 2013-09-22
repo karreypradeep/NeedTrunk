@@ -53,6 +53,7 @@ import com.apeironsol.nexed.util.constants.StudentFeeTransactionStatusConstant;
 import com.apeironsol.nexed.util.constants.StudentFeeTransactionTypeConstant;
 import com.apeironsol.nexed.util.constants.StudentPocketMoneyTransactionTypeConstant;
 import com.apeironsol.nexed.util.constants.StudentReportNamesConstant;
+import com.apeironsol.nexed.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.nexed.util.constants.StudentStatusConstant;
 import com.apeironsol.nexed.util.constants.UserAccountTypeConstant;
 import com.apeironsol.nexed.util.constants.WeekDayConstant;
@@ -208,6 +209,10 @@ public class EnumConstantsBean implements Serializable {
 				StudentStatusConstant.ACCEPT_FOR_DROPOUT, StudentStatusConstant.DROPOUT };
 		return result;
 
+	}
+
+	public StudentSectionStatusConstant[] getStudentSectionStatusConstants() {
+		return StudentSectionStatusConstant.values();
 	}
 
 	public StudentAdditionalFeeTypeConstant[] getStudentAdditionalFeeTypes() {
