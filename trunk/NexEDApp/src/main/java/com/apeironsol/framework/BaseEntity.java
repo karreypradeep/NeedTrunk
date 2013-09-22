@@ -24,8 +24,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.Version;
 
-import com.apeironsol.nexed.util.DateUtil;
-import com.apeironsol.nexed.util.portal.ViewUtil;
+import com.apeironsol.need.util.DateUtil;
+import com.apeironsol.need.util.portal.ViewUtil;
 import com.apeironsol.framework.exception.InvalidArgumentException;
 
 @MappedSuperclass

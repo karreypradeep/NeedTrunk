@@ -46,9 +46,9 @@
 		<jms:listener destination="emailDeadLetterDestination" ref="emailDeadLetterConsumerMDP" method="onMessage" />
 	</jms:listener-container> 
 
-	<bean id="emailConsumerMDP" class="com.apeironsol.nexed.notifications.consumers.email.EmailConsumer" />
+	<bean id="emailConsumerMDP" class="com.apeironsol.need.notifications.consumers.email.EmailConsumer" />
 
-	<bean id="emailDeadLetterConsumerMDP" class="com.apeironsol.nexed.notifications.consumers.email.EmailDeadLetterConsumer" />
+	<bean id="emailDeadLetterConsumerMDP" class="com.apeironsol.need.notifications.consumers.email.EmailDeadLetterConsumer" />
 
 	<!-- END JMS Configurations for StudentFeeEmailNotificationQueue -->
 
@@ -83,9 +83,9 @@
 		<jms:listener destination="smsDestinationDeadLetter" ref="smsDeadLetterConsumerMDP" method="onMessage" />
 	</jms:listener-container> 
 
-	<bean id="smsConsumerMDP" class="com.apeironsol.nexed.notifications.consumers.sms.SMSConsumer" />
+	<bean id="smsConsumerMDP" class="com.apeironsol.need.notifications.consumers.sms.SMSConsumer" />
 
-	<bean id="smsDeadLetterConsumerMDP" class="com.apeironsol.nexed.notifications.consumers.sms.SMSDeadLetterConsumer" />
+	<bean id="smsDeadLetterConsumerMDP" class="com.apeironsol.need.notifications.consumers.sms.SMSDeadLetterConsumer" />
 
 	<!-- END JMS Configurations for StudentFeeEmailNotificationQueue -->
 

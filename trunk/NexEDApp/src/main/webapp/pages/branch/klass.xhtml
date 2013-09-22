@@ -26,12 +26,13 @@
 		</p:menuitem>
 
 		<p:menuitem value="Fees collected" icon="ui-icon-note" action="#{klassFeesCollectedBean.onTabChange}" process="@this"
-			update="@form" disabled="#{klassBean.disableSubTab or !klassBean.klass.active or !grantedAuthorityBean.userAllowedToAccessFeeCollected}">
+			update="@form"
+			disabled="#{klassBean.disableSubTab or !klassBean.klass.active or !grantedAuthorityBean.userAllowedToAccessFeeCollected}">
 			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="4" />
 		</p:menuitem>
 
 		<p:menuitem value="Notifications" icon="ui-icon-note" action="#{klassNotificationsBean.onTabChange}" process="@this"
-			update="@form" disabled="#{klassBean.disableSubTab}" >
+			update="@form" disabled="#{klassBean.disableSubTab}">
 			<f:setPropertyActionListener target="#{klassBean.activeTabIndex}" value="5" />
 		</p:menuitem>
 
@@ -42,13 +43,13 @@
 
 
 	</p:tabMenu>
-		
+
 	<c:if test="#{not empty klassBean.klass.name}">
 		<div class="ui-apeironsol-menu-header">
 			<h:outputText value="Class: #{klassBean.klass.name}" />
 		</div>
-	</c:if>	
-	
+	</c:if>
+
 	<p:panel id="klass_panel">
 		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
 		<c:if test="#{klassBean.activeTabIndex == 0}">
@@ -101,7 +102,7 @@
 
 		</c:if>
 
-		<c:if test="#{klassBean.activeTabIndex == 1}" >
+		<c:if test="#{klassBean.activeTabIndex == 1}">
 
 			<ui:include src="/pages/modules/financial/klass_fee_summary.xhtml" />
 
@@ -127,7 +128,15 @@
 				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
 
 				<p:column headerText="Section" sortBy="#{section.name}" filterBy="#{section.name}" filterMatchMode="contains">
-					<h:outputText value="#{section.name}" />
+					<p:commandLink id="viewButton" action="#{sectionBean.viewSection}" title="View section"
+						style="margin:0px 0px 0px;float:left;" process="@this" update="@form" value="#{section.name}">
+						<f:setPropertyActionListener value="#{section}" target="#{sectionBean.section}" />
+						<f:setPropertyActionListener target="#{sectionBean.loadAllAcademicYearsFlag}" value="true" />
+						<f:setPropertyActionListener target="#{sectionBean.loadKlassesFlag}" value="true" />
+						<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
+							value="#{sectionBean.sectionTabModel.sectionTab}" />
+						<f:setPropertyActionListener target="#{sectionBean.viewOrNewAction}" value="true" />
+					</p:commandLink>
 				</p:column>
 
 				<p:column headerText="Academic year" sortBy="#{section.academicYear.displayLabel}"
@@ -143,16 +152,6 @@
 
 				</p:column>
 
-				<p:column headerText="#{msg.options}" styleClass="options-column">
-					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" action="#{sectionBean.viewSection}"
-						title="View section" style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
-						<f:setPropertyActionListener value="#{section}" target="#{sectionBean.section}" />
-						<f:setPropertyActionListener target="#{sectionBean.loadAllAcademicYearsFlag}" value="true" />
-						<f:setPropertyActionListener target="#{sectionBean.loadKlassesFlag}" value="true" />
-						<f:setPropertyActionListener target="#{sectionBean.activeTabIndex}" value="0" />
-						<f:setPropertyActionListener target="#{sectionBean.viewOrNewAction}" value="true" />
-					</p:commandLink>
-				</p:column>
 			</p:dataTable>
 		</c:if>
 

@@ -39,7 +39,11 @@
 
 		<p:column headerText="Student name" sortBy="#{studentSection.studentAcademicYear.student.displayName}"
 			filterBy="#{studentSection.studentAcademicYear.student.displayName}" filterMatchMode="contains">
-			<h:outputText value="#{studentSection.studentAcademicYear.student.displayName}" />
+			<p:commandLink id="viewLink" value="#{studentSection.studentAcademicYear.student.displayName}" title="View"
+				style="margin:0px 0px 0px;" process="@this" update="@form" action="#{sectionBean.viewStudent()}">
+				<f:setPropertyActionListener value="#{studentSection.studentAcademicYear.student}"
+					target="#{sectionBean.slectedStudentForDisplay}" />
+			</p:commandLink>
 		</p:column>
 
 		<p:column headerText="Admission number" sortBy="#{studentSection.studentAcademicYear.student.admissionNr}"
@@ -65,13 +69,7 @@
 			<h:outputText value="#{studentSection.studentAcademicYear.student.gender.label}" />
 		</p:column>
 
-		<p:column headerText="Options" style="width:25px;">
-			<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" title="View"
-				style="margin:0px 0px 0px;float:right;" process="@this" update="@form" action="#{sectionBean.viewStudent()}">
-				<f:setPropertyActionListener value="#{studentSection.studentAcademicYear.student}"
-					target="#{sectionBean.slectedStudentForDisplay}" />
-			</p:commandLink>
-		</p:column>
+
 
 	</p:dataTable>
 </ui:composition>

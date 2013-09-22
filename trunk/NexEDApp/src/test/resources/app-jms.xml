@@ -7,7 +7,7 @@
 	http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd">
 
 	<bean id="notificationService" class="org.easymock.EasyMock" factory-method="createMock">
-		<constructor-arg index="0" value="com.apeironsol.nexed.notifications.service.NotificationService" />
+		<constructor-arg index="0" value="com.apeironsol.need.notifications.service.NotificationService" />
 	</bean>
 
 	<bean id="emailConsumer" class="org.easymock.EasyMock" factory-method="createMock">

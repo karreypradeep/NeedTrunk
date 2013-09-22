@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><entities>
 	<entity>
-		<entity-name>com.apeironsol.nexed.transportation.model.VehicleRoute</entity-name>
+		<entity-name>com.apeironsol.need.transportation.model.VehicleRoute</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>70</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -11,7 +11,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.transportation.model.Vehicle</entity-name>
+		<entity-name>com.apeironsol.need.transportation.model.Vehicle</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -22,7 +22,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.security.model.UserGroupAuthority</entity-name>
+		<entity-name>com.apeironsol.need.security.model.UserGroupAuthority</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>108</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -33,7 +33,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.security.model.UserGroup</entity-name>
+		<entity-name>com.apeironsol.need.security.model.UserGroup</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -44,7 +44,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.security.model.UserAccount</entity-name>
+		<entity-name>com.apeironsol.need.security.model.UserAccount</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>248</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -55,7 +55,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Transaction</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Transaction</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -66,7 +66,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.procurement.model.Supplier</entity-name>
+		<entity-name>com.apeironsol.need.procurement.model.Supplier</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -77,7 +77,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Subject</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Subject</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -88,7 +88,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.StudentTransportationFeeTransaction</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.StudentTransportationFeeTransaction</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -99,7 +99,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.StudentTransportationFee</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.StudentTransportationFee</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -110,7 +110,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.StudentTransportation</entity-name>
+		<entity-name>com.apeironsol.need.core.model.StudentTransportation</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>130</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -121,7 +121,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.StudentStatusHistory</entity-name>
+		<entity-name>com.apeironsol.need.core.model.StudentStatusHistory</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -132,7 +132,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.StudentSection</entity-name>
+		<entity-name>com.apeironsol.need.core.model.StudentSection</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -143,7 +143,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.StudentRelation</entity-name>
+		<entity-name>com.apeironsol.need.core.model.StudentRelation</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>70</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -154,7 +154,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.StudentPocketMoneyTransaction</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.StudentPocketMoneyTransaction</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>268</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -165,7 +165,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.StudentFeeTransactionDetails</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.StudentFeeTransactionDetails</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -176,7 +176,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.StudentFeeTransaction</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.StudentFeeTransaction</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>308</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -187,7 +187,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.StudentFee</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.StudentFee</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -198,7 +198,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.StudentAttendance</entity-name>
+		<entity-name>com.apeironsol.need.core.model.StudentAttendance</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -209,7 +209,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.StudentAdditionalFee</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.StudentAdditionalFee</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -220,7 +220,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.StudentAcademicYear</entity-name>
+		<entity-name>com.apeironsol.need.core.model.StudentAcademicYear</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -231,7 +231,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Student</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Student</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>448</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -242,7 +242,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.State</entity-name>
+		<entity-name>com.apeironsol.need.core.model.State</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>186</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -253,7 +253,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.SequenceGenerator</entity-name>
+		<entity-name>com.apeironsol.need.core.model.SequenceGenerator</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -264,7 +264,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.SectionTimetable</entity-name>
+		<entity-name>com.apeironsol.need.core.model.SectionTimetable</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -275,7 +275,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.SectionTeacher</entity-name>
+		<entity-name>com.apeironsol.need.core.model.SectionTeacher</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -286,7 +286,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.SectionSubject</entity-name>
+		<entity-name>com.apeironsol.need.core.model.SectionSubject</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -297,7 +297,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.academics.model.SectionExamSubject</entity-name>
+		<entity-name>com.apeironsol.need.academics.model.SectionExamSubject</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -308,7 +308,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.academics.model.SectionExam</entity-name>
+		<entity-name>com.apeironsol.need.academics.model.SectionExam</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -319,7 +319,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Section</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Section</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -330,7 +330,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.payroll.model.Salary</entity-name>
+		<entity-name>com.apeironsol.need.payroll.model.Salary</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -341,7 +341,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.transportation.model.RoutePickUpPoint</entity-name>
+		<entity-name>com.apeironsol.need.transportation.model.RoutePickUpPoint</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>70</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -352,7 +352,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.transportation.model.Route</entity-name>
+		<entity-name>com.apeironsol.need.transportation.model.Route</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -363,7 +363,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Relation</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Relation</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -374,7 +374,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.procurement.model.PurchaseOrderStatus</entity-name>
+		<entity-name>com.apeironsol.need.procurement.model.PurchaseOrderStatus</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -385,7 +385,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.procurement.model.PurchaseOrderItem</entity-name>
+		<entity-name>com.apeironsol.need.procurement.model.PurchaseOrderItem</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -396,7 +396,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.procurement.model.PurchaseOrder</entity-name>
+		<entity-name>com.apeironsol.need.procurement.model.PurchaseOrder</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>268</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -407,7 +407,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.procurement.model.PurchaseInvoice</entity-name>
+		<entity-name>com.apeironsol.need.procurement.model.PurchaseInvoice</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -418,7 +418,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.ProfilePicture</entity-name>
+		<entity-name>com.apeironsol.need.core.model.ProfilePicture</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -429,7 +429,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.transportation.model.PickUpPointFeeCatalog</entity-name>
+		<entity-name>com.apeironsol.need.transportation.model.PickUpPointFeeCatalog</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -440,7 +440,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.transportation.model.PickUpPointFee</entity-name>
+		<entity-name>com.apeironsol.need.transportation.model.PickUpPointFee</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -451,7 +451,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.transportation.model.PickUpPoint</entity-name>
+		<entity-name>com.apeironsol.need.transportation.model.PickUpPoint</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -462,7 +462,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Organization</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Organization</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>110</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -473,7 +473,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.MedicalHistory</entity-name>
+		<entity-name>com.apeironsol.need.core.model.MedicalHistory</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -484,7 +484,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.KlassFeePayment</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.KlassFeePayment</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -495,7 +495,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.KlassFee</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.KlassFee</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -506,7 +506,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Klass</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Klass</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -517,7 +517,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.FinancialYear</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.FinancialYear</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -528,7 +528,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.FinancialAccount</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.FinancialAccount</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -539,7 +539,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.academics.model.ExamType</entity-name>
+		<entity-name>com.apeironsol.need.academics.model.ExamType</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -550,7 +550,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.academics.model.Exam</entity-name>
+		<entity-name>com.apeironsol.need.academics.model.Exam</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>268</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -561,7 +561,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.payroll.model.EmployeeSalary</entity-name>
+		<entity-name>com.apeironsol.need.payroll.model.EmployeeSalary</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -572,7 +572,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.hrms.model.EmployeeDesignation</entity-name>
+		<entity-name>com.apeironsol.need.hrms.model.EmployeeDesignation</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>208</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -583,7 +583,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.hrms.model.Employee</entity-name>
+		<entity-name>com.apeironsol.need.hrms.model.Employee</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -594,7 +594,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.EducationHistory</entity-name>
+		<entity-name>com.apeironsol.need.core.model.EducationHistory</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>248</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -605,7 +605,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Country</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Country</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>186</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -616,7 +616,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.BuildingBlock</entity-name>
+		<entity-name>com.apeironsol.need.core.model.BuildingBlock</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>228</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -627,7 +627,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.notifications.model.BranchNotification</entity-name>
+		<entity-name>com.apeironsol.need.notifications.model.BranchNotification</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -638,7 +638,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.BranchRule</entity-name>
+		<entity-name>com.apeironsol.need.core.model.BranchRule</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -649,7 +649,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.BranchReservationCategory</entity-name>
+		<entity-name>com.apeironsol.need.core.model.BranchReservationCategory</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -660,7 +660,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.inventory.model.BranchLiability</entity-name>
+		<entity-name>com.apeironsol.need.inventory.model.BranchLiability</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -671,7 +671,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.BranchIncome</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.BranchIncome</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -682,7 +682,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.BranchFeeTypePeriodical</entity-name>
+		<entity-name>com.apeironsol.need.core.model.BranchFeeTypePeriodical</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>168</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -693,7 +693,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.BranchExpenseTypePeriodical</entity-name>
+		<entity-name>com.apeironsol.need.core.model.BranchExpenseTypePeriodical</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -704,7 +704,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.financial.model.BranchExpense</entity-name>
+		<entity-name>com.apeironsol.need.financial.model.BranchExpense</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -715,7 +715,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.BranchDepartment</entity-name>
+		<entity-name>com.apeironsol.need.core.model.BranchDepartment</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -726,7 +726,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.inventory.model.BranchAssert</entity-name>
+		<entity-name>com.apeironsol.need.inventory.model.BranchAssert</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>208</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -737,7 +737,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.BranchAssembly</entity-name>
+		<entity-name>com.apeironsol.need.core.model.BranchAssembly</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -748,7 +748,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Branch</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Branch</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>288</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -759,7 +759,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.notifications.model.Batch</entity-name>
+		<entity-name>com.apeironsol.need.notifications.model.Batch</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -770,7 +770,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.AdmissionSubmittedDocuments</entity-name>
+		<entity-name>com.apeironsol.need.core.model.AdmissionSubmittedDocuments</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>90</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -781,7 +781,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.Address</entity-name>
+		<entity-name>com.apeironsol.need.core.model.Address</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>268</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -792,7 +792,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.security.model.AccessControl</entity-name>
+		<entity-name>com.apeironsol.need.security.model.AccessControl</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>128</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -803,7 +803,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.AcademicYearWeekEnd</entity-name>
+		<entity-name>com.apeironsol.need.core.model.AcademicYearWeekEnd</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>108</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>
@@ -814,7 +814,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.AcademicYearHoliday</entity-name>
+		<entity-name>com.apeironsol.need.core.model.AcademicYearHoliday</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>148</entity-height>
 		<entity-X-Coordinate>490</entity-X-Coordinate>
@@ -825,7 +825,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.AcademicYear</entity-name>
+		<entity-name>com.apeironsol.need.core.model.AcademicYear</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>188</entity-height>
 		<entity-X-Coordinate>50</entity-X-Coordinate>
@@ -836,7 +836,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.notifications.model.BatchLog</entity-name>
+		<entity-name>com.apeironsol.need.notifications.model.BatchLog</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>328</entity-height>
 		<entity-X-Coordinate>270</entity-X-Coordinate>
@@ -847,7 +847,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.notifications.model.BatchLogMessage</entity-name>
+		<entity-name>com.apeironsol.need.notifications.model.BatchLogMessage</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>208</entity-height>
 		<entity-X-Coordinate>930</entity-X-Coordinate>
@@ -858,7 +858,7 @@
 	</entity>
 
 	<entity>
-		<entity-name>com.apeironsol.nexed.core.model.SMSProvider</entity-name>
+		<entity-name>com.apeironsol.need.core.model.SMSProvider</entity-name>
 		<entity-width>120</entity-width>
 		<entity-height>330</entity-height>
 		<entity-X-Coordinate>710</entity-X-Coordinate>

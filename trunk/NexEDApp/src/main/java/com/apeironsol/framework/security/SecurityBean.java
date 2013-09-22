@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.springframework.context.annotation.Scope;
 
-import com.apeironsol.nexed.util.portal.ViewUtil;
+import com.apeironsol.need.util.portal.ViewUtil;
 
 @Named
 @Scope(value = "session")

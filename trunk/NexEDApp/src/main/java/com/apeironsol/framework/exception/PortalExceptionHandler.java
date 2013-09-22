@@ -11,7 +11,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ExceptionQueuedEvent;
 import javax.faces.event.ExceptionQueuedEventContext;
 
-import com.apeironsol.nexed.util.portal.ViewPathConstants;
+import com.apeironsol.need.util.portal.ViewPathConstants;
 
 public class PortalExceptionHandler extends ExceptionHandlerWrapper {
 

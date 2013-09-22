@@ -9,7 +9,7 @@ package com.apeironsol.framework.exception;
 
 import java.util.Locale;
 
-import com.apeironsol.nexed.util.portal.ResourceBundleHandler;
+import com.apeironsol.need.util.portal.ResourceBundleHandler;
 
 public abstract class AbstractLocalizedException extends RuntimeException {
 
