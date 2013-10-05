@@ -28,6 +28,7 @@ import com.apeironsol.need.notifications.service.BatchLogMessageService;
 import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.notifications.service.BranchNotificationService;
 import com.apeironsol.need.notifications.service.NotificationService;
+import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
@@ -204,7 +205,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
 						.notificationLevelId(this.studentBean.getStudentAcademicYear().getId()).notificationTypeConstant(this.notificationTypeConstant)
 						.notificationLevelConstant(NotificationLevelConstant.STUDENT).notificationSubTypeConstant(this.notificationSubTypeConstant)
-						.messageToBeSent(this.notificationText).build();
+						.messageToBeSent(this.notificationText).attendanceDate(DateUtil.getSystemDate()).build();
 
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.studentBean.getStudentAcademicYear(), this.scheduledBatchLog);
 			} catch (Exception e) {
@@ -286,6 +287,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 		this.viewActionString = ViewAction.VIEW_SEND_NOTIFICATION;
 		this.notificationTypeConstant = null;
 		this.notificationSubTypeConstant = null;
+		this.notificationText = null;
 		this.getBranchNotificationByNotificationType();
 		return null;
 	}
@@ -412,7 +414,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 			} else {
 				long totalElements = this.scheduledBatchLog.getNrElements();
 				long totalProcessed = this.scheduledBatchLog.getNrElementsProcessed();
-				progress = Long.valueOf(totalProcessed * 100 / totalElements).intValue();
+				progress = totalElements > 0 ? Long.valueOf(totalProcessed * 100 / totalElements).intValue() : 1;
 			}
 
 		} else {

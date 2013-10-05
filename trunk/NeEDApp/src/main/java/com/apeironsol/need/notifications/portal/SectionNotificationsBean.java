@@ -19,8 +19,10 @@ import org.springframework.context.annotation.Scope;
 
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.academics.service.SectionExamService;
+import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.portal.AbstractTabbedBean;
 import com.apeironsol.need.core.portal.SectionBean;
+import com.apeironsol.need.core.service.AttendanceService;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.model.BatchLogMessage;
 import com.apeironsol.need.notifications.model.BranchNotification;
@@ -29,6 +31,7 @@ import com.apeironsol.need.notifications.service.BatchLogMessageService;
 import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.notifications.service.BranchNotificationService;
 import com.apeironsol.need.notifications.service.NotificationService;
+import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
@@ -139,6 +142,9 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	private NotificationService						notificationService;
 
 	@Resource
+	private AttendanceService						attendanceService;
+
+	@Resource
 	private BranchNotificationService				branchNotificationService;
 
 	private Collection<BranchNotification>			branchNotifications;
@@ -214,11 +220,18 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 				if (this.notificationSubTypeConstant.isMessageRequired() && (this.notificationText == null || this.notificationText.trim().isEmpty())) {
 					ViewUtil.addMessage("Message required for this notification type.", FacesMessage.SEVERITY_ERROR);
 					return null;
+				} else if (this.notificationSubTypeConstant.equals(NotificationSubTypeConstant.ABSENT_NOTIFICATION)) {
+					Attendance attendance = this.attendanceService.findAttendanceBySectionIdAndAttendanceDateForDailyAttendance(this.sectionBean.getSection()
+							.getId(), DateUtil.getSystemDate());
+					if (attendance == null) {
+						ViewUtil.addMessage("Attendance not taken for today. Could not send absent notifications.", FacesMessage.SEVERITY_ERROR);
+						return null;
+					}
 				}
 				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
 						.notificationLevelId(this.sectionBean.getSection().getId()).notificationTypeConstant(this.notificationTypeConstant)
 						.notificationLevelConstant(NotificationLevelConstant.SECTION).notificationSubTypeConstant(this.notificationSubTypeConstant)
-						.messageToBeSent(this.notificationText).build();
+						.messageToBeSent(this.notificationText).attendanceDate(DateUtil.getSystemDate()).build();
 
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.sectionBean.getSection(), this.scheduledBatchLog);
 			} catch (Exception e) {
@@ -467,7 +480,7 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 				Long processedElements = this.batchLogMessageService.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(this.scheduledBatchLog.getId(),
 						EnumSet.allOf(BatchLogMessageStatusConstant.class));
 				this.elementsProcessed = processedElements != null ? processedElements : 0;
-				progress = Long.valueOf(this.elementsProcessed * 100 / totalElements).intValue();
+				progress = totalElements > 0 ? Long.valueOf(this.elementsProcessed * 100 / totalElements).intValue() : 1;
 			}
 
 		}
@@ -481,7 +494,7 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	 * @return
 	 */
 	public int getBatchPollInterval() {
-		int interval = 0;
+		int interval = 15;
 		if (this.scheduledBatchLog != null) {
 			interval = 5;
 		}

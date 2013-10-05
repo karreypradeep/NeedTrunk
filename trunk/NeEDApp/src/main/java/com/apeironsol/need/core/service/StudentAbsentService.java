@@ -37,4 +37,6 @@ public interface StudentAbsentService {
 			final Long studentAcademicYearId);
 
 	Collection<StudentAbsent> findStudentAttendanceByAttendances(final Collection<Attendance> attendances);
+
+	Collection<StudentAbsent> findStudentAttendanceByAttendance(final Attendance attendance);
 }

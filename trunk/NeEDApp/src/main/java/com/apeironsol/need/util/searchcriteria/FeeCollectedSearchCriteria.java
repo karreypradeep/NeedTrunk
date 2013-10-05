@@ -65,6 +65,13 @@ public class FeeCollectedSearchCriteria implements SearchCriteria {
 	}
 
 	/**
+	 * 
+	 * @param branch
+	 */
+	public FeeCollectedSearchCriteria() {
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -171,6 +178,7 @@ public class FeeCollectedSearchCriteria implements SearchCriteria {
 	 * @param branch
 	 *            the branch to set
 	 */
+	@Override
 	public void setBranch(final Branch branch) {
 		this.branch = branch;
 	}

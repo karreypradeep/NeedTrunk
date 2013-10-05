@@ -24,6 +24,7 @@ import com.apeironsol.need.academics.service.SectionExamService;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.portal.AbstractTabbedBean;
 import com.apeironsol.need.core.portal.KlassBean;
+import com.apeironsol.need.core.service.AttendanceService;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.model.BatchLogMessage;
 import com.apeironsol.need.notifications.model.BranchNotification;
@@ -32,6 +33,7 @@ import com.apeironsol.need.notifications.service.BatchLogMessageService;
 import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.notifications.service.BranchNotificationService;
 import com.apeironsol.need.notifications.service.NotificationService;
+import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
@@ -165,6 +167,9 @@ public class KlassNotificationsBean extends AbstractTabbedBean {
 
 	private SectionExam								selectedSectionExam;
 
+	@Resource
+	private AttendanceService						attendanceService;
+
 	/**
 	 * Enum class used for deciding what has to be displayed on screen.
 	 * 
@@ -223,7 +228,7 @@ public class KlassNotificationsBean extends AbstractTabbedBean {
 				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
 						.notificationLevelId(this.klassBean.getKlass().getId()).notificationTypeConstant(this.notificationTypeConstant)
 						.notificationLevelConstant(NotificationLevelConstant.CLASS).notificationSubTypeConstant(this.notificationSubTypeConstant)
-						.messageToBeSent(this.notificationText).build();
+						.messageToBeSent(this.notificationText).attendanceDate(DateUtil.getSystemDate()).build();
 
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.academicYearForNotification.getId(),
 						this.klassBean.getKlass(), this.scheduledBatchLog);
@@ -474,7 +479,7 @@ public class KlassNotificationsBean extends AbstractTabbedBean {
 				Long processedElements = this.batchLogMessageService.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(this.scheduledBatchLog.getId(),
 						EnumSet.allOf(BatchLogMessageStatusConstant.class));
 				this.elementsProcessed = processedElements != null ? processedElements : 0;
-				progress = Long.valueOf(this.elementsProcessed * 100 / totalElements).intValue();
+				progress = totalElements > 0 ? Long.valueOf(this.elementsProcessed * 100 / totalElements).intValue() : 1;
 			}
 
 		}
@@ -488,9 +493,9 @@ public class KlassNotificationsBean extends AbstractTabbedBean {
 	 * @return
 	 */
 	public int getBatchPollInterval() {
-		int interval = 0;
+		int interval = 15;
 		if (this.scheduledBatchLog != null) {
-			interval = 5;
+			interval = 10;
 		}
 		return interval;
 	}

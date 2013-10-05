@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.financial.service.StudentFinancialService;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
@@ -28,7 +29,6 @@ import com.apeironsol.need.notifications.providers.sms.SMSProvider;
 import com.apeironsol.need.notifications.providers.sms.SMSProviderFactory;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
-import com.apeironsol.framework.exception.ApplicationException;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -91,6 +91,7 @@ public class FeeDueSMSWorker implements SMSWorker {
 					notificationMessage.setErrorMessage(smsReturnTest);
 				}
 			} else {
+				notificationMessage.setMessage("No fee Due");
 				notificationMessage.setErrorMessage("No fee Due");
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
 			}

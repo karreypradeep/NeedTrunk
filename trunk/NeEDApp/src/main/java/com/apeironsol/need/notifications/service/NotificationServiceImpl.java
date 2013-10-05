@@ -18,51 +18,62 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
+import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
+import com.apeironsol.need.core.model.StudentAbsent;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.service.AttendanceService;
 import com.apeironsol.need.core.service.BranchService;
 import com.apeironsol.need.core.service.KlassService;
 import com.apeironsol.need.core.service.SectionService;
+import com.apeironsol.need.core.service.StudentAbsentService;
 import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.producer.util.NotificationProducerUtil;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
+import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Service("notificationService")
 public class NotificationServiceImpl implements NotificationService {
 
 	@Resource(name = "jmsTemplateSMS")
-	JmsTemplate				jmsTemplateSMS;
+	JmsTemplate						jmsTemplateSMS;
 
 	@Resource(name = "smsDestination")
-	Destination				smsDestination;
+	Destination						smsDestination;
 
 	@Resource(name = "jmsTemplateEmail")
-	JmsTemplate				jmsTemplateEmail;
+	JmsTemplate						jmsTemplateEmail;
 
 	@Resource(name = "emailDestination")
-	Destination				emailDestination;
+	Destination						emailDestination;
 
 	@Resource(name = "jmsConnectionFactory")
-	ConnectionFactory		jmsConnectionFactory;
+	ConnectionFactory				jmsConnectionFactory;
 
 	@Autowired
-	private BranchService	branchService;
+	private BranchService			branchService;
 
 	@Autowired
-	private BatchLogService	batchLogService;
+	private BatchLogService			batchLogService;
 
 	@Autowired
-	private StudentService	studentService;
+	private StudentService			studentService;
 
 	@Autowired
-	private KlassService	klassService;
+	private KlassService			klassService;
 
 	@Autowired
-	private SectionService	sectionService;
+	private SectionService			sectionService;
+
+	@Autowired
+	private AttendanceService		attendanceService;
+
+	@Autowired
+	private StudentAbsentService	studentAbsentService;
 
 	private NotificationProducerUtil createNotificationProducerUtil(final NotificationTypeConstant notificationTypeConstant) {
 		final NotificationProducerUtil notificationProducerUtil = new NotificationProducerUtil();
@@ -82,11 +93,15 @@ public class NotificationServiceImpl implements NotificationService {
 		if (batchLog == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
+
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(1));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
 			result = notificationProducerUtil.createBatchLog(result);
 		}
 		notificationProducerUtil.sendNotificationJMS(studentAcademicYear, result);
@@ -104,9 +119,14 @@ public class NotificationServiceImpl implements NotificationService {
 			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
 			result = notificationProducerUtil.createBatchLog(result);
 		}
-		notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+		if (studentAcademicYears.size() > 0) {
+			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+		}
 		return result;
 	}
 
@@ -117,14 +137,32 @@ public class NotificationServiceImpl implements NotificationService {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
-		final Collection<StudentAcademicYear> studentAcademicYears = this.studentService.findStudentAcademicYearsWithActiveStatusBySectionId(section.getId());
+		Collection<StudentAcademicYear> studentAcademicYears = null;
+		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.ABSENT_NOTIFICATION)) {
+			studentAcademicYears = new ArrayList<StudentAcademicYear>();
+			Attendance attendance = this.attendanceService.findAttendanceBySectionIdAndAttendanceDateForDailyAttendance(section.getId(),
+					batchLog.getAttendanceDate());
+			if (attendance != null) {
+				Collection<StudentAbsent> studentAbsents = this.studentAbsentService.findStudentAttendanceByAttendance(attendance);
+				for (StudentAbsent studentAbsent : studentAbsents) {
+					studentAcademicYears.add(studentAbsent.getStudentAcademicYear());
+				}
+			}
+		} else {
+			studentAcademicYears = this.studentService.findStudentAcademicYearsWithActiveStatusBySectionId(section.getId());
+		}
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
 			result = notificationProducerUtil.createBatchLog(result);
 		}
-		notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+		if (studentAcademicYears.size() > 0) {
+			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+		}
 		return result;
 	}
 
@@ -138,17 +176,39 @@ public class NotificationServiceImpl implements NotificationService {
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		final Collection<Long> sectionIDs = new ArrayList<Long>();
 		final Collection<Section> sections = this.sectionService.findActiveSectionsByKlassIdAndAcademicYearId(klass.getId(), academicYearId);
-		for (final Section section : sections) {
-			sectionIDs.add(section.getId());
+		Collection<StudentAcademicYear> studentAcademicYears = null;
+		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.ABSENT_NOTIFICATION)) {
+			studentAcademicYears = new ArrayList<StudentAcademicYear>();
+			for (final Section section : sections) {
+				Attendance attendance = this.attendanceService.findAttendanceBySectionIdAndAttendanceDateForDailyAttendance(section.getId(),
+						batchLog.getAttendanceDate());
+				if (attendance != null) {
+					Collection<StudentAbsent> studentAbsents = this.studentAbsentService.findStudentAttendanceByAttendance(attendance);
+					for (StudentAbsent studentAbsent : studentAbsents) {
+						studentAcademicYears.add(studentAbsent.getStudentAcademicYear());
+					}
+				}
+			}
+
+		} else {
+			for (final Section section : sections) {
+				sectionIDs.add(section.getId());
+			}
+			studentAcademicYears = this.studentService.findStudentAcademicYearsWithActiveStatusBySectionIds(sectionIDs);
 		}
-		final Collection<StudentAcademicYear> studentAcademicYears = this.studentService.findStudentAcademicYearsWithActiveStatusBySectionIds(sectionIDs);
+
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
 			result = notificationProducerUtil.createBatchLog(result);
 		}
-		notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+		if (studentAcademicYears.size() > 0) {
+			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+		}
 		return result;
 	}
 
@@ -165,19 +225,40 @@ public class NotificationServiceImpl implements NotificationService {
 			klasseIDs.add(klass.getId());
 		}
 		final Collection<Section> sections = this.sectionService.findActiveSectionsByKlassIdsAndAcademicYearId(klasseIDs, academicYearId);
+		Collection<StudentAcademicYear> studentAcademicYears = null;
 		final Collection<Long> sectionIDs = new ArrayList<Long>();
-		for (final Section section : sections) {
-			sectionIDs.add(section.getId());
+		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.ABSENT_NOTIFICATION)) {
+			studentAcademicYears = new ArrayList<StudentAcademicYear>();
+			for (final Section section : sections) {
+				Attendance attendance = this.attendanceService.findAttendanceBySectionIdAndAttendanceDateForDailyAttendance(section.getId(),
+						batchLog.getAttendanceDate());
+				if (attendance != null) {
+					Collection<StudentAbsent> studentAbsents = this.studentAbsentService.findStudentAttendanceByAttendance(attendance);
+					for (StudentAbsent studentAbsent : studentAbsents) {
+						studentAcademicYears.add(studentAbsent.getStudentAcademicYear());
+					}
+				}
+			}
+
+		} else {
+			for (final Section section : sections) {
+				sectionIDs.add(section.getId());
+			}
+			studentAcademicYears = this.studentService.findStudentAcademicYearsWithActiveStatusBySectionIds(sectionIDs);
 		}
-		final Collection<StudentAcademicYear> studentAcademicYears = this.studentService.findStudentAcademicYearsWithActiveStatusBySectionIds(sectionIDs);
+
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
 			result = notificationProducerUtil.createBatchLog(result);
 		}
-
-		notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+		if (studentAcademicYears.size() > 0) {
+			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+		}
 		return result;
 	}
 

@@ -20,6 +20,7 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
+import com.apeironsol.framework.BaseDaoImpl;
 import com.apeironsol.need.core.dataobject.SectionAttendanceReportMonthlyDO;
 import com.apeironsol.need.core.dataobject.StudentAttendanceDO;
 import com.apeironsol.need.core.dataobject.StudentAttendanceMonthlyDO;
@@ -32,7 +33,6 @@ import com.apeironsol.need.core.service.StudentSectionService;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.AttendanceTypeConstant;
 import com.apeironsol.need.util.constants.MonthConstant;
-import com.apeironsol.framework.BaseDaoImpl;
 
 /**
  * Data access interface for Student Attendance entity implementation.
@@ -420,10 +420,17 @@ public class StudentAbsentDaoImpl extends BaseDaoImpl<StudentAbsent> implements 
 
 	@Override
 	public Collection<StudentAbsent> findStudentAttendanceByAttendances(final Collection<Attendance> attendances) {
-		TypedQuery<StudentAbsent> query = this.getEntityManager().createQuery(
-				"select sa from StudentAbsent sa where sa.attendance  in :attendances and sa.studentAcademicYear.id = :studentAcademicYearId",
+		TypedQuery<StudentAbsent> query = this.getEntityManager().createQuery("select sa from StudentAbsent sa where sa.attendance  in :attendances",
 				StudentAbsent.class);
 		query.setParameter("attendances", attendances);
+		return query.getResultList();
+	}
+
+	@Override
+	public Collection<StudentAbsent> findStudentAttendanceByAttendance(final Attendance attendance) {
+		TypedQuery<StudentAbsent> query = this.getEntityManager().createQuery("select sa from StudentAbsent sa where sa.attendance.id  = :attendanceId",
+				StudentAbsent.class);
+		query.setParameter("attendanceId", attendance.getId());
 		return query.getResultList();
 	}
 

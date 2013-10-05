@@ -50,7 +50,7 @@
 				<h:outputText value="#{batchLog.nrElementsProcessed}"
 					rendered="#{not cc.attrs.batchLogScheduled.id.equals(batchLog.id)}" />
 			</p:column>
-
+  
 			<p:column headerText="Duration" style="text-align: center;">
 				<c:if test="#{empty batchLog.executionTime}">
 					<p:progressBar widgetVar="pbAjax" value="#{cc.attrs.progressBarProgressValue}" labelTemplate="{value}%"

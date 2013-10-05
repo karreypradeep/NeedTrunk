@@ -33,6 +33,11 @@
 			<c:when test="#{viewContentHandlerBean.viewContentSMSProviders}">
 				<ui:include src="/pages/organization/sms_providers.xhtml"></ui:include>
 			</c:when>
+			<c:when 
+				test="#{viewContentHandlerBean.viewContentOrganizationFinanceDetails}">
+				<ui:include
+					src="/pages/organization/finances/finances_fees_details.xhtml" />
+			</c:when>
 			<c:otherwise>
 				<ui:include src="/pages/organization/organization.xhtml"></ui:include>
 			</c:otherwise>

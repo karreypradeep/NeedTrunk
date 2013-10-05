@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:panel style="margin-top:1px;margin-bottom:10px;">
+		<f:facet name="header">
+			<h:outputLabel value="Search Criteria" style="font-size: 16px; font-weight:bold;" />
+		</f:facet>
+		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+		<h:panelGrid columns="3" id="expense_type_grid" cellpadding="4" style="border:0px;">
+
+			<h:panelGrid columns="2" id="expense_type_grid1" cellpadding="4" style="border:0px;">
+
+				<p:outputLabel id="academic_year_label" value="Academic year" for="academic_year" />
+				<p:selectOneMenu id="academic_year" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear}" required="true"
+					converter="academicYearConverter">
+					<f:selectItem itemLabel="Select academic year" itemValue=""/>
+					<f:selectItems value="#{financeFeesCollectedDueDetailsBean.activeAcademicYears}" var="academicYear"
+						itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+					<p:ajax process="@this" update="@form" listener="#{financeFeesCollectedDueDetailsBean.onChangeAcademicYear}" />
+				</p:selectOneMenu>
+
+				<p:outputLabel id="due_date_label" value="Due date" for="due_date" />
+				<p:calendar id="due_date" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.dueDate}" navigator="true"
+					display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+					mindate="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear.startDate}" maxdate="#{studentBean.currentDate}"
+					disabled="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear==null}" />
+			</h:panelGrid>
+			<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
+
+				<p:outputLabel id="class_label" value="Class" for="class" />
+				<p:selectOneMenu id="class" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.klass}" converter="klassConverter">
+					<f:selectItem itemLabel="Select class" itemValue="" />
+					<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
+					<p:ajax update="expense_type_grid2" listener="#{financeFeesCollectedDueDetailsBean.handleFromKlassChange}" process="@this" />
+				</p:selectOneMenu>
+
+
+				<p:outputLabel id="section_label" value="Section" for="section" />
+				<p:selectOneMenu id="section" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.section}" converter="sectionConverter">
+					<f:selectItem itemLabel="Select section" itemValue="" />
+					<f:selectItems value="#{financeFeesCollectedDueDetailsBean.sectionsForSearhCriteriaByKlass}" var="section" itemLabel="#{section.name}"
+						itemValue="#{section}" />
+				</p:selectOneMenu>
+			</h:panelGrid>
+		</h:panelGrid>
+		<p:commandButton id="expense_type_search_buton" value="Search"
+			action="#{financeFeesCollectedDueDetailsBean.searchFeesDueBySearchCriteria()}" update="@form" style="width:80px;"
+			icon="ui-icon-search" />
+		<p:spacer width="5px" />
+		<p:commandButton id="expense_type_reset" value="Reset" update="@form"
+			action="#{financeFeesCollectedDueDetailsBean.resetSearchCriteria}" process="@this" style="width:80px;" icon="ui-icon-refresh" />
+	</p:panel>
+
+	<p:treeTable value="#{financeFeesCollectedDueDetailsBean.root}" var="branchFeeCollectedTreeNode" id="fees_due_collected_table">
+
+		<f:facet name="header">
+           		Fees collected  for academic year #{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear.displayLabel}
+		</f:facet>
+
+		<p:column style="width:150px">
+			<f:facet name="header">  
+                		Name	  
+            </f:facet>
+			<h:outputText value="#{branchFeeCollectedTreeNode.name}" />
+		</p:column>
+
+		<p:column style="width:100px">
+			<f:facet name="header">  
+                		Total fees	  
+            </f:facet>
+			<h:outputText value="#{branchFeeCollectedTreeNode.totalFee}" >
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column style="width:100px">
+			<f:facet name="header">  
+               			 Fees waived  
+            </f:facet>
+			<h:outputText value="#{branchFeeCollectedTreeNode.feeWaived}" >
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column style="width:100px">
+			<f:facet name="header">  
+               			 Net Fee  
+            </f:facet>
+			<h:outputText value="#{branchFeeCollectedTreeNode.netfeeExpected}" >
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column style="width:100px">
+			<f:facet name="header">  
+               			 Fees collected  
+            </f:facet>
+			<h:outputText value="#{branchFeeCollectedTreeNode.feePaid}" >
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+
+		<p:column style="width:100px">
+			<f:facet name="header">  
+               			 Fees due  
+            </f:facet>
+			<h:outputText value="#{branchFeeCollectedTreeNode.feeDue}" >
+				<f:convertNumber pattern="#,##,##,##,###.00" />
+			</h:outputText>
+		</p:column>
+	</p:treeTable>
+</ui:composition>

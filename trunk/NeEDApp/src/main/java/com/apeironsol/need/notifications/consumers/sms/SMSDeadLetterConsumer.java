@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
 
+import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorker;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorkerFactory;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
@@ -31,7 +32,6 @@ import com.apeironsol.need.notifications.service.BatchLogMessageService;
 import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
-import com.apeironsol.framework.NeEDJMSObject;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -86,8 +86,7 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 			Logger.error(exception);
 		} finally {
 			if (notificationMessage == null) {
-				notificationMessage = this.createNotificationMessage(smsWorker.getMessage(jmsObject.getStudentAcademicYear(), batchLog), "Null pointer",
-						BatchLogMessageStatusConstant.FAILED);
+				notificationMessage = this.createNotificationMessage("Null pointer", "Null pointer", BatchLogMessageStatusConstant.FAILED);
 			}
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		}

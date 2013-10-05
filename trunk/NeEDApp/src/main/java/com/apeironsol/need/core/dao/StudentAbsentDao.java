@@ -11,12 +11,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import com.apeironsol.framework.BaseDao;
 import com.apeironsol.need.core.dataobject.SectionAttendanceReportMonthlyDO;
 import com.apeironsol.need.core.dataobject.StudentAttendanceDO;
 import com.apeironsol.need.core.dataobject.StudentAttendanceMonthlyDO;
 import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.model.StudentAbsent;
-import com.apeironsol.framework.BaseDao;
 
 /**
  * Data access interface for Student Attendance entity implementation.
@@ -113,4 +113,6 @@ public interface StudentAbsentDao extends BaseDao<StudentAbsent> {
 			final Long studentAcademicYearId);
 
 	Collection<StudentAbsent> findStudentAttendanceByAttendances(final Collection<Attendance> attendances);
+
+	Collection<StudentAbsent> findStudentAttendanceByAttendance(final Attendance attendance);
 }

@@ -47,4 +47,9 @@ public class StudentAbsentServiceImpl implements StudentAbsentService {
 		return this.studentAbsentDao.findStudentAttendanceByAttendances(attendances);
 	}
 
+	@Override
+	public Collection<StudentAbsent> findStudentAttendanceByAttendance(final Attendance attendance) {
+		return this.studentAbsentDao.findStudentAttendanceByAttendance(attendance);
+	}
+
 }

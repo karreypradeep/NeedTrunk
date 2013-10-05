@@ -51,6 +51,10 @@ public class ViewContentHandlerBean implements Serializable {
 		return ViewContentConstant.ORGANIZATION_SETTINGS.equals(this.getCurrentViewContent());
 	}
 
+	public boolean isViewContentOrganizationFinanceDetails() {
+		return ViewContentConstant.ORGANIZATION_FINANCES_DETAILS.equals(this.getCurrentViewContent());
+	}
+
 	public boolean isViewContentBranchDashboard() {
 		return ViewContentConstant.BRANCH_DASHBOARD.equals(this.getCurrentViewContent());
 	}

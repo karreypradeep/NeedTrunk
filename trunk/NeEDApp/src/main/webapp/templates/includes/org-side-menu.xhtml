@@ -156,6 +156,100 @@
 				</p:commandLink>
 			</h:panelGrid>
 		</p:tab>
+		<p:tab title="#{msg.financials}" id="left_financials_tab"
+			rendered="false">
+			<h:panelGrid columns="1" cellpadding="2">
+
+				<p:commandLink value="#{msg.asserts_and_liabilities}" process="org_side_menu" update="@form"
+					rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FINANCES_ASSERTS_LIABILITIES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financialBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{financeAssertBean.loadAssertTypesFromDB}" value="true" />
+					<f:setPropertyActionListener target="#{financeLiabilityBean.loadLiabilityTypesFromDB}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="Fee details" process="org_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessFinancialsFeeDetails}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_FINANCES_DETAILS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financialBean.activeTabIndex}" value="0" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.investment_and_expense}" process="org_side_menu" update="@form"
+					rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FINANCES_INCOME_EXPENSES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financialBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{financeExpensesBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{financeExpensesBean.financialExpenseWizardActiveStep}" value="expenseSearch" />
+					<f:setPropertyActionListener target="#{financeExpensesBean.loadExpenseTypesFromDB}" value="true" />
+					<f:setPropertyActionListener target="#{financeInvestmentBean.loadInvestmentTypesFromDB}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.purchases}" process="org_side_menu" update="@form"
+					rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FINANCES_PURCHASES">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{purchaseOrderBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{purchaseOrderBean.loadPurchaseOrdersForCurrentBranch}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.invoice_suppliers}" process="org_side_menu" update="@form"
+					rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FINANCES_INVOICE_SUPPLIERS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{financeSupplierBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{financeSupplierBean.loadSuppliersForCurrentBranchIndicator}" value="true" />
+					<f:setPropertyActionListener target="#{financeSupplierBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{purchaseInvoiceBean.activeTabIndex}" value="0" />
+					<f:setPropertyActionListener target="#{purchaseInvoiceBean.loadPurchaseInvoicesForCurrentBranchIndicator}"
+						value="true" />
+					<f:setPropertyActionListener target="#{purchaseInvoiceBean.viewOrNewAction}" value="false" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.bank_accounts}" process="org_side_menu" update="@form"
+					rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FINANCES_BANK_ACCOUNTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchBankAccountBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{branchBankAccountBean.loadBrachBankAccountInd}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.credit_accounts}" process="org_side_menu" update="@form"
+					rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FINANCES_CREDIT_ACCOUNTS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchCreditAccountBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{branchCreditAccountBean.loadBrachCreditAccountInd}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="#{msg.balance_sheet}" process="org_side_menu" update="@form"
+					rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FINANCES_BALANCE_SHEET">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchBalanceSheetBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{branchBalanceSheetBean.loadBrachBalanceSheetInd}" value="true" />
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
+
 
 		<p:tab title="#{msg.user_management}" id="left_user_management_tab"
 			disabled="#{!organizationBean.disableOrganization}">
