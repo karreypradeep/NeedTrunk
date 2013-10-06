@@ -474,14 +474,18 @@ public class KlassNotificationsBean extends AbstractTabbedBean {
 			this.scheduledBatchLog = this.batchLogService.findBatchLogById(this.scheduledBatchLog.getId());
 			if (BatchStatusConstant.FINISHED.equals(this.scheduledBatchLog.getBatchStatusConstant())) {
 				progress = 100;
+				this.batchFinished = true;
 			} else {
 				long totalElements = this.scheduledBatchLog.getNrElements();
 				Long processedElements = this.batchLogMessageService.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(this.scheduledBatchLog.getId(),
 						EnumSet.allOf(BatchLogMessageStatusConstant.class));
 				this.elementsProcessed = processedElements != null ? processedElements : 0;
-				progress = totalElements > 0 ? Long.valueOf(this.elementsProcessed * 100 / totalElements).intValue() : 1;
+				progress = totalElements > 0 ? Long.valueOf(this.elementsProcessed * 100 / totalElements).intValue() : 100;
 			}
 
+		}
+		if (progress == 100) {
+			this.batchFinished = true;
 		}
 		return progress == 0 ? 1 : progress;
 

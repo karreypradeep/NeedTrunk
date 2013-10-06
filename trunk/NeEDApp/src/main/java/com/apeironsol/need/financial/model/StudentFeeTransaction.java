@@ -23,7 +23,7 @@ import com.apeironsol.need.util.constants.StudentFeeTransactionTypeConstant;
 
 /**
  * Entity class for class fee
- *
+ * 
  * @author Pradeep
  */
 
@@ -49,7 +49,7 @@ public class StudentFeeTransaction extends BaseEntity implements Serializable {
 
 	@NotNull(message = "model.transaction_date_mandatory")
 	@Column(name = "TRANSACTION_DATE", nullable = false)
-	@Temporal(TemporalType.DATE)
+	@Temporal(TemporalType.TIMESTAMP)
 	private Date								transactionDate;
 
 	@Column(name = "EXT_TRANSACTION_DATE")
@@ -240,7 +240,7 @@ public class StudentFeeTransaction extends BaseEntity implements Serializable {
 	}
 
 	public boolean isStatusTransactionCancelled() {
-		return StudentFeeTransactionStatusConstant.TRANSACTOIN_CANCELLED.equals(this.studentFeeTransactionStatus) ;
+		return StudentFeeTransactionStatusConstant.TRANSACTOIN_CANCELLED.equals(this.studentFeeTransactionStatus);
 	}
 
 }

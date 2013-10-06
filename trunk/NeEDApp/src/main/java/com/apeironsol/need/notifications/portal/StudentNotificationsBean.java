@@ -411,14 +411,18 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 		if (this.scheduledBatchLog != null) {
 			if (BatchStatusConstant.FINISHED.equals(this.scheduledBatchLog.getBatchStatusConstant())) {
 				progress = 100;
+				this.batchFinished = true;
 			} else {
 				long totalElements = this.scheduledBatchLog.getNrElements();
 				long totalProcessed = this.scheduledBatchLog.getNrElementsProcessed();
-				progress = totalElements > 0 ? Long.valueOf(totalProcessed * 100 / totalElements).intValue() : 1;
+				progress = totalElements > 0 ? Long.valueOf(totalProcessed * 100 / totalElements).intValue() : 100;
 			}
 
 		} else {
 			progress = 100;
+		}
+		if (progress == 100) {
+			this.batchFinished = true;
 		}
 		return progress == 0 ? this.progressBarIncrementor++ : progress;
 	}

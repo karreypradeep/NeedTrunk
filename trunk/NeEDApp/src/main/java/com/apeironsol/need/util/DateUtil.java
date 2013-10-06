@@ -17,6 +17,7 @@ import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.joda.time.Days;
+import org.joda.time.Hours;
 import org.joda.time.Interval;
 import org.joda.time.Months;
 import org.joda.time.Period;
@@ -67,6 +68,12 @@ public class DateUtil {
 		Assert.notNull(from);
 		Assert.notNull(to);
 		return Days.daysBetween(new DateMidnight(from.getTime()), new DateMidnight(to.getTime())).getDays();
+	}
+
+	public static int dateDiffInHours(final Date from, final Date to) {
+		Assert.notNull(from);
+		Assert.notNull(to);
+		return Hours.hoursBetween(new DateMidnight(from.getTime()), new DateMidnight(to.getTime())).getHours();
 	}
 
 	public static int dateDiffInWeeks(final Date from, final Date to) {

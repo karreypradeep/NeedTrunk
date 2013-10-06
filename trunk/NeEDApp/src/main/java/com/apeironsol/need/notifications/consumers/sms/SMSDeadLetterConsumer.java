@@ -6,8 +6,6 @@
  */
 package com.apeironsol.need.notifications.consumers.sms;
 
-import java.util.Arrays;
-
 import javax.annotation.Resource;
 import javax.jms.JMSException;
 import javax.jms.Message;
@@ -62,7 +60,14 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 		} else if (message instanceof ObjectMessage) {
 			NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
 			BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
-			this.processBatchMesssage(jmsObject, batchLog);
+			BatchLogMessage batchLogMessage = null;
+			if (jmsObject.getStudentAcademicYear() != null) {
+				batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject
+						.getStudentAcademicYear().getId());
+			}
+			if (batchLogMessage == null) {
+				this.processBatchMesssage(jmsObject, batchLog);
+			}
 		}
 	}
 
@@ -79,15 +84,7 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 		try {
 			notificationMessage = smsWorker.sendSMS(null, jmsObject.getStudentAcademicYear(), batchLog);
 		} catch (Throwable exception) {
-			if (notificationMessage == null) {
-				notificationMessage = this.createNotificationMessage(smsWorker.getMessage(jmsObject.getStudentAcademicYear(), batchLog), exception.getMessage()
-						.concat(Arrays.toString(exception.getStackTrace())), BatchLogMessageStatusConstant.FAILED);
-			}
-			Logger.error(exception);
-		} finally {
-			if (notificationMessage == null) {
-				notificationMessage = this.createNotificationMessage("Null pointer", "Null pointer", BatchLogMessageStatusConstant.FAILED);
-			}
+			notificationMessage = this.createNotificationMessage(null, exception.getMessage(), BatchLogMessageStatusConstant.FAILED);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		}
 	}
@@ -102,13 +99,19 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 	private void postProcessElement(final NeEDJMSObject jmsObject, final BatchLog batchLog, final NotificationMessage notificationMessage) {
 		BatchLogMessage batchLogMessage = new BatchLogMessage();
 		batchLogMessage.setBatchLog(batchLog);
-		batchLogMessage.setSendTo(jmsObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
-		batchLogMessage.setStudentAcademicYear(jmsObject.getStudentAcademicYear());
+		if (jmsObject.getStudentAcademicYear() != null && jmsObject.getStudentAcademicYear().getStudent() != null) {
+			batchLogMessage.setStudentAcademicYear(jmsObject.getStudentAcademicYear());
+			batchLogMessage.setSendTo(jmsObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
+		}
 		batchLogMessage.setAuditUsername(jmsObject.getUserName());
-		batchLogMessage.setMessageSent(notificationMessage.getMessage());
+		if (notificationMessage.getMessage() != null) {
+			batchLogMessage.setMessageSent(notificationMessage.getMessage());
+		}
 		batchLogMessage.setMessageSentTime(DateUtil.getSystemDate());
 		batchLogMessage.setBatchLogMessageStatusConstant(notificationMessage.getBatchLogMessageStatus());
-		batchLogMessage.setErrorMessage(notificationMessage.getErrorMessage());
+		if (notificationMessage.getErrorMessage() != null) {
+			batchLogMessage.setErrorMessage(notificationMessage.getErrorMessage());
+		}
 		batchLogMessage.setMessageSentTime(DateUtil.getSystemDate());
 		this.batchLogMessageService.saveBatchLogMessageInNewTransaction(batchLogMessage);
 	}
@@ -116,7 +119,9 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 	private NotificationMessage createNotificationMessage(final String message, final String errorMessage,
 			final BatchLogMessageStatusConstant batchLogMessageStatusConstant) {
 		NotificationMessage notificationMessage = new NotificationMessage();
-		notificationMessage.setMessage(message);
+		if (message != null) {
+			notificationMessage.setMessage(message);
+		}
 		notificationMessage.setErrorMessage(errorMessage);
 		notificationMessage.setBatchLogMessageStatus(batchLogMessageStatusConstant);
 		return notificationMessage;

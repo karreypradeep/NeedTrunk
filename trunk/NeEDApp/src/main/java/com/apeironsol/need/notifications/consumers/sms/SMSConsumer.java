@@ -22,6 +22,7 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
 
+import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorker;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorkerFactory;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
@@ -32,7 +33,6 @@ import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
-import com.apeironsol.framework.NeEDJMSObject;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -76,6 +76,12 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 					Collection<BatchLogMessage> batchLogMessages = this.batchLogMessageService.findBatchLogMessagesByBatchLogId(batchLog.getId());
 					final long totalBatchLogMessages = batchLogMessages != null ? batchLogMessages.size() : 0;
 					if (!BatchStatusConstant.FINISHED.equals(batchLog.getBatchStatusConstant())
+							&& totalBatchLogMessages >= batchLog.getNrElements().longValue()) {
+						this.updateBatchLogToFinished(batchLog);
+					} else if (!BatchStatusConstant.FINISHED.equals(batchLog.getBatchStatusConstant())
+							&& DateUtil.dateDiffInHours(batchLog.getExecutionStartDate(), DateUtil.getSystemDate()) > 1) {
+						this.updateBatchLogToFinished(batchLog);
+					} else if (!BatchStatusConstant.FINISHED.equals(batchLog.getBatchStatusConstant())
 							&& totalBatchLogMessages != batchLog.getNrElements().longValue()) {
 						this.resendLastMessage(batchLog);
 					} else if (batchLog.getNrElements().longValue() > 0) {
@@ -83,7 +89,14 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 					}
 				} else {
 					try {
-						this.processBatchMesssage(jmsObject, batchLog);
+						BatchLogMessage batchLogMessage = null;
+						if (jmsObject.getStudentAcademicYear() != null) {
+							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject
+									.getStudentAcademicYear().getId());
+						}
+						if (batchLogMessage == null) {
+							this.processBatchMesssage(jmsObject, batchLog);
+						}
 					} catch (Exception e) {
 						throw new JMSException(e.getMessage());
 					}
