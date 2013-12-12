@@ -4,10 +4,22 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{studentFinancialBean.fetchStudentFeeTransactionsForPrint}" />
+	</f:metadata>
+	<h:panelGrid columns="2">
+		<p:outputLabel id="studentFeeTransactionStatusLabel" value="Transaction type" for="studentFeeTransactionStatus" />
+		<p:selectOneMenu id="studentFeeTransactionStatus"
+			value="#{studentFinancialBean.studentFeeTransactionStatusConstantForPrint}">
+			<f:selectItem itemLabel="Select Transaction Type" itemValue="" />
+			<f:selectItems value="#{enumConstantsBean.studentFeeTransactionStatusConstants}" var="studentFeeTransactionStatus"
+				itemLabel="#{studentFeeTransactionStatus.label}" itemValue="#{studentFeeTransactionStatus}" />
+			<p:ajax update="@form" process="@this" />
+		</p:selectOneMenu>
+	</h:panelGrid>
 
-	<p:dataTable id="studentFeeTransactions" value="#{studentFinancialBean.studentFeeTransactions}"
+	<p:dataTable id="studentFeeTransactions" value="#{studentFinancialBean.studentFeeTransactionsForPrint}"
 		var="studentFeeTransaction" paginator="false" sortOrder="descending">
-
 
 		<f:facet name="header">
 
@@ -16,6 +28,14 @@
 				<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="selectFeeType" />
 				<f:setPropertyActionListener value="true" target="#{studentFinancialBean.viewingGeneratedReceipt}" />
 			</p:commandButton>
+			<h:commandLink style="float:right;" rendered="#{studentFinancialBean.studentFeeTransactionsForPrint.size()>0}">
+				<p:graphicImage value="/images/excel.png" />
+				<p:dataExporter type="xls" target="studentFeeTransactions" fileName="FeeTransactions" />
+			</h:commandLink>
+			<h:commandLink style="float:right;" rendered="#{studentFinancialBean.studentFeeTransactionsForPrint.size()>0}">
+				<p:graphicImage value="/images/pdf.png" />
+				<p:dataExporter type="pdf" target="studentFeeTransactions" fileName="FeeTransactions" />
+			</h:commandLink>
 
 		</f:facet>
 
@@ -30,7 +50,7 @@
 		<p:column headerText="Transaction Date" style="width:125px"
 			sortBy="#{studentFeeTransactionDO.studentFeeTransaction.transactionDate}">
 			<h:outputText value="#{studentFeeTransaction.transactionDate}">
-				<f:convertDateTime pattern="dd/MM/yyyy hh:mm:ss a" />/>
+				<f:convertDateTime pattern="dd/MM/yyyy" />/>
 			</h:outputText>
 		</p:column>
 
@@ -38,7 +58,7 @@
 			<h:outputText value="#{studentFeeTransaction.studentFeeTransactionType.label}" />
 		</p:column>
 
-		<p:column headerText="Status" style="width:125px">
+		<p:column headerText="Status" style="width:125px" exportable="false">
 			<h:outputText value="#{studentFeeTransaction.studentFeeTransactionStatus.label}" />
 		</p:column>
 
@@ -53,9 +73,9 @@
 		</p:column>
 
 		<p:column headerText="#{msg.options}" styleClass="options-column"
-			rendered="#{grantedAuthorityBean.userAllowedToProcessFeeCancellation}">
-			<p:commandLink id="processTransactionLink" styleClass="ui-icon ui-icon-arrowthick-1-ne"
-				title="Process Transaction" style="margin:0px 0px 0px;float:left;" process="@this" update="@form"
+			rendered="#{grantedAuthorityBean.userAllowedToProcessFeeCancellation}" exportable="false">
+			<p:commandLink id="processTransactionLink" styleClass="ui-icon ui-icon-arrowthick-1-ne" title="Process Transaction"
+				style="margin:0px 0px 0px;float:left;" process="@this" update="@form"
 				action="#{studentFinancialBean.viewPendingFeeTransaction()}"
 				rendered="#{(studentFeeTransaction.statusRequestForRefundOrDeduction || studentFeeTransaction.statusPendingForRefundOrDeductionOrPayment)}">
 
@@ -66,7 +86,7 @@
 				<f:setPropertyActionListener target="#{studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}" value="false" />
 
 			</p:commandLink>
- 
+
 			<p:commandLink id="revertTransactionLink" styleClass="ui-icon ui-icon-arrowreturnthick-1-w" title="Calcel"
 				style="margin:0px 0px 0px;float:right;" process="@this" update="@form"
 				action="#{studentFinancialBean.revertStudentFeeTransaction()}"

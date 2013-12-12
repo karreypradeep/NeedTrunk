@@ -8,6 +8,7 @@ package com.apeironsol.framework;
 
 import java.io.Serializable;
 
+import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 
 public class NeEDJMSObject implements Serializable {
@@ -35,6 +36,11 @@ public class NeEDJMSObject implements Serializable {
 	 * User name of user logged into application.
 	 */
 	private String				userName;
+
+	/**
+	 * User name of user logged into application.
+	 */
+	private SMSProvider			smsProvider;
 
 	/**
 	 * @param batchId
@@ -114,6 +120,21 @@ public class NeEDJMSObject implements Serializable {
 	 */
 	public void setUserName(final String userName) {
 		this.userName = userName;
+	}
+
+	/**
+	 * @return the smsProvider
+	 */
+	public SMSProvider getSmsProvider() {
+		return this.smsProvider;
+	}
+
+	/**
+	 * @param smsProvider
+	 *            the smsProvider to set
+	 */
+	public void setSmsProvider(final SMSProvider smsProvider) {
+		this.smsProvider = smsProvider;
 	}
 
 }

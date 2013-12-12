@@ -84,7 +84,7 @@ public class FeeDueSMSWorker implements SMSWorker {
 			if (feeDue > 0) {
 				notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
 				String smsReturnTest = smsProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
-				if (smsReturnTest.contains(":OK")) {
+				if (smsReturnTest.contains("status")) {
 					notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 				} else {
 					notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.FAILED);

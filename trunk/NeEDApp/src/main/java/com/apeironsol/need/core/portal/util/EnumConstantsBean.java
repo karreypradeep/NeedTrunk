@@ -204,6 +204,10 @@ public class EnumConstantsBean implements Serializable {
 				new StudentFeeTransactionStatusConstant[StudentFeeTransactionStatusConstant.getAllStatusForRequestAndPending().size()]);
 	}
 
+	public StudentFeeTransactionStatusConstant[] getStudentFeeTransactionStatusConstants() {
+		return StudentFeeTransactionStatusConstant.values();
+	}
+
 	public StudentStatusConstant[] getStudentStatusConstantsForSearch() {
 		final StudentStatusConstant[] result = new StudentStatusConstant[] { StudentStatusConstant.ACTIVE, StudentStatusConstant.ALMUNUS,
 				StudentStatusConstant.ACCEPT_FOR_DROPOUT, StudentStatusConstant.DROPOUT };

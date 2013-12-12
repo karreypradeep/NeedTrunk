@@ -129,7 +129,7 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	private void processBatchMesssage(final NeEDJMSObject jmsObject, final BatchLog batchLog) throws Exception {
 		try {
 			SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
-			NotificationMessage notificationMessage = smsWorker.sendSMS(null, jmsObject.getStudentAcademicYear(), batchLog);
+			NotificationMessage notificationMessage = smsWorker.sendSMS("smshorizon", jmsObject.getStudentAcademicYear(), batchLog);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		} catch (Throwable exception) {
 			throw new Exception(exception);

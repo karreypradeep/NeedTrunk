@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.financial.model.BranchExpense;
 import com.apeironsol.need.financial.service.BranchExpenseService;
@@ -32,7 +33,6 @@ import com.apeironsol.need.notifications.providers.sms.SMSProviderFactory;
 import com.apeironsol.need.notifications.service.BranchNotificationService;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
-import com.apeironsol.framework.exception.ApplicationException;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -98,7 +98,7 @@ public class BranchExpenseIncurredSMSWorker implements SMSWorker {
 					notificationMessage.setSentAddress(branchNotification.getContactNumbers());
 					String smsReturnTest = smsProvider.sendSMS(branchNotification.getContactNumbers().contains(",") ? branchNotification.getContactNumbers()
 							.split(",") : new String[] { branchNotification.getContactNumbers() }, smsText);
-					if (smsReturnTest.contains("OK:")) {
+					if (smsReturnTest.contains("status")) {
 						notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 					} else {
 						notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.FAILED);

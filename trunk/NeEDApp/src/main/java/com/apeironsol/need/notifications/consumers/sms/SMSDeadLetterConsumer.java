@@ -82,7 +82,7 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 		NotificationMessage notificationMessage = null;
 		SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
 		try {
-			notificationMessage = smsWorker.sendSMS(null, jmsObject.getStudentAcademicYear(), batchLog);
+			notificationMessage = smsWorker.sendSMS("smshorizon", jmsObject.getStudentAcademicYear(), batchLog);
 		} catch (Throwable exception) {
 			notificationMessage = this.createNotificationMessage(null, exception.getMessage(), BatchLogMessageStatusConstant.FAILED);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);

@@ -14,13 +14,13 @@ import javax.mail.MessagingException;
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.stereotype.Component;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.providers.sms.SMSProvider;
 import com.apeironsol.need.notifications.providers.sms.SMSProviderFactory;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
-import com.apeironsol.framework.exception.ApplicationException;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -50,7 +50,7 @@ public class AdhocSMSWorker implements SMSWorker {
 		if (studentAcademicYear.getStudent().getAddress().getContactNumber() != null) {
 			notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
 			String smsReturnTest = smsProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
-			if (smsReturnTest.contains(":OK")) {
+			if (smsReturnTest.contains("status")) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 				notificationMessage.setMessage(batchLog.getMessage());
 			} else {

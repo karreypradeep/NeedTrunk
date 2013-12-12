@@ -16,6 +16,8 @@ public class SMSProviderFactory {
 		SMSProvider sMSProvider = null;
 		if (provider.equals("smscountry")) {
 			sMSProvider = new SMSCountryProvider();
+		} else if (provider.equals("smshorizon")) {
+			sMSProvider = new SMSHorizonProvider();
 		}
 		return sMSProvider;
 	}

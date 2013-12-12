@@ -120,7 +120,7 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 			// batchLog.getBranch().getBranchTypeConstant().getLabel());
 			notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
 			String smsReturnTest = smsProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
-			if (smsReturnTest.contains(":OK")) {
+			if (smsReturnTest.contains("status")) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 			} else {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.FAILED);

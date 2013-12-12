@@ -123,6 +123,10 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 	private StudentFinancialAcademicYearDO				studentFinancialAcademicYearDO;
 
+	private StudentFeeTransactionStatusConstant			studentFeeTransactionStatusConstantForPrint;
+
+	private Collection<StudentFeeTransaction>			studentFeeTransactionsForPrint;
+
 	public enum PaymentWizard {
 
 		SELECT_FEE_TYPE("selectFeeType"),
@@ -1118,4 +1122,46 @@ public class StudentFinancialBean extends AbstractStudentBean {
 		this.viewTransactionOnProcessPendingFeeLevel = viewTransactionOnProcessPendingFeeLevel;
 	}
 
+	/**
+	 * @return the studentFeeTransactionStatusConstantForPrint
+	 */
+	public StudentFeeTransactionStatusConstant getStudentFeeTransactionStatusConstantForPrint() {
+		return this.studentFeeTransactionStatusConstantForPrint;
+	}
+
+	/**
+	 * @param studentFeeTransactionStatusConstantForPrint
+	 *            the studentFeeTransactionStatusConstantForPrint to set
+	 */
+	public void setStudentFeeTransactionStatusConstantForPrint(final StudentFeeTransactionStatusConstant studentFeeTransactionStatusConstantForPrint) {
+		this.studentFeeTransactionStatusConstantForPrint = studentFeeTransactionStatusConstantForPrint;
+	}
+
+	/**
+	 * @return the studentFeeTransactionsForPrint
+	 */
+	public Collection<StudentFeeTransaction> getStudentFeeTransactionsForPrint() {
+		return this.studentFeeTransactionsForPrint;
+	}
+
+	/**
+	 * @param studentFeeTransactionsForPrint
+	 *            the studentFeeTransactionsForPrint to set
+	 */
+	public void setStudentFeeTransactionsForPrint(final Collection<StudentFeeTransaction> studentFeeTransactionsForPrint) {
+		this.studentFeeTransactionsForPrint = studentFeeTransactionsForPrint;
+	}
+
+	public void fetchStudentFeeTransactionsForPrint() {
+		if (this.studentFeeTransactionStatusConstantForPrint != null) {
+			this.studentFeeTransactionsForPrint = new ArrayList<StudentFeeTransaction>();
+			for (StudentFeeTransaction studentFeeTransaction : this.studentFeeTransactions) {
+				if (this.studentFeeTransactionStatusConstantForPrint.equals(studentFeeTransaction.getStudentFeeTransactionStatus())) {
+					this.studentFeeTransactionsForPrint.add(studentFeeTransaction);
+				}
+			}
+		} else {
+			this.studentFeeTransactionsForPrint = this.studentFeeTransactions;
+		}
+	}
 }

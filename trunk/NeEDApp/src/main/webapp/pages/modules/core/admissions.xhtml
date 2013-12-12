@@ -22,7 +22,7 @@
 
 				<p:toolbarGroup align="right">
 					<p:commandButton id="new_admission" value="New Admission" icon="ui-icon-plus" action="#{admissionBean.newAdmission}" update="@form" process="@this"
-						disabled="#{!grantedAuthorityBean.userAllowedToCreateAdmission}" style="font-weight:bold;">
+						disabled="#{!grantedAuthorityBean.userAllowedToCreateAdmission}" style="font-weight:bold;" tabindex="10000">
 						<f:setPropertyActionListener target="#{admissionBean.loadAcademicYearsForAdmissionsOpenedFlag}" value="true" />
 						<f:setPropertyActionListener target="#{admissionBean.loadActiveKlassesForBranchFlag}" value="true" />
 						<f:setPropertyActionListener target="#{admissionBean.loadActiveBatchesForBranchFlag}" value="true" />
@@ -31,7 +31,7 @@
 					</p:commandButton>
 				</p:toolbarGroup>
 			</p:toolbar>
-			<p:panel style="margin-top:1px;">
+			<p:panel style="margin-top:1px;" >
 				<f:facet name="header">
 					<h:outputLabel value="Search Criteria" style="font-weight:bold;" />
 				</f:facet>
@@ -40,16 +40,16 @@
 					<h:panelGrid columns="2" id="expense_type_grid1" cellpadding="4" style="border:0px;">
 
 						<p:outputLabel id="student_registration_number_search_label" value="Registration number" for="student_registration_number_search" />
-						<p:inputText id="student_registration_number_search" value="#{admissionBean.admissionSearchCriteria.registrationNumber}" size="20">
+						<p:inputText id="student_registration_number_search" value="#{admissionBean.admissionSearchCriteria.registrationNumber}" size="20" onkeypress="if (event.keyCode == 13) {document.getElementById('search_admissions').click(); return false;}">
 						</p:inputText>
 
 						<p:outputLabel id="student_name_search_label" value="Student name" for="student_name_search" />
-						<p:inputText id="student_name_search" value="#{admissionBean.admissionSearchCriteria.name}" size="20">
+						<p:inputText id="student_name_search" value="#{admissionBean.admissionSearchCriteria.name}" size="20" onkeypress="if (event.keyCode == 13) {document.getElementById('search_admissions').click(); return false;}">
 						</p:inputText>
 						
 						<p:outputLabel id="date_of_birth_label" value="Date of birth" for="date_of_birth" />
-						<p:calendar id="date_of_birth" value="#{admissionBean.admissionSearchCriteria.dateOfBirth}" navigator="true" display="inline" effect="drop"
-							pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{admissionBean.currentDate}" />
+						<p:calendar id="date_of_birth" value="#{admissionBean.admissionSearchCriteria.dateOfBirth}" navigator="true" showOn="button"
+							pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{admissionBean.currentDate}" onkeypress="if (event.keyCode == 13) {document.getElementById('search_admissions').click(); return false;}"/>
 
 					</h:panelGrid>
 					<h:panelGrid columns="2" id="admission_search_grid2" cellpadding="4" style="border:0px;">
@@ -78,7 +78,7 @@
 
 
 				<p:commandButton id="search_admissions" value="Search" action="#{admissionBean.searchAdmissionsBySearchCriteria()}" update="@form"
-					icon="ui-icon-search" />
+					icon="ui-icon-search" tabindex="1"/>
 				<p:spacer width="5px" />
 				<p:commandButton id="admission_search_reset" value="Reset" update="@form" action="#{admissionBean.resetSearchCriteria}" process="@this"
 					icon="ui-icon-refresh" />
@@ -101,7 +101,7 @@
 						</h:commandLink>
 					</f:facet>
 
-					<p:column sortBy="#{student.displayName}" filterBy="#{student.displayName}" filterMatchMode="contains">
+					<p:column sortBy="#{student.displayName}" filterBy="#{student.displayName}" filterMatchMode="contains" >
 						<f:facet name="header">
 							Student name
 						</f:facet>
@@ -130,7 +130,7 @@
 						<h:outputText value="#{student.admissionNr}" />
 					</p:column-->
 
-					<p:column sortBy="#{student.externalAdmissionNr}" filterBy="#{student.externalAdmissionNr}" filterMatchMode="contains">
+					<p:column sortBy="#{student.externalAdmissionNr}" filterBy="#{student.externalAdmissionNr}" filterMatchMode="contains" >
 						<f:facet name="header">
 							Ext admission nunber
 						</f:facet>
