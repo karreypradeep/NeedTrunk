@@ -23,6 +23,7 @@ import javax.inject.Named;
 
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.dataobject.StudentAttendanceDO;
 import com.apeironsol.need.core.model.AcademicYearHoliday;
 import com.apeironsol.need.core.model.Attendance;
@@ -40,7 +41,6 @@ import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.AttendanceTypeConstant;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope("session")
@@ -479,7 +479,7 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 	}
 
 	public void submitAttendance() {
-		this.studentAttendanceService.saveStudentAbsents(this.currentattendance, this.studentAttendanceDOs.values());
+		this.currentattendance = this.studentAttendanceService.saveStudentAbsents(this.currentattendance, this.studentAttendanceDOs.values());
 		ViewUtil.addMessage("Attendance submitted successfully.", FacesMessage.SEVERITY_INFO);
 	}
 

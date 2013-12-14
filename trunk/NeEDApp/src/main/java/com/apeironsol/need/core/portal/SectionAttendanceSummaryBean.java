@@ -425,13 +425,29 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	/**
 	 * Return true if date supplied is week end.
 	 * 
+	 * @param date
+	 *            date for which week end has to be checked.
+	 * @return true if date supplied is week end.
+	 */
+	public boolean isSuppliedDateAfterCurrentDate(final String date) {
+		int attDate = Integer.valueOf(date.trim()).intValue();
+		Calendar suppliedDate = Calendar.getInstance();
+		suppliedDate.setTime(this.getAttendanceMonth().getTime());
+		suppliedDate.set(Calendar.DATE, attDate);
+		DateUtil.clearTimeInfo(suppliedDate);
+		return suppliedDate.after(DateUtil.getSystemDate());
+	}
+
+	/**
+	 * Return true if date supplied is week end.
+	 * 
 	 * @param suppliedDate
 	 *            date for which week end has to be checked.
 	 * @return
 	 */
 	private boolean isWeekEnd(final Calendar suppliedDate) {
 		boolean result = false;
-		if (suppliedDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || suppliedDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+		if (suppliedDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
 			result = true;
 		}
 		return result;
@@ -568,7 +584,12 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 			StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
 					this.getCurrentAttendanceDate().getTime());
 			if (studentAttendanceDO != null) {
-				result = studentAttendanceDO.getPresentSubjectsAsString();
+				if (studentAttendanceDO.getStudentAbsentForDailyAttendance() != null) {
+					result = "";
+				} else {
+					result = studentAttendanceDO.getPresentSubjectsAsString();
+				}
+
 			}
 		}
 		return result;
@@ -581,7 +602,62 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 			StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
 					this.getCurrentAttendanceDate().getTime());
 			if (studentAttendanceDO != null) {
-				result = studentAttendanceDO.getAbsentSubjectsAsString();
+				if (studentAttendanceDO.getStudentAbsentForDailyAttendance() != null) {
+					result = this.getCurrentStudentAllSubjects();
+				} else {
+					result = studentAttendanceDO.getAbsentSubjectsAsString();
+				}
+			}
+		}
+		return result;
+	}
+
+	public boolean getCurrentStudentAttendanceTakenSubjectWise() {
+		boolean result = false;
+		if (this.currentStudentAcademicYear != null) {
+			StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
+			if (currentStudentAttendanceMonthlyDO != null) {
+				StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
+						this.getCurrentAttendanceDate().getTime());
+				if (studentAttendanceDO != null) {
+					if (studentAttendanceDO.getStudentAbsentsBySubjectId().size() > 0) {
+						result = true;
+					}
+				}
+			}
+		}
+		return result;
+	}
+
+	public String getCurrentStudentAttendanceStatus() {
+		String result = "Present";
+		if (this.currentStudentAcademicYear != null) {
+			StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
+			if (currentStudentAttendanceMonthlyDO != null) {
+				StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
+						this.getCurrentAttendanceDate().getTime());
+				if (studentAttendanceDO != null) {
+					result = "Absent";
+				}
+			}
+		}
+		return result;
+	}
+
+	public String getCurrentStudentReasonForAbsent() {
+		String result = "NA";
+		StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
+		if (currentStudentAttendanceMonthlyDO != null) {
+			StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
+					this.getCurrentAttendanceDate().getTime());
+			if (studentAttendanceDO != null) {
+				if (studentAttendanceDO.getStudentAbsentForDailyAttendance() != null) {
+					result = studentAttendanceDO.getStudentAbsentForDailyAttendance().getAbsentReason();
+				} else {
+					if (studentAttendanceDO.getStudentAbsentsBySubjectId() != null && studentAttendanceDO.getStudentAbsentsBySubjectId().values().size() > 0) {
+						result = studentAttendanceDO.getStudentAbsentsBySubjectId().values().iterator().next().getAbsentReason();
+					}
+				}
 			}
 		}
 		return result;

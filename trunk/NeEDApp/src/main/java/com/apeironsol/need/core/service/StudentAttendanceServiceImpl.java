@@ -16,13 +16,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.core.dao.StudentAbsentDao;
 import com.apeironsol.need.core.dataobject.StudentAttendanceDO;
 import com.apeironsol.need.core.dataobject.StudentAttendanceMonthlyDO;
 import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.model.StudentAbsent;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Service layer implementation for Student Attendance DAO implementation.
@@ -116,8 +116,8 @@ public class StudentAttendanceServiceImpl implements StudentAttendanceService {
 	}
 
 	@Override
-	public void saveStudentAbsents(final Attendance attendance, final Collection<StudentAttendanceDO> studentAttendanceDOs) {
-		this.studentAbsentDAO.saveStudentAbsents(attendance, studentAttendanceDOs);
+	public Attendance saveStudentAbsents(final Attendance attendance, final Collection<StudentAttendanceDO> studentAttendanceDOs) {
+		return this.studentAbsentDAO.saveStudentAbsents(attendance, studentAttendanceDOs);
 	}
 
 	@Override

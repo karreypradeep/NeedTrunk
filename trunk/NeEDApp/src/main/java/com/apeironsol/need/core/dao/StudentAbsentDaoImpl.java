@@ -281,7 +281,7 @@ public class StudentAbsentDaoImpl extends BaseDaoImpl<StudentAbsent> implements 
 	}
 
 	@Override
-	public void saveStudentAbsents(final Attendance attendance, final Collection<StudentAttendanceDO> studentAttendanceDOs) {
+	public Attendance saveStudentAbsents(final Attendance attendance, final Collection<StudentAttendanceDO> studentAttendanceDOs) {
 		boolean isNew = true;
 		if (attendance.getId() != null) {
 			isNew = false;
@@ -312,13 +312,14 @@ public class StudentAbsentDaoImpl extends BaseDaoImpl<StudentAbsent> implements 
 						studentAttendanceDO.getStudentAcademicYear().getId());
 				if (extistingStudentAbsent != null && studentAbsent == null) {
 					this.remove(extistingStudentAbsent);
-				} else if (studentAbsent != null && studentAbsent.getId() == null) {
+				} else if (extistingStudentAbsent == null && studentAbsent != null && studentAbsent.getId() == null) {
 					studentAbsent.setAttendance(attendanceLocal);
 					this.persist(studentAbsent);
 				}
 
 			}
 		}
+		return attendanceLocal;
 	}
 
 	@Override

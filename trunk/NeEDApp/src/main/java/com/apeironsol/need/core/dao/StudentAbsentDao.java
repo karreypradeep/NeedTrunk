@@ -86,7 +86,7 @@ public interface StudentAbsentDao extends BaseDao<StudentAbsent> {
 
 	StudentAttendanceMonthlyDO getStudentAttendanceDetailsForEntireMonthByStudentAcademicYearIdAndMonth(Long studentAcademicYearId, Date date);
 
-	void saveStudentAbsents(final Attendance attendance, final Collection<StudentAttendanceDO> studentAttendanceDOs);
+	Attendance saveStudentAbsents(final Attendance attendance, final Collection<StudentAttendanceDO> studentAttendanceDOs);
 
 	Map<Long, StudentAttendanceMonthlyDO> getSectionAttendanceDetailsByScetionIdAndFromDateAndToDate(final Long sectionId, final Date fromDate,
 			final Date toDate);

@@ -8,7 +8,6 @@
 		<f:event type="preRenderView" listener="#{sectionAttendanceBean.loadStudentsForSection}" />
 		<f:event type="preRenderView" listener="#{sectionAttendanceBean.loadSectionSubjects}" />
 	</f:metadata>
-		<p:messages id="messages" />
 		<h:panelGrid columns="3" cellpadding="5" cellspacing="5">
 
 			<h:outputLabel for="section_subject" value="Subject:" rendered="#{sectionAttendanceBean.attendanceSubjectWise}"/>

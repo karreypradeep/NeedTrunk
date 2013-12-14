@@ -43,7 +43,7 @@
 				value="#{sectionBean.sectionTabModel.attendanceTab}" />
 		</p:menuitem>
 
-		<p:menuitem value="Facility" icon="ui-icon-bookmark" action="#{sectionTeacherBean.onTabChange}" process="@this"
+		<p:menuitem value="Faculty" icon="ui-icon-bookmark" action="#{sectionTeacherBean.onTabChange}" process="@this"
 			update="@form" disabled="#{sectionBean.disableSubTab}">
 			<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
 				value="#{sectionBean.sectionTabModel.facilityTab}" />

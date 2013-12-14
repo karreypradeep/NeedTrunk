@@ -11,12 +11,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.core.dataobject.StudentAttendanceDO;
 import com.apeironsol.need.core.dataobject.StudentAttendanceMonthlyDO;
 import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.model.StudentAbsent;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Service layer interface for Student Attendance DAO implementation.
@@ -137,7 +137,7 @@ public interface StudentAttendanceService {
 
 	StudentAttendanceDO getStudentAttendanceDetailsByScetionIdAndStudentAcademicYearIdAndDate(Long studentAcademicYearId, Long sectionId, Date date);
 
-	void saveStudentAbsents(final Attendance attendance, final Collection<StudentAttendanceDO> studentAttendanceDOs);
+	Attendance saveStudentAbsents(final Attendance attendance, final Collection<StudentAttendanceDO> studentAttendanceDOs);
 
 	Map<Long, StudentAttendanceMonthlyDO> getSectionAttendanceDetailsByScetionIdAndFromDateAndToDate(final Long sectionId, final Date fromDate,
 			final Date toDate);
