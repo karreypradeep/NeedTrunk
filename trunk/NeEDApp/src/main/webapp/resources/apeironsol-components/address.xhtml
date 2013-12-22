@@ -10,6 +10,7 @@
 	<composite:attribute name="readOnly" displayName="readOnly" type="java.lang.Boolean" default="false"/>
 	<composite:attribute name="showPrimary" displayName="showPrimary" type="java.lang.Boolean" />
 	<composite:attribute name="personAddress" displayName="personAddress" type="java.lang.Boolean" />
+	<composite:attribute name="displayOfficePhoneNumber" displayName="displayOfficePhoneNumber" type="java.lang.Boolean" default="false"/>
 </composite:interface>
 
 <composite:implementation>
@@ -48,6 +49,13 @@
 		<p:outputLabel id="#{cc.attrs.id}_mobilephone_label" value="#{msg.mobileNumber}" for="#{cc.attrs.id}_mobilephone" />
 		<p:inputMask id="#{cc.attrs.id}_mobilephone" value="#{cc.attrs.addressModel.mobileNr}" mask="9999999999" disabled="#{cc.attrs.readOnly}"/>
 		<p:message id="#{cc.attrs.id}_mobilephone_msg" for="#{cc.attrs.id}_mobilephone" />
+
+		<p:outputLabel id="#{cc.attrs.id}_officeNumber_label" value="Office Number" for="#{cc.attrs.id}_officeNumber" rendered="#{cc.attrs.displayOfficePhoneNumber}"/>
+		<p:inputText id="#{cc.attrs.id}_officeNumber" value="#{cc.attrs.addressModel.officePhoneNr}"
+			validatorMessage="Accept only numbers, Min length requried 10, Max length 14. [EG. 0401234567]" disabled="#{cc.attrs.readOnly}" rendered="#{cc.attrs.displayOfficePhoneNumber}">
+			<f:validateRegex pattern="[0-9]{10,14}$" />
+		</p:inputText>
+		<p:message id="#{cc.attrs.id}_officeNumber_msg" for="#{cc.attrs.id}_officeNumber" />
 
 		<p:outputLabel id="#{cc.attrs.id}_homephone_label" value="#{msg.alternativeNumber}" for="#{cc.attrs.id}_homephone" />
 		<p:inputText id="#{cc.attrs.id}_homephone" value="#{cc.attrs.addressModel.homePhoneNr}"

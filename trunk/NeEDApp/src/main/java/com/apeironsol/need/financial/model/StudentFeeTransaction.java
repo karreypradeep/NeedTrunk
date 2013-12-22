@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 
 import com.apeironsol.framework.BaseEntity;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.util.NumberUtil;
 import com.apeironsol.need.util.constants.PaymentMethodConstant;
 import com.apeironsol.need.util.constants.StudentFeeTransactionStatusConstant;
 import com.apeironsol.need.util.constants.StudentFeeTransactionTypeConstant;
@@ -243,4 +244,11 @@ public class StudentFeeTransaction extends BaseEntity implements Serializable {
 		return StudentFeeTransactionStatusConstant.TRANSACTOIN_CANCELLED.equals(this.studentFeeTransactionStatus);
 	}
 
+	public String getTransactionAmountInWords() {
+		String result = "";
+		if (this.amount != 0) {
+			result = NumberUtil.getInWords(this.amount.longValue());
+		}
+		return result;
+	}
 }

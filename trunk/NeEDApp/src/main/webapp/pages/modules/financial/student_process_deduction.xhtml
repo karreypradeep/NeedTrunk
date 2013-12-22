@@ -140,7 +140,7 @@
 				<f:facet name="input">
 					<p:inputText value="#{studentFeeDetailsDO.deductingAmount}">
 						<f:convertNumber pattern="0.00" />
-						<p:ajax process="@this" update="@this" />
+						<p:ajax process="@this" update="@this"  event="change" />
 					</p:inputText>
 				</f:facet>
 

@@ -69,7 +69,7 @@ public class FeeDueSMSWorker implements SMSWorker {
 	public NotificationMessage sendSMS(final String smsProviderName, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
 			throws ClientProtocolException, URISyntaxException, IOException {
 		NotificationMessage notificationMessage = new NotificationMessage();
-		SMSProvider smsProvider = SMSProviderFactory.getSMSWorker(smsProviderName == null ? "smscountry" : smsProviderName);
+		SMSProvider smsProvider = SMSProviderFactory.getSMSWorker(smsProviderName == null ? "smscountry" : "smscountry");
 		Double feeDue = this.studentFinancialService.getStudentFeeDue(studentAcademicYear.getStudent(), studentAcademicYear.getAcademicYear(),
 				DateUtil.getSystemDate());
 		Map<String, String> model = new HashMap<String, String>();

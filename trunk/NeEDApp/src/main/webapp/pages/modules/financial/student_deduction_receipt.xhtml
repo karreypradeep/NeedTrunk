@@ -39,6 +39,8 @@
 		<biz:student_fee_transaction_receipt studentFeeTransactionDOModel="#{studentFinancialBean.studentFeeTransactionDO}"
 			organizationName="#{sessionBean.currentOrganization.name}" branchName="#{sessionBean.currentBranch.name}"
 			className="#{studentFinancialBean.studentCurrentKlassName}"
-			sectionName="#{studentFinancialBean.studentCurrentSectionName}" receiptHeaer="Deduction request confirmation receipt" parentName="#{studentBean.studentParentOrGuardianName}"/>
+			branchAddress="#{sessionBean.currentBranch.address}"
+			sectionName="#{studentFinancialBean.studentCurrentSectionName}" receiptHeaer="Deduction request confirmation receipt"
+			parentName="#{studentBean.studentParentOrGuardianName}" />
 	</p:panel>
 </ui:composition>

@@ -380,6 +380,34 @@ public class StudentFinancialBean extends AbstractStudentBean {
 		return result;
 	}
 
+	public Double getStudentTotalFeePayable() {
+		Double result = 0.0;
+		if (this.studentFinancialDataModel != null) {
+			@SuppressWarnings("unchecked")
+			final List<StudentFinancialDO> studentFinancialDOs = (List<StudentFinancialDO>) this.studentFinancialDataModel.getWrappedData();
+			if (studentFinancialDOs != null) {
+				for (final StudentFinancialDO studentFinancialDO : studentFinancialDOs) {
+					result += studentFinancialDO.getNetFee();
+				}
+			}
+		}
+		return result;
+	}
+
+	public Double getStudentTotalFeePaid() {
+		Double result = 0.0;
+		if (this.studentFinancialDataModel != null) {
+			@SuppressWarnings("unchecked")
+			final List<StudentFinancialDO> studentFinancialDOs = (List<StudentFinancialDO>) this.studentFinancialDataModel.getWrappedData();
+			if (studentFinancialDOs != null) {
+				for (final StudentFinancialDO studentFinancialDO : studentFinancialDOs) {
+					result += studentFinancialDO.getNetFeePaid();
+				}
+			}
+		}
+		return result;
+	}
+
 	public void selectFeeForProcessPayments() {
 
 		if (this.validatePaymentsAction()) {

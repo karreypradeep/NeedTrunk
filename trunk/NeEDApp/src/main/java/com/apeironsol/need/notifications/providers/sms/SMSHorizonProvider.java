@@ -28,9 +28,9 @@ public class SMSHorizonProvider implements SMSProvider {
 	@Override
 	public String sendSMS(final String[] phoneNumbers, final String message) throws ApplicationException {
 		String retval = "";
-		try {
+		/*try {
 			String username = "apeironsol";
-			String password = "inaskpgoud@533";
+			String password = "inaskpgoud@533@1233";
 			StringBuffer mobilenumber = new StringBuffer();
 			String sid = "SMedhV";
 			String reqid = "1";
@@ -44,12 +44,12 @@ public class SMSHorizonProvider implements SMSProvider {
 				}
 				counter++;
 			}
-			/*
+			
 			 * String data += "username=" + URLEncoder.encode(username, "UTF-8")
 			 * + "&password=" + password + "&to=" + mobilenumber + "&message="
 			 * + URLEncoder.encode(message, "UTF-8") + "&sender=" + sid +
 			 * "&reqid=" + reqid + "&route_id=" + route_id;
-			 */
+			 
 
 			String data = URLEncoder.encode("username", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8");
 			data += "&" + URLEncoder.encode("password", "UTF-8") + "=" + URLEncoder.encode(password, "UTF-8");
@@ -82,7 +82,7 @@ public class SMSHorizonProvider implements SMSProvider {
 			System.out.println(retval);
 		} catch (IOException exception) {
 			throw new ApplicationException(exception);
-		}
+		}*/
 		return retval;
 	}
 }

@@ -20,4 +20,10 @@ public class NumberUtil {
 		return result;
 	}
 
+	public static String getInWords(final long number) {
+		String numberInWords = "";
+		final NumberToWordConverter numberInWord = NumberWordCountryFactory.getNumberInWordInstanceFor(Country.INDIA);
+		numberInWords = numberInWord.convertNumberToWord(number);
+		return numberInWords;
+	}
 }

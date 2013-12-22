@@ -25,7 +25,8 @@
 			<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="selectFeeType" />
 		</p:commandButton>
 
-		<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;" rendered="#{studentFinancialBean.viewingGeneratedReceipt}">
+		<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
+			rendered="#{studentFinancialBean.viewingGeneratedReceipt}">
 			<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="viewTransactions" />
 		</p:commandButton>
 
@@ -39,10 +40,12 @@
 		</p:commandButton>
 
 	</h:panelGrid>
-	<p:panel id="payment_receipt">
+	<p:panel id="payment_receipt" style="width:850px;">
 		<biz:student_fee_transaction_receipt studentFeeTransactionDOModel="#{studentFinancialBean.studentFeeTransactionDO}"
 			organizationName="#{sessionBean.currentOrganization.name}" branchName="#{sessionBean.currentBranch.name}"
-			className="#{studentFinancialBean.studentCurrentKlassName}" branchContactNos="#{sessionBean.currentBranch.address.contactNumber}"
-			sectionName="#{studentFinancialBean.studentCurrentSectionName}" receiptHeaer="Payment confirmation receipt" parentName="#{studentBean.studentParentOrGuardianName}"/>
+			branchAddress="#{sessionBean.currentBranch.address}"
+			className="#{studentFinancialBean.studentCurrentKlassName}"
+			sectionName="#{studentFinancialBean.studentCurrentSectionName}" receiptHeaer="Payment confirmation receipt"
+			parentName="#{studentBean.studentParentOrGuardianName}" />
 	</p:panel>
 </ui:composition>

@@ -16,7 +16,7 @@ import com.apeironsol.need.util.portal.ViewUtil;
  */
 public enum StudentExamSubjectStatusConstant implements Labeled {
 
-	ASSIGNED("assigned"), TAKEN("taken"), ABSENT("absent");
+	ASSIGNED("assigned"), TAKEN("taken"), ABSENT("absent"), NOT_APPLICABLE("notApplicable");
 
 	private String	label;
 

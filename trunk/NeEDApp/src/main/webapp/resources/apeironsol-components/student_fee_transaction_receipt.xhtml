@@ -7,161 +7,157 @@
 		type="com.apeironsol.need.util.dataobject.StudentFeeTransactionDO" />
 	<composite:attribute name="organizationName" displayName="organizationName" type="java.lang.String" required="true" />
 	<composite:attribute name="branchName" displayName="branchName" type="java.lang.String" required="true" />
-	<composite:attribute name="branchContactNos" displayName="branchContactNos" type="java.lang.String" required="false" />
 	<composite:attribute name="className" displayName="className" type="java.lang.String" required="true" />
 	<composite:attribute name="sectionName" displayName="sectionName" type="java.lang.String" required="true" />
 	<composite:attribute name="parentName" displayName="parentName" type="java.lang.String" />
 	<composite:attribute name="receiptHeaer" displayName="receiptHeaer" type="java.lang.String" required="true" />
 	<composite:attribute name="showSignature" displayName="showSignature" type="java.lang.Boolean" default="true" />
+	<composite:attribute name="branchAddress" displayName="branchAddress" type="com.apeironsol.need.core.model.Address"
+		required="false" />
 
 </composite:interface>
 
 <composite:implementation>
-
-	<h:panelGrid columns="3"
-		style="margin-top:10px;background-color:rgba(235, 236, 236, 0.69);border-radius:4px;height:50px" width="100%">
-
-		<p:column>
-			<h:outputLabel value="Transaction No :" style="font-weight:bold;" />
-			<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.transactionNr}" />
-		</p:column>
-
-		<p:column>
-			<h:outputLabel value="#{cc.attrs.branchName}" style="font-weight:bold;" />
-		</p:column>
-
-		<p:column>
-			<h:outputLabel value="Transaction Date :" style="font-weight:bold;" />
-			<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.transactionDate}">
-				<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
-			</h:outputLabel>
-		</p:column>
-
-		<p:column>
-			<h:outputLabel value="External Transaction No :"
-				rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.externalTransactionNr !=null}"
-				style="font-weight:bold;" />
-			<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.externalTransactionNr}"
-				rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.externalTransactionNr !=null}" />
-		</p:column>
-
-		<p:column>
-			<h:outputLabel value="Contact No :" style="font-weight:bold;" />
-			<h:outputLabel value="#{cc.attrs.branchContactNos}" />
-		</p:column>
-
-		<p:column>
-			<h:outputLabel value="External Transaction Date :"
-				rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.externalTransactionNr !=null}"
-				style="font-weight:bold;" />
-			<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.externalTransactionDate}"
-				rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.externalTransactionNr !=null}">
-				<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
-			</h:outputLabel>
-		</p:column>
-
-	</h:panelGrid>
-
-	<br />
-
-	<h:panelGrid columns="1" cellpadding="0" width="100%">
-
-		<h:panelGrid columns="2" cellspacing="10" cellpadding="2" width="100%">
+	<p:panel style="width:800px;border:0px">
+		<h:panelGrid columns="1">
 
 			<p:column>
-				<h:outputLabel value="Admission Number : " style="font-weight:bold;" />
-				<h:outputLabel
-					value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentAcademicYear.student.externalAdmissionNr !=null ?cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentAcademicYear.student.externalAdmissionNr :cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentAcademicYear.student.admissionNr}" />
-			</p:column>
-			<p:column>
-				<h:outputLabel value="Student Name : " style="font-weight:bold;" />
-				<h:outputLabel
-					value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentAcademicYear.student.displayName}" />
-			</p:column>
-			<p:column>
-				<h:outputLabel value="Parent/Guardian Name : " style="font-weight:bold;" />
-				<h:outputLabel value="#{cc.attrs.parentName}" />
-			</p:column>
-			<p:column>
-				<h:outputLabel value="Class/Section : " style="font-weight:bold;" />
-				<h:outputLabel value=" #{cc.attrs.className} / #{cc.attrs.sectionName}" />
+				<h:graphicImage value="/images/organizationlogo.png" />
 			</p:column>
 
 			<p:column>
-				<h:outputLabel value="Transaction Type : " style="font-weight:bold;" />
-				<h:outputLabel
-					value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionType.label} (#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionStatus.label } )" />
+				<center>
+					<h:outputLabel value="#{cc.attrs.branchAddress.address}" style="font-size:10px" />
+				</center>
 			</p:column>
-			<p:column rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}">
-				<h:outputLabel value="Payment method : " style="font-weight:bold;" />
-				<c:choose>
-					<c:when  test="${cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod == 'CHEQUE'}">
-						<h:outputLabel
-							value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}/#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.chequeNumber}/#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.bankName} / #{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.bankBranch}" />
-					</c:when>
-					<c:otherwise>
-						<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}"
-							rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}" />
-					</c:otherwise>
-				</c:choose>
+
+			<p:column>
+				<center>
+					<h:outputLabel value="Contact No :" style="font-weight:bold;font-size:10px" />
+					<h:outputLabel value="#{cc.attrs.branchAddress.allContactNumbers}" style="font-size:10px" />
+
+					<h:outputLabel value="Email :" style="font-weight:bold;font-size:10px" rendered="#{cc.attrs.branchAddress.email}" />
+					<h:outputLabel value="#{cc.attrs.branchAddress.email}" rendered="#{cc.attrs.branchAddress.email}"
+						style="font-size:10px" />
+				</center>
+			</p:column>
+
+
+		</h:panelGrid>
+
+		<br />
+
+		<h:panelGrid columns="1" cellpadding="0" width="100%">
+
+			<h:panelGrid columns="2" width="100%">
+
+				<p:column>
+					<h:outputLabel value="Admission Number : " style="font-weight:bold;font-size:10px" />
+					<h:outputLabel style="font-size:10px"
+						value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentAcademicYear.student.externalAdmissionNr !=null ?cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentAcademicYear.student.externalAdmissionNr :cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentAcademicYear.student.admissionNr}" />
+				</p:column>
+				<p:column>
+					<h:outputLabel value="Student Name : " style="font-weight:bold;font-size:10px" />
+					<h:outputLabel style="font-size:10px"
+						value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentAcademicYear.student.displayName}" />
+				</p:column>
+				<p:column>
+					<h:outputLabel value="Parent/Guardian Name : " style="font-weight:bold;font-size:10px" />
+					<h:outputLabel value="#{cc.attrs.parentName}" style="font-size:10px" />
+				</p:column>
+				<p:column>
+					<h:outputLabel value="Class/Section : " style="font-weight:bold;font-size:10px" />
+					<h:outputLabel value=" #{cc.attrs.className} / #{cc.attrs.sectionName}" style="font-size:10px" />
+				</p:column>
+
+				<p:column>
+					<h:outputLabel value="Transaction Type : " style="font-weight:bold;font-size:10px" />
+					<h:outputLabel style="font-size:10px"
+						value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionType.label} (#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionStatus.label } )" />
+				</p:column>
+				<p:column rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}">
+					<h:outputLabel value="Payment method : " style="font-weight:bold;font-size:10px" />
+					<c:choose>
+						<c:when test="${cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod == 'CHEQUE'}">
+							<h:outputLabel style="font-size:10px"
+								value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}/#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.chequeNumber}/#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.bankName} / #{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.bankBranch}" />
+						</c:when>
+						<c:otherwise>
+							<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod.label}"
+								rendered="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.paymentMethod !=null}"
+								style="font-size:10px" />
+						</c:otherwise>
+					</c:choose>
+				</p:column>
+			</h:panelGrid>
+		</h:panelGrid>
+
+		<h:panelGrid style="border:0px">
+			<p:column>
+					<p:spacer width="100" height="0"/>
+					<h:outputLabel value="Total amount paid" style="font-weight:bold;font-size:10px" />
+					<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.amount}"
+						style="color:blue;font-size:14px">
+						<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+					</h:outputLabel>
+			</p:column>
+			<p:column>
+					<p:spacer width="100" height="0"/>
+					<h:outputLabel value="In words Rupees : " style="font-weight:bold;font-size:10px" />
+					<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.transactionAmountInWords}"
+						style="font-size:10px">
+					</h:outputLabel>
+					<h:outputLabel value="Only " style="font-size:10px" />
 			</p:column>
 		</h:panelGrid>
 
-		<h:dataTable value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransactionDetailsDOs}"
-			var="studentFeeTransactionDetailsDO" style="margin-top:10px;" width="100%" cellpadding="5" cellspacing="5">
+		<h:panelGrid columns="2" width="600px">
+			<h:column >
+				<h:panelGrid width="300px">
+					<h:dataTable value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransactionDetailsDOs}"
+						var="studentFeeTransactionDetailsDO">
 
-			<f:facet name="header">
-				<h:outputLabel value="Total amount paid" style="font-weight:bold;" />
-				<h:outputLabel value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.amount}"
-					style="font-weight:bold;color:blue;">
-					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
-				</h:outputLabel>
-			</f:facet>
+						<h:column>
 
-			<h:column style="width:150px">
+							<f:facet name="header">
+								<h:outputLabel value="Towards" style="float:left;font-size:10px" />
+							</f:facet>
 
+							<h:outputText value="#{studentFeeTransactionDetailsDO.feeName}" style="font-size:10px" />
+						</h:column>
+						<!--<h:column>
 
-				<f:facet name="header">
-					<h:outputLabel value="Fee name" style="float:left;" />
-				</f:facet>
+					<f:facet name="header">
+						<h:outputLabel value="Due date" style="float:left;" />
+					</f:facet>
 
-				<h:outputText value="#{studentFeeTransactionDetailsDO.feeName}" style="width:100%" />
+					<h:outputText value="#{studentFeeTransactionDetailsDO.feeDueDate}" style="width:100%">
+						<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
+					</h:outputText>
+
+				</h:column>-->
+
+						<h:column>
+
+							<h:outputText value="#{studentFeeTransactionDetailsDO.studentFeeTransactionDetails.amount}"
+								style="float:right;font-size:10px">
+								<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+							</h:outputText>
+						</h:column>
+
+					</h:dataTable>
+				</h:panelGrid>
 			</h:column>
 			<h:column>
+				<h:panelGrid columns="1" style="margin-top:20px;" rendered="#{cc.attrs.showSignature}">
+					<p:panel style="width:250px;height:50px;float:right;">
 
-				<f:facet name="header">
-					<h:outputLabel value="Due date" style="float:left;" />
-				</f:facet>
-
-				<h:outputText value="#{studentFeeTransactionDetailsDO.feeDueDate}" style="width:100%">
-					<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
-				</h:outputText>
-
+					</p:panel>
+					<h:outputLabel value="Authorized Signatory" style="float:right;margin-right:50px;font-size:10px" />
+				</h:panelGrid>
 			</h:column>
+		</h:panelGrid>
 
-			<h:column style="width:75px">
-
-				<f:facet name="header">
-					<h:outputLabel
-						value="${cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.studentFeeTransactionType.label}"
-						style="float:right;" />
-				</f:facet>
-
-				<h:outputText value="#{studentFeeTransactionDetailsDO.studentFeeTransactionDetails.amount}" style="float:right;">
-					<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
-				</h:outputText>
-			</h:column>
-
-		</h:dataTable>
-
-	</h:panelGrid>
-
-
-	<h:panelGrid columns="1" width="100%" style="margin-top:20px;" rendered="#{cc.attrs.showSignature}">
-		<p:panel style="width:250px;height:50px;float:right;">
-
-		</p:panel>
-		<h:outputLabel value="Authorized Signatory" style="float:right;margin-right:50px" />
-	</h:panelGrid>
+	</p:panel>
 </composite:implementation>
 </html>

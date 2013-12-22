@@ -27,6 +27,7 @@
 		<biz:student_fee_transaction_receipt studentFeeTransactionDOModel="#{studentFinancialBean.studentFeeTransactionDO}"
 			organizationName="#{sessionBean.currentOrganization.name}" branchName="#{sessionBean.currentBranch.name}"
 			className="#{studentFinancialBean.studentCurrentKlassName}"
+			branchAddress="#{sessionBean.currentBranch.address}"
 			sectionName="#{studentFinancialBean.studentCurrentSectionName}" receiptHeaer="Payment confirmation receipt"
 			showSignature="false" parentName="#{studentBean.studentParentOrGuardianName}"/>
 	</p:panel>

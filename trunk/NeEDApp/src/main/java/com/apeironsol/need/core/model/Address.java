@@ -180,4 +180,21 @@ public class Address extends BaseEntity implements Serializable {
 		return "";
 	}
 
+	public String getAllContactNumbers() {
+		String contactNumbers = "";
+		if (!StringUtils.isEmpty(this.mobileNr)) {
+			contactNumbers = this.mobileNr;
+		}
+
+		if (!StringUtils.isEmpty(this.homePhoneNr)) {
+			contactNumbers = !StringUtils.isEmpty(contactNumbers) ? contactNumbers + "/" + this.homePhoneNr : this.homePhoneNr;
+		}
+
+		if (!StringUtils.isEmpty(this.officePhoneNr)) {
+			contactNumbers = !StringUtils.isEmpty(contactNumbers) ? contactNumbers + "/" + this.officePhoneNr : this.officePhoneNr;
+		}
+
+		return contactNumbers;
+	}
+
 }

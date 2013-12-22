@@ -39,21 +39,42 @@
 
 		<f:facet name="header">
 
-			<span style="float: left"> <h:outputLabel value="Fee Due as of" style="font-size: 16px; font-weight:bold;" />
-				<p:spacer width="5" /> <h:outputText value="#{sessionBean.currentDate}" style="font-size: 16px; font-weight:bold">
-					<f:convertDateTime pattern="dd/MM/yyyy :" timeZone="#{sessionBean.defaultTimeZone}" />
-				</h:outputText> <p:spacer width="5" /> <h:outputText value="#{studentFinancialBean.feeDueAsOfToday}"
-					style="font-size: 16px; font-weight:bold;color:red">
-					<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
-				</h:outputText>
+			<span style="float: left"> <h:panelGrid columns="3">
+
+					<h:outputLabel value="Total Fee" style="float: left; font-size: 16px; font-weight:bold;" />
+					<h:outputText value="" />
+					<h:outputText value="#{studentFinancialBean.studentTotalFeePayable}" style="font-size: 16px; font-weight:bold;color:blue">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+
+
+					<h:outputLabel value="Total Fee Paid" style="float: left; font-size: 16px; font-weight:bold;" />
+					<h:outputText value="" />
+					<h:outputText value="#{studentFinancialBean.studentTotalFeePaid}" style="font-size: 16px; font-weight:bold;color:blue">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+				</h:panelGrid>
 			</span>
 
-			<h:outputLabel value="#{studentFinancialBean.studentTotalFeeDue}"
-				style="float: right; font-size: 16px; font-weight:bold;color:blue">
-				<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
-			</h:outputLabel>
-			<p:spacer width="10" style="float: right;" />
-			<h:outputLabel value="Total fee due: " style="float: right; font-size: 16px; font-weight:bold;" />
+			<span style="float: right"> <h:panelGrid columns="3">
+					<h:outputLabel value="Total Fee Due: " style="font-size: 16px; font-weight:bold;" />
+					<p:spacer width="10" style="float: right;" />
+					<h:outputLabel value="#{studentFinancialBean.studentTotalFeeDue}"
+						style="float: right; font-size: 16px; font-weight:bold;color:red">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputLabel>
+
+					<h:outputLabel value="Fee Due as of" style="font-size: 16px; font-weight:bold;" />
+					<h:outputText value="#{sessionBean.currentDate}" style="font-size: 16px; font-weight:bold">
+						<f:convertDateTime pattern="dd/MM/yyyy :" timeZone="#{sessionBean.defaultTimeZone}" />
+					</h:outputText>
+					<h:outputText value="#{studentFinancialBean.feeDueAsOfToday}" style="font-size: 16px; font-weight:bold;color:red">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+
+				</h:panelGrid>
+			</span>
+
 
 		</f:facet>
 		<p:columnGroup type="header">
@@ -201,8 +222,7 @@
 					</h:outputLabel>
 				</p:column>
 				<p:column colspan="1" style="width:100px;text-align:right;font-weight:bold;">
-					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.netFeeDue}"
-						style="white-space: nowrap">
+					<h:outputLabel value="#{studentFinancialBean.studentFinancialAcademicYearDO.netFeeDue}" style="white-space: nowrap">
 						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
 					</h:outputLabel>
 				</p:column>

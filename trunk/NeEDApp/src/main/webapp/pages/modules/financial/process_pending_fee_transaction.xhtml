@@ -1,6 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 
 	<script>
@@ -14,73 +15,82 @@
 	</script>
 
 
-			<c:if test="${studentFinancialBean.studentFeeTransaction.statusRequestForRefundOrDeduction}">
-				<h:panelGrid columns="3">
-					<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
-						rendered="#{studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}"
-						actionListener="#{studentFinancialBean.searchStudentFeeTransactionsByRequest()}">
-						<f:setPropertyActionListener target="#{studentFinancialBean.viewAction}" value="false" />
-					</p:commandButton>
+	<c:if test="${studentFinancialBean.studentFeeTransaction.statusRequestForRefundOrDeduction}">
+		<h:panelGrid columns="3">
+			<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
+				rendered="#{studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}"
+				actionListener="#{studentFinancialBean.searchStudentFeeTransactionsByRequest()}">
+				<f:setPropertyActionListener target="#{studentFinancialBean.viewAction}" value="false" />
+			</p:commandButton>
 
-					<p:commandButton id="back_process_fee_transaction" value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
-						action="#{studentFinancialBean.populateStudentFeeTransactions}" rendered="#{!studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}">
-					</p:commandButton>
+			<p:commandButton id="back_process_fee_transaction" value="Back" icon="ui-icon-circle-arrow-w" update="@form"
+				process="@this" style="float:left;" action="#{studentFinancialBean.populateStudentFeeTransactions}"
+				rendered="#{!studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}">
+			</p:commandButton>
 
-					<p:commandButton value="Approve #{studentFinancialBean.studentFeeTransaction.studentFeeTransactionType.label}" icon="ui-icon-circle-check" update="@form"
-						process="@form" style="float:left;" action="#{studentFinancialBean.approveTransaction}"
-						rendered="#{studentFinancialBean.userHavingRoleToApproveRequestedTransaction}">
-					</p:commandButton>
+			<p:commandButton value="Approve #{studentFinancialBean.studentFeeTransaction.studentFeeTransactionType.label}"
+				icon="ui-icon-circle-check" update="@form" process="@form" style="float:left;"
+				action="#{studentFinancialBean.approveTransaction}"
+				rendered="#{studentFinancialBean.userHavingRoleToApproveRequestedTransaction}">
+			</p:commandButton>
 
-					<p:commandButton value="Reject #{studentFinancialBean.studentFeeTransaction.studentFeeTransactionType.label}" icon="ui-icon-circle-close" update="@form"
-						process="@form" style="float:left;" action="#{studentFinancialBean.rejectTransaction}"
-						rendered="#{studentFinancialBean.userHavingRoleToRejectRequestedTransaction}">
-					</p:commandButton>
-				</h:panelGrid>
-			</c:if>
-			<c:if test="${studentFinancialBean.studentFeeTransaction.statusPendingForRefundOrDeductionOrPayment}">
-				<h:panelGrid columns="2">
-					<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
-						rendered="#{studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}"
-						actionListener="#{studentFinancialBean.searchStudentFeeTransactionsByRequest()}">
-						<f:setPropertyActionListener target="#{studentFinancialBean.viewAction}" value="false" />
-					</p:commandButton>
+			<p:commandButton value="Reject #{studentFinancialBean.studentFeeTransaction.studentFeeTransactionType.label}"
+				icon="ui-icon-circle-close" update="@form" process="@form" style="float:left;"
+				action="#{studentFinancialBean.rejectTransaction}"
+				rendered="#{studentFinancialBean.userHavingRoleToRejectRequestedTransaction}">
+			</p:commandButton>
+		</h:panelGrid>
+	</c:if>
+	<c:if test="${studentFinancialBean.studentFeeTransaction.statusPendingForRefundOrDeductionOrPayment}">
+		<h:panelGrid columns="2">
+			<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
+				rendered="#{studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}"
+				actionListener="#{studentFinancialBean.searchStudentFeeTransactionsByRequest()}">
+				<f:setPropertyActionListener target="#{studentFinancialBean.viewAction}" value="false" />
+			</p:commandButton>
 
-					<p:commandButton id="back_process_fee_transaction" value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
-						action="#{studentFinancialBean.populateStudentFeeTransactions}" rendered="#{!studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}">
-					</p:commandButton>
+			<p:commandButton id="back_process_fee_transaction" value="Back" icon="ui-icon-circle-arrow-w" update="@form"
+				process="@this" style="float:left;" action="#{studentFinancialBean.populateStudentFeeTransactions}"
+				rendered="#{!studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}">
+			</p:commandButton>
 
-					<p:commandButton value="Process #{studentFinancialBean.studentFeeTransaction.studentFeeTransactionType.label}" icon="ui-icon-circle-check" update="@form"
-						process="@form" style="float:left;" action="#{studentFinancialBean.processPendingTransaction}"
-						rendered="#{studentFinancialBean.userHavingRoleToProcessRequestedTransaction}">
-					</p:commandButton>
-				</h:panelGrid>
-			</c:if>
-			<c:if test="${studentFinancialBean.studentFeeTransaction.statusProcessedForRefundOrDeductionOrPayment}">
-				<h:panelGrid columns="2">
-					<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
-						rendered="#{studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}"
-						actionListener="#{studentFinancialBean.searchStudentFeeTransactionsByRequest()}">
-						<f:setPropertyActionListener target="#{studentFinancialBean.viewAction}" value="false" />
-					</p:commandButton>
+			<p:commandButton value="Process #{studentFinancialBean.studentFeeTransaction.studentFeeTransactionType.label}"
+				icon="ui-icon-circle-check" update="@form" process="@form" style="float:left;"
+				action="#{studentFinancialBean.processPendingTransaction}"
+				rendered="#{studentFinancialBean.userHavingRoleToProcessRequestedTransaction}">
+			</p:commandButton>
+		</h:panelGrid>
+	</c:if>
+	<c:if test="${studentFinancialBean.studentFeeTransaction.statusProcessedForRefundOrDeductionOrPayment}">
+		<h:panelGrid columns="2">
+			<p:commandButton value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
+				rendered="#{studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}"
+				actionListener="#{studentFinancialBean.searchStudentFeeTransactionsByRequest()}">
+				<f:setPropertyActionListener target="#{studentFinancialBean.viewAction}" value="false" />
+			</p:commandButton>
 
-					<p:commandButton id="back_process_fee_transaction" value="Back" icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;"
-						action="#{studentFinancialBean.populateStudentFeeTransactions}" rendered="#{!studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}">
+			<p:commandButton id="back_process_fee_transaction" value="Back" icon="ui-icon-circle-arrow-w" update="@form"
+				process="@this" style="float:left;" action="#{studentFinancialBean.populateStudentFeeTransactions}"
+				rendered="#{!studentFinancialBean.viewTransactionOnProcessPendingFeeLevel}">
 
 
-					</p:commandButton>
+			</p:commandButton>
 
-					<p:commandButton value="Print" type="button" icon="ui-icon-print" ajax="false" style="float:right;"
-						onclick="$(PrimeFaces.escapeClientId('receipt_process_pending_fee_tran')).jqprint();return false;">
-					</p:commandButton>
-				</h:panelGrid>
-			</c:if>
+			<p:commandButton value="Print" type="button" icon="ui-icon-print" ajax="false" style="float:right;"
+				onclick="$(PrimeFaces.escapeClientId('receipt_process_pending_fee_tran')).jqprint();return false;">
+			</p:commandButton>
+		</h:panelGrid>
+	</c:if>
 
-			<p:panel id="receipt_process_pending_fee_tran">
-				<biz:student_fee_transaction_receipt studentFeeTransactionDOModel="#{studentFinancialBean.studentFeeTransactionDO}"
-					organizationName="#{sessionBean.currentOrganization.name}" branchName="#{sessionBean.currentBranch.name}"
-					className="#{studentFinancialBean.studentFeeTransactionDO.className}" sectionName="#{studentFinancialBean.studentFeeTransactionDO.sectionName}"
-					receiptHeaer="#{studentFinancialBean.studentFeeTransactionDO.studentFeeTransaction.studentFeeTransactionType.label} receipt"
-					showSignature="${studentFinancialBean.studentFeeTransaction.statusProcessedForRefundOrDeductionOrPayment}" 
-					parentName=""/>
-			</p:panel>
+	<p:panel id="receipt_process_pending_fee_tran">
+		<biz:student_fee_transaction_receipt studentFeeTransactionDOModel="#{studentFinancialBean.studentFeeTransactionDO}"
+			organizationName="#{sessionBean.currentOrganization.name}" branchName="#{sessionBean.currentBranch.name}"
+			className="#{studentFinancialBean.studentFeeTransactionDO.className}"
+			sectionName="#{studentFinancialBean.studentFeeTransactionDO.sectionName}"
+			branchPincode="#{sessionBean.currentBranch.address.zipCode}"
+			branchAddress="#{sessionBean.currentBranch.address.address}"
+			receiptHeaer="#{studentFinancialBean.studentFeeTransactionDO.studentFeeTransaction.studentFeeTransactionType.label} receipt"
+			showSignature="${studentFinancialBean.studentFeeTransaction.statusProcessedForRefundOrDeductionOrPayment}"
+			parentName="" />
+	</p:panel>
 </ui:composition>

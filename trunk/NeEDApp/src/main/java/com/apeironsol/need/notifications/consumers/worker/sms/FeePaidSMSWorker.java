@@ -67,7 +67,7 @@ public class FeePaidSMSWorker implements SMSWorker {
 	public NotificationMessage sendSMS(final String smsProviderName, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
 			throws ClientProtocolException, URISyntaxException, IOException {
 		NotificationMessage notificationMessage = new NotificationMessage();
-		SMSProvider smsProvider = SMSProviderFactory.getSMSWorker(smsProviderName == null ? "smscountry" : smsProviderName);
+		SMSProvider smsProvider = SMSProviderFactory.getSMSWorker(smsProviderName == null ? "smscountry" : "smscountry");
 		StudentFeeTransaction studentFeeTransaction = this.studentFinancialService.retriveStudentFeeTransactionByTransactionNr(batchLog
 				.getStudentFeeTransactionNr());
 		Map<String, String> model = new HashMap<String, String>();
