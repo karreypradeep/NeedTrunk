@@ -23,7 +23,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("addressService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AddressServiceImpl implements AddressService {
 
 	@Resource

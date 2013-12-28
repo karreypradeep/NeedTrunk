@@ -9,64 +9,148 @@
 			SMS Provider
 		</f:facet>
 		<p:messages id="messages" globalOnly="true" />
-		<h:panelGrid columns="3" id="grid" cellpadding="4" style="border:0px;margin-bottom:10px;">
+		<h:panelGrid columns="6" id="grid1" cellpadding="4" style="border:0px;margin-bottom:10px;">
 
 			<p:outputLabel id="sms_provider_name_label" value="SMS Provider name" for="sms_provider_name" />
 			<p:inputText id="sms_provider_name" value="#{smsProviderBean.smsProvider.smsProviderName}" required="true"
-				maxlength="255" />
+				maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="sms_provider_name_msg" for="sms_provider_name" />
 
 			<p:outputLabel id="scheme_label" value="Scheme" for="scheme" />
-			<p:inputText id="scheme" value="#{smsProviderBean.smsProvider.scheme}" required="true" maxlength="20" />
+			<p:inputText id="scheme" value="#{smsProviderBean.smsProvider.scheme}" required="true" maxlength="20">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="scheme_msg" for="scheme" />
 
 			<p:outputLabel id="host_label" value="Host" for="host" />
-			<p:inputText id="host" value="#{smsProviderBean.smsProvider.host}" required="true" maxlength="255" />
+			<p:inputText id="host" value="#{smsProviderBean.smsProvider.host}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="host_msg" for="host" />
 
 			<p:outputLabel id="path_label" value="Path" for="path" />
-			<p:inputText id="path" value="#{smsProviderBean.smsProvider.path}" required="true" maxlength="255" />
+			<p:inputText id="path" value="#{smsProviderBean.smsProvider.path}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="path_msg" for="path" />
 
 			<p:outputLabel id="userNameKey_label" value="User name key" for="userNameKey" />
-			<p:inputText id="userNameKey" value="#{smsProviderBean.smsProvider.userNameKey}" required="true" maxlength="255" />
+			<p:inputText id="userNameKey" value="#{smsProviderBean.smsProvider.userNameKey}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="userNameKey_msg" for="userNameKey" />
 
 			<p:outputLabel id="userName_label" value="User name" for="userName" />
-			<p:inputText id="userName" value="#{smsProviderBean.smsProvider.userName}" required="true" maxlength="255" />
+			<p:inputText id="userName" value="#{smsProviderBean.smsProvider.userName}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="userName_msg" for="userName" />
 
 			<p:outputLabel id="passwordKey_label" value="Password key" for="passwordKey" />
-			<p:inputText id="passwordKey" value="#{smsProviderBean.smsProvider.passwordKey}" required="true" maxlength="255" />
+			<p:inputText id="passwordKey" value="#{smsProviderBean.smsProvider.passwordKey}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="passwordKey_msg" for="passwordKey" />
 
 			<p:outputLabel id="password_label" value="Password" for="password" />
-			<p:inputText id="password" value="#{smsProviderBean.smsProvider.password}" required="true" maxlength="255" />
+			<p:password id="password" value="#{smsProviderBean.smsProvider.password}" required="true" maxlength="255" redisplay="true">
+			<p:ajax update="@this" process="@this"></p:ajax>
+			</p:password>
 			<p:message id="password_msg" for="password" />
 
 			<p:outputLabel id="senderIdKey_label" value="Sender Id Key" for="senderIdKey" />
-			<p:inputText id="senderIdKey" value="#{smsProviderBean.smsProvider.senderIdKey}" required="true" maxlength="255" />
+			<p:inputText id="senderIdKey" value="#{smsProviderBean.smsProvider.senderIdKey}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="senderIdKey_msg" for="senderIdKey" />
 
 			<p:outputLabel id="senderId_label" value="Sender Id" for="senderId" />
-			<p:inputText id="senderId" value="#{smsProviderBean.smsProvider.senderId}" required="true" maxlength="255" />
+			<p:inputText id="senderId" value="#{smsProviderBean.smsProvider.senderId}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="senderId_msg" for="senderId" />
 
 			<p:outputLabel id="toKey_label" value="To Key" for="toKey" />
-			<p:inputText id="toKey" value="#{smsProviderBean.smsProvider.toKey}" required="true" maxlength="255" />
+			<p:inputText id="toKey" value="#{smsProviderBean.smsProvider.toKey}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="toKey_msg" for="toKey" />
 
 			<p:outputLabel id="messageKey_label" value="Message Key" for="messageKey" />
-			<p:inputText id="messageKey" value="#{smsProviderBean.smsProvider.messageKey}" required="true" maxlength="255" />
+			<p:inputText id="messageKey" value="#{smsProviderBean.smsProvider.messageKey}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="messageKey_msg" for="messageKey" />
 
 			<p:outputLabel id="routeKey_label" value="Route Key" for="routeKey" />
-			<p:inputText id="routeKey" value="#{smsProviderBean.smsProvider.routeKey}" required="true" maxlength="255" />
+			<p:inputText id="routeKey" value="#{smsProviderBean.smsProvider.routeKey}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="routeKey_msg" for="routeKey" />
 
 			<p:outputLabel id="route_label" value="Route" for="route" />
-			<p:inputText id="route" value="#{smsProviderBean.smsProvider.route}" required="true" maxlength="255" />
+			<p:inputText id="route" value="#{smsProviderBean.smsProvider.route}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
 			<p:message id="route_msg" for="route" />
+
+			<p:outputLabel id="success_string_label" value="Success string" for="success_string" />
+			<p:inputText id="success_string" value="#{smsProviderBean.smsProvider.successString}" required="true" maxlength="255">
+				<p:ajax update="@this" process="@this"></p:ajax>
+			</p:inputText>
+			<p:message id="success_string_msg" for="success_string" />
+
+		</h:panelGrid>
+
+		<h:panelGrid columns="9" id="grid2" cellpadding="4" style="border:0px;margin-bottom:10px;">
+
+			<p:outputLabel id="add_para1_req_label" for="add_para1_req" value="Use Addtional Parameter1" />
+			<p:selectBooleanCheckbox id="add_para1_req" value="#{smsProviderBean.smsProvider.useAdditionalParameter1}">
+				<p:ajax update="@form" process="@this"></p:ajax>
+			</p:selectBooleanCheckbox>
+			<p:message id="add_para1_req_msg" for="add_para1_req" />
+
+			<p:outputLabel id="add_para1_Key_label" value="Additional Parameter1 Key" for="add_para1_key"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1}" />
+			<p:inputText id="add_para1_key" value="#{smsProviderBean.smsProvider.additionalParameter1Key}" maxlength="255"
+				required="true" rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1}" />
+			<p:message id="add_para1_key_msg" for="add_para1_key"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1}" />
+
+			<p:outputLabel id="add_para1_value_label" value="Additional Parameter1 Value" for="add_para1_value"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1}" />
+			<p:inputText id="add_para1_value" value="#{smsProviderBean.smsProvider.additionalParameter1Value}" maxlength="255"
+				required="true" rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1}" />
+			<p:message id="add_para1_value_msg" for="add_para1_value"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1}" />
+		</h:panelGrid>
+		<h:panelGrid columns="9" id="grid3" cellpadding="4" style="border:0px;margin-bottom:10px;">
+
+			<p:outputLabel id="add_para2_req_label" for="add_para2_req" value="Use Addtional Parameter2" />
+			<p:selectBooleanCheckbox id="add_para2_req" value="#{smsProviderBean.smsProvider.useAdditionalParameter2}"
+				disabled="#{!smsProviderBean.smsProvider.useAdditionalParameter1}">
+				<p:ajax update="@form" process="@this"></p:ajax>
+			</p:selectBooleanCheckbox>
+			<p:message id="add_para2_req_msg" for="add_para2_req"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1 and smsProviderBean.smsProvider.useAdditionalParameter2 }" />
+
+			<p:outputLabel id="add_para2_key_label" value="Additional Parameter2 Key" for="add_para2_key"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1 and smsProviderBean.smsProvider.useAdditionalParameter2 }" />
+			<p:inputText id="add_para2_key" value="#{smsProviderBean.smsProvider.additionalParameter2Key}" maxlength="255"
+				required="true"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1 and smsProviderBean.smsProvider.useAdditionalParameter2 }" />
+			<p:message id="add_para2_key_msg" for="add_para2_key"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1 and smsProviderBean.smsProvider.useAdditionalParameter2 }" />
+
+			<p:outputLabel id="add_para2_value_label" value="Additional Parameter2 Value" for="add_para2_value"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1 and smsProviderBean.smsProvider.useAdditionalParameter2 }" />
+			<p:inputText id="add_para2_value" value="#{smsProviderBean.smsProvider.additionalParameter2Value}" maxlength="255"
+				required="true"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1 and smsProviderBean.smsProvider.useAdditionalParameter2 }" />
+			<p:message id="add_para2_value_msg" for="add_para2_value"
+				rendered="#{smsProviderBean.smsProvider.useAdditionalParameter1 and smsProviderBean.smsProvider.useAdditionalParameter2 }" />
 		</h:panelGrid>
 
 		<p:commandButton id="batch_cancle" value="Back" process="@this" update="@form" icon="ui-icon-circle-arrow-w">

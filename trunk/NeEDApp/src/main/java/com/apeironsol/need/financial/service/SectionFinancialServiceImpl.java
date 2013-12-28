@@ -36,7 +36,7 @@ import com.apeironsol.need.util.dataobject.StudentFinancialAcademicYearDO;
  * 
  */
 @Service("sectionFinancialService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SectionFinancialServiceImpl implements SectionFinancialService {
 
 	@Resource

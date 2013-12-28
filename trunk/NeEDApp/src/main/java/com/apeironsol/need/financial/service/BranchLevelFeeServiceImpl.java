@@ -47,7 +47,7 @@ import com.apeironsol.framework.exception.SystemException;
  * 
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchLevelFeeServiceImpl implements BranchLevelFeeService {
 
 	@Resource

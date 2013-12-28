@@ -7,10 +7,11 @@ import javax.mail.MessagingException;
 
 import org.apache.http.client.ClientProtocolException;
 
+import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
-import com.apeironsol.framework.exception.ApplicationException;
 
 public interface SMSWorker {
 
@@ -21,7 +22,7 @@ public interface SMSWorker {
 	 *            studentAcademicYear.
 	 * @throws MessagingException
 	 */
-	NotificationMessage sendSMS(final String smsProviderName, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
+	NotificationMessage sendSMS(final SMSProvider smsProvider, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
 			throws ClientProtocolException, URISyntaxException, IOException;
 
 	/**

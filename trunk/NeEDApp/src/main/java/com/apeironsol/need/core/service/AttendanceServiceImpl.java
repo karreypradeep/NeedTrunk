@@ -26,7 +26,7 @@ import com.apeironsol.need.core.model.Section;
  *         StudentAttendance
  */
 @Service("attendanceService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AttendanceServiceImpl implements AttendanceService {
 
 	@Resource

@@ -30,7 +30,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("branchFeeTypePeriodicalService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchFeeTypePeriodicalServiceImpl implements BranchFeeTypePeriodicalService {
 
 	private static final Logger	log	= Logger.getLogger(BranchFeeTypePeriodicalServiceImpl.class);

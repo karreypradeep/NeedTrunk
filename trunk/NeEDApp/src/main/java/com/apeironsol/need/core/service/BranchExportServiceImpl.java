@@ -50,7 +50,7 @@ import com.apeironsol.framework.exception.ApplicationException;
  * 
  */
 @Service("branchExportService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchExportServiceImpl implements BranchExportService {
 
 	@Resource

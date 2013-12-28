@@ -29,7 +29,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("studentPocketMoneyService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentPocketMoneyServiceImpl implements StudentPocketMoneyService {
 
 	@Resource

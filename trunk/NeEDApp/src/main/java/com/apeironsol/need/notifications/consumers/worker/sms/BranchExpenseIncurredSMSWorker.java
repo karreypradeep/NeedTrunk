@@ -22,14 +22,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.financial.model.BranchExpense;
 import com.apeironsol.need.financial.service.BranchExpenseService;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.model.BranchNotification;
-import com.apeironsol.need.notifications.providers.sms.SMSProvider;
-import com.apeironsol.need.notifications.providers.sms.SMSProviderFactory;
+import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
 import com.apeironsol.need.notifications.service.BranchNotificationService;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
@@ -71,7 +71,7 @@ public class BranchExpenseIncurredSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final String smsProviderName, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
+	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
 			throws ClientProtocolException, URISyntaxException, IOException {
 		NotificationMessage notificationMessage = new NotificationMessage();
 		if (batchLog.getNotificationLevelId() != null) {
@@ -88,7 +88,7 @@ public class BranchExpenseIncurredSMSWorker implements SMSWorker {
 					smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 				}
 				notificationMessage.setMessage(smsText);
-				SMSProvider smsProvider = SMSProviderFactory.getSMSWorker(smsProviderName == null ? "smscountry" : smsProviderName);
+				UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 				BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(batchLog
 						.getBranch().getId(), NotificationSubTypeConstant.EXPENSES_INCURRED_NOTIFICATION);
 				if (branchNotification.getMinimumAmount() != null && branchExpense.getAmount() < branchNotification.getMinimumAmount()) {
@@ -96,9 +96,9 @@ public class BranchExpenseIncurredSMSWorker implements SMSWorker {
 					notificationMessage.setErrorMessage("Expense entered is less than minimum amount required for sending SMS.");
 				} else if (branchNotification.getContactNumbers() != null) {
 					notificationMessage.setSentAddress(branchNotification.getContactNumbers());
-					String smsReturnTest = smsProvider.sendSMS(branchNotification.getContactNumbers().contains(",") ? branchNotification.getContactNumbers()
-							.split(",") : new String[] { branchNotification.getContactNumbers() }, smsText);
-					if (smsReturnTest.contains("status")) {
+					String smsReturnTest = universalSMSProvider.sendSMS(branchNotification.getContactNumbers().contains(",") ? branchNotification
+							.getContactNumbers().split(",") : new String[] { branchNotification.getContactNumbers() }, smsText);
+					if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 						notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 					} else {
 						notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.FAILED);

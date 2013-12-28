@@ -27,6 +27,7 @@ public enum NotificationSubTypeConstant implements Labeled {
 	ABSENT_NOTIFICATION("absent_notification", true, false, false, false),
 	EXAM_ABSENT_NOTIFICATION("exam_absent_notification", true, false, false, false),
 	EXAM_SCHEDULE_NOTIFICATION("exam_schedule_notification", true, false, false, false),
+	NEW_ADMISSION_NOTIFICATION("new_admission_notification", false, false, true, true),
 	ADHOC_NOTIFICATION("adhoc_notification", true, true, false, false);
 
 	private String											label;
@@ -53,6 +54,7 @@ public enum NotificationSubTypeConstant implements Labeled {
 		brachNotifications.add(ABSENT_NOTIFICATION);
 		brachNotifications.add(EXAM_ABSENT_NOTIFICATION);
 		brachNotifications.add(EXAM_SCHEDULE_NOTIFICATION);
+		brachNotifications.add(NEW_ADMISSION_NOTIFICATION);
 	}
 
 	/**

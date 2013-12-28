@@ -36,7 +36,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("userAccountService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserAccountServiceImpl implements UserAccountService {
 
 	@Resource

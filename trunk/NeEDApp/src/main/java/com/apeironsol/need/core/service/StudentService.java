@@ -16,14 +16,15 @@ package com.apeironsol.need.core.service;
 import java.util.Collection;
 import java.util.Map;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.core.model.Address;
 import com.apeironsol.need.core.model.EducationHistory;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.model.StudentSection;
+import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
 import com.apeironsol.need.util.searchcriteria.StudentSearchCriteria;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 public interface StudentService {
 
@@ -37,6 +38,17 @@ public interface StudentService {
 	 *             In case of exception.
 	 */
 	Student saveStudent(Student student) throws BusinessException;
+
+	/**
+	 * Saves student.
+	 * 
+	 * @param student
+	 *            student to be saved.
+	 * @return
+	 * @throws BusinessException
+	 *             In case of exception.
+	 */
+	void deleteStudent(Student student) throws BusinessException;
 
 	/**
 	 * Retrieve student by id.
@@ -246,4 +258,47 @@ public interface StudentService {
 	 * @throws SystemException
 	 */
 	Student rollBackDropoutStudent(final Long studentId, final String actionComment) throws BusinessException, SystemException;
+
+	/**
+	 * Find student by admission id.
+	 * 
+	 * @param admissionId
+	 *            admission id.
+	 * @return student by admission id.
+	 */
+	Student findStudentByAdmissionId(Long admissionId);
+
+	/**
+	 * Find all admissions that match the search criteria.
+	 * 
+	 * @param admissionSearchCriteria
+	 *            admission search criteria.
+	 * @return collection of all admissions that match the search
+	 *         criteria.
+	 * @throws BusinessException
+	 *             In case of Exception.
+	 */
+	Collection<Student> findAdmissionsBySearchCriteria(final AdmissionSearchCriteria admissionSearchCriteria);
+
+	/**
+	 * 
+	 * @param admissionNumber
+	 * @return
+	 */
+	Student findActiveStudentByAdmissionNumber(String admissionNumber);
+
+	/**
+	 * 
+	 * @param branchId
+	 * @return
+	 */
+	Long findActiveStudentsCountForBranchId(Long branchId);
+
+	/**
+	 * 
+	 * @param admissionNumber
+	 * @return
+	 */
+	Student findActiveStudentByExternalAdmissionNumberAndBranchId(String externalAdmissionNumber, Long branchId);
+
 }

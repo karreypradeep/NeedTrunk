@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components/notifications">
+	<p:panel style="margin-botton:0px;margin-top:0px;border:0px;" id="klassNotificationPanel">
+		<c:choose>
+			<c:when test="#{branchStudentsNotificationsBean.viewActionString == 'VIEW_SEND_NOTIFICATION'}">
+				<f:metadata>  
+					<f:event type="preRenderView" listener="#{branchStudentsNotificationsBean.loadBranchNotification}" />
+					<f:event type="preRenderView" listener="#{branchStudentsNotificationsBean.getBranchNotificationByNotificationType}" />
+				</f:metadata>
+				<biz:send_notification notificationType="#{branchStudentsNotificationsBean.notificationTypeConstant}"
+					notificationSubType="#{branchStudentsNotificationsBean.notificationSubTypeConstant}"
+					notificationSubTypeConstants="#{branchStudentsNotificationsBean.notificationSubTypeAvailable}"
+					cancelActionMethod="#{branchStudentsNotificationsBean.setViewBatchLogs()}"
+					sendNotificationActionMethod="#{branchStudentsNotificationsBean.sendNotification()}"
+					notificationMessage="#{branchStudentsNotificationsBean.notificationText}" 
+					academicYears="#{branchStudentsNotificationsBean.activeAcademicYears}"
+					academicYearForNotification="#{branchStudentsNotificationsBean.academicYearForNotification}"
+					renderAcademicYearIndicator="true" notificationTypeConstants="#{enumConstantsBean.notificationTypeConstants}"
+					notificationTypeAjaxMethod="#{branchStudentsNotificationsBean.handleNotificationTypeChange()}"
+					notificationSubTypeAjaxMethod="#{branchStudentsNotificationsBean.handleNotificationSubTypeChange()}"
+					academicYearAjaxMethod="#{branchStudentsNotificationsBean.handleAcademicYearChange()}"/>
+			</c:when>
+
+			<c:when test="#{branchStudentsNotificationsBean.viewActionString == 'VIEW_BATCH_LOG_MESSAGES'}">
+				<f:metadata>
+					<f:event type="preRenderView" listener="#{branchStudentsNotificationsBean.loadBatchLogMessagesByBatchLog}" />
+				</f:metadata>
+
+				<biz:batch_log_message_datatable batchLogMessages="#{branchStudentsNotificationsBean.klassBatchLogMessages}"
+					backActionMethod="#{branchStudentsNotificationsBean.setViewBatchLogs}"
+					errorMessage="#{branchStudentsNotificationsBean.batchLogMessageErrorMessage}"
+					messageSent="#{branchStudentsNotificationsBean.batchLogMessageSentMessage}"
+					loadBatchLogsIndicator="#{branchStudentsNotificationsBean.loadBatchLogsFromDB}" />
+
+			</c:when>
+			<c:otherwise>
+				<p:poll listener="#{branchStudentsNotificationsBean.pollListener()}" stop="#{branchStudentsNotificationsBean.batchFinished}"
+					interval="#{branchStudentsNotificationsBean.batchPollInterval}" update="klassNotificationPanel"></p:poll>
+				<p:toolbar style="margin-bottom:1px;">
+					<p:toolbarGroup align="right">
+						<p:commandButton id="view_send_notification" value="New notification" icon="ui-icon-document"
+							action="#{branchStudentsNotificationsBean.setViewSendNotification()}" update="@form"
+							disabled="#{!grantedAuthorityBean.userAllowedToSendNotificationsClass || !branchStudentsNotificationsBean.batchFinished}">
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:panel style="margin-botton:1px;margin-top:1px;">
+					<b>Notification for the branch.</b>
+					<br />
+					<br />
+					<b>Follow the steps to send a new notification</b>
+
+					<ul id="hintList_list" class="ui-datalist-data" type="disc">
+						<li class="ui-datalist-item">New notification can be send by clicking the <b>New notification</b> button.
+						</li>
+						<li class="ui-datalist-item">Notification details can be viewed by clicking the view icon.</li>
+					</ul>
+				</p:panel>
+				<f:metadata>
+					<f:event type="preRenderView" listener="#{branchStudentsNotificationsBean.loadBatchLogsByKlassLevelAndKlassId}" />
+				</f:metadata>
+				<biz:batch_log_datatable batchLogs="#{branchStudentsNotificationsBean.klassBatchLogs}"
+					actionMethod="#{branchStudentsNotificationsBean.setViewBatchLogMessages}"
+					batchLogParameter="#{branchStudentsNotificationsBean.batchLog}"
+					loadBatchLogMessagesIndicator="#{branchStudentsNotificationsBean.loadBatchLogMessagesFromDB}"
+					progressBarProgressValue="#{branchStudentsNotificationsBean.progressBarValue}"
+					batchLogScheduled="#{branchStudentsNotificationsBean.scheduledBatchLog}"
+					numberOfElementsProcesed="#{branchStudentsNotificationsBean.elementsProcessed}" />
+			</c:otherwise>
+		</c:choose>
+	</p:panel>
+</ui:composition>

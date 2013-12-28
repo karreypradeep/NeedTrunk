@@ -42,6 +42,7 @@ import com.apeironsol.need.util.constants.PurchaseOrderTypeConstant;
 import com.apeironsol.need.util.constants.RegistrationTypeConstant;
 import com.apeironsol.need.util.constants.RelationTypeConstant;
 import com.apeironsol.need.util.constants.ResidenceConstant;
+import com.apeironsol.need.util.constants.SMSProvidersConstant;
 import com.apeironsol.need.util.constants.SalaryDeductionTypeConstant;
 import com.apeironsol.need.util.constants.SalaryFrequencyConstant;
 import com.apeironsol.need.util.constants.SalaryTypeConstant;
@@ -261,6 +262,10 @@ public class EnumConstantsBean implements Serializable {
 
 	public StudentReportNamesConstant[] getJasperReportNames() {
 		return StudentReportNamesConstant.getValuesSortedByLabels();
+	}
+
+	public SMSProvidersConstant[] getSMSProviders() {
+		return SMSProvidersConstant.values();
 	}
 
 }

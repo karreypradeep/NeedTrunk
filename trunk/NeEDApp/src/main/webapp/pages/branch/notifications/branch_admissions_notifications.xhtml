@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components/notifications">
+	<p:panel style="margin-botton:0px;margin-top:0px;border:0px;" id="klassNotificationPanel">
+		<c:choose>
+			<c:when test="#{klassNotificationsBean.viewActionString == 'VIEW_SEND_NOTIFICATION'}">
+				<biz:send_notification notificationType="#{klassNotificationsBean.notificationTypeConstant}"
+					notificationSubType="#{klassNotificationsBean.notificationSubTypeConstant}"
+					notificationSubTypeConstants="#{klassNotificationsBean.notificationSubTypeAvailable}"
+					cancelActionMethod="#{klassNotificationsBean.setViewBatchLogs()}"
+					sendNotificationActionMethod="#{klassNotificationsBean.sendNotification()}"
+					notificationMessage="#{klassNotificationsBean.notificationText}"
+					academicYears="#{klassNotificationsBean.activeAcademicYears}"
+					academicYearForNotification="#{klassNotificationsBean.academicYearForNotification}"
+					renderAcademicYearIndicator="true" notificationTypeConstants="#{enumConstantsBean.notificationTypeConstants}"
+					notificationTypeAjaxMethod="#{klassNotificationsBean.handleNotificationTypeChange()}"
+					sectionExams="#{klassNotificationsBean.sectionExams}"
+					notificationSubTypeAjaxMethod="#{klassNotificationsBean.handleNotificationSubTypeChange()}"
+					renderSectionExamIndicator="#{klassNotificationsBean.renderSectionExamIndicator}"
+					selectedSectionExam="#{klassNotificationsBean.selectedSectionExam}" 
+					academicYearAjaxMethod="#{klassNotificationsBean.handleAcademicYearChange()}"/>
+			</c:when>
+
+			<c:when test="#{klassNotificationsBean.viewActionString == 'VIEW_BATCH_LOG_MESSAGES'}">
+				<f:metadata>
+					<f:event type="preRenderView" listener="#{klassNotificationsBean.loadBatchLogMessagesByBatchLog}" />
+				</f:metadata>
+
+				<biz:batch_log_message_datatable batchLogMessages="#{klassNotificationsBean.klassBatchLogMessages}"
+					backActionMethod="#{klassNotificationsBean.setViewBatchLogs}"
+					errorMessage="#{klassNotificationsBean.batchLogMessageErrorMessage}"
+					messageSent="#{klassNotificationsBean.batchLogMessageSentMessage}"
+					loadBatchLogsIndicator="#{klassNotificationsBean.loadBatchLogsFromDB}" />
+
+			</c:when>
+			<c:otherwise>
+				<p:poll listener="#{klassNotificationsBean.pollListener()}" stop="#{klassNotificationsBean.batchFinished}"
+					interval="#{klassNotificationsBean.batchPollInterval}" update="klassNotificationPanel"></p:poll>
+				<p:toolbar style="margin-bottom:1px;">
+					<p:toolbarGroup align="right">
+						<p:commandButton id="view_send_notification" value="New notification" icon="ui-icon-document"
+							action="#{klassNotificationsBean.setViewSendNotification()}" update="@form"
+							disabled="#{!grantedAuthorityBean.userAllowedToSendNotificationsClass || !klassNotificationsBean.batchFinished}">
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:panel style="margin-botton:1px;margin-top:1px;">
+					<b>Notification send for the klass.</b>
+					<br />
+					<br />
+					<b>Follow the steps to send a new notification</b>
+
+					<ul id="hintList_list" class="ui-datalist-data" type="disc">
+						<li class="ui-datalist-item">New notification can be send by clicking the <b>New notification</b> button.
+						</li>
+						<li class="ui-datalist-item">Notification details can be viewed by clicking the view icon.</li>
+					</ul>
+				</p:panel>
+				<f:metadata>
+					<f:event type="preRenderView" listener="#{klassNotificationsBean.loadBatchLogsByKlassLevelAndKlassId}" />
+				</f:metadata>
+				<biz:batch_log_datatable batchLogs="#{klassNotificationsBean.klassBatchLogs}"
+					actionMethod="#{klassNotificationsBean.setViewBatchLogMessages}"
+					batchLogParameter="#{klassNotificationsBean.batchLog}"
+					loadBatchLogMessagesIndicator="#{klassNotificationsBean.loadBatchLogMessagesFromDB}"
+					progressBarProgressValue="#{klassNotificationsBean.progressBarValue}"
+					batchLogScheduled="#{klassNotificationsBean.scheduledBatchLog}"
+					numberOfElementsProcesed="#{klassNotificationsBean.elementsProcessed}" />
+			</c:otherwise>
+		</c:choose>
+	</p:panel>
+</ui:composition>

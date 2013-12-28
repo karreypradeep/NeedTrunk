@@ -12,10 +12,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.apeironsol.need.core.model.SMSProvider;
-import com.apeironsol.need.notifications.dao.SMSProviderDao;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.InvalidArgumentException;
+import com.apeironsol.need.core.model.SMSProvider;
+import com.apeironsol.need.notifications.dao.SMSProviderDao;
+import com.apeironsol.need.util.PasswordEncoder;
 
 /**
  * Service class for batch log.
@@ -23,7 +24,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * @author Pradeep
  */
 @Service("sMSProviderService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SMSProviderServiceImpl implements SMSProviderService {
 
 	@Autowired
@@ -36,6 +37,8 @@ public class SMSProviderServiceImpl implements SMSProviderService {
 
 	@Override
 	public SMSProvider saveSMSProvider(final SMSProvider smsProvider) throws BusinessException, InvalidArgumentException {
+		String encodedPassword = PasswordEncoder.encrypt(smsProvider.getPassword());
+		smsProvider.setPassword(encodedPassword);
 		return this.sMSProviderDao.persist(smsProvider);
 	}
 

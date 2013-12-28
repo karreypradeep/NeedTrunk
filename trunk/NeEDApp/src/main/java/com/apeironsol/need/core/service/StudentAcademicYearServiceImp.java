@@ -24,7 +24,7 @@ import com.apeironsol.need.core.model.StudentAcademicYear;
  * 
  */
 @Service("studentAcademicYearService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentAcademicYearServiceImp implements StudentAcademicYearService {
 
 	@Resource
@@ -42,10 +42,8 @@ public class StudentAcademicYearServiceImp implements StudentAcademicYearService
 	 * {@inheritDoc}
 	 */
 	@Override
-	public StudentAcademicYear findStudentAcademicYearByStudentIdAndAcademicYearId(final Long studentId,
-			final Long academicYearId) {
-		return this.studentAcademicYearDao.findStudentAcademicYearByStudentIdAndAcademicYearId(studentId,
-				academicYearId);
+	public StudentAcademicYear findStudentAcademicYearByStudentIdAndAcademicYearId(final Long studentId, final Long academicYearId) {
+		return this.studentAcademicYearDao.findStudentAcademicYearByStudentIdAndAcademicYearId(studentId, academicYearId);
 	}
 
 	/**
@@ -63,4 +61,23 @@ public class StudentAcademicYearServiceImp implements StudentAcademicYearService
 		return this.studentAcademicYearDao.findStudentCurrentOrMostRecentAcademicYearByStudentId(studentId);
 	}
 
+	@Override
+	public StudentAcademicYear saveStudentAcademicYear(final StudentAcademicYear studentAcademicYear) {
+		return this.studentAcademicYearDao.persist(studentAcademicYear);
+	}
+
+	@Override
+	public void removeStudentAcademicYear(final StudentAcademicYear studentAcademicYear) {
+		this.studentAcademicYearDao.remove(studentAcademicYear);
+	}
+
+	@Override
+	public Collection<StudentAcademicYear> findStudentAcademicYearByStudentId(final Long studentId) {
+		return this.studentAcademicYearDao.findStudentAcademicYearByStudentId(studentId);
+	}
+
+	@Override
+	public void removeStudentAcademicYearByStudendIdAndAcademicYearId(final Long studentId, final Long academicYearId) {
+		this.studentAcademicYearDao.removeStudentAcademicYearByStudendIdAndAcademicYearId(studentId, academicYearId);
+	}
 }

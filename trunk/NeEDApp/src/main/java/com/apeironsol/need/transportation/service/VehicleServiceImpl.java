@@ -26,7 +26,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("vehicleService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class VehicleServiceImpl implements VehicleService {
 
 	@Resource

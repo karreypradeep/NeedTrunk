@@ -282,7 +282,8 @@
 				<p:commandLink value=" SMS Providers" process="org_side_menu" update="@form">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="SMS_PROVIDERS">
 						<f:converter converterId="viewContentConverter" />
-					</f:setPropertyActionListener>
+					</f:setPropertyActionListener>  
+					<f:setPropertyActionListener target="#{smsProviderBean.viewOrNewAction}" value="false" />
 				</p:commandLink>
 			</h:panelGrid>
 		</p:tab>

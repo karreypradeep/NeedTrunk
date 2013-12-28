@@ -27,6 +27,8 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.dao.AddressDao;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Address;
@@ -41,10 +43,12 @@ import com.apeironsol.need.core.model.MedicalHistory;
 import com.apeironsol.need.core.model.Relation;
 import com.apeironsol.need.core.model.Section;
 import com.apeironsol.need.core.model.Student;
+import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.model.StudentStatusHistory;
 import com.apeironsol.need.core.service.AdmissionReservationFeeService;
 import com.apeironsol.need.core.service.BuildingBlockService;
 import com.apeironsol.need.core.service.RelationService;
+import com.apeironsol.need.core.service.StudentAcademicYearFeeSummaryService;
 import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.financial.model.BranchLevelFee;
 import com.apeironsol.need.financial.model.KlassLevelFee;
@@ -65,8 +69,6 @@ import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewPathConstants;
 import com.apeironsol.need.util.portal.ViewUtil;
 import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
-import com.apeironsol.framework.exception.ApplicationException;
-import com.apeironsol.framework.exception.BusinessException;
 
 @Named
 @Scope(value = "session")
@@ -199,6 +201,11 @@ public class AdmissionBean extends AbstractStudentBean {
 	private boolean							reservationFeeDefinedInBranch;
 
 	private boolean							applicationFeeDefinedInBranch;
+
+	private Collection<AdmissionFeeDO>		admissionWavedFeeDOs;
+
+	@Resource
+	StudentAcademicYearFeeSummaryService	studentAcademicYearFeeSummaryService;
 
 	@PostConstruct
 	public void init() {
@@ -628,25 +635,25 @@ public class AdmissionBean extends AbstractStudentBean {
 			if (!this.admissionSearchCriteria.isSearchCriteriaIsEmpty()) {
 				this.searchAdmissionsBySearchCriteria();
 			}
-			
-			if(this.admissionSearchCriteria == null) {
+
+			if (this.admissionSearchCriteria == null) {
 				this.admissionSearchCriteria = new AdmissionSearchCriteria(this.sessionBean.getCurrentBranch());
 			}
-			
+
 			this.admissionSearchCriteria.setName(this.student.getFirstName());
-			
+
 			this.admissionSearchCriteria.setAdmissionStatusConstant(AdmissionStatusConstant.SUBMITTED);
-			
-			searchAdmissionsBySearchCriteria();
-			
+
+			this.searchAdmissionsBySearchCriteria();
+
 			ViewUtil.addMessage("Admission has submitted sucessfully", FacesMessage.SEVERITY_INFO);
 
 			this.loadBranchStudentsFlag = true;
-			
+
 			this.setNewAction(false);
-			
+
 			this.setViewAction(false);
-		
+
 		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
 		} catch (final Throwable e) {
@@ -752,8 +759,10 @@ public class AdmissionBean extends AbstractStudentBean {
 
 			final Section admitForSection = this.sectionService.findSectionById(this.getAdmitForSectionId());
 
-			this.student = this.admissionService.admitStudent(this.student, admitForSection, this.medicalHistory, this.admissionSubmittedDocuments,
-					this.getAdmissionFeeDOs(), this.deductReservationFee, this.skipApplicationFee, this.skipReservationFee);
+			StudentAcademicYear studentAcademicYear = this.admissionService.admitStudent(this.student, admitForSection, this.medicalHistory,
+					this.admissionSubmittedDocuments, this.getAdmissionFeeDOs(), this.deductReservationFee, this.skipApplicationFee, this.skipReservationFee);
+
+			this.studentAcademicYearFeeSummaryService.createStudentAcademicYearFeeSummaryForStudentAcademicYearId(studentAcademicYear.getId());
 
 			ViewUtil.addMessage("Admission state sucessfully changes as admitted.", FacesMessage.SEVERITY_INFO);
 
@@ -856,13 +865,13 @@ public class AdmissionBean extends AbstractStudentBean {
 		// Check points on education
 		if (CONFIRM.equals(event.getOldStep()) && PAYMNET.equals(event.getNewStep())) {
 
-			checkForApplicationFee();
+			this.checkForApplicationFee();
 		}
 
 		this.activeStep = event.getNewStep();
 		return event.getNewStep();
 	}
-	
+
 	private void checkForApplicationFee() {
 		if (this.sessionBean.isBranchHavingApplicationFormFee()) {
 
@@ -874,31 +883,28 @@ public class AdmissionBean extends AbstractStudentBean {
 
 				Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearIdAndBuildingBlockId(
 						this.sessionBean.getCurrentBranch().getId(), this.appliedForAcademicYear.getId(), applicationFeeBuildingBlock.getId());
-				
-				if(branchLevelFees != null && !branchLevelFees.isEmpty()) {
-					
-					
+
+				if (branchLevelFees != null && !branchLevelFees.isEmpty()) {
+
 					ViewUtil.addMessage("This branch requries application form fee for new application, see fee details below.", FacesMessage.SEVERITY_INFO);
-					
-					for(BranchLevelFee branchLevelFee : branchLevelFees) {
-						
-						ViewUtil.addMessage(branchLevelFee.getBuildingBlock().getName() +" : "+ branchLevelFee.getAmount(), FacesMessage.SEVERITY_INFO);
+
+					for (BranchLevelFee branchLevelFee : branchLevelFees) {
+
+						ViewUtil.addMessage(branchLevelFee.getBuildingBlock().getName() + " : " + branchLevelFee.getAmount(), FacesMessage.SEVERITY_INFO);
 					}
-					
+
 				}
 
 			} else {
-				
+
 				ViewUtil.addMessage("Application fee is not defined for this branch.", FacesMessage.SEVERITY_INFO);
-				
+
 			}
 
-			
-
 		} else {
-			
+
 			ViewUtil.addMessage("This branch does not requrie any applicatin fee for new applications", FacesMessage.SEVERITY_INFO);
-			
+
 		}
 
 	}
@@ -1339,10 +1345,10 @@ public class AdmissionBean extends AbstractStudentBean {
 
 	public void resetExistingApplicationFeeDetails() {
 		this.admissionReservationFee.setApplicationFeeExternalTransactionNr(null);
-		
+
 		this.admissionReservationFee.setApplicationFeeExternalTransactionDate(null);
-		
-		checkForApplicationFee();
+
+		this.checkForApplicationFee();
 	}
 
 	public void resetExistingAdmissionReservationFeeDetails() {
@@ -1515,4 +1521,20 @@ public class AdmissionBean extends AbstractStudentBean {
 	public void setApplicationFeeDefinedInBranch(final boolean applicationFeeDefinedInBranch) {
 		this.applicationFeeDefinedInBranch = applicationFeeDefinedInBranch;
 	}
+
+	/**
+	 * @return the admissionWavedFeeDOs
+	 */
+	public Collection<AdmissionFeeDO> getAdmissionWavedFeeDOs() {
+		return this.admissionWavedFeeDOs;
+	}
+
+	/**
+	 * @param admissionWavedFeeDOs
+	 *            the admissionWavedFeeDOs to set
+	 */
+	public void setAdmissionWavedFeeDOs(final Collection<AdmissionFeeDO> admissionWavedFeeDOs) {
+		this.admissionWavedFeeDOs = admissionWavedFeeDOs;
+	}
+
 }

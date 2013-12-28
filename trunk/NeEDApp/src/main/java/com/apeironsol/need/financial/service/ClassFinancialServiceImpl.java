@@ -29,7 +29,7 @@ import com.apeironsol.need.util.dataobject.ClassFinancialDO;
  * 
  */
 @Service("classFinancialService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ClassFinancialServiceImpl implements ClassFinancialService {
 
 	@Resource

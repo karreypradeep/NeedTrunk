@@ -21,11 +21,11 @@ import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
-import com.apeironsol.need.notifications.providers.sms.SMSProvider;
-import com.apeironsol.need.notifications.providers.sms.SMSProviderFactory;
+import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 
 /**
@@ -61,10 +61,10 @@ public class StudentAbsentForExamSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final String smsProviderName, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
+	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
 			throws ClientProtocolException, URISyntaxException, IOException {
 		NotificationMessage notificationMessage = new NotificationMessage();
-		SMSProvider smsProvider = SMSProviderFactory.getSMSWorker(smsProviderName == null ? "smscountry" : smsProviderName);
+		UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 		String smsText = batchLog.getMessage();
 		if (smsText == null || smsText.trim().isEmpty()) {
 			Map<String, String> model = new HashMap<String, String>();
@@ -77,8 +77,8 @@ public class StudentAbsentForExamSMSWorker implements SMSWorker {
 
 		if (studentAcademicYear.getStudent().getAddress().getContactNumber() != null) {
 			notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
-			String smsReturnTest = smsProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
-			if (smsReturnTest.contains("status")) {
+			String smsReturnTest = universalSMSProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
+			if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 			} else {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.FAILED);

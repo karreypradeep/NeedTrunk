@@ -41,7 +41,7 @@ import com.apeironsol.need.util.searchcriteria.SectionSearchCriteria;
  * 
  */
 @Service("sectionService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SectionServiceImpl implements SectionService {
 
 	@Resource

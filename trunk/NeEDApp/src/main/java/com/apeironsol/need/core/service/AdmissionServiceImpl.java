@@ -17,15 +17,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.apeironsol.need.core.dao.AddressDao;
-import com.apeironsol.need.core.dao.AdmissionSubmittedDocumentsDao;
-import com.apeironsol.need.core.dao.BranchDao;
-import com.apeironsol.need.core.dao.EducationHistoryDao;
-import com.apeironsol.need.core.dao.MedicalHistoryDao;
-import com.apeironsol.need.core.dao.StudentAcademicYearDao;
-import com.apeironsol.need.core.dao.StudentDao;
-import com.apeironsol.need.core.dao.StudentSectionDao;
-import com.apeironsol.need.core.dao.StudentStatusHistoryDao;
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Address;
 import com.apeironsol.need.core.model.AdmissionReservationFee;
@@ -42,9 +35,6 @@ import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.model.StudentSection;
 import com.apeironsol.need.core.model.StudentStatusHistory;
-import com.apeironsol.need.financial.dao.StudentFeeDao;
-import com.apeironsol.need.financial.dao.StudentFeeTransactionDao;
-import com.apeironsol.need.financial.dao.StudentFeeTransactionDetailsDao;
 import com.apeironsol.need.financial.model.BranchLevelFee;
 import com.apeironsol.need.financial.model.BranchLevelFeeCatalog;
 import com.apeironsol.need.financial.model.KlassLevelFee;
@@ -57,10 +47,19 @@ import com.apeironsol.need.financial.service.BranchLevelFeeService;
 import com.apeironsol.need.financial.service.KlassLevelFeeService;
 import com.apeironsol.need.financial.service.StudentFinancialService;
 import com.apeironsol.need.financial.service.StudentLevelFeeService;
+import com.apeironsol.need.notifications.model.BatchLog;
+import com.apeironsol.need.notifications.model.BranchNotification;
+import com.apeironsol.need.notifications.service.BatchLogService;
+import com.apeironsol.need.notifications.service.BranchNotificationService;
+import com.apeironsol.need.notifications.service.NotificationService;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.AdmissionStatusConstant;
+import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.FeeClassificationLevelConstant;
 import com.apeironsol.need.util.constants.FeeTypeConstant;
+import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
+import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.constants.PaymentMethodConstant;
 import com.apeironsol.need.util.constants.ResidenceConstant;
 import com.apeironsol.need.util.constants.StudentFeeTransactionStatusConstant;
@@ -70,8 +69,6 @@ import com.apeironsol.need.util.constants.StudentStatusConstant;
 import com.apeironsol.need.util.dataobject.AdmissionFeeDO;
 import com.apeironsol.need.util.portal.ViewUtil;
 import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 /**
  * Service interface implementation for admissions.
@@ -80,38 +77,41 @@ import com.apeironsol.framework.exception.SystemException;
  * 
  */
 @Service("admissionService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AdmissionServiceImpl implements AdmissionService {
 
 	@Resource
-	StudentDao								studentDao;
+	StudentService							studentService;
 
 	@Resource
-	BranchDao								branchDao;
+	BranchService							branchService;
 
 	@Resource
 	SequenceGeneratorService				sequenceGeneratorService;
 
 	@Resource
-	EducationHistoryDao						educationHistoryDao;
+	EducationHistoryService					educationHistoryService;
 
 	@Resource
 	RelationService							relationService;
 
 	@Resource
-	AddressDao								addressDao;
+	AddressService							addressService;
 
 	@Resource
-	StudentStatusHistoryDao					studentStatusHistoryDao;
+	StudentStatusHistoryService				studentStatusHistoryService;
 
 	@Resource
-	StudentSectionDao						studentSectionDao;
+	StudentSectionService					studentSectionService;
 
 	@Resource
-	StudentFeeDao							studentFeeDao;
+	StudentFeeService						studentFeeService;
 
 	@Resource
-	StudentAcademicYearDao					studentAcademicYearDao;
+	StudentFeeTransactionService			studentFeeTransactionService;
+
+	@Resource
+	StudentAcademicYearService				studentAcademicYearService;
 
 	@Resource
 	KlassLevelFeeService					klassLevelFeeService;
@@ -126,16 +126,10 @@ public class AdmissionServiceImpl implements AdmissionService {
 	MedicalHistoryService					medicalHistoryService;
 
 	@Resource
-	MedicalHistoryDao						medicalHistoryDao;
+	AdmissionSubmittedDocumentsService		admissionSubmittedDocumentsService;
 
 	@Resource
-	AdmissionSubmittedDocumentsDao			admissionSubmittedDocumentsDao;
-
-	@Resource
-	StudentFeeTransactionDao				studentFeeTransactionDao;
-
-	@Resource
-	StudentFeeTransactionDetailsDao			studentFeeTransactionDetailsDao;
+	StudentFeeTransactionDetailsService		studentFeeTransactionDetailsService;
 
 	@Resource
 	AdmissionReservationFeeService			admissionReservationFeeService;
@@ -146,6 +140,15 @@ public class AdmissionServiceImpl implements AdmissionService {
 	@Resource
 	StudentAcademicYearFeeSummaryService	studentAcademicYearFeeSummaryService;
 
+	@Resource
+	BranchNotificationService				branchNotificationService;
+
+	@Resource
+	NotificationService						notificationService;
+
+	@Resource
+	BatchLogService							batchLogService;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -154,14 +157,14 @@ public class AdmissionServiceImpl implements AdmissionService {
 			final Collection<EducationHistory> educationHistories, final Long branchId, final AdmissionReservationFee admissionReservationFee,
 			final boolean applicationFeeExternalTransaction, final StudentStatusHistory studentStatusHistory) throws BusinessException, SystemException {
 		try {
-			final Branch branch = this.branchDao.findById(branchId);
+			final Branch branch = this.branchService.findBranchById(branchId);
 
 			if (branch == null) {
 				throw new BusinessException("Unable to find the branch with id : " + branchId);
 			}
 			if (student.getExternalAdmissionNr() != null) {
-				final Student studentWithSameExAdNr = this.studentDao.findActiveStudentByExternalAdmissionNumberAndBranchId(student.getExternalAdmissionNr(),
-						branchId);
+				final Student studentWithSameExAdNr = this.studentService.findActiveStudentByExternalAdmissionNumberAndBranchId(
+						student.getExternalAdmissionNr(), branchId);
 				if (studentWithSameExAdNr != null) {
 					throw new BusinessException("Student with same external admission number " + student.getExternalAdmissionNr()
 							+ " already exists for branch : " + branch.getName());
@@ -178,7 +181,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 			student.setAddress(primaryAddress);
 
 			// student.setStudentStatus(StudentStatusConstant.IN_ADMISSION);
-			final Student result = this.studentDao.persist(student);
+			final Student result = this.studentService.saveStudent(student);
 
 			// student application fee
 			if (admissionReservationFee != null && admissionReservationFee.getApplicationFormFee() != null
@@ -193,7 +196,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 			if (educationHistories != null && !educationHistories.isEmpty()) {
 				for (final EducationHistory educationHistory : educationHistories) {
 					educationHistory.setStudent(result);
-					this.educationHistoryDao.persist(educationHistory);
+					this.educationHistoryService.saveEducationHistory(educationHistory);
 				}
 			}
 
@@ -212,7 +215,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 	@Override
 	public Student anotherReviewAdmission(final Student student, final StudentStatusHistory studentStatusHistory) throws BusinessException, SystemException {
 		try {
-			final Student currentStudent = this.studentDao.findById(student.getId());
+			final Student currentStudent = this.studentService.findStudentById(student.getId());
 
 			if (AdmissionStatusConstant.SUBMITTED.equals(currentStudent.getAdmissionStatus())
 					|| AdmissionStatusConstant.INREVIEW.equals(currentStudent.getAdmissionStatus())) {
@@ -220,7 +223,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 				// Student
 				currentStudent.setAdmissionStatus(AdmissionStatusConstant.INREVIEW);
 				currentStudent.setStudentStatus(StudentStatusConstant.IN_ADMISSION);
-				final Student result = this.studentDao.persist(currentStudent);
+				final Student result = this.studentService.saveStudent(currentStudent);
 
 				// Log student state history
 				this.saveStudentStatusHistory(studentStatusHistory, result, AdmissionStatusConstant.INREVIEW.getLabel());
@@ -240,7 +243,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 	public Student reviewAdmission(final Student student, final StudentStatusHistory studentStatusHistory) throws BusinessException, SystemException {
 		try {
 
-			final Student currentStudent = this.studentDao.findById(student.getId());
+			final Student currentStudent = this.studentService.findStudentById(student.getId());
 
 			if (AdmissionStatusConstant.SUBMITTED.equals(currentStudent.getAdmissionStatus())
 					|| AdmissionStatusConstant.INREVIEW.equals(currentStudent.getAdmissionStatus())) {
@@ -248,7 +251,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 				// Student
 				currentStudent.setAdmissionStatus(AdmissionStatusConstant.REVIEWED);
 				currentStudent.setStudentStatus(StudentStatusConstant.IN_ADMISSION);
-				final Student result = this.studentDao.persist(currentStudent);
+				final Student result = this.studentService.saveStudent(currentStudent);
 
 				// Log student state history
 				this.saveStudentStatusHistory(studentStatusHistory, result, AdmissionStatusConstant.REVIEWED.getLabel());
@@ -269,7 +272,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 			final StudentStatusHistory studentStatusHistory) throws BusinessException, SystemException {
 		try {
 
-			final Student currentStudent = this.studentDao.findById(student.getId());
+			final Student currentStudent = this.studentService.findStudentById(student.getId());
 
 			if (AdmissionStatusConstant.REVIEWED.equals(currentStudent.getAdmissionStatus())) {
 
@@ -278,7 +281,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 				final AcademicYear appliedForAcademicYear = currentStudent.getAppliedForAcademicYear();
 
 				// Create or find student academic year.
-				StudentAcademicYear studentAcademicYear = this.studentAcademicYearDao.findStudentAcademicYearByStudentIdAndAcademicYearId(
+				StudentAcademicYear studentAcademicYear = this.studentAcademicYearService.findStudentAcademicYearByStudentIdAndAcademicYearId(
 						currentStudent.getId(), appliedForAcademicYear.getId());
 
 				if (studentAcademicYear == null) {
@@ -287,13 +290,13 @@ public class AdmissionServiceImpl implements AdmissionService {
 					studentAcademicYear.setAcademicYear(appliedForAcademicYear);
 					studentAcademicYear.setBatch(appliedForBatch);
 					studentAcademicYear.setSequenceNr(Integer.valueOf(1));
-					studentAcademicYear = this.studentAcademicYearDao.persist(studentAcademicYear);
+					studentAcademicYear = this.studentAcademicYearService.saveStudentAcademicYear(studentAcademicYear);
 				}
 
 				currentStudent.setAdmissionStatus(AdmissionStatusConstant.ACCEPTED);
 				currentStudent.setStudentStatus(StudentStatusConstant.ACCEPTED);
 				currentStudent.setAcceptedForKlass(acceptedForKlass);
-				final Student result = this.studentDao.persist(currentStudent);
+				final Student result = this.studentService.saveStudent(currentStudent);
 
 				if (admissionReservationFee.getReservationFee() != null && admissionReservationFee.getReservationFee() > 0) {
 					admissionReservationFee.setReservationFeeAppliedToStudentFees(false);
@@ -316,11 +319,12 @@ public class AdmissionServiceImpl implements AdmissionService {
 	}
 
 	@Override
-	public Student admitStudent(final Student student, final Section admitForSection, final MedicalHistory medicalHistory,
+	@Transactional(rollbackFor = Exception.class)
+	public StudentAcademicYear admitStudent(final Student student, final Section admitForSection, final MedicalHistory medicalHistory,
 			final Collection<BuildingBlock> admissionSubmittedDocuments, final Collection<AdmissionFeeDO> admissionFeeDOs, final boolean deductReservationFee,
 			final boolean skipApplicatinFee, final boolean skipReservationFee) throws BusinessException, SystemException {
 
-		final Student currentStudent = this.studentDao.findById(student.getId());
+		final Student currentStudent = this.studentService.findStudentById(student.getId());
 
 		// Get new admission number.
 		if (currentStudent.getAdmissionNr() == null) {
@@ -332,12 +336,12 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 		student.setStudentStatus(StudentStatusConstant.ACTIVE);
 
-		final Student result = this.studentDao.persist(student);
+		final Student result = this.studentService.saveStudent(student);
 
 		final AcademicYear appliedForAcademicYear = result.getAppliedForAcademicYear();
 
 		// find student academic year.
-		final StudentAcademicYear studentAcademicYear = this.studentAcademicYearDao.findStudentAcademicYearByStudentIdAndAcademicYearId(result.getId(),
+		final StudentAcademicYear studentAcademicYear = this.studentAcademicYearService.findStudentAcademicYearByStudentIdAndAcademicYearId(result.getId(),
 				appliedForAcademicYear.getId());
 
 		if (studentAcademicYear == null) {
@@ -348,7 +352,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 		StudentSection studentSection = null;
 
-		studentSection = this.studentSectionDao.findStudentSectionByStudentAcademicYearIdAndSectionId(studentAcademicYear.getId(), admitForSection.getId());
+		studentSection = this.studentSectionService.findStudentSectionByStudentAcademicYearIdAndSectionId(studentAcademicYear.getId(), admitForSection.getId());
 
 		if (studentSection == null) {
 			studentSection = new StudentSection();
@@ -364,8 +368,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 		studentSection.setActionDate(DateUtil.getSystemDate());
 
-		studentSection = this.studentSectionDao.persist(studentSection);
-
+		studentSection = this.studentSectionService.saveStudentSection(studentSection);
 		final AcademicYear sectionForAcademicYear = studentAcademicYear.getAcademicYear();
 
 		// Add branch level fee.
@@ -378,7 +381,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 			if (studentSection.getStudentAcademicYear().getStudent().getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
 					&& FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())) {
-				// don't create hostel fee.
+				// don't create hostle fee for day scholar
 				continue;
 			}
 
@@ -400,12 +403,11 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 			studentFee.setStudentAcademicYear(studentAcademicYear);
 
-			studentFee = this.studentFeeDao.persist(studentFee);
+			studentFee = this.studentFeeService.saveStudentFee(studentFee);
 
 			studentFees.add(studentFee);
 
 		}
-
 		// Generate student fee
 		final Klass studentInKlass = studentSection.getSection().getKlass();
 
@@ -418,7 +420,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 			if (FeeTypeConstant.HOSTEL_FEE.equals(klassLevelFee.getBuildingBlock().getFeeType())
 					&& studentSection.getStudentAcademicYear().getStudent().getResidence().equals(ResidenceConstant.DAY_SCHOOLER)) {
-				// don't create hostel fee.
+				// don't create hostel fee for day scholar.
 				continue;
 			}
 
@@ -430,22 +432,36 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 			studentFee.setStudentAcademicYear(studentAcademicYear);
 
-			studentFee = this.studentFeeDao.persist(studentFee);
+			studentFee = this.studentFeeService.saveStudentFee(studentFee);
 
 			studentFees.add(studentFee);
 
 		}
 
 		medicalHistory.setStudent(student);
-		this.medicalHistoryDao.persist(medicalHistory);
+		this.medicalHistoryService.saveMedicalHistory(medicalHistory);
 
 		for (final BuildingBlock buildingBlock : admissionSubmittedDocuments) {
 			final AdmissionSubmittedDocuments admissionDocument = new AdmissionSubmittedDocuments();
 			admissionDocument.setStudent(result);
 			admissionDocument.setBuildingBlock(buildingBlock);
-			this.admissionSubmittedDocumentsDao.persist(admissionDocument);
+			this.admissionSubmittedDocumentsService.saveAdmissionSubmittedDocuments(admissionDocument);
 		}
 
+		try {
+			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
+					studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
+			if (branchNotification != null && branchNotification.getSmsIndicator()) {
+				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
+						studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT,
+						NotificationSubTypeConstant.NEW_ADMISSION_NOTIFICATION, null, null);
+				this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+
+		// Process application and reservation fee
 		this.processPayments(studentFees, studentAcademicYear, admissionFeeDOs, deductReservationFee, skipApplicatinFee, skipReservationFee);
 
 		// Log student state history
@@ -453,113 +469,221 @@ public class AdmissionServiceImpl implements AdmissionService {
 		studentStatusHistory.setComments("Student Admitted");
 		this.saveStudentStatusHistory(studentStatusHistory, result, AdmissionStatusConstant.ADMITTED.getLabel());
 
-		this.studentAcademicYearFeeSummaryService.createStudentAcademicYearFeeSummaryForStudentAcademicYearId(studentAcademicYear.getId());
-		return result;
+		return studentAcademicYear;
 	}
 
+	/**
+	 * Process Application form fee and reservation form fee.
+	 * 
+	 * @param studentFees
+	 * @param studentAcademicYear
+	 * @param admissionFeeDOs
+	 * @param deductReservationFee
+	 * @param skipApplicatinFee
+	 * @param skipReservationFee
+	 */
 	private void processPayments(final Collection<StudentFee> studentFees, final StudentAcademicYear studentAcademicYear,
 			final Collection<AdmissionFeeDO> admissionFeeDOs, final boolean deductReservationFee, final boolean skipApplicatinFee,
 			final boolean skipReservationFee) {
 
 		final AdmissionReservationFee admissionReservationFee = this.admissionReservationFeeService.findAdmissionReservationFeeByStudentID(studentAcademicYear
 				.getStudent().getId());
+		StudentFeeTransaction studentFeeTransactionLocal = null;
 		if (admissionReservationFee != null) {
+
+			String applicaionFormFeeExtTxn = null, reservationFormFeeExtTxn = null;
+			boolean appFormFee = false, reserFee = false, createstudentFeeTransaction = false;
+			if (admissionReservationFee.getApplicationFormFee() != null && admissionReservationFee.getApplicationFormFee() > 0d) {
+				applicaionFormFeeExtTxn = admissionReservationFee.getApplicationFeeExternalTransactionNr();
+				appFormFee = true;
+			}
+			if (admissionReservationFee.getReservationFee() != null && admissionReservationFee.getReservationFee() > 0d) {
+				reservationFormFeeExtTxn = admissionReservationFee.getReservationFeeExternalTransactionNr();
+				reserFee = true;
+			}
+
+			if (appFormFee && reserFee && applicaionFormFeeExtTxn == null && reservationFormFeeExtTxn == null) {
+				createstudentFeeTransaction = true;
+			} else if (applicaionFormFeeExtTxn != null && reservationFormFeeExtTxn != null
+					&& reservationFormFeeExtTxn.equalsIgnoreCase(applicaionFormFeeExtTxn)) {
+				createstudentFeeTransaction = true;
+			}
+			// If application fee and reservation fee has same external
+			// transaction then it is same transaction. Create student fee
+			// transaction use same for application and reservation fee.
+			if (createstudentFeeTransaction) {
+				final StudentFeeTransaction studentFeeTransaction = new StudentFeeTransaction();
+
+				final String transactionNr = this.sequenceGeneratorService.getNextTransactionNumberForFeeDeposit();
+
+				studentFeeTransaction.setAmount(admissionReservationFee.getApplicationFormFee() + admissionReservationFee.getReservationFee());
+
+				studentFeeTransaction.setStudentFeeTransactionType(StudentFeeTransactionTypeConstant.PAYMENT);
+
+				studentFeeTransaction.setStudentFeeTransactionStatus(StudentFeeTransactionStatusConstant.PAYMENT_PROCESSED);
+
+				studentFeeTransaction.setTransactionDate(DateUtil.getSystemDate());
+
+				studentFeeTransaction.setPaymentMethod(PaymentMethodConstant.CASH);
+
+				studentFeeTransaction.setStudentAcademicYear(studentAcademicYear);
+
+				studentFeeTransaction.setTransactionNr(transactionNr);
+
+				if (admissionReservationFee.getApplicationFeeExternalTransactionNr() != null
+						&& admissionReservationFee.getApplicationFeeExternalTransactionDate() != null) {
+
+					studentFeeTransaction.setExternalTransactionDate(admissionReservationFee.getApplicationFeeExternalTransactionDate());
+
+					studentFeeTransaction.setExternalTransactionNr(admissionReservationFee.getApplicationFeeExternalTransactionNr());
+				}
+
+				studentFeeTransaction.setComments("Application and Reservation fee transactions");
+
+				studentFeeTransactionLocal = this.studentFeeTransactionService.saveStudentFeeTransaction(studentFeeTransaction);
+			}
+			// Process Application fee
 			if (admissionReservationFee.getApplicationFormFee() != null && admissionReservationFee.getApplicationFormFee() > 0d
 					&& admissionReservationFee.getApplicationFeePaidDate() != null) {
-				// Process Application fee
-				this.processApplicationFee(studentFees, studentAcademicYear, skipApplicatinFee, admissionReservationFee);
+				this.processApplicationFee(studentFees, studentAcademicYear, skipApplicatinFee, admissionReservationFee, studentFeeTransactionLocal);
 			}
+			// Process reservation fee
 			if (admissionReservationFee.getReservationFee() != null && admissionReservationFee.getReservationFee() > 0d
 					&& admissionReservationFee.getReservationFeePaidDate() != null) {
-				// Process reservation fee
-				this.processReservationFee(studentFees, studentAcademicYear, admissionFeeDOs, skipReservationFee, admissionReservationFee);
+				this.processReservationFee(studentFees, studentAcademicYear, admissionFeeDOs, skipReservationFee, admissionReservationFee,
+						studentFeeTransactionLocal);
+			}
+			try {
+				if (studentFeeTransactionLocal != null) {
+					final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
+							studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
+					if (branchNotification != null && branchNotification.getSmsIndicator()) {
+						final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
+								studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT,
+								NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
+						this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+					}
+				}
+			} catch (final Exception e) {
+				e.printStackTrace();
 			}
 		}
 
 	}
 
+	/**
+	 * Process application form fee paid during admission.
+	 * 
+	 * @param studentFees
+	 * @param studentAcademicYear
+	 * @param skipApplicatinFee
+	 * @param admissionReservationFee
+	 * @param studentFeeTxn
+	 */
 	private void processApplicationFee(final Collection<StudentFee> studentFees, final StudentAcademicYear studentAcademicYear,
-			final boolean skipApplicatinFee, final AdmissionReservationFee admissionReservationFee) {
+			final boolean skipApplicatinFee, final AdmissionReservationFee admissionReservationFee, final StudentFeeTransaction studentFeeTxn) {
 		if (admissionReservationFee != null && admissionReservationFee.getApplicationFormFee() != null && skipApplicatinFee) {
 
 			throw new BusinessException("Application fee payment conversion cannot be skipped, because application fee is paid");
 
 		} else if (admissionReservationFee != null && admissionReservationFee.getApplicationFormFee() != null && !skipApplicatinFee) {
+			StudentFeeTransaction studentFeeTransactionLocal = studentFeeTxn;
+			if (studentFeeTxn == null) {
+				final StudentFeeTransaction studentFeeTransaction = new StudentFeeTransaction();
 
-			final double amount = admissionReservationFee.getApplicationFormFee();
+				final String transactionNr = this.sequenceGeneratorService.getNextTransactionNumberForFeeDeposit();
 
+				studentFeeTransaction.setAmount(admissionReservationFee.getApplicationFormFee());
+
+				studentFeeTransaction.setStudentFeeTransactionType(StudentFeeTransactionTypeConstant.PAYMENT);
+
+				studentFeeTransaction.setStudentFeeTransactionStatus(StudentFeeTransactionStatusConstant.PAYMENT_PROCESSED);
+
+				studentFeeTransaction.setTransactionDate(DateUtil.getSystemDate());
+
+				studentFeeTransaction.setPaymentMethod(PaymentMethodConstant.CASH);
+
+				studentFeeTransaction.setStudentAcademicYear(studentAcademicYear);
+
+				studentFeeTransaction.setTransactionNr(transactionNr);
+
+				if (admissionReservationFee.getApplicationFeeExternalTransactionNr() != null
+						&& admissionReservationFee.getApplicationFeeExternalTransactionDate() != null) {
+
+					studentFeeTransaction.setExternalTransactionDate(admissionReservationFee.getApplicationFeeExternalTransactionDate());
+
+					studentFeeTransaction.setExternalTransactionNr(admissionReservationFee.getApplicationFeeExternalTransactionNr());
+				}
+
+				studentFeeTransaction.setComments("Application fee transactions");
+
+				studentFeeTransactionLocal = this.studentFeeTransactionService.saveStudentFeeTransaction(studentFeeTransaction);
+			}
+			this.processFeePayment(studentFees, FeeTypeConstant.APPLICATION_FEE, studentFeeTransactionLocal, admissionReservationFee.getApplicationFormFee());
+			if (studentFeeTxn == null) {
+				try {
+					final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
+							studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
+					if (branchNotification != null && branchNotification.getSmsIndicator()) {
+						final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
+								studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT,
+								NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
+						this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+					}
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	/**
+	 * Process reservation fee paid during admission process.
+	 * 
+	 * @param studentFees
+	 * @param studentAcademicYear
+	 * @param admissionFeeDOs
+	 * @param skipReservationFee
+	 * @param admissionReservationFee
+	 * @param studentFeeTxn
+	 */
+	private void processReservationFee(final Collection<StudentFee> studentFees, final StudentAcademicYear studentAcademicYear,
+			final Collection<AdmissionFeeDO> admissionFeeDOs, final boolean skipReservationFee, final AdmissionReservationFee admissionReservationFee,
+			final StudentFeeTransaction studentFeeTxn) {
+
+		final double amount = admissionReservationFee.getReservationFee();
+		StudentFeeTransaction studentFeeTransactionLocal = studentFeeTxn;
+		if (studentFeeTxn == null) {
 			final StudentFeeTransaction studentFeeTransaction = new StudentFeeTransaction();
 
 			final String transactionNr = this.sequenceGeneratorService.getNextTransactionNumberForFeeDeposit();
 
-			studentFeeTransaction.setAmount(admissionReservationFee.getApplicationFormFee());
+			studentFeeTransaction.setTransactionNr(transactionNr);
+
+			studentFeeTransaction.setAmount(amount);
 
 			studentFeeTransaction.setStudentFeeTransactionType(StudentFeeTransactionTypeConstant.PAYMENT);
 
 			studentFeeTransaction.setStudentFeeTransactionStatus(StudentFeeTransactionStatusConstant.PAYMENT_PROCESSED);
 
-			studentFeeTransaction.setTransactionDate(DateUtil.getSystemDate());
+			studentFeeTransaction.setTransactionDate(admissionReservationFee.getReservationFeePaidDate());
 
 			studentFeeTransaction.setPaymentMethod(PaymentMethodConstant.CASH);
 
 			studentFeeTransaction.setStudentAcademicYear(studentAcademicYear);
 
-			studentFeeTransaction.setTransactionNr(transactionNr);
-
 			if (admissionReservationFee.getApplicationFeeExternalTransactionNr() != null
 					&& admissionReservationFee.getApplicationFeeExternalTransactionDate() != null) {
 
-				studentFeeTransaction.setExternalTransactionDate(admissionReservationFee.getApplicationFeeExternalTransactionDate());
+				studentFeeTransaction.setExternalTransactionDate(admissionReservationFee.getReservationFeeExternalTransactionDate());
 
-				studentFeeTransaction.setExternalTransactionNr(admissionReservationFee.getApplicationFeeExternalTransactionNr());
+				studentFeeTransaction.setExternalTransactionNr(admissionReservationFee.getReservationFeeExternalTransactionNr());
 			}
 
-			studentFeeTransaction.setComments("Application fee transactions");
+			studentFeeTransaction.setComments("Reservation fee transactions");
 
-			final StudentFeeTransaction studentFeeTransactionLocal = this.studentFeeTransactionDao.persist(studentFeeTransaction);
-
-			final double remainingAmount = amount;
-
-			this.processFeePayment(studentFees, FeeTypeConstant.APPLICATION_FEE, studentFeeTransactionLocal, remainingAmount);
-
+			studentFeeTransactionLocal = this.studentFeeTransactionService.saveStudentFeeTransaction(studentFeeTransaction);
 		}
-	}
-
-	private void processReservationFee(final Collection<StudentFee> studentFees, final StudentAcademicYear studentAcademicYear,
-			final Collection<AdmissionFeeDO> admissionFeeDOs, final boolean skipReservationFee, final AdmissionReservationFee admissionReservationFee) {
-
-		final double amount = admissionReservationFee.getReservationFee();
-
-		final StudentFeeTransaction studentFeeTransaction = new StudentFeeTransaction();
-
-		final String transactionNr = this.sequenceGeneratorService.getNextTransactionNumberForFeeDeposit();
-
-		studentFeeTransaction.setTransactionNr(transactionNr);
-
-		studentFeeTransaction.setAmount(amount);
-
-		studentFeeTransaction.setStudentFeeTransactionType(StudentFeeTransactionTypeConstant.PAYMENT);
-
-		studentFeeTransaction.setStudentFeeTransactionStatus(StudentFeeTransactionStatusConstant.PAYMENT_PROCESSED);
-
-		studentFeeTransaction.setTransactionDate(admissionReservationFee.getReservationFeePaidDate());
-
-		studentFeeTransaction.setPaymentMethod(PaymentMethodConstant.CASH);
-
-		studentFeeTransaction.setStudentAcademicYear(studentAcademicYear);
-
-		if (admissionReservationFee.getApplicationFeeExternalTransactionNr() != null
-				&& admissionReservationFee.getApplicationFeeExternalTransactionDate() != null) {
-
-			studentFeeTransaction.setExternalTransactionDate(admissionReservationFee.getReservationFeeExternalTransactionDate());
-
-			studentFeeTransaction.setExternalTransactionNr(admissionReservationFee.getReservationFeeExternalTransactionNr());
-		}
-
-		studentFeeTransaction.setComments("Reservation fee transactions");
-
-		final StudentFeeTransaction studentFeeTransactionLocal = this.studentFeeTransactionDao.persist(studentFeeTransaction);
-
 		if (admissionReservationFee != null && admissionReservationFee.getReservationFee() != null && skipReservationFee) {
 
 			for (final AdmissionFeeDO admissionFeeDO : admissionFeeDOs) {
@@ -599,7 +723,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 								studentFeeTransactionDetails.setStudentFeeTransaction(studentFeeTransactionLocal);
 
-								this.studentFeeTransactionDetailsDao.persist(studentFeeTransactionDetails);
+								this.studentFeeTransactionDetailsService.saveStudentFeeTransactionDetails(studentFeeTransactionDetails);
 
 								if (remainingAmount == 0d) {
 									break;
@@ -637,7 +761,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 								studentFeeTransactionDetails.setStudentFeeTransaction(studentFeeTransactionLocal);
 
-								this.studentFeeTransactionDetailsDao.persist(studentFeeTransactionDetails);
+								this.studentFeeTransactionDetailsService.saveStudentFeeTransactionDetails(studentFeeTransactionDetails);
 
 								if (remainingAmount == 0d) {
 									break;
@@ -657,10 +781,33 @@ public class AdmissionServiceImpl implements AdmissionService {
 			final double remainingAmount = amount;
 
 			this.processFeePayment(studentFees, FeeTypeConstant.RESERVATION_FEE, studentFeeTransactionLocal, remainingAmount);
-
 		}
+
+		try {
+			if (studentFeeTransactionLocal != null) {
+				final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
+						studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
+				if (branchNotification != null && branchNotification.getSmsIndicator()) {
+					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
+							studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT,
+							NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
+					this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+				}
+			}
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
+	/**
+	 * Process fee payments.
+	 * 
+	 * @param studentFees
+	 * @param feeType
+	 * @param studentFeeTransactionLocal
+	 * @param remainingAmount
+	 */
 	private void processFeePayment(final Collection<StudentFee> studentFees, final FeeTypeConstant feeType,
 			final StudentFeeTransaction studentFeeTransactionLocal, double remainingAmount) {
 		double payingAmount;
@@ -694,7 +841,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 					studentFeeTransactionDetails.setStudentFeeTransaction(studentFeeTransactionLocal);
 
-					this.studentFeeTransactionDetailsDao.persist(studentFeeTransactionDetails);
+					this.studentFeeTransactionDetailsService.saveStudentFeeTransactionDetails(studentFeeTransactionDetails);
 
 					if (remainingAmount == 0d) {
 						break;
@@ -728,7 +875,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 					studentFeeTransactionDetails.setStudentFeeTransaction(studentFeeTransactionLocal);
 
-					this.studentFeeTransactionDetailsDao.persist(studentFeeTransactionDetails);
+					this.studentFeeTransactionDetailsService.saveStudentFeeTransactionDetails(studentFeeTransactionDetails);
 
 					if (remainingAmount == 0d) {
 						break;
@@ -762,7 +909,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 					studentFeeTransactionDetails.setStudentFeeTransaction(studentFeeTransactionLocal);
 
-					this.studentFeeTransactionDetailsDao.persist(studentFeeTransactionDetails);
+					this.studentFeeTransactionDetailsService.saveStudentFeeTransactionDetails(studentFeeTransactionDetails);
 
 					if (remainingAmount == 0d) {
 						break;
@@ -785,7 +932,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 			SystemException {
 		try {
 
-			final Student currentStudent = this.studentDao.findById(student.getId());
+			final Student currentStudent = this.studentService.findStudentById(student.getId());
 
 			if (AdmissionStatusConstant.SUBMITTED.equals(currentStudent.getAdmissionStatus())) {
 				throw new BusinessException("Admission state cannot be rollbacked as the state is submitted.");
@@ -812,14 +959,14 @@ public class AdmissionServiceImpl implements AdmissionService {
 			}
 
 			// Persist student
-			final Student result = this.studentDao.persist(currentStudent);
+			final Student result = this.studentService.saveStudent(currentStudent);
 
 			// Log action
 			studentStatusHistory.setActionTakenTime(new Timestamp(DateUtil.getSystemDate().getTime()));
 			studentStatusHistory.setActionTakenBy(ViewUtil.getPrincipal());
 			studentStatusHistory.setStudent(result);
 
-			this.studentStatusHistoryDao.persist(studentStatusHistory);
+			this.studentStatusHistoryService.saveStudentStatusHistory(studentStatusHistory);
 
 			return result;
 		} catch (final Throwable t) {
@@ -835,7 +982,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 	public Student rejectAdmission(final Student student, final StudentStatusHistory studentStatusHistory) throws BusinessException, SystemException {
 		try {
 
-			final Student currentStudent = this.studentDao.findById(student.getId());
+			final Student currentStudent = this.studentService.findStudentById(student.getId());
 
 			if (AdmissionStatusConstant.SUBMITTED.equals(currentStudent.getAdmissionStatus())
 					|| AdmissionStatusConstant.INREVIEW.equals(currentStudent.getAdmissionStatus())
@@ -848,7 +995,8 @@ public class AdmissionServiceImpl implements AdmissionService {
 					final AcademicYear appliedForAcademicYear = currentStudent.getAppliedForAcademicYear();
 
 					// Removing the record from student academic year.
-					this.studentAcademicYearDao.removeStudentAcademicYearByStudendIdAndAcademicYearId(currentStudent.getId(), appliedForAcademicYear.getId());
+					this.studentAcademicYearService.removeStudentAcademicYearByStudendIdAndAcademicYearId(currentStudent.getId(),
+							appliedForAcademicYear.getId());
 
 					currentStudent.setAdmissionStatus(AdmissionStatusConstant.ARCHIVE);
 					currentStudent.setStudentStatus(StudentStatusConstant.ARCHIVE);
@@ -857,7 +1005,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 					currentStudent.setStudentStatus(StudentStatusConstant.REJECTED);
 				}
 
-				final Student result = this.studentDao.persist(currentStudent);
+				final Student result = this.studentService.saveStudent(currentStudent);
 
 				// Log student state history
 				this.saveStudentStatusHistory(studentStatusHistory, result, AdmissionStatusConstant.REJECTED.getLabel());
@@ -882,7 +1030,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 		studentStatusHistory.setActionTakenBy(ViewUtil.getPrincipal());
 		studentStatusHistory.setAction(action);
 		studentStatusHistory.setStudent(result);
-		this.studentStatusHistoryDao.persist(studentStatusHistory);
+		this.studentStatusHistoryService.saveStudentStatusHistory(studentStatusHistory);
 	}
 
 	/**
@@ -893,24 +1041,24 @@ public class AdmissionServiceImpl implements AdmissionService {
 		try {
 			if (AdmissionStatusConstant.SUBMITTED.equals(student.getAdmissionStatus())) {
 
-				final Collection<EducationHistory> educationHistories = this.educationHistoryDao.findEducationHistoriesByStudentId(student.getId());
+				final Collection<EducationHistory> educationHistories = this.educationHistoryService.findEducationHistoriesByStudentId(student.getId());
 
 				for (final EducationHistory educationHistory : educationHistories) {
 
-					this.educationHistoryDao.remove(educationHistory);
+					this.educationHistoryService.removeEducationHistory(educationHistory);
 				}
 
 				this.relationService.removeAllRelations(student);
 
-				final Collection<StudentStatusHistory> studentStatusHistories = this.studentStatusHistoryDao.findStudentStatusHistoryByStudentId(student
+				final Collection<StudentStatusHistory> studentStatusHistories = this.studentStatusHistoryService.findStudentStatusHistoryByStudentId(student
 						.getId());
 
 				for (final StudentStatusHistory studentStatusHistory : studentStatusHistories) {
 
-					this.studentStatusHistoryDao.remove(studentStatusHistory);
+					this.studentStatusHistoryService.removeStudentStatusHistory(studentStatusHistory);
 				}
 
-				this.studentDao.remove(student);
+				this.studentService.deleteStudent(student);
 
 			} else {
 				throw new BusinessException("Admission cannot be removed if the status is " + student.getAdmissionStatus().getLabel());
@@ -924,7 +1072,35 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 	@Override
 	public Collection<Student> findAdmissionsBySearchCriteria(final AdmissionSearchCriteria admissionSearchCriteria) throws BusinessException {
-		return this.studentDao.findAdmissionsBySearchCriteria(admissionSearchCriteria);
+		return this.studentService.findAdmissionsBySearchCriteria(admissionSearchCriteria);
+	}
+
+	/**
+	 * Create batch log for the messages to be sent.
+	 * 
+	 * @param batchSize
+	 *            batch size.
+	 * @param branchId
+	 *            branch id.
+	 * @return batch log created.
+	 */
+	private BatchLog createBatchLog(final Long batchSize, final Long branchId, final Long notificationLevelId,
+			final NotificationTypeConstant notificationTypeConstant, final NotificationLevelConstant notificationLevelConstant,
+			final NotificationSubTypeConstant notificationSubTypeConstant, final String messageToBeSent, final String studentFeeTransactionNr) {
+		BatchLog batchLog = new BatchLog();
+		batchLog.setBatchStatusConstant(batchSize > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+		batchLog.setBranch(this.branchService.findBranchById(branchId));
+		batchLog.setCompletedIndicator(false);
+		batchLog.setExecutionStartDate(DateUtil.getSystemDate());
+		batchLog.setNotificationLevelConstant(notificationLevelConstant);
+		batchLog.setNotificationSubTypeConstant(notificationSubTypeConstant);
+		batchLog.setNotificationTypeConstant(notificationTypeConstant);
+		batchLog.setNrElements(batchSize);
+		batchLog.setNotificationLevelId(notificationLevelId);
+		batchLog.setMessage(messageToBeSent);
+		batchLog.setStudentFeeTransactionNr(studentFeeTransactionNr);
+		batchLog = this.batchLogService.saveBatchLogInNewTransaction(batchLog);
+		return batchLog;
 	}
 
 }

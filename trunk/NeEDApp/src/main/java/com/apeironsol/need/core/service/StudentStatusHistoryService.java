@@ -8,4 +8,8 @@ public interface StudentStatusHistoryService {
 
 	Collection<StudentStatusHistory> findStudentStatusHistoryByStudentId(final Long studentId);
 
+	StudentStatusHistory saveStudentStatusHistory(final StudentStatusHistory studentStatusHistory);
+
+	void removeStudentStatusHistory(final StudentStatusHistory studentStatusHistory);
+
 }

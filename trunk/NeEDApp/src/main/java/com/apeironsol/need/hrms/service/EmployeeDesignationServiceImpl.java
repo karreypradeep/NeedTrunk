@@ -26,7 +26,7 @@ import com.apeironsol.framework.exception.BusinessException;
  *
  */
 @Service("employeeDesignationService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class EmployeeDesignationServiceImpl implements EmployeeDesignationService {
 
 	@Resource

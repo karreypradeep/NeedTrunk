@@ -7,7 +7,7 @@ import org.junit.Test;
  
 
 //@TransactionConfiguration(defaultRollback = false)
-//@Transactional
+//@Transactional(rollbackFor = Exception.class)
 //@RunWith(SpringJUnit4ClassRunner.class)
 //@ContextConfiguration("/test-app-context.xml")
 public class BuildingBlockTest {

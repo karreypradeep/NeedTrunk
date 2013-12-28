@@ -29,7 +29,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("employeeCTCService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class EmployeeCTCServiceImpl implements EmployeeCTCService {
 
 	@Resource

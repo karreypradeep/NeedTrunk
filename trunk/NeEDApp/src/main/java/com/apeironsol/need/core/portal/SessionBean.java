@@ -84,6 +84,11 @@ public class SessionBean implements Serializable {
 	 */
 	private Collection<Klass>				activeKlasses;
 
+	/**
+	 * Collection of all the active classes present in the branch.
+	 */
+	private Collection<Klass>				allKlasses;
+
 	@Resource
 	protected KlassService					klassService;
 
@@ -247,6 +252,7 @@ public class SessionBean implements Serializable {
 		if (this.getCurrentBranch() != null && this.loadActiveKlassesFlag) {
 
 			this.activeKlasses = this.klassService.findActiveKlassesByBranchId(this.getCurrentBranch().getId());
+			this.allKlasses = this.klassService.findKlassesByBranchId(this.getCurrentBranch().getId());
 			this.loadActiveKlassesFlag = false;
 		}
 
@@ -393,5 +399,20 @@ public class SessionBean implements Serializable {
 	 */
 	public void setCurrentBranchRule(final BranchRule currentBranchRule) {
 		this.currentBranchRule = currentBranchRule;
+	}
+
+	/**
+	 * @return the allKlasses
+	 */
+	public Collection<Klass> getAllKlasses() {
+		return this.allKlasses;
+	}
+
+	/**
+	 * @param allKlasses
+	 *            the allKlasses to set
+	 */
+	public void setAllKlasses(final Collection<Klass> allKlasses) {
+		this.allKlasses = allKlasses;
 	}
 }

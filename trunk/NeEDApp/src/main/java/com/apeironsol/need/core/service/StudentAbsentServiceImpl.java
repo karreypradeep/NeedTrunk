@@ -25,7 +25,7 @@ import com.apeironsol.need.core.model.StudentAbsent;
  * 
  */
 @Service("studentAbsentService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentAbsentServiceImpl implements StudentAbsentService {
 
 	@Resource

@@ -25,7 +25,7 @@ import com.apeironsol.need.core.model.Subject;
  * 
  */
 @Service("subjectService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SubjectServiceImpl implements SubjectService {
 
 	@Resource

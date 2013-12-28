@@ -28,7 +28,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("branchDepartmentService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchDepartmentServiceImpl implements BranchDepartmentService {
 
 	@Resource

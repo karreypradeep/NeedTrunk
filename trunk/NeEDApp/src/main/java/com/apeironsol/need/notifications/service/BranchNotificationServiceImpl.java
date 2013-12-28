@@ -25,7 +25,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * @author Pradeep
  */
 @Service("branchNotificationService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchNotificationServiceImpl implements BranchNotificationService {
 
 	@Autowired

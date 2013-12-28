@@ -18,7 +18,7 @@ import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.SystemException;
 
 @Service("sectionExamService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SectionExamServiceImpl implements SectionExamService {
 
 	@Resource

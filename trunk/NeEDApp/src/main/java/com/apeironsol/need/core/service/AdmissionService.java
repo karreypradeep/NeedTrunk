@@ -9,6 +9,8 @@ package com.apeironsol.need.core.service;
 
 import java.util.Collection;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.core.model.Address;
 import com.apeironsol.need.core.model.AdmissionReservationFee;
 import com.apeironsol.need.core.model.BuildingBlock;
@@ -18,11 +20,10 @@ import com.apeironsol.need.core.model.MedicalHistory;
 import com.apeironsol.need.core.model.Relation;
 import com.apeironsol.need.core.model.Section;
 import com.apeironsol.need.core.model.Student;
+import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.model.StudentStatusHistory;
 import com.apeironsol.need.util.dataobject.AdmissionFeeDO;
 import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 /**
  * Service interface for Admission.
@@ -122,7 +123,7 @@ public interface AdmissionService {
 	 * @throws SystemException
 	 *             In case of exception.
 	 */
-	Student admitStudent(final Student student, final Section admitForSection, final MedicalHistory medicalHistory,
+	StudentAcademicYear admitStudent(final Student student, final Section admitForSection, final MedicalHistory medicalHistory,
 			final Collection<BuildingBlock> admissionSubmittedDocuments, Collection<AdmissionFeeDO> admissionFeeDOs, final boolean deductReservationFee,
 			final boolean skipApplicatinFee, final boolean skipReservationFee) throws BusinessException, SystemException;
 

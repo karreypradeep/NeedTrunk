@@ -24,10 +24,12 @@
 		<composite:attribute name="notificationTypeAjaxMethod" required="true" method-signature="java.lang.String action()" />
 		<composite:attribute name="notificationSubTypeAjaxMethod"  required="true" method-signature="java.lang.String action()" />
 
-		<composite:attribute name="sectionExams" required="true" />
-		<composite:attribute name="renderSectionExamIndicator" default="true" />
-		<composite:attribute name="selectedSectionExam" required="true" />
+		<composite:attribute name="sectionExams"  />
+		<composite:attribute name="renderSectionExamIndicator" default="false" />  
+		<composite:attribute name="selectedSectionExam" />
 
+		<composite:attribute name="renderClassIndicator" default="false" />
+		<composite:attribute name="renderSectionIndicator" default="false" />
 	</composite:interface>
 
 	<composite:implementation>

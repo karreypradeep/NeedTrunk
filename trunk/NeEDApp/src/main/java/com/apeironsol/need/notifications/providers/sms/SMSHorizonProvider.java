@@ -13,7 +13,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-
+ 
 import com.apeironsol.framework.exception.ApplicationException;
 
 /**
@@ -23,9 +23,8 @@ import com.apeironsol.framework.exception.ApplicationException;
  * 
  * @author Pradeep
  */
-public class SMSHorizonProvider implements SMSProvider {
+public class SMSHorizonProvider  {
 
-	@Override
 	public String sendSMS(final String[] phoneNumbers, final String message) throws ApplicationException {
 		String retval = "";
 		/*try {

@@ -11,7 +11,7 @@ import com.apeironsol.need.academics.dao.SectionExamSubjectDao;
 import com.apeironsol.need.academics.model.SectionExamSubject;
 
 @Service("sectionExamSubjectService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SectionExamSubjectServiceImpl implements SectionExamSubjectService {
 
 	@Resource

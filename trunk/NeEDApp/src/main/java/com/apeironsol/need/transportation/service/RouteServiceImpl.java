@@ -28,7 +28,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("routeService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class RouteServiceImpl implements RouteService {
 
 

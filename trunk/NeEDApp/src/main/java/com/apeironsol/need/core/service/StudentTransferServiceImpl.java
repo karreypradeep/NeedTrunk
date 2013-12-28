@@ -29,7 +29,7 @@ import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.need.util.dataobject.StudentFinancialAcademicYearDO;
 
 @Service("studentTransferService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentTransferServiceImpl implements StudentTransferService {
 
 	@Resource

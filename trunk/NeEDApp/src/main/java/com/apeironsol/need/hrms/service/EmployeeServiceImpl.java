@@ -33,7 +33,7 @@ import com.apeironsol.framework.exception.BusinessException;
  *
  */
 @Service("employeeService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class EmployeeServiceImpl implements EmployeeService {
 
 	@Resource

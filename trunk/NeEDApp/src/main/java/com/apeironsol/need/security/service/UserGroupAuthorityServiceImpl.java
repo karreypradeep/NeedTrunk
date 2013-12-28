@@ -24,7 +24,7 @@ import com.apeironsol.need.security.model.UserGroupAuthority;
  * 
  */
 @Service("userGroupAuthorityService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserGroupAuthorityServiceImpl implements UserGroupAuthorityService {
 
 

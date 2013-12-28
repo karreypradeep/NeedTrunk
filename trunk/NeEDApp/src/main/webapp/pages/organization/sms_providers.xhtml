@@ -51,14 +51,18 @@
 				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
 
 
-				<p:column headerText="Name" sortBy="#{smsProvider.smsProviderName}" filterBy="#{smsProvider.smsProviderName}"
-					filterMatchMode="contains">
+				<p:column headerText="Name" sortBy="#{smsProvider.smsProviderName}"
+					filterBy="#{smsProvider.smsProviderName}" filterMatchMode="contains">
 
 					<p:commandLink id="secNameLink" value="#{smsProvider.smsProviderName}" title="View"
 						style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
 						<f:setPropertyActionListener value="#{smsProvider}" target="#{smsProviderBean.smsProvider}" />
 						<f:setPropertyActionListener target="#{smsProviderBean.viewOrNewAction}" value="true" />
 					</p:commandLink>
+				</p:column>
+
+				<p:column headerText="UserName">
+					<h:outputText id="userName" value="#{smsProvider.userName}" />
 				</p:column>
 
 				<p:column headerText="#{msg.options}" styleClass="options-column">

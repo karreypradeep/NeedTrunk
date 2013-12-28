@@ -27,7 +27,7 @@ import com.apeironsol.need.core.model.Country;
 import com.apeironsol.need.core.model.State;
 
 @Service("countryService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class CountryServiceImpl implements CountryService {
 
 	@Resource

@@ -24,9 +24,8 @@ import com.apeironsol.framework.exception.ApplicationException;
  * 
  * @author Pradeep
  */
-public class SMSCountryProvider implements SMSProvider {
+public class SMSCountryProvider {
 
-	@Override
 	public String sendSMS(final String[] phoneNumbers, final String message) throws ApplicationException {
 		String retval = "";
 		try {

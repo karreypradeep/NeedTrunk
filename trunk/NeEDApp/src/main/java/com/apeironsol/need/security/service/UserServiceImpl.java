@@ -28,6 +28,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.dao.RelationDao;
 import com.apeironsol.need.core.dao.StudentDao;
 import com.apeironsol.need.core.model.Relation;
@@ -44,10 +45,9 @@ import com.apeironsol.need.security.model.UserGroupAuthority;
 import com.apeironsol.need.security.model.UserRole;
 import com.apeironsol.need.util.constants.AuthorityConstant;
 import com.apeironsol.need.util.constants.UserAccountTypeConstant;
-import com.apeironsol.framework.exception.BusinessException;
 
 @Service("userService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Resource

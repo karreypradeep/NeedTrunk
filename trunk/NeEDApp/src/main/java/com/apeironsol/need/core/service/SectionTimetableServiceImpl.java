@@ -33,7 +33,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("sectionTimetableService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SectionTimetableServiceImpl implements SectionTimetableService {
 
 	@Resource

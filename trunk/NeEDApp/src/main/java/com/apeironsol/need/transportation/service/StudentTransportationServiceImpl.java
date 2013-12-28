@@ -34,7 +34,7 @@ import com.apeironsol.framework.exception.SystemException;
  * 
  */
 @Service("studentTransportationService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentTransportationServiceImpl implements StudentTransportationService {
 
 	@Resource

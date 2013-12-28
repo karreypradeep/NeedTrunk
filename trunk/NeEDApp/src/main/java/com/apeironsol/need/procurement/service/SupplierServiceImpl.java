@@ -26,7 +26,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("supplierService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SupplierServiceImpl implements SupplierService {
 
 	@Resource

@@ -28,7 +28,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("branchAssertService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchAssertServiceImpl implements BranchAssertService {
 
 	@Resource

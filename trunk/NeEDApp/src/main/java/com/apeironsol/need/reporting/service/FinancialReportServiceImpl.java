@@ -28,7 +28,7 @@ import com.apeironsol.need.util.searchcriteria.BranchExpenseSearchCriteria;
  * 
  */
 @Service("financialReportService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class FinancialReportServiceImpl implements FinancialReportService {
 
 	/**

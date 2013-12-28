@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.dao.SequenceGeneratorDao;
 import com.apeironsol.need.core.model.SequenceGenerator;
 import com.apeironsol.need.util.DateUtil;
@@ -25,7 +26,6 @@ import com.apeironsol.need.util.SequancialKeyLockableFactory;
 import com.apeironsol.need.util.SequancialKeyLockableFactory.EntityLockable;
 import com.apeironsol.need.util.constants.SequenceTypeConstant;
 import com.apeironsol.need.util.constants.StudentPocketMoneyTransactionTypeConstant;
-import com.apeironsol.framework.exception.BusinessException;
 
 /**
  * Service interface implementation for Batch.
@@ -35,7 +35,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("sequenceGeneratorService")
-@Transactional(propagation = Propagation.REQUIRES_NEW)
+@Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
 public class SequenceGeneratorServiceImpl implements SequenceGeneratorService {
 
 	@Resource

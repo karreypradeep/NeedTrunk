@@ -25,7 +25,7 @@ import com.apeironsol.need.core.model.BranchRule;
 import com.apeironsol.framework.exception.BusinessException;
 
 @Service("branchRuleService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchRuleServiceImpl implements BranchRuleService {
 
 	@Resource

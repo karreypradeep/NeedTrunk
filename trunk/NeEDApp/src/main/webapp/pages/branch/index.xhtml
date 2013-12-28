@@ -171,6 +171,16 @@
 				<ui:include src="/pages/branch/reports/financial_reports.xhtml" />
 			</c:when>
 
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchStudentsNotifications}">
+				<ui:include src="/pages/branch/notifications/branch_students_notifications.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchAdmissionsNotifications}">
+				<ui:include src="/pages/branch/notifications/branch_admissions_notifications.xhtml" />
+			</c:when>
+
 			<c:otherwise>
 				<p:panel header="Unauthorized access !!">
 

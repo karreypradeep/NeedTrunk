@@ -31,7 +31,7 @@ import com.apeironsol.need.core.model.StudentRelationPK;
  * 
  */
 @Service("relationService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class RelationServiceImpl implements RelationService {
 
 	@Resource

@@ -39,6 +39,9 @@ public class SMSWorkerFactory {
 			case EXAM_SCHEDULE_NOTIFICATION:
 				workerClass = ApplicationContextUtils.getApplicationContext().getBean(ExamScheduledSMSWorker.class);
 				break;
+			case NEW_ADMISSION_NOTIFICATION:
+				workerClass = ApplicationContextUtils.getApplicationContext().getBean(NewAdmissionSMSWorker.class);
+				break;
 			default:
 				workerClass = ApplicationContextUtils.getApplicationContext().getBean(FeeDueSMSWorker.class);
 		}

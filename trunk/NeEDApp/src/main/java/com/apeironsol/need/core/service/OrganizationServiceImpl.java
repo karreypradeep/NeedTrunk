@@ -30,7 +30,7 @@ import com.apeironsol.need.util.constants.AccessControlTypeConstant;
 import com.apeironsol.framework.exception.BusinessException;
 
 @Service("organizationService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class OrganizationServiceImpl implements OrganizationService {
 
 	@Resource

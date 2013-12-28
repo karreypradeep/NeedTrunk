@@ -26,7 +26,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("sectionSubjectService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SectionSubjectServiceImpl implements SectionSubjectService {
 
 	@Resource

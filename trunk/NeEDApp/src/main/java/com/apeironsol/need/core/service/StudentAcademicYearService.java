@@ -19,6 +19,10 @@ import com.apeironsol.need.core.model.StudentAcademicYear;
  */
 public interface StudentAcademicYearService {
 
+	StudentAcademicYear saveStudentAcademicYear(final StudentAcademicYear studentAcademicYear);
+
+	void removeStudentAcademicYear(final StudentAcademicYear studentAcademicYear);
+
 	/**
 	 * Find student academic yearby by id.
 	 * 
@@ -39,8 +43,7 @@ public interface StudentAcademicYearService {
 	 *            academic year id.
 	 * @return student academic year by student id and academic year id.
 	 */
-	StudentAcademicYear findStudentAcademicYearByStudentIdAndAcademicYearId(final Long studentId,
-			final Long academicYearId);
+	StudentAcademicYear findStudentAcademicYearByStudentIdAndAcademicYearId(final Long studentId, final Long academicYearId);
 
 	/**
 	 * Retrieve all student academic years for student.
@@ -60,5 +63,22 @@ public interface StudentAcademicYearService {
 	 * @return the student academic year.
 	 */
 	StudentAcademicYear findStudentCurrentOrMostRecentAcademicYearByStudentId(Long studentId);
+
+	/**
+	 * Retrieve all student academic years for student.
+	 * 
+	 * @param studentId
+	 *            student id.
+	 * @return collection of all student academic years for student.
+	 */
+	Collection<StudentAcademicYear> findStudentAcademicYearByStudentId(final Long studentId);
+
+	/**
+	 * Remove Student Academic Year by student id and Academic Year id.
+	 * 
+	 * @param studentId
+	 *            student id.
+	 */
+	void removeStudentAcademicYearByStudendIdAndAcademicYearId(final Long studentId, final Long academicYearId);
 
 }

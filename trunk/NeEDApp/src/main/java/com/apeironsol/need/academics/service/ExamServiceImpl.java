@@ -28,7 +28,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.framework.exception.SystemException;
 
 @Service("examService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ExamServiceImpl implements ExamService {
 
 	@Resource

@@ -53,7 +53,7 @@ import com.apeironsol.framework.exception.SystemException;
  * 
  */
 @Service("branchBalanceSheetService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchBalanceSheetServiceImpl implements BranchBalanceSheetService {
 
 	@Resource

@@ -24,7 +24,7 @@ import com.apeironsol.need.core.model.StudentSection;
 import com.apeironsol.need.core.model.Subject;
 
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentAcademicServiceImpl implements StudentAcademicService {
 
 	@Resource

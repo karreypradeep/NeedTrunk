@@ -33,7 +33,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("academicYearWeekEndService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AcademicYearWeekEndServiceImpl implements AcademicYearWeekEndService {
 
 	@Resource

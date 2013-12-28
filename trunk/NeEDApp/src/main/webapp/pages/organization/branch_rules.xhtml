@@ -5,6 +5,7 @@
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 	<f:metadata>
 		<f:event type="preRenderView" listener="#{branchRuleBean.loadBranchRule}" />
+		<f:event type="preRenderView" listener="#{smsProviderBean.loadSMSProviders()}" />
 	</f:metadata>
 	<h:panelGrid columns="3" id="branch_grid" cellpadding="4" style="border:0px;">
 
@@ -12,19 +13,27 @@
 		<p:selectOneMenu id="attendance_type_menu" value="#{branchRuleBean.branchRule.attendanceType}" required="true">
 			<f:selectItem itemLabel="Select attendance type" itemValue="" />
 			<f:selectItems value="#{enumConstantsBean.attendanceTypes}" var="attendanceType" itemLabel="#{attendanceType.label}"
-						itemValue="#{attendanceType}" />
+				itemValue="#{attendanceType}" />
 		</p:selectOneMenu>
 		<p:message id="attendance_type_msg" for="attendance_type_menu" />
 
-		<p:outputLabel id="max_class_strength_label" value="#{msg.maxClassStrength}" for="max_class_strength" rendered="false"/>
-		<p:inputText id="max_class_strength" value="#{branchRuleBean.branchRule.maximumSectionStrength}"  rendered="false">
+		<p:outputLabel id="max_class_strength_label" value="#{msg.maxClassStrength}" for="max_class_strength" rendered="false" />
+		<p:inputText id="max_class_strength" value="#{branchRuleBean.branchRule.maximumSectionStrength}" rendered="false">
 			<f:validateLongRange minimum="0" maximum="1000" />
 		</p:inputText>
-		<p:message id="max_class_strength_msg" for="max_class_strength"  rendered="false"/>
+		<p:message id="max_class_strength_msg" for="max_class_strength" rendered="false" />
 
 		<p:outputLabel id="use_batch_label" for="use_batch" value="Use Batch" />
 		<p:selectBooleanCheckbox id="use_batch" value="#{branchRuleBean.branchRule.batchRequiredIndicator}" />
 		<p:message id="use_batch_msg" for="use_batch" />
+
+		<p:outputLabel id="smsprovider_label" value="SMS Provider" for="smsprovider" />
+		<p:selectOneMenu id="smsprovider" value="#{branchRuleBean.branchRule.smsProvider}" converter="smsProviderConverter"
+			style="width:165px;">
+			<f:selectItem itemLabel="Select SMS Provider" itemValue="" />
+			<f:selectItems value="#{smsProviderBean.smsProviders}" var="smsProvider" itemLabel="#{smsProvider.smsProviderName}" itemValue="#{smsProviders}" />
+		</p:selectOneMenu>
+		<p:message id="smsprovider_msg" for="smsprovider" />
 
 		<p:outputLabel id="auto_increment_admission_number_label" for="auto_increment_admission_number"
 			value="#{msg.autoIncrementAdmissionNumber}" rendered="false" />

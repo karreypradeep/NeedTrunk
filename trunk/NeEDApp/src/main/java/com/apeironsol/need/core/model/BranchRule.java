@@ -19,8 +19,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.apeironsol.need.util.constants.AttendanceTypeConstant;
 import com.apeironsol.framework.BaseEntity;
+import com.apeironsol.need.util.constants.AttendanceTypeConstant;
 
 /**
  * Entity class for branch rules.
@@ -45,8 +45,9 @@ public class BranchRule extends BaseEntity implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private AttendanceTypeConstant	attendanceType;
 
-	@Column(name = "SMS_PROVIDER")
-	private String					smsProviderName;
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "SMS_PROVIDER_ID")
+	private SMSProvider				smsProvider;
 
 	@Column(name = "MAXIMUM_SECTION_STRENGTH")
 	private Integer					maximumSectionStrength;
@@ -156,21 +157,6 @@ public class BranchRule extends BaseEntity implements Serializable {
 	}
 
 	/**
-	 * @return the smsProviderName
-	 */
-	public String getSmsProviderName() {
-		return this.smsProviderName;
-	}
-
-	/**
-	 * @param smsProviderName
-	 *            the smsProviderName to set
-	 */
-	public void setSmsProviderName(final String smsProviderName) {
-		this.smsProviderName = smsProviderName;
-	}
-
-	/**
 	 * @return the batchRequiredIndicator
 	 */
 	public boolean isBatchRequiredIndicator() {
@@ -183,6 +169,21 @@ public class BranchRule extends BaseEntity implements Serializable {
 	 */
 	public void setBatchRequiredIndicator(final boolean batchRequiredIndicator) {
 		this.batchRequiredIndicator = batchRequiredIndicator;
+	}
+
+	/**
+	 * @return the smsProvider
+	 */
+	public SMSProvider getSmsProvider() {
+		return this.smsProvider;
+	}
+
+	/**
+	 * @param smsProvider
+	 *            the smsProvider to set
+	 */
+	public void setSmsProvider(final SMSProvider smsProvider) {
+		this.smsProvider = smsProvider;
 	}
 
 }

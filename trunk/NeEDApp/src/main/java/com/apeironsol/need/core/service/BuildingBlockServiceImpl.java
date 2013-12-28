@@ -33,7 +33,7 @@ import com.apeironsol.framework.exception.SystemException;
  * 
  */
 @Service("buildingBlockService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BuildingBlockServiceImpl implements BuildingBlockService {
 
 	@Resource

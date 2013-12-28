@@ -25,7 +25,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service(value = "accessControlService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AccessControlServiceImpl implements AccessControlService {
 
 	@Resource

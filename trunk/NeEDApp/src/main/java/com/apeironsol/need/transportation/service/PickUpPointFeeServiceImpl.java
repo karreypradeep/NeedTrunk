@@ -27,7 +27,7 @@ import com.apeironsol.framework.exception.SystemException;
  * 
  */
 @Service("pickUpPointFeeService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class PickUpPointFeeServiceImpl implements PickUpPointFeeService {
 
 	@Resource

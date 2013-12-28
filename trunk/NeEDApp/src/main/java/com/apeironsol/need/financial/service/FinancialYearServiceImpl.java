@@ -27,7 +27,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("financialYearService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class FinancialYearServiceImpl implements FinancialYearService {
 
 	@Resource

@@ -59,7 +59,7 @@ import com.apeironsol.framework.exception.ApplicationException;
  * 
  */
 @Service("importAdmissionService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 
 	@Resource

@@ -30,7 +30,7 @@ import com.apeironsol.need.util.DateUtil;
  *         StudentAttendance
  */
 @Service("sectionAttendanceService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class SectionAttendanceServiceImpl implements SectionAttendanceService {
 
 	@Resource

@@ -14,7 +14,7 @@ import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
 import com.apeironsol.framework.exception.ApplicationException;
 
 @Service("studentExamSubjectService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentExamSubjectServiceImpl implements StudentExamSubjectService {
 
 	@Resource

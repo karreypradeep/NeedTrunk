@@ -38,7 +38,7 @@ import com.apeironsol.framework.exception.SystemException;
  * 
  */
 @Service("kalssService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class KlassServiceImpl implements KlassService {
 
 	@Resource

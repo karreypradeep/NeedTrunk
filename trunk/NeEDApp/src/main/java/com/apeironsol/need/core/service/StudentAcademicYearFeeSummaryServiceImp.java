@@ -27,7 +27,7 @@ import com.apeironsol.need.util.dataobject.StudentFinancialAcademicYearDO;
  * 
  */
 @Service("studentAcademicYearFeeSummaryService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentAcademicYearFeeSummaryServiceImp implements StudentAcademicYearFeeSummaryService {
 
 	@Resource

@@ -29,7 +29,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("branchExpenseTypePeriodicalService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchExpenseTypePeriodicalServiceImpl implements BranchExpenseTypePeriodicalService {
 
 	@Resource

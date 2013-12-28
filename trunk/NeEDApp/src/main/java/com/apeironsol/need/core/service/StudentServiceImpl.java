@@ -47,10 +47,11 @@ import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.need.util.constants.StudentStatusConstant;
 import com.apeironsol.need.util.portal.ViewUtil;
+import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
 import com.apeironsol.need.util.searchcriteria.StudentSearchCriteria;
 
 @Service("studentService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentServiceImpl implements StudentService {
 
 	private static final Logger		log	= Logger.getLogger(StudentServiceImpl.class);
@@ -406,5 +407,35 @@ public class StudentServiceImpl implements StudentService {
 
 		return studentLocal;
 
+	}
+
+	@Override
+	public Student findStudentByAdmissionId(final Long admissionId) {
+		return this.studentDao.findStudentByAdmissionId(admissionId);
+	}
+
+	@Override
+	public Collection<Student> findAdmissionsBySearchCriteria(final AdmissionSearchCriteria admissionSearchCriteria) {
+		return this.studentDao.findAdmissionsBySearchCriteria(admissionSearchCriteria);
+	}
+
+	@Override
+	public Student findActiveStudentByAdmissionNumber(final String admissionNumber) {
+		return this.studentDao.findActiveStudentByAdmissionNumber(admissionNumber);
+	}
+
+	@Override
+	public Long findActiveStudentsCountForBranchId(final Long branchId) {
+		return this.studentDao.findActiveStudentsCountForBranchId(branchId);
+	}
+
+	@Override
+	public Student findActiveStudentByExternalAdmissionNumberAndBranchId(final String externalAdmissionNumber, final Long branchId) {
+		return this.studentDao.findActiveStudentByExternalAdmissionNumberAndBranchId(externalAdmissionNumber, branchId);
+	}
+
+	@Override
+	public void deleteStudent(final Student student) throws BusinessException {
+		this.studentDao.remove(student);
 	}
 }

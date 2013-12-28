@@ -50,7 +50,7 @@ import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.need.util.dataobject.StudentFinancialAcademicYearDO;
 
 @Service("studentPromotionService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentPromotionServiceImpl implements StudentPromotionService {
 
 	@Resource

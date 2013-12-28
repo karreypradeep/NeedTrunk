@@ -14,17 +14,17 @@
 
 		</h:panelGrid>
 
-		<p:commandButton value="Reviewed" id="reviewed_save2" process="@form" update="@form" disabled="#{!admissionBean.admissionBeReviewed}" action="#{admissionBean.reviewAdmission}"
-			style="width:90px;" icon="ui-icon-circle-check">
+		<p:commandButton value="In-Review" id="reviewed_save1" process="@form" update="@form" disabled="#{!admissionBean.admissionBeReviewed}" action="#{admissionBean.anotherReviewAdmission}"
+			style="width:100px;" icon="ui-icon-disk">
+			<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="INREVIEW">
+				<f:converter converterId="admissionStatusConverter" />
+			</f:setPropertyActionListener>
 			<f:setPropertyActionListener target="#{admissionBean.loadStudentStatusHistoryFlag}" value="true" />
 			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
 		</p:commandButton>
 		<p:spacer width="10px" />
-		<p:commandButton value="Save" id="reviewed_save1" process="@form" update="@form" disabled="#{!admissionBean.admissionBeReviewed}" action="#{admissionBean.anotherReviewAdmission}"
-			style="width:80px;" icon="ui-icon-disk">
-			<f:setPropertyActionListener target="#{admissionBean.admissionStatusAction}" value="INREVIEW">
-				<f:converter converterId="admissionStatusConverter" />
-			</f:setPropertyActionListener>
+		<p:commandButton value="Reviewed" id="reviewed_save2" process="@form" update="@form" disabled="#{!admissionBean.admissionBeReviewed}" action="#{admissionBean.reviewAdmission}"
+			style="width:90px;" icon="ui-icon-circle-check">
 			<f:setPropertyActionListener target="#{admissionBean.loadStudentStatusHistoryFlag}" value="true" />
 			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
 		</p:commandButton>

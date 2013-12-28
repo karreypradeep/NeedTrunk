@@ -14,10 +14,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.apeironsol.need.core.dao.AcademicYearHolidayDao;
-import com.apeironsol.need.core.model.AcademicYearHoliday;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.InvalidArgumentException;
+import com.apeironsol.need.core.dao.AcademicYearHolidayDao;
+import com.apeironsol.need.core.model.AcademicYearHoliday;
 
 /**
  * Data access interface for Student Attendance entity implementation.
@@ -26,7 +26,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("academicYearHolidayService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AcademicYearHolidayServiceImpl implements AcademicYearHolidayService {
 
 	@Resource
@@ -36,8 +36,7 @@ public class AcademicYearHolidayServiceImpl implements AcademicYearHolidayServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<AcademicYearHoliday> findAcademicYearHolidaysByAcademicYearId(final Long academicYearId)
-			throws BusinessException {
+	public Collection<AcademicYearHoliday> findAcademicYearHolidaysByAcademicYearId(final Long academicYearId) throws BusinessException {
 		return this.academicYearHolidayDao.findAcademicYearHolidaysByAcademicYearId(academicYearId);
 	}
 
@@ -53,8 +52,7 @@ public class AcademicYearHolidayServiceImpl implements AcademicYearHolidayServic
 	 * {@inheritDoc}
 	 */
 	@Override
-	public AcademicYearHoliday saveAcademicYearHoliday(final AcademicYearHoliday academicYearHoliday)
-			throws BusinessException, InvalidArgumentException {
+	public AcademicYearHoliday saveAcademicYearHoliday(final AcademicYearHoliday academicYearHoliday) throws BusinessException, InvalidArgumentException {
 		return this.academicYearHolidayDao.persist(academicYearHoliday);
 	}
 

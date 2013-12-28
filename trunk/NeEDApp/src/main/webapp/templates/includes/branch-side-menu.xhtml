@@ -103,7 +103,7 @@
 				</p:commandLink>
 
 				<p:commandLink value="#{msg.process_pending_fee_transactions}" process="branch_side_menu" update="@form"
-					rendered="false" actionListener="#{studentFinancialBean.instantiateStudentFeeTransactionSearchCriteria()}">
+					  actionListener="#{studentFinancialBean.instantiateStudentFeeTransactionSearchCriteria()}">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
 						value="APPROVE_REFUND_DEDUCT_FEE">
 						<f:converter converterId="viewContentConverter" />
@@ -233,11 +233,17 @@
 
 		<p:tab title="#{msg.notifications}" id="left_notifications_tab">
 			<h:panelGrid columns="1" cellpadding="2">
-				<p:commandLink value="#{msg.exams}">
+				<p:commandLink value="#{msg.students}" update="@form" process="branch_side_menu" >
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_STUDENTS_NOTIFICATIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
 				</p:commandLink>
-				<p:commandLink value="#{msg.fee}">
-				</p:commandLink>
-				<p:commandLink value="#{msg.general}">
+				<p:commandLink value="#{msg.admissions}" update="@form" process="branch_side_menu" rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_ADMISSIONS_NOTIFICATIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
 				</p:commandLink>
 			</h:panelGrid>
 		</p:tab>

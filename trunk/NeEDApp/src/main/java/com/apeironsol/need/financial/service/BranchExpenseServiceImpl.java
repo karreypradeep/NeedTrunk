@@ -15,6 +15,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.service.SequenceGeneratorService;
@@ -33,8 +35,6 @@ import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.constants.PaymentMethodConstant;
 import com.apeironsol.need.util.searchcriteria.BranchExpenseSearchCriteria;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Data access interface for Student Attendance entity implementation.
@@ -43,7 +43,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("branchExpenseService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchExpenseServiceImpl implements BranchExpenseService {
 
 	@Resource
@@ -99,6 +99,7 @@ public class BranchExpenseServiceImpl implements BranchExpenseService {
 		if (PaymentMethodConstant.CHEQUE.equals(branchExpense.getPaymentMethod())) {
 			this.branchAccountService.updateBranchAccountTransaction(result);
 		}
+
 		this.sendNotification(branchExpense);
 
 		return result;

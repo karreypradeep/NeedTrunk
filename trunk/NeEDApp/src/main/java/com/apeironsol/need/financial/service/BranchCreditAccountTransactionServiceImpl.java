@@ -32,7 +32,7 @@ import com.apeironsol.framework.exception.SystemException;
  * 
  */
 @Service("branchCreditAccountTransactionService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchCreditAccountTransactionServiceImpl implements BranchCreditAccountTransactionService {
 
 	@Resource

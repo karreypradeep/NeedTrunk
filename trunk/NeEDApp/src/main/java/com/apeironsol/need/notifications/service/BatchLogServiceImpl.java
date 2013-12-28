@@ -13,11 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.notifications.dao.BatchLogDao;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Service class for batch log.
@@ -25,7 +25,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * @author Pradeep
  */
 @Service("batchLogService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BatchLogServiceImpl implements BatchLogService {
 
 	@Autowired
@@ -33,41 +33,39 @@ public class BatchLogServiceImpl implements BatchLogService {
 
 	@Override
 	public BatchLog findBatchLogById(final Long id) throws BusinessException {
-		return batchLogDao.findById(id);
+		return this.batchLogDao.findById(id);
 	}
 
 	@Override
 	public BatchLog saveBatchLog(final BatchLog batchLog) throws BusinessException, InvalidArgumentException {
-		return batchLogDao.persist(batchLog);
+		return this.batchLogDao.persist(batchLog);
 	}
 
 	@Override
 	public void removeBatchLog(final BatchLog batchLog) throws BusinessException {
-		batchLogDao.remove(batchLog);
+		this.batchLogDao.remove(batchLog);
 	}
 
 	@Override
 	public Collection<BatchLog> findAllBatchLogs() throws BusinessException {
-		return batchLogDao.findAll();
+		return this.batchLogDao.findAll();
 	}
 
 	@Override
 	public Collection<BatchLog> findBatchLogsByBranchId(final Long branchId) throws BusinessException {
-		return batchLogDao.findBatchLogsByBranchId(branchId);
+		return this.batchLogDao.findBatchLogsByBranchId(branchId);
 	}
 
 	@Override
 	public Collection<BatchLog> findBatchLogsByNotificationLevelAndNotificationLevelId(final Long branchId,
 			final NotificationLevelConstant notificationLevelConstant, final Long notificationLevelId) {
-		return batchLogDao.findBatchLogsByNotificationLevelAndNotificationLevelId(branchId, notificationLevelConstant,
-				notificationLevelId);
+		return this.batchLogDao.findBatchLogsByNotificationLevelAndNotificationLevelId(branchId, notificationLevelConstant, notificationLevelId);
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public BatchLog saveBatchLogInNewTransaction(final BatchLog batchLog) throws BusinessException,
-			InvalidArgumentException {
-		return batchLogDao.persist(batchLog);
+	public BatchLog saveBatchLogInNewTransaction(final BatchLog batchLog) throws BusinessException, InvalidArgumentException {
+		return this.batchLogDao.persist(batchLog);
 	}
 
 }

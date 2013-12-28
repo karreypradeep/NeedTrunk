@@ -26,7 +26,7 @@ import com.apeironsol.need.core.model.Batch;
  * 
  */
 @Service("batchService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BatchServiceImpl implements BatchService {
 
 	@Resource

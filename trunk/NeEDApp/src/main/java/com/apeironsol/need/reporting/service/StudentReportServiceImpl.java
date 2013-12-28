@@ -51,7 +51,7 @@ import com.apeironsol.need.util.searchcriteria.StudentSearchCriteria;
  * 
  */
 @Service("studentReportService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class StudentReportServiceImpl implements StudentReportService {
 
 	@Resource

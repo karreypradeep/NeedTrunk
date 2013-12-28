@@ -14,11 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.notifications.dao.BatchLogMessageDao;
 import com.apeironsol.need.notifications.model.BatchLogMessage;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Service class for batch log message.
@@ -26,7 +26,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * @author Pradeep
  */
 @Service("batchLogMessageService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BatchLogMessageServiceImpl implements BatchLogMessageService {
 
 	@Autowired
@@ -38,15 +38,13 @@ public class BatchLogMessageServiceImpl implements BatchLogMessageService {
 	}
 
 	@Override
-	public BatchLogMessage saveBatchLogMessage(final BatchLogMessage batchLogMessage) throws BusinessException,
-			InvalidArgumentException {
+	public BatchLogMessage saveBatchLogMessage(final BatchLogMessage batchLogMessage) throws BusinessException, InvalidArgumentException {
 		return this.batchLogMessageDao.persist(batchLogMessage);
 	}
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
-	public BatchLogMessage saveBatchLogMessageInNewTransaction(final BatchLogMessage batchLogMessage)
-			throws BusinessException, InvalidArgumentException {
+	public BatchLogMessage saveBatchLogMessageInNewTransaction(final BatchLogMessage batchLogMessage) throws BusinessException, InvalidArgumentException {
 		return this.batchLogMessageDao.persist(batchLogMessage);
 	}
 
@@ -66,28 +64,25 @@ public class BatchLogMessageServiceImpl implements BatchLogMessageService {
 	}
 
 	@Override
-	public Long findNumberOfBatchLogMessagesByBatchLogIdAndStatus(final Long batchLogId,
-			final EnumSet<BatchLogMessageStatusConstant> statusConstants) throws BusinessException {
+	public Long findNumberOfBatchLogMessagesByBatchLogIdAndStatus(final Long batchLogId, final EnumSet<BatchLogMessageStatusConstant> statusConstants)
+			throws BusinessException {
 		return this.batchLogMessageDao.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(batchLogId, statusConstants);
 	}
 
 	@Override
-	public Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIdAndSectionId(final Long batchLogId,
-			final Long sectionId) throws BusinessException {
+	public Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIdAndSectionId(final Long batchLogId, final Long sectionId) throws BusinessException {
 		return this.batchLogMessageDao.findBatchLogMessagesByBatchLogIdAndSectionId(batchLogId, sectionId);
 	}
 
 	@Override
-	public Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId)
-			throws BusinessException {
+	public Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId) throws BusinessException {
 		return this.batchLogMessageDao.findBatchLogMessagesByStudentAcademicYearId(studentAcademicYearId);
 	}
 
 	@Override
-	public BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId,
-			final Long studentAcademicYearId) throws BusinessException {
-		return this.batchLogMessageDao.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLogId,
-				studentAcademicYearId);
+	public BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId, final Long studentAcademicYearId)
+			throws BusinessException {
+		return this.batchLogMessageDao.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLogId, studentAcademicYearId);
 	}
 
 }

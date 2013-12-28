@@ -24,7 +24,7 @@ import com.apeironsol.need.transportation.model.PickUpPointFeeCatalog;
  * 
  */
 @Service("pickUpPointFeeCatalogService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class PickUpPointFeeCatalogServiceImpl implements PickUpPointFeeCatalogService {
 
 	@Resource

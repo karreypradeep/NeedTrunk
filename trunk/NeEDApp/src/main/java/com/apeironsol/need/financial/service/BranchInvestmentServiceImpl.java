@@ -29,7 +29,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("branchInvestmentService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class BranchInvestmentServiceImpl implements BranchInvestmentService {
 
 	@Resource

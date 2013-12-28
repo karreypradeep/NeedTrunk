@@ -207,4 +207,12 @@ public class ViewContentHandlerBean implements Serializable {
 		return ViewContentConstant.BRANCH_REPORTS_FINANCIAL.equals(this.getCurrentViewContent());
 	}
 
+	public boolean isViewContentBranchStudentsNotifications() {
+		return ViewContentConstant.BRANCH_STUDENTS_NOTIFICATIONS.equals(this.getCurrentViewContent());
+	}
+
+	public boolean isViewContentBranchAdmissionsNotifications() {
+		return ViewContentConstant.BRANCH_ADMISSIONS_NOTIFICATIONS.equals(this.getCurrentViewContent());
+	}
+
 }

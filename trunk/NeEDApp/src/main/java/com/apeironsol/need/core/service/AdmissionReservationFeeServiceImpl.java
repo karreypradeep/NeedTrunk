@@ -26,7 +26,7 @@ import com.apeironsol.framework.exception.BusinessException;
  * 
  */
 @Service("admissionReservationFeeService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class AdmissionReservationFeeServiceImpl implements AdmissionReservationFeeService {
 
 	@Resource

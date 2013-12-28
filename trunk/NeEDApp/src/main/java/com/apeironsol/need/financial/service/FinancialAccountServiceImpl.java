@@ -16,7 +16,7 @@ import com.apeironsol.need.util.constants.FinancialAccountTypeConstant;
 import com.apeironsol.need.util.constants.TransactionTypeConstant;
 
 @Service(value = "financialAccountService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class FinancialAccountServiceImpl implements FinancialAccountService {
 
 	@Resource

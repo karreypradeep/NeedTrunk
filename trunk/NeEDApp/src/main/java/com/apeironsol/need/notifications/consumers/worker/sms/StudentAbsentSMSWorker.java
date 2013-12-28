@@ -23,6 +23,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.Attendance;
+import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.core.model.StudentAbsent;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.model.StudentSection;
@@ -31,8 +32,7 @@ import com.apeironsol.need.core.service.StudentAbsentService;
 import com.apeironsol.need.core.service.StudentSectionService;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
-import com.apeironsol.need.notifications.providers.sms.SMSProvider;
-import com.apeironsol.need.notifications.providers.sms.SMSProviderFactory;
+import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
@@ -79,13 +79,13 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final String smsProviderName, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
+	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
 			throws ClientProtocolException, URISyntaxException, IOException {
 		if (batchLog.getAttendanceDate() == null) {
 			batchLog.setAttendanceDate(DateUtil.getSystemDate());
 		}
 		NotificationMessage notificationMessage = new NotificationMessage();
-		SMSProvider smsProvider = SMSProviderFactory.getSMSWorker(smsProviderName == null ? "smscountry" : smsProviderName);
+		UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 		Map<String, String> model = new HashMap<String, String>();
 		model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
 		model.put("date", new SimpleDateFormat("dd/MMM/yyyy").format(batchLog.getAttendanceDate()));
@@ -119,8 +119,8 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 			// smodel.put("reason",
 			// batchLog.getBranch().getBranchTypeConstant().getLabel());
 			notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
-			String smsReturnTest = smsProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
-			if (smsReturnTest.contains("status")) {
+			String smsReturnTest = universalSMSProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
+			if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 			} else {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.FAILED);

@@ -71,9 +71,31 @@ public class SMSProvider extends BaseEntity implements Serializable {
 	@Column(name = "ROUTE_KEY", nullable = false, length = 225)
 	private String				routeKey;
 
+	@NotEmpty(message = "model.success_string")
+	@Column(name = "SUCCESS_STRING", nullable = false, length = 225)
+	private String				successString;
+
 	@NotEmpty(message = "model.route_mandatory")
 	@Column(name = "ROUTE", nullable = false, length = 225)
 	private String				route;
+
+	@Column(name = "ADDI_KEY1", length = 225)
+	private String				additionalParameter1Key;
+
+	@Column(name = "ADDI_VALUE1", length = 225)
+	private String				additionalParameter1Value;
+
+	@Column(name = "USE_ADD1_IND")
+	private boolean				useAdditionalParameter1;
+
+	@Column(name = "ADDI_KEY2", length = 225)
+	private String				additionalParameter2Key;
+
+	@Column(name = "ADDI_VALUE2", length = 225)
+	private String				additionalParameter2Value;
+
+	@Column(name = "USE_ADD2_IND")
+	private boolean				useAdditionalParameter2;
 
 	public String getSmsProviderName() {
 		return this.smsProviderName;
@@ -185,6 +207,111 @@ public class SMSProvider extends BaseEntity implements Serializable {
 
 	public void setPath(final String path) {
 		this.path = path;
+	}
+
+	/**
+	 * @return the additionalParameter1Key
+	 */
+	public String getAdditionalParameter1Key() {
+		return this.additionalParameter1Key;
+	}
+
+	/**
+	 * @param additionalParameter1Key
+	 *            the additionalParameter1Key to set
+	 */
+	public void setAdditionalParameter1Key(final String additionalParameter1Key) {
+		this.additionalParameter1Key = additionalParameter1Key;
+	}
+
+	/**
+	 * @return the additionalParameter1Value
+	 */
+	public String getAdditionalParameter1Value() {
+		return this.additionalParameter1Value;
+	}
+
+	/**
+	 * @param additionalParameter1Value
+	 *            the additionalParameter1Value to set
+	 */
+	public void setAdditionalParameter1Value(final String additionalParameter1Value) {
+		this.additionalParameter1Value = additionalParameter1Value;
+	}
+
+	/**
+	 * @return the useAdditionalParameter1
+	 */
+	public boolean isUseAdditionalParameter1() {
+		return this.useAdditionalParameter1;
+	}
+
+	/**
+	 * @param useAdditionalParameter1
+	 *            the useAdditionalParameter1 to set
+	 */
+	public void setUseAdditionalParameter1(final boolean useAdditionalParameter1) {
+		this.useAdditionalParameter1 = useAdditionalParameter1;
+	}
+
+	/**
+	 * @return the additionalParameter2Key
+	 */
+	public String getAdditionalParameter2Key() {
+		return this.additionalParameter2Key;
+	}
+
+	/**
+	 * @param additionalParameter2Key
+	 *            the additionalParameter2Key to set
+	 */
+	public void setAdditionalParameter2Key(final String additionalParameter2Key) {
+		this.additionalParameter2Key = additionalParameter2Key;
+	}
+
+	/**
+	 * @return the additionalParameter2Value
+	 */
+	public String getAdditionalParameter2Value() {
+		return this.additionalParameter2Value;
+	}
+
+	/**
+	 * @param additionalParameter2Value
+	 *            the additionalParameter2Value to set
+	 */
+	public void setAdditionalParameter2Value(final String additionalParameter2Value) {
+		this.additionalParameter2Value = additionalParameter2Value;
+	}
+
+	/**
+	 * @return the useAdditionalParameter2
+	 */
+	public boolean isUseAdditionalParameter2() {
+		return this.useAdditionalParameter2;
+	}
+
+	/**
+	 * @param useAdditionalParameter2
+	 *            the useAdditionalParameter2 to set
+	 */
+	public void setUseAdditionalParameter2(final boolean useAdditionalParameter2) {
+		this.useAdditionalParameter2 = useAdditionalParameter2;
+	}
+
+	/**
+	 * @return the successString
+	 */
+	public String getSuccessString() {
+		return this.successString;
+	}
+
+	/**
+	 * @param successString
+	 *            the successString to set
+	 */
+	public void setSuccessString(final String successString) {
+		this.successString = successString;
 	}
 
 }

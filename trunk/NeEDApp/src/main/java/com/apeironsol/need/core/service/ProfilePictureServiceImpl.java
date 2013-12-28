@@ -9,7 +9,7 @@ import com.apeironsol.need.core.dao.ProfilePictureDao;
 import com.apeironsol.need.core.model.ProfilePicture;
 
 @Service("profilePictureService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class ProfilePictureServiceImpl implements ProfilePictureService {
 
 	@Resource

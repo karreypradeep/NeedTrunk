@@ -43,7 +43,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class KlassLevelFeeServiceImpl implements KlassLevelFeeService {
 
 	@Resource

@@ -23,6 +23,8 @@ import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
 
 import com.apeironsol.framework.NeEDJMSObject;
+import com.apeironsol.need.core.model.BranchRule;
+import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorker;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorkerFactory;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
@@ -44,6 +46,9 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 
 	@Resource
 	private BatchLogMessageService	batchLogMessageService;
+
+	@Resource
+	private BranchRuleService		branchRuleService;
 
 	/**
 	 * JMSTemplate for sending messages.
@@ -129,7 +134,8 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	private void processBatchMesssage(final NeEDJMSObject jmsObject, final BatchLog batchLog) throws Exception {
 		try {
 			SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
-			NotificationMessage notificationMessage = smsWorker.sendSMS("smshorizon", jmsObject.getStudentAcademicYear(), batchLog);
+			BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(batchLog.getBranch().getId());
+			NotificationMessage notificationMessage = smsWorker.sendSMS(branchRule.getSmsProvider(), jmsObject.getStudentAcademicYear(), batchLog);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		} catch (Throwable exception) {
 			throw new Exception(exception);

@@ -26,7 +26,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
  * 
  */
 @Service("purchaseOrderStatusService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class PurchaseOrderStatusServiceImpl implements PurchaseOrderStatusService {
 
 	@Resource

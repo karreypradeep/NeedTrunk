@@ -25,7 +25,7 @@ import com.apeironsol.framework.exception.BusinessException;
  *         MedicalHistory
  */
 @Service("medicalHistoryService")
-@Transactional
+@Transactional(rollbackFor = Exception.class)
 public class MedicalHistoryServiceImpl implements MedicalHistoryService {
 
 	@Resource
