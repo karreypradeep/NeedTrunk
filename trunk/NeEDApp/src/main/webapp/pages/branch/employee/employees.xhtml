@@ -44,7 +44,7 @@
 						</p:inputText>
 
 						<p:outputLabel id="date_of_birth_label" value="Date of birth" for="date_of_birth" />
-						<p:calendar id="date_of_birth" value="#{employeeBean.employeeSearchCriteria.dateOfBirth}" navigator="true" display="inline" effect="drop"
+						<p:calendar id="date_of_birth" value="#{employeeBean.employeeSearchCriteria.dateOfBirth}" navigator="true" showOn="button"
 							pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
 					</h:panelGrid>
 

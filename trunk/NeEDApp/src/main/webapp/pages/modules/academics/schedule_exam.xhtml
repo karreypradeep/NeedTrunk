@@ -46,7 +46,7 @@
 			<p:message id="section_msg" for="section" />
 
 			<p:outputLabel id="start_date_label" value="Start date" for="start_date" style="white-space:nowrap;" />
-			<p:calendar id="start_date" navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
+			<p:calendar id="start_date" navigator="true" showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
 				mindate="#{sectionExamScheduleBean.schedulingAcademicYear.classStartDate}" maxdate="#{sectionExamScheduleBean.schedulingAcademicYear.endDate}"
 				value="#{sectionExamScheduleBean.sectionExam.startDate}">
 
@@ -56,7 +56,7 @@
 			<p:message id="start_date_msg" for="start_date" />
 
 			<p:outputLabel id="end_date_label" value="End date" for="end_date" style="white-space:nowrap;" />
-			<p:calendar id="end_date" navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
+			<p:calendar id="end_date" navigator="true" showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
 				mindate="#{sectionExamScheduleBean.sectionExam.startDate}" maxdate="#{sectionExamScheduleBean.schedulingAcademicYear.endDate}"
 				value="#{sectionExamScheduleBean.sectionExam.endDate}">
 
@@ -100,7 +100,7 @@
 					</f:facet>
 					<f:facet name="input">
 						<f:facet name="input">
-							<p:calendar value="#{sectionExamSubject.scheduledDate}" navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy"
+							<p:calendar value="#{sectionExamSubject.scheduledDate}" navigator="true" showOn="button" pattern="dd/MM/yyyy"
 								mindate="#{sectionExamScheduleBean.sectionExam.startDate}" maxdate="#{sectionExamScheduleBean.sectionExam.endDate}">
 
 								<p:ajax event="dateSelect" process="@this" />

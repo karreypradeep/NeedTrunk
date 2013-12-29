@@ -77,7 +77,7 @@
 				<p:outputLabel value="External Transaction Date" for="d_extTransDate" />
 				<p:calendar id="d_extTransDate"
 					value="#{cc.attrs.studentFeeTransactionDOModel.studentFeeTransaction.externalTransactionDate}" navigator="true"
-					display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+					showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 				<p:message id="d_extTransDateMsg" for="d_extTransDate" />
 			</h:panelGrid>
 

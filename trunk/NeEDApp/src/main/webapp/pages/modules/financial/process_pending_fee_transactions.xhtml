@@ -50,11 +50,11 @@
 						</p:inputText>
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-						<p:calendar id="from_date" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.fromDate}" navigator="true" display="inline" effect="drop"
+						<p:calendar id="from_date" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.fromDate}" navigator="true" showOn="button"
 							pattern="dd/MMM/yyyy" size="20" maxlength="20" mindate="{#{sessionBean.currentBranch.startDate}" maxdate="#{studentBean.currentDate}" />
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-						<p:calendar id="to_date" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.toDate}" navigator="true" display="inline" effect="drop"
+						<p:calendar id="to_date" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.toDate}" navigator="true" showOn="button"
 							pattern="dd/MMM/yyyy" size="20" maxlength="20" mindate="{#{sessionBean.currentBranch.startDate}" maxdate="#{studentBean.currentDate}" />
 
 					</h:panelGrid>

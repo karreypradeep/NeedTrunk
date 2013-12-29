@@ -125,21 +125,29 @@
 					</h:panelGrid>
 					<p:message id="section_klass_msg" for="section_klass" />
 
+					<p:outputLabel id="section_status_label" value="Status" />
+					<p:inputText id="section_status" value="#{sectionBean.section.active?'Active':'Development'}" disabled="true"/>
+					<p:message id="section_status_msg" for="section_status" />
+
+					<p:outputLabel id="section_admission_status_label" value="Admission status" />
+					<p:inputText id="section_admission_status" value="#{sectionBean.section.openForAdmission?'Open for Admission':'Closed for Admission'}" disabled="true"/>
+					<p:message id="section_admission_status_msg" for="section_admission_status" />
+
 				</h:panelGrid>
 				<h:panelGrid>
 					<p:commandButton value="Activate" update="@form" process="@this" style="width:100%"
 						action="#{sectionBean.activeSection}" rendered="#{!sectionBean.section.active}"
-						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" />
+						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" icon="ui-icon-play" />
 					<p:commandButton value="Development" update="@form" process="@this" style="width:100%"
 						action="#{sectionBean.deactiveSection}" rendered="#{sectionBean.section.active}"
-						disabled="#{!grantedAuthorityBean.userAllowedToDeactivateSection}" />
+						disabled="#{!grantedAuthorityBean.userAllowedToDeactivateSection}" icon="ui-icon-wrench"/>
 
 					<p:commandButton value="Open for admission" update="@form" process="@this" style="width:100%"
 						rendered="#{sectionBean.section.active and !sectionBean.section.openForAdmission}"
-						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" />
+						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" action="#{sectionBean.openSectionForAdmission}" />
 					<p:commandButton value="Closed for admission" update="@form" process="@this" style="width:100%"
 						rendered="#{sectionBean.section.active and sectionBean.section.openForAdmission}"
-						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" />
+						disabled="#{!grantedAuthorityBean.userAllowedToActivateSection}" action="#{sectionBean.closeSectionForAdmission}" />
 
 				</h:panelGrid>
 			</h:panelGrid>

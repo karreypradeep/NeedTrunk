@@ -24,7 +24,7 @@
 
 				<p:outputLabel id="account_opening_date_label" value="Account opening date" for="account_opening_date" />
 				<p:calendar id="account_opening_date" value="#{branchBankAccountBean.currentBranchBankAccount.accountOpeningDate}"
-					navigator="true" display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}"/>
+					navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}"/>
 				<p:message id="account_opening_date_msg" for="account_opening_date" />
 
 			</h:panelGrid>

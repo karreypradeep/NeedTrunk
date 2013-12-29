@@ -50,8 +50,8 @@
 			<p:message id="ext_trans_number_msg" for="ext_trans_number" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 
 			<p:outputLabel value="External Transaction Date" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
-			<p:calendar id="ext_trans_date" value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true" display="inline"
-				effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
+			<p:calendar id="ext_trans_date" value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true" showOn="button"
+				 pattern="dd/MM/yyyy" yearRange="1900" required="true" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 			<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 
 			<p:outputLabel id="comments_label" value="Comments" for="comments" />

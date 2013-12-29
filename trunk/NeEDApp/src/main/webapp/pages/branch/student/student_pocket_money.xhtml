@@ -39,8 +39,8 @@
 
 					<p:outputLabel id="student_pocket_money_date_label" value="Date" for="student_pocket_money_date" />
 					<p:calendar id="student_pocket_money_date"
-						value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.depositOrWithdrawDate}" navigator="true" display="inline"
-						effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" mindate="#{studentBean.studentAcademicYear.academicYear.startDate}" maxdate="#{sessionBean.currentDate}">
+						value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.depositOrWithdrawDate}" navigator="true" showOn="button"
+						 pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" mindate="#{studentBean.studentAcademicYear.academicYear.startDate}" maxdate="#{sessionBean.currentDate}">
 						<p:ajax event="dateSelect" update="@this" process="@this" />
 					</p:calendar>
 					<p:message id="student_pocket_money_date_msg" for="student_pocket_money_date" />

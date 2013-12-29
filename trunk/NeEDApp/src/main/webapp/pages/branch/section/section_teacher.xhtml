@@ -18,13 +18,13 @@
 
 					<p:outputLabel id="start_date_label" value="Start date" for="start_date" />
 					<p:calendar id="start_date" value="#{sectionTeacherBean.sectionTeacher.startDate}" navigator="true"
-						display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
+						showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
 						maxdate="#{sectionBean.section.academicYear.endDate}" mindate="#{sectionBean.section.academicYear.startDate}" />
 					<p:message id="start_date_msg" for="start_date" />
 
 					<p:outputLabel id="end_date_label" value="End date" for="end_date" />
-					<p:calendar id="end_date" value="#{sectionTeacherBean.sectionTeacher.endDate}" navigator="true" display="inline"
-						effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" maxdate="#{sectionBean.section.academicYear.endDate}"
+					<p:calendar id="end_date" value="#{sectionTeacherBean.sectionTeacher.endDate}" navigator="true" showOn="button"
+						 pattern="dd/MM/yyyy" size="10" maxlength="10" maxdate="#{sectionBean.section.academicYear.endDate}"
 						mindate="#{sectionBean.section.academicYear.startDate}" />
 					<p:message id="end_date_msg" for="end_date" />
 

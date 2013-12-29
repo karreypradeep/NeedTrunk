@@ -147,7 +147,7 @@
 
 		<p:outputLabel id="salary_paid_date_label" value="Salary paid date" for="salary_paid_date" />
 		<p:calendar id="salary_paid_date" value="#{employeeSalaryBean.employeeSalary.paidDate}" navigator="true"
-			display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
+			showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
 			maxdate="#{sessionBean.currentDate}"
 			mindate="#{employeeSalaryBean.currentEmployeeDO!=null?employeeSalaryBean.currentEmployeeDO.joiningDate:sessionBean.currentBranch.startDate}"
 			disabled="#{employeeSalaryBean.employeeSalary.id != null}">

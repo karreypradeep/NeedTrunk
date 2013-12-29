@@ -23,8 +23,8 @@
 				<p:message id="branch_type_msg" for="branch_type" />
 
 				<p:outputLabel id="branch_start_date_label" value="#{msg.branch_start_date}" for="branch_start_date" />
-				<p:calendar id="branch_start_date" value="#{branchBean.branch.startDate}" navigator="true" display="inline"
-					effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+				<p:calendar id="branch_start_date" value="#{branchBean.branch.startDate}" navigator="true" showOn="button"
+					  pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 				<p:message id="branch_start_date_msg" for="branch_start_date" />
 
 				<p:outputLabel id="branch_registration_type_label" value="#{msg.branch_registration_type}"
@@ -39,7 +39,7 @@
 				<p:outputLabel id="branch_registration_date_label" value="#{msg.branch_registration_date}"
 					for="branch_registration_date" />
 				<p:calendar id="branch_registration_date" value="#{branchBean.branch.registrationDate}" navigator="true"
-					display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+					showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 				<p:message id="branch_registration_date_msg" for="branch_registration_date" />
 
 				<p:outputLabel id="branch_recognised_by_label" value="#{msg.recognised_by}" for="branch_recognised_by" />

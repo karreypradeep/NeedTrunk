@@ -238,7 +238,7 @@ public class StudentAttendanceSummaryBean extends AbstractTabbedBean implements 
 		if (this.currentStudentAttendanceMonthlyDO != null) {
 			Calendar calendarMonth = this.currentStudentAttendanceMonthlyDO.getAttendanceMonth();
 			calendarMonth.set(Calendar.DATE, this.currentDateOfMonth);
-			if (this.isAttendanceTakenForDate(this.currentStudentAttendanceMonthlyDO, this.currentDateOfMonth)) {
+			if (!this.isAttendanceTakenForDate(this.currentStudentAttendanceMonthlyDO, this.currentDateOfMonth)) {
 				header = "Attendance not taken.";
 			}
 		}

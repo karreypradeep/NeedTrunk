@@ -25,12 +25,12 @@
 
 				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
 				<p:calendar id="from_date" value="#{financialReportBean.branchExpenseSearchCriteria.fromDate}" navigator="true"
-					display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+					showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 					mindate="#{financialReportBean.minimumDateForCurrentBranch}" maxdate="#{financialReportBean.currentDate}" />
 
 				<p:outputLabel id="to_date_label" value="To date" for="to_date" />
 				<p:calendar id="to_date" value="#{financialReportBean.branchExpenseSearchCriteria.toDate}" navigator="true"
-					display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+					showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 					mindate="#{financialReportBean.minimumDateForCurrentBranch}" maxdate="#{financialReportBean.currentDate}" />
 
 			</h:panelGrid>

@@ -18,32 +18,21 @@
 
 	<c:if
 		test="#{admissionBean.admissionReservationFee.reservationFee != null and admissionBean.admissionReservationFee.reservationFee > 0.0 and  (admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED' ) and !admissionBean.admissionReservationFee.reservationFeeAppliedToStudentFees}">
-
 		<div class="ui-apeironsol-note">
-
 			<p:outputLabel
-				value=" Note 2.1 : if Reservation fee is no adjusted to class fee the then reservation transactions will be showed on the student fee after admiting the student." />
+				value=" Note 2 : Reservation fee is adjusted to class fee , the transaction will be shown after admiting the student." />
 		</div>
-
-		<div class="ui-apeironsol-note">
-
-			<p:outputLabel
-				value=" Note 2.2 : If Reservation fee is adjusted to class fee , the reservation amount is showed as deductions on classes fees." />
-		</div>
-
 
 	</c:if>
 
-
-
 	<h:panelGrid columns="3" cellpadding="5" id="admission_level_fee_grid">
 
-
 		<p:outputLabel id="application_fee_label" value="Application fee" for="application_fee" />
-		<pe:inputNumber id="application_fee" value="#{admissionBean.admissionReservationFee.applicationFormFee}"
+		<p:inputText id="application_fee" value="#{admissionBean.admissionReservationFee.applicationFormFee}"
 			disable="#{!admissionBean.showApplicationFormFee()}">
+			 <f:convertNumber pattern="#,###,##0.00"/>
 			<p:ajax process="@this" />
-		</pe:inputNumber>
+		</p:inputText>
 		<p:message id="application_fee_msg" for="application_fee" />
 
 
@@ -51,7 +40,7 @@
 
 		<p:outputLabel id="app_fee_date_lbl" value="Application fee paid date" for="app_fee_date" />
 		<p:calendar id="app_fee_date" value="#{admissionBean.admissionReservationFee.applicationFeePaidDate}" navigator="true"
-			display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" disabled="true">
+			showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true">
 			<p:ajax event="dateSelect" process="@this" />
 		</p:calendar>
 		<p:message id="app_fee_date_msg" for="app_fee_date" />
@@ -83,7 +72,7 @@
 		<p:outputLabel id="ext_trans_date_lbl" value="Application fee external transaction date" for="ext_trans_date"
 			rendered="#{admissionBean.applicationFeeExternalTransaction}" />
 		<p:calendar id="ext_trans_date" value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionDate}"
-			navigator="true" display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true"
+			navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
 			rendered="#{admissionBean.applicationFeeExternalTransaction}">
 			<p:ajax event="dateSelect" process="@this" />
 		</p:calendar>
@@ -91,10 +80,11 @@
 
 		<p:outputLabel id="stu_adm_reservation_fee_label" value="Reservation fee" for="stu_adm_reservation_fee"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED'}" />
-		<pe:inputNumber id="stu_adm_reservation_fee" value="#{admissionBean.admissionReservationFee.reservationFee}"
+		<p:inputText id="stu_adm_reservation_fee" value="#{admissionBean.admissionReservationFee.reservationFee}"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED'}">
 			<p:ajax process="@this" />
-		</pe:inputNumber>
+			 <f:convertNumber pattern="#,###,##0.00"/>
+		</p:inputText>
 
 		<p:message id="stu_adm_reservation_fee_msg" for="stu_adm_reservation_fee"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED' }" />
@@ -102,7 +92,7 @@
 		<p:outputLabel id="res_fee_date_lbl" value="Reservation fee paid date" for="res_fee_date"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}" />
 		<p:calendar id="res_fee_date" value="#{admissionBean.admissionReservationFee.reservationFeePaidDate}" navigator="true"
-			display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" disabled="true"
+			showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}">
 			<p:ajax event="dateSelect" process="@this" />
 		</p:calendar>
@@ -143,7 +133,7 @@
 			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />
 		<p:calendar id="ext_res_trans_date"
 			value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true"
-			display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true"
+			showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
 			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}">
 			<p:ajax event="dateSelect" process="@this" />
 		</p:calendar>

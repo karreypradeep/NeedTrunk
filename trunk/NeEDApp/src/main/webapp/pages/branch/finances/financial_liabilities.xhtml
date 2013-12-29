@@ -28,8 +28,8 @@
 					<p:message id="name_msg" for="name" />
 
 					<p:outputLabel id="date_label" value="Date" for="date" />
-					<p:calendar id="date" value="#{financeLiabilityBean.branchLiability.date}" navigator="true" display="inline"
-						effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+					<p:calendar id="date" value="#{financeLiabilityBean.branchLiability.date}" navigator="true" showOn="button"
+						  pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
 					<p:message id="date_msg" for="date" />
 
 					<p:outputLabel id="total_amount_label" value="Liability amount" for="total_amount" />
@@ -87,12 +87,12 @@
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
 						<p:calendar id="from_date" value="#{financeLiabilityBean.branchLiabilitySearchCriteria.fromDate}" navigator="true"
-							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 							mindate="#{financeLiabilityBean.minimumDateForCurrentBranch}" maxdate="#{financeLiabilityBean.currentDate}" />
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
 						<p:calendar id="to_date" value="#{financeLiabilityBean.branchLiabilitySearchCriteria.toDate}" navigator="true"
-							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 							mindate="#{financeLiabilityBean.minimumDateForCurrentBranch}" maxdate="#{financeLiabilityBean.currentDate}" />
 
 					</h:panelGrid>

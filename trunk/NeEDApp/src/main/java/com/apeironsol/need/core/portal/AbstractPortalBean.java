@@ -11,6 +11,8 @@ import javax.validation.constraints.NotNull;
 
 import org.apache.log4j.Logger;
 
+import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.AcademicYearHoliday;
 import com.apeironsol.need.core.model.Batch;
@@ -32,8 +34,6 @@ import com.apeironsol.need.security.portal.GrantedAuthorityBean;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
-import com.apeironsol.framework.exception.BusinessException;
 
 public abstract class AbstractPortalBean implements Serializable {
 

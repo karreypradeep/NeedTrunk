@@ -30,14 +30,14 @@
 		</p:selectOneRadio>
 
 		<p:outputLabel id="ed_doj_label" value="Date of joining" for="ed_doj" />
-		<p:calendar id="ed_doj" value="#{admissionBean.educationHistory.dateOfjoining}" navigator="true" display="inline"
-			effect="drop" pattern="dd/MM/yyyy" yearRange="1947" disabled="#{admissionBean.disableRecentSchoolInfo}"
+		<p:calendar id="ed_doj" value="#{admissionBean.educationHistory.dateOfjoining}" navigator="true" showOn="button"
+			  pattern="dd/MM/yyyy" yearRange="1947" disabled="#{admissionBean.disableRecentSchoolInfo}"
 			required="true" />
 
 
 		<p:outputLabel id="ed_dor_label" value="Date of relieving" for="ed_dor" />
-		<p:calendar id="ed_dor" value="#{admissionBean.educationHistory.dateOfRelieving}" navigator="true" display="inline"
-			effect="drop" pattern="dd/MM/yyyy" yearRange="1947" disabled="#{admissionBean.disableRecentSchoolInfo}"
+		<p:calendar id="ed_dor" value="#{admissionBean.educationHistory.dateOfRelieving}" navigator="true" showOn="button"
+			  pattern="dd/MM/yyyy" yearRange="1947" disabled="#{admissionBean.disableRecentSchoolInfo}"
 			required="true" />
 
 

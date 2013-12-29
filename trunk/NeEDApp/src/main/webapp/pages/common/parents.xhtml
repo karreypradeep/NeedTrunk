@@ -38,8 +38,8 @@
 
 			<p:outputLabel id="father_dob_label" value="Date of birth" for="father_dob"
 				rendered="#{admissionBean.displayFatherInfo}" />
-			<p:calendar id="father_dob" value="#{admissionBean.studentFather.dateOfBirth}" navigator="true" display="inline"
-				effect="drop" pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayFatherInfo}" />
+			<p:calendar id="father_dob" value="#{admissionBean.studentFather.dateOfBirth}" navigator="true" showOn="button"
+				 pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayFatherInfo}" />
 			<p:message id="father_dob_msg" for="father_dob" rendered="#{admissionBean.displayFatherInfo}" />
 
 			<p:outputLabel id="father_occupation_label" value="Occupation" for="father_occupation"
@@ -161,8 +161,8 @@
 
 			<p:outputLabel id="mother_dob_label" value="Date of birth" for="mother_dob"
 				rendered="#{admissionBean.displayMotherInfo}" />
-			<p:calendar id="mother_dob" value="#{admissionBean.studentMother.dateOfBirth}" navigator="true" display="inline"
-				effect="drop" pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayMotherInfo}" />
+			<p:calendar id="mother_dob" value="#{admissionBean.studentMother.dateOfBirth}" navigator="true" showOn="button"
+				 pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayMotherInfo}" />
 			<p:message id="mother_dob_msg" for="mother_dob" rendered="#{admissionBean.displayMotherInfo}" />
 
 			<p:outputLabel id="mother_address_check_lable" value="Address same as primary" for="mother_address_check"
@@ -280,8 +280,8 @@
 
 			<p:outputLabel id="guardian_dob_label" value="Date of birth" for="guardian_dob"
 				rendered="#{admissionBean.displayGuardianInfo}" />
-			<p:calendar id="guardian_dob" value="#{admissionBean.studentGuardian.dateOfBirth}" navigator="true" display="inline"
-				effect="drop" pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayGuardianInfo}" />
+			<p:calendar id="guardian_dob" value="#{admissionBean.studentGuardian.dateOfBirth}" navigator="true" showOn="button"
+				  pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayGuardianInfo}" />
 			<p:message id="guardian_dob_msg" for="guardian_dob" rendered="#{admissionBean.displayGuardianInfo}" />
 
 			<p:outputLabel id="guardian_address_check_lable" value="Address same as primary" for="guardian_address_check"

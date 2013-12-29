@@ -9,14 +9,13 @@
 
 			<h:panelGrid columns="3" cellpadding="10" style="border:0px;margin-bottom:10px;">
 				<p:outputLabel id="start_date_label" value="Start date" for="start_date" style="white-space:nowrap;" />
-				<p:calendar id="start_date" value="#{academicYearBean.academicYear.startDate}" navigator="true" display="inline"
-					effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
-					mindate="#{sessionBean.currentBranch.startDate}" />
+				<p:calendar id="start_date" value="#{academicYearBean.academicYear.startDate}" navigator="true" showOn="button"
+					pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" mindate="#{sessionBean.currentBranch.startDate}" />
 				<p:message id="start_date_msg" for="start_date" />
 
 				<p:outputLabel id="end_date_label" value="End date" for="end_date" style="white-space:nowrap;" />
-				<p:calendar id="end_date" value="#{academicYearBean.academicYear.endDate}" navigator="true" display="inline"
-					effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+				<p:calendar id="end_date" value="#{academicYearBean.academicYear.endDate}" navigator="true" showOn="button"
+					pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
 				<p:message id="end_date_msg" for="end_date" />
 			</h:panelGrid>
 
@@ -25,13 +24,13 @@
 				<p:outputLabel id="admission_start_date_label" value="Admissions start date" for="admission_start_date"
 					style="white-space:nowrap;" />
 				<p:calendar id="admission_start_date" value="#{academicYearBean.academicYear.admissionStartDate}" navigator="true"
-					display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+					showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
 				<p:message id="admission_start_date_msg" for="admission_start_date" />
 
 				<p:outputLabel id="admission_end_date_label" value="Admissions end date" for="admission_end_date"
 					style="white-space:nowrap;" />
 				<p:calendar id="admission_end_date" value="#{academicYearBean.academicYear.admissionEndDate}" navigator="true"
-					display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+					showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
 				<p:message id="admission_end_date_msg" for="admission_end_date" />
 
 			</h:panelGrid>
@@ -41,7 +40,7 @@
 				<p:outputLabel id="class_start_date_label" value="Classes start date" for="class_start_date"
 					style="white-space:nowrap;" />
 				<p:calendar id="class_start_date" value="#{academicYearBean.academicYear.classStartDate}" navigator="true"
-					display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+					showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
 				<p:message id="class_start_date_msg" for="class_start_date" />
 
 			</h:panelGrid>

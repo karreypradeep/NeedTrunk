@@ -26,7 +26,7 @@
 
 			<p:outputLabel id="dueDatelabel" value="End date" for="dueDate" style="white-space:nowrap;" />
 			<p:calendar id="dueDate" value="#{studentAdditionalFeeBean.studentAdditionalFee.dueDate}" navigator="true"
-				display="inline" effect="drop" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
+				showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
 				mindate="#{studentBean.studentAcademicYear.academicYear.startDate}"
 				maxdate="#{studentBean.studentAcademicYear.academicYear.endDate}" />
 			<p:message id="dueDatemsg" for="dueDate" />

@@ -23,7 +23,7 @@
 
 				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
 				<p:calendar id="from_date" value="#{financeFeesDueBean.feeDueSearchCriteria.dueDate}" navigator="true"
-					display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+					showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 					mindate="#{financeFeesDueBean.feeDueSearchCriteria.academicYear.startDate}" maxdate="#{studentBean.currentDate}"
 					disabled="#{financeFeesDueBean.feeDueSearchCriteria.academicYear==null}" />
 

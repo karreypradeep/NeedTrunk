@@ -40,7 +40,7 @@
 
 						<p:outputLabel id="date_of_birth_label" value="#{msg.date_of_birth}" for="date_of_birth" />
 						<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
-							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 							maxdate="#{sessionBean.currentDate}" />
 						
 						<p:outputLabel id="student_status_label" value="#{msg.status}" for="student_status" />

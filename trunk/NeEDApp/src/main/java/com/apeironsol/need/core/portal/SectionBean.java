@@ -549,4 +549,40 @@ public class SectionBean extends AbstractKlassBean {
 		return null;
 	}
 
+	public void openSectionForAdmission() {
+
+		try {
+			this.section.setOpenForAdmission(true);
+			this.section = this.sectionService.saveSection(this.section);
+			ViewUtil.addMessage("Section is open for admission.", FacesMessage.SEVERITY_INFO);
+		} catch (ApplicationException e) {
+			ViewExceptionHandler.handle(e);
+			this.section = this.sectionService.findSectionById(this.section.getId());
+
+		} catch (Throwable e) {
+			ViewExceptionHandler.handle(e);
+			this.section = this.sectionService.findSectionById(this.section.getId());
+
+		}
+
+	}
+
+	public void closeSectionForAdmission() {
+
+		try {
+			this.section.setOpenForAdmission(false);
+			this.section = this.sectionService.saveSection(this.section);
+			ViewUtil.addMessage("Section is closed for admission.", FacesMessage.SEVERITY_INFO);
+		} catch (ApplicationException e) {
+			ViewExceptionHandler.handle(e);
+			this.section = this.sectionService.findSectionById(this.section.getId());
+
+		} catch (Throwable e) {
+			ViewExceptionHandler.handle(e);
+			this.section = this.sectionService.findSectionById(this.section.getId());
+
+		}
+
+	}
+
 }

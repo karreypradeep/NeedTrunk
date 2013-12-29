@@ -28,8 +28,8 @@
 					<p:message id="income_name_msg" for="income_name" />
 
 					<p:outputLabel id="income_date_label" value="Income date" for="income_date" />
-					<p:calendar id="income_date" value="#{financeIncomeBean.branchIncome.incomeDate}" navigator="true" display="inline"
-						effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+					<p:calendar id="income_date" value="#{financeIncomeBean.branchIncome.incomeDate}" navigator="true" showOn="button"
+						  pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
 					<p:message id="income_date_msg" for="income_date" />
 
 					<p:outputLabel id="income_amount_label" value="Income amount" for="income_amount" />
@@ -87,12 +87,12 @@
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
 						<p:calendar id="from_date" value="#{financeIncomeBean.branchIncomeSearchCriteria.fromDate}" navigator="true"
-							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 							mindate="#{financeIncomeBean.minimumDateForCurrentBranch}" maxdate="#{financeIncomeBean.currentDate}" />
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
 						<p:calendar id="to_date" value="#{financeIncomeBean.branchIncomeSearchCriteria.toDate}" navigator="true"
-							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 							mindate="#{financeIncomeBean.minimumDateForCurrentBranch}" maxdate="#{financeIncomeBean.currentDate}" />
 
 					</h:panelGrid>

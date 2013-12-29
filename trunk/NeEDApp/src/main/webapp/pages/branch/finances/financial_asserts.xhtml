@@ -28,8 +28,8 @@
 					<p:message id="assert_name_msg" for="assert_name" />
 
 					<p:outputLabel id="purchase_date_label" value="Purchase date" for="purchase_date" />
-					<p:calendar id="purchase_date" value="#{financeAssertBean.branchAssert.date}" navigator="true" display="inline"
-						effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
+					<p:calendar id="purchase_date" value="#{financeAssertBean.branchAssert.date}" navigator="true" showOn="button"
+						 pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
 						mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
 					<p:message id="purchase_date_msg" for="purchase_date" />
 
@@ -91,12 +91,12 @@
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
 						<p:calendar id="from_date" value="#{financeAssertBean.branchAssertSearchCriteria.fromDate}" navigator="true"
-							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 							mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
 						<p:calendar id="to_date" value="#{financeAssertBean.branchAssertSearchCriteria.toDate}" navigator="true"
-							display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 							mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
 
 					</h:panelGrid>

@@ -4,9 +4,9 @@
 	xmlns:pe="http://primefaces.org/ui/extensions" xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 	<f:metadata>
 		<f:event type="preRenderView" listener="#{admissionBean.loadActiveKlassesForBranch()}" />
-		<f:event type="preRenderView" listener="#{admissionBean.loadAcademicYearsForAdmissionsOpened}" />
 		<f:event type="preRenderView" listener="#{admissionBean.loadActiveBatchesForBranch()}" />
 		<f:event type="preRenderView" listener="#{admissionBean.loadAcademicYearsForAdmission()}" />
+		<f:event type="preRenderView" listener="#{admissionBean.loadAcademicYearsForBatch()}" />
 	</f:metadata>
 
 	<h:panelGrid id="admission_general_panel" columns="3" cellpadding="5">

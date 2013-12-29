@@ -62,7 +62,7 @@
 					</h:outputText>
 				</f:facet>
 				<f:facet name="input">
-					<p:calendar value="#{studentLevelFeeCatalog.dueDate}" navigator="true" display="inline" effect="drop"
+					<p:calendar value="#{studentLevelFeeCatalog.dueDate}" navigator="true" showOn="button"
 						pattern="dd/MM/yyyy" mindate="#{studentBean.studentAcademicYear.academicYear.startDate}"
 						maxdate="#{studentBean.studentAcademicYear.academicYear.endDate}">
 						<p:ajax process="@this" update="studentLevelFeeCatalog"></p:ajax>

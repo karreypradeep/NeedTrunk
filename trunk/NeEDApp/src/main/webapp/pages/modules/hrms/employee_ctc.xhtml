@@ -14,8 +14,8 @@
 			<p:message id="emp_ctc_amount_msg" for="emp_ctc_amount" />
 
 			<p:outputLabel id="emp_start_date_label" value="Start date" for="emp_start_date" />
-			<p:calendar id="emp_start_date" value="#{employeeCTCBean.employeeCTC.startDate}" navigator="true" display="inline"
-				effect="drop" pattern="dd/MM/yyyy" yearRange="1900" required="true" disabled="#{employeeCTCBean.employeeCTCsByEmployee == null || employeeCTCBean.employeeCTCsByEmployee.isEmpty()}"/>
+			<p:calendar id="emp_start_date" value="#{employeeCTCBean.employeeCTC.startDate}" navigator="true" showOn="button"
+				  pattern="dd/MM/yyyy" yearRange="1900" required="true" disabled="#{employeeCTCBean.employeeCTCsByEmployee == null || employeeCTCBean.employeeCTCsByEmployee.isEmpty()}"/>
 			<p:message id="emp_start_date_msg" for="emp_start_date" />
 
 		</h:panelGrid>

@@ -28,8 +28,8 @@
 		<p:message id="#{cc.attrs.id}_last_name_msg" for="#{cc.attrs.id}_last_name" />
 
 		<p:outputLabel id="#{cc.attrs.id}_dob_label" value="Date of birth" for="#{cc.attrs.id}_dob" />
-		<p:calendar id="#{cc.attrs.id}_dob" value="#{cc.attrs.relationModel.dateOfBirth}" navigator="true" display="inline"
-			effect="drop" pattrsern="dd/MM/yyyy" yearRange="1947" required="true" />
+		<p:calendar id="#{cc.attrs.id}_dob" value="#{cc.attrs.relationModel.dateOfBirth}" navigator="true" showOn="button"
+			  pattrsern="dd/MM/yyyy" yearRange="1947" required="true" />
 		<p:message id="#{cc.attrs.id}_dob_msg" for="#{cc.attrs.id}_dob" />
 
 		<p:outputLabel id="#{cc.attrs.id}_type_label" value="Relation Type" for="#{cc.attrs.id}_type" />

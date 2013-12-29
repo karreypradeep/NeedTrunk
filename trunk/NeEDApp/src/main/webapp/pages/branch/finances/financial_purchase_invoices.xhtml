@@ -28,7 +28,7 @@
 
 					<p:outputLabel id="invoice_date_label" value="Invoice date" for="invoice_date" />
 					<p:calendar id="invoice_date" value="#{purchaseInvoiceBean.purchaseInvoice.invoiceDate}" navigator="true"
-						display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true">
+						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true">
 						<p:ajax process="@this" update="@this" />
 					</p:calendar>
 					<p:message id="invoice_date_msg" for="invoice_date" />

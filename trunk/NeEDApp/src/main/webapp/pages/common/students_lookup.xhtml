@@ -18,7 +18,7 @@
 
 					<p:outputLabel id="date_of_birth_label" value="#{msg.date_of_birth}" for="date_of_birth" />
 					<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
-						display="inline" effect="drop" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
+						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
 				</h:panelGrid>
 
 				<h:panelGrid columns="2" id="student_lookup_panel3" cellpadding="4" style="border:0px;">

@@ -81,7 +81,7 @@
 
 			<p:outputLabel id="admid_adm_admission_date_label" value="#{msg.admission_date}" for="admid_adm_admission_date" />
 			<p:calendar id="admid_adm_admission_date" value="#{admissionBean.student.admissionDate}" navigator="true"
-				display="inline" effect="drop" pattern="dd/MM/yyyy" yearRange="2010"
+				showOn="button" pattern="dd/MM/yyyy" yearRange="2010"
 				disabled="#{admissionBean.student.admissionStatus.value == 'accepted'}" />
 			<p:message id="admid_adm_admission_date_msg" for="admid_adm_admission_date" />
 

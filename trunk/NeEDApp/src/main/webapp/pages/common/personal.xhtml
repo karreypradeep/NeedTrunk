@@ -23,7 +23,7 @@
 		<p:message id="stu_last_name_msg" for="stu_last_name" />
 
 		<p:outputLabel id="stu_dob_label" value="Student date of birth" for="stu_dob" />
-		<p:calendar id="stu_dob" value="#{admissionBean.student.dateOfBirth}" navigator="true" display="inline" effect="drop"
+		<p:calendar id="stu_dob" value="#{admissionBean.student.dateOfBirth}" navigator="true" showOn="button"
 			pattern="dd/MM/yyyy" yearRange="1900" required="true" maxdate="#{sessionBean.systemDate}" />
 		<p:message id="stu_dob_msg" for="stu_dob" />
 
