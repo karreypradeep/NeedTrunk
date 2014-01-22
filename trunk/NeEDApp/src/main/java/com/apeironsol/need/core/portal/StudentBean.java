@@ -592,7 +592,10 @@ public class StudentBean extends AbstractStudentBean {
 
 		this.getStudentTabModel().getAcademicsTab().setRendered(this.grantedAuthorityBean.isUserAllowedToAccessStudentAcademics());
 
-		this.getStudentTabModel().getHostelRoomTab().setRendered(this.grantedAuthorityBean.isUserAllowedToAccessStudentHostelRoom());
+		this.getStudentTabModel()
+				.getHostelRoomTab()
+				.setRendered(
+						this.getStudent().getResidence().equals(ResidenceConstant.HOSTEL) && this.grantedAuthorityBean.isUserAllowedToAccessStudentHostelRoom());
 
 		final boolean accessStudentFee = this.grantedAuthorityBean.isUserAllowedToAccessStudentFees();
 
