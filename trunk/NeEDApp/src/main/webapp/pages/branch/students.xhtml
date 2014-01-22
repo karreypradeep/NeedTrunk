@@ -24,25 +24,25 @@
 					<h:outputLabel value="#{msg.search_criteria}" style="font-size: 16px; font-weight:bold;" />
 				</f:facet>
 				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
-				<h:panelGrid columns="2" id="expense_type_grid" cellpadding="4" style="border:0px;" columnClasses="column-vertical-align,column-vertical-align">
+				<h:panelGrid columns="2" id="expense_type_grid" cellpadding="4" style="border:0px;"
+					columnClasses="column-vertical-align,column-vertical-align">
 
 					<h:panelGrid columns="2" id="expense_type_grid1" cellpadding="4" style="border:0px;">
-					
+
 						<p:outputLabel id="student_admission_number_search_label" value="#{msg.admissonNr}"
 							for="student_admission_number_search" />
 						<p:inputText id="student_admission_number_search" value="#{studentBean.studentSearchCriteria.admissionNumber}"
 							size="20">
 						</p:inputText>
-					
+
 						<p:outputLabel id="student_name_search_label" value="#{msg.student_name}" for="student_name_search" />
 						<p:inputText id="student_name_search" value="#{studentBean.studentSearchCriteria.name}" size="20">
 						</p:inputText>
 
 						<p:outputLabel id="date_of_birth_label" value="#{msg.date_of_birth}" for="date_of_birth" />
 						<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							maxdate="#{sessionBean.currentDate}" />
-						
+							showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
+
 						<p:outputLabel id="student_status_label" value="#{msg.status}" for="student_status" />
 						<p:selectOneMenu id="student_status" value="#{studentBean.studentSearchCriteria.studentStatus}"
 							style="width:135px;">
@@ -50,7 +50,7 @@
 							<f:selectItems value="#{enumConstantsBean.studentStatusConstantsForSearch}" var="studentStatus"
 								itemLabel="#{studentStatus.label}" itemValue="#{studentStatus}" />
 						</p:selectOneMenu>
-							
+
 					</h:panelGrid>
 
 					<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
@@ -65,9 +65,10 @@
 							<p:ajax update="expense_type_grid2" listener="#{studentBean.handleFromKlassChange}" process="@this" />
 						</p:selectOneMenu>
 
-					
+
 						<p:outputLabel id="class_label" value="#{msg.class_students}" for="class" />
-						<p:selectOneMenu id="class" value="#{studentBean.studentSearchCriteria.klass}" converter="klassConverter" style="width:165px;">
+						<p:selectOneMenu id="class" value="#{studentBean.studentSearchCriteria.klass}" converter="klassConverter"
+							style="width:165px;">
 							<f:selectItem itemLabel="Select class" itemValue="" />
 							<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
 							<p:ajax update="expense_type_grid2" listener="#{studentBean.handleFromKlassChange}" process="@this" />
@@ -117,18 +118,8 @@
 							<f:setPropertyActionListener value="#{studentSection}" target="#{studentBean.studentSection}" />
 							<f:setPropertyActionListener value="#{studentSection.studentAcademicYear.student}"
 								target="#{studentBean.student}" />
-							<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
-								value="#{studentBean.studentTabModel.personalTab}" />
-							<f:setPropertyActionListener target="#{studentBean.viewAction}" value="true" />
-							<f:setPropertyActionListener target="#{studentTreeBean.loadStudentTreeFlag}" value="true" />
-							<f:setPropertyActionListener target="#{studentBean.loadRelationsFlag}" value="true" />
 							<f:setPropertyActionListener target="#{studentBean.studentAcademicYear}"
 								value="#{studentSection.studentAcademicYear}" />
-							<f:setPropertyActionListener target="#{studentBean.loadProfilePictureFlag}" value="true" />
-							<f:setPropertyActionListener target="#{studentBean.loadAcademicYearsFlag}" value="true" />
-							<f:setPropertyActionListener target="#{studentBean.loadSubmittedDocumentsMedicalFlag}" value="true" />
-							<f:setPropertyActionListener target="#{studentBean.loadStudentLatestAcademicYearDetailsInd}" value="true" />
-							<f:setPropertyActionListener target="#{studentBean.studentCurrentAction}" value="" />
 						</p:commandLink>
 					</p:column>
 					<p:column sortBy="#{studentSection.studentAcademicYear.student.admissionNr}"
@@ -145,8 +136,7 @@
 						</f:facet>
 						<h:outputText value="#{studentSection.studentAcademicYear.student.externalAdmissionNr}" />
 					</p:column>
-					<p:column sortBy="#{studentSection.studentAcademicYear.student.dateOfBirth}"
-						filterBy="#{studentSection.studentAcademicYear.student.dateOfBirth}" filterMatchMode="contains">
+					<p:column>
 						<f:facet name="header">
 							Date of birth
 						</f:facet>

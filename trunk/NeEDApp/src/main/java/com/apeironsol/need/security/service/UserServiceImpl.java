@@ -299,4 +299,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		this.relationDao.persist(relationMatch);
 
 	}
+
+	@Override
+	public void updatePasswordForUserAccount(final String username, final String password) {
+
+		UserAccount userAccount = this.findUserAccountByUsername(username);
+		PasswordEncoder encoder = new PasswordEncoder();
+		String encodedPassword = encoder.encodePassword(password, null);
+		userAccount.setPassword(encodedPassword);
+		this.updateUserAccount(userAccount);
+
+	}
+
 }

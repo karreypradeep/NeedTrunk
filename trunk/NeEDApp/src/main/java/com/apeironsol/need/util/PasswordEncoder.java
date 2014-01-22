@@ -8,6 +8,7 @@
 package com.apeironsol.need.util;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.Random;
 
@@ -26,7 +27,7 @@ public class PasswordEncoder {
 
 		rand.nextBytes(salt);
 
-		return encoder.encode(salt) + encoder.encode(str.getBytes());
+		return encoder.encode(salt) + encoder.encode(str.getBytes(Charset.forName("UTF-8")));
 	}
 
 	public static String decrypt(final String encstr) {
@@ -39,7 +40,7 @@ public class PasswordEncoder {
 
 			try {
 
-				return new String(decoder.decodeBuffer(cipher));
+				return new String(decoder.decodeBuffer(cipher), Charset.forName("UTF-8"));
 
 			} catch (IOException e) {
 

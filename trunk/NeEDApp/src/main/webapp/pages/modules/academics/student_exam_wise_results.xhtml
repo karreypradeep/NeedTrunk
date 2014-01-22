@@ -11,7 +11,7 @@
 	<p:lineChart id="examsPercentageChart" value="#{studentAcademicBean.studentAcademicExamsChart}" legendPosition="w"
 		title="Student Academic Progress" minY="0" maxY="100" style="height:300px;margin-top:20px;margin-bottom:15px;"
 		rendered="#{studentAcademicBean.studentAcademicExamDOs != null and studentAcademicBean.studentAcademicExamDOs.size() > 0}"
-		seriesColors="2163A8" shadow="false" yaxisLabel="Scored percentage" />
+		seriesColors="2163A8" shadow="false" yaxisLabel="Scored percentage" animate="true"/>
 
 	<p:dataTable id="studentAcademicResults" value="#{studentAcademicBean.studentAcademicExamDOs}"
 		var="studentAcademicExamDO" paginator="false" sortOrder="descending">

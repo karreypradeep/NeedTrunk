@@ -250,6 +250,16 @@ public class StudentSectionDaoImpl extends BaseDaoImpl<StudentSection> implement
 			whereClasuseAdded = true;
 		}
 
+		if (studentSearchCriteria.getResidenceConstant() != null) {
+			if (!whereClasuseAdded) {
+				queryString = queryString.append(" where ");
+			} else {
+				queryString = queryString.append(" and ");
+			}
+			queryString = queryString.append("ss.studentAcademicYear.student.residence = :residence");
+			whereClasuseAdded = true;
+		}
+
 		final TypedQuery<StudentSection> query = this.getEntityManager().createQuery(queryString.toString(), StudentSection.class);
 
 		if (studentSearchCriteria.getBranch() != null) {
@@ -271,6 +281,11 @@ public class StudentSectionDaoImpl extends BaseDaoImpl<StudentSection> implement
 		if (studentSearchCriteria.getAcademicYear() != null) {
 			query.setParameter("academicYear", studentSearchCriteria.getAcademicYear());
 		}
+
+		if (studentSearchCriteria.getResidenceConstant() != null) {
+			query.setParameter("residence", studentSearchCriteria.getResidenceConstant());
+		}
+
 		return query.getResultList();
 	}
 

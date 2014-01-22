@@ -11,6 +11,12 @@
 
 	<h:panelGrid id="admission_general_panel" columns="3" cellpadding="5">
 
+		<p:outputLabel id="previous_academic_year_admission_label" value="Previous academic year admission" for="previous_academic_year_admission" />
+		<p:selectBooleanCheckbox id="previous_academic_year_admission" value="#{admissionBean.previousAcademicYearAdmission}">
+			<p:ajax event="change" update="@form" process="@this" listener="#{admissionBean.loadAcademicYearsForAdmission()}" /> 
+		</p:selectBooleanCheckbox>
+		<p:message for="previous_academic_year_admission" />
+
 		<p:outputLabel id="exis_admission_nr_check_label" value="#{msg.is_existing_admission}" for="exis_admission_nr_check" />
 		<p:selectBooleanCheckbox id="exis_admission_nr_check" value="#{admissionBean.existingAdmissionNumber}">
 			<p:ajax event="change" update="@form" process="@this" listener="#{admissionBean.resetExistingAdmissionNumber()}" />

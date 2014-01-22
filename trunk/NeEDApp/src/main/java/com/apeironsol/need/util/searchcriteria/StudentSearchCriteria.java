@@ -13,6 +13,7 @@ import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
+import com.apeironsol.need.util.constants.ResidenceConstant;
 import com.apeironsol.need.util.constants.StudentStatusConstant;
 
 /**
@@ -71,6 +72,8 @@ public class StudentSearchCriteria implements SearchCriteria {
 	 * Name of student.
 	 */
 	private Section					section;
+
+	private ResidenceConstant		residenceConstant;
 
 	/**
 	 * 
@@ -237,8 +240,24 @@ public class StudentSearchCriteria implements SearchCriteria {
 	 * @param branch
 	 *            the branch to set
 	 */
+	@Override
 	public void setBranch(final Branch branch) {
 		this.branch = branch;
+	}
+
+	/**
+	 * @return the residenceConstant
+	 */
+	public ResidenceConstant getResidenceConstant() {
+		return this.residenceConstant;
+	}
+
+	/**
+	 * @param residenceConstant
+	 *            the residenceConstant to set
+	 */
+	public void setResidenceConstant(final ResidenceConstant residenceConstant) {
+		this.residenceConstant = residenceConstant;
 	}
 
 }

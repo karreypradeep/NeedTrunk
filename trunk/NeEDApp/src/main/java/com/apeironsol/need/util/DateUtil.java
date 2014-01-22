@@ -255,4 +255,15 @@ public class DateUtil {
 		return startDate.get(Calendar.DAY_OF_MONTH) == 1;
 	}
 
+	public static Date getDateForDisplayFormat(final Date date) {
+		final DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+		Date formattedDate = date;
+		try {
+			formattedDate = formatter.parse(date.toString());
+		} catch (final ParseException e) {
+			e.printStackTrace();
+		}
+		return formattedDate;
+	}
+
 }

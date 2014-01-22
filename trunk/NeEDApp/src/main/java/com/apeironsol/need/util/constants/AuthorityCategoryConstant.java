@@ -27,6 +27,7 @@ public enum AuthorityCategoryConstant implements Labeled {
 	TRANSPORTATION("transportation"),
 	IMPORTS("imports"),
 	NOTIFICATIONS("notifications"),
+	HOSTEL("hostel"),
 	STUDENT("student");
 
 	private String	label;

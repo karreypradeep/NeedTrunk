@@ -79,6 +79,12 @@
 						value="#{studentBean.studentTabModel.attendanceTab}" />
 				</p:menuitem>
 
+				<p:menuitem value="Hostel room" icon="ui-icon-mail-closed" action="#{studentNotificationsBean.onTabChange()}"
+					process="@this" update="@form" rendered="#{studentBean.studentTabModel.hostelRoomTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.hostelRoomTab}" />
+				</p:menuitem>
+
 				<p:menuitem value="Transportation" icon="ui-icon-shuffle" action="#{studentTransportationBean.onTabChange()}"
 					process="@this" update="@form" rendered="#{studentBean.studentTabModel.transportationTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
@@ -174,6 +180,10 @@
 					<ui:include src="/pages/modules/academics/student_academics.xhtml" />
 				</c:if>
 
+				<c:if test="#{studentBean.studentTabModel.hostelRoomTabActive}">
+					<ui:include src="/pages/branch/student/student_hostel_room_details.xhtml" />
+				</c:if>
+
 				<c:if test="#{studentBean.studentTabModel.transportationTabActive}">
 					<ui:include src="/pages/branch/transportation/student_transportation.xhtml" />
 				</c:if>
@@ -183,39 +193,7 @@
 				</c:if>
 
 				<c:if test="#{studentBean.studentTabModel.statusHistoryTabActive}">
-
-					<f:facet name="header">Status History</f:facet>
-
-					<p:dataTable id="status_table" var="studentStatusHistory" value="#{studentBean.studentStatusHistories}"
-						paginator="true" rows="15"
-						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-						rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:10px;">
-
-						<p:column headerText="Action time" sortBy="#{studentStatusHistory.auditTimestamp}"
-							filterBy="#{studentStatusHistory.auditTimestamp}" filterMatchMode="contains">
-							<h:outputText value="#{studentStatusHistory.auditTimestamp}">
-								<f:convertDateTime pattern="dd/MM/yyyy : hh:mm:ss" />
-							</h:outputText>
-
-						</p:column>
-
-						<p:column headerText="Action taken by" sortBy="#{studentStatusHistory.actionTakenBy}"
-							filterBy="#{studentStatusHistory.actionTakenBy}" filterMatchMode="contains">
-							<h:outputText value="#{studentStatusHistory.actionTakenBy}" />
-						</p:column>
-
-						<p:column headerText="Action" sortBy="#{studentStatusHistory.action}" filterBy="#{studentStatusHistory.action}"
-							filterMatchMode="contains">
-							<h:outputText value="#{studentStatusHistory.action}" />
-						</p:column>
-
-						<p:column headerText="Comments">
-							<p:commandLink value="View comments" oncomplete="actionDialog.show()" update="@form">
-								<f:setPropertyActionListener target="#{studentBean.studentStatusHistory}" value="#{studentStatusHistory}" />
-							</p:commandLink>
-						</p:column>
-
-					</p:dataTable>
+					<ui:include src="/pages/branch/student/student_status_details.xhtml" />
 				</c:if>
 
 				<c:if test="#{studentBean.studentTabModel.notificationTabActive}">
@@ -225,26 +203,6 @@
 
 			</p:panel>
 
-			<p:dialog header="Action details" widgetVar="actionDialog" resizable="false" showEffect="explode"
-				hideEffect="explode" width="500">
-				<h:panelGrid id="display" columns="2" cellpadding="4">
-
-					<h:outputText value="Action" />
-					<h:outputText value="#{studentBean.studentStatusHistory.action}" />
-
-					<h:outputText value="Action time" />
-					<h:outputText value="#{studentBean.studentStatusHistory.actionTakenTime}">
-						<f:convertDateTime pattern="dd/MM/yyyy : hh:mm:ss" />
-					</h:outputText>
-
-					<h:outputText value="Action taken by" />
-					<h:outputText value="#{studentBean.studentStatusHistory.actionTakenBy}" />
-
-					<h:outputText value="Comments" />
-					<h:outputText value="#{studentBean.studentStatusHistory.comments}" />
-
-				</h:panelGrid>
-			</p:dialog>
 
 		</c:otherwise>
 	</c:choose>

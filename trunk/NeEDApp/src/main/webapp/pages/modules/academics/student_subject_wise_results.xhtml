@@ -13,7 +13,7 @@
 		title="Exam subject percentages" orientation="horizontal" min="0" max="100"
 		style="margin-top:20px;margin-bottom:15px;"
 		rendered="#{studentAcademicBean.studentAcademicSubjectDOs != null and studentAcademicBean.studentAcademicSubjectDOs.size() > 0}"
-		seriesColors="5dbd6b" />
+		seriesColors="5dbd6b" animate="true"/>
 
 	<p:dataTable id="studentSubjectResults" value="#{studentAcademicBean.studentAcademicSubjectDOs}"
 		var="studentAcademicSubjectDO" paginator="false" sortOrder="descending">

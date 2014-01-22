@@ -31,6 +31,7 @@ public enum BuildingBlockConstant implements Labeled {
 	STUDENT_CLASSIFICATION("student_classification"),
 	EMPLOYEE_CTC_DEFINITION_TYPE("employee_ctc_definition_type"),
 	SALARY_DEDUCTION("salary_deduction"),
+	HOSTEL_ROOM_TYPE("hostel_room_type"),
 	EXAM_TYPE("exam_type");
 
 	private String								label;
@@ -50,6 +51,7 @@ public enum BuildingBlockConstant implements Labeled {
 		allBuildingBlocks.add(EXAM_TYPE);
 		allBuildingBlocks.add(EMPLOYEE_CTC_DEFINITION_TYPE);
 		allBuildingBlocks.add(SALARY_DEDUCTION);
+		allBuildingBlocks.add(HOSTEL_ROOM_TYPE);
 
 		allBuildingBlocksForBranchAssemblies.add(FEE_TYPE);
 		allBuildingBlocksForBranchAssemblies.add(DEPARTMENT);
@@ -63,6 +65,7 @@ public enum BuildingBlockConstant implements Labeled {
 		allBuildingBlocksForBranchAssemblies.add(EXAM_TYPE);
 		allBuildingBlocksForBranchAssemblies.add(EMPLOYEE_CTC_DEFINITION_TYPE);
 		allBuildingBlocksForBranchAssemblies.add(SALARY_DEDUCTION);
+		allBuildingBlocksForBranchAssemblies.add(HOSTEL_ROOM_TYPE);
 
 	}
 

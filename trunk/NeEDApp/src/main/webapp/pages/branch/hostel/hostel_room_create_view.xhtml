@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{hostelRoomBean.loadHostelRoomTypeBuildingBlocks()}" />
+	</f:metadata>
+	<p:toolbar>
+		<p:toolbarGroup align="left"  style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="Hostel Room" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+
+	<h:panelGrid columns="3">
+
+		<p:outputLabel id="hostel_room_number_label" value="Room Number" for="hostel_room_number" />
+		<p:inputText id="hostel_room_number" value="#{hostelRoomBean.hostelRoom.roomnNumber}">
+		</p:inputText>
+		<p:message id="hostel_room_number_msg" for="hostel_room_number" />
+
+		<p:outputLabel id="hostel_room_type_label" value="Expense type" for="hostel_room_type" />
+		<p:selectOneMenu id="hostel_room_type" value="#{hostelRoomBean.hostelRoom.hostelRoomTypebuildingBlock}"
+			required="true" converter="buildingBlockConverter">
+			<f:selectItem itemLabel="Select Hostel Room type" itemValue="" />
+			<f:selectItems value="#{hostelRoomBean.hostelRoomTypeBuildingBlocks}" var="hostelRoomTypeBuildingBlock"
+				itemLabel="#{hostelRoomTypeBuildingBlock.name}" itemValue="#{hostelRoomTypeBuildingBlock}" />
+			<p:ajax process="@this" update="@this" />
+		</p:selectOneMenu>
+		<p:message id="hostel_room_type_msg" for="hostel_room_type" />
+
+		<p:outputLabel id="available_start_date_label" value="Available start date" for="available_start_date" />
+		<p:calendar id="available_start_date" value="#{hostelRoomBean.hostelRoom.startDate}" navigator="true"
+			pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button" />
+		<p:message id="available_start_date_msg" for="available_start_date" />
+
+		<p:outputLabel id="available_beds_label" value="Total beds" for="available_beds" />
+		<p:inputText id="available_beds" value="#{hostelRoomBean.hostelRoom.totalNumberOfBeds}" size="20" maxlength="20"
+			required="true">
+			<f:convertNumber pattern="000" />
+		</p:inputText>
+		<p:message id="available_beds_msg" for="available_beds" />
+
+		<p:outputLabel id="beds_occupied_label" value="Beds occupied" for="beds_occupied" />
+		<p:inputText id="beds_occupied" value="#{hostelRoomBean.hostelRoom.bedsOccupied}" size="20" maxlength="20"
+			readonly="true">
+			<f:convertNumber pattern="000" />
+		</p:inputText>
+		<p:message id="beds_occupied_msg" for="beds_occupied" />
+
+		<p:outputLabel id="description_label" value="Description" for="descriptionId" />
+		<p:inputTextarea id="descriptionId" value="#{hostelRoomBean.hostelRoom.description}" maxlength="200" rows="5"
+			required="true">
+		</p:inputTextarea>
+		<p:message id="descriptionId_msg" for="descriptionId" />
+
+
+	</h:panelGrid>
+
+	<p:commandButton id="academic_year_expense_save" value="Save" action="#{hostelRoomBean.saveHostelRoom()}"
+		update="@form">
+		<f:setPropertyActionListener target="#{hostelRoomBean.viewOrNewAction}" value="true" />
+	</p:commandButton>
+	<p:commandButton id="academic_year_expense_clear" value="Cancel" immediate="true" update="@form"
+		action="#{hostelRoomBean.resetHostelRoom()}">
+		<f:setPropertyActionListener target="#{hostelRoomBean.viewOrNewAction}" value="false" />
+	</p:commandButton>
+
+</ui:composition>

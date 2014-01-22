@@ -56,13 +56,13 @@
 
 			<h:panelGrid columns="2" columnClasses="form-column,action-column" width="100%">
 				<h:panelGrid columns="3" id="klass_grid" style="border:0px;margin-bottom:10px;" cellpadding="5">
-					<p:outputLabel id="klass_code_label" value="Code" for="klass_code" />
-					<p:inputText id="klass_code" value="#{klassBean.klass.code}" required="true" />
-					<p:message id="klass_name_code" for="klass_code" />
-
 					<p:outputLabel id="klass_name_label" value="Name" for="klass_name" />
 					<p:inputText id="klass_name" value="#{klassBean.klass.name}" required="true" />
 					<p:message id="klass_name_msg" for="klass_name" />
+
+					<p:outputLabel id="klass_code_label" value="Code" for="klass_code" />
+					<p:inputText id="klass_code" value="#{klassBean.klass.code}" required="true" />
+					<p:message id="klass_name_code" for="klass_code" />
 				</h:panelGrid>
 				<h:panelGrid>
 					<p:commandButton id="klass_activate" value="Activate" action="#{klassBean.activeKlass}" update="@form"

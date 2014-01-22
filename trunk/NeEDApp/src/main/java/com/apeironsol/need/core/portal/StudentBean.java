@@ -8,7 +8,7 @@ package com.apeironsol.need.core.portal;
 
 /**
  * View student class.
- *
+ * 
  * @author Pradeep
  */
 import java.io.ByteArrayInputStream;
@@ -34,6 +34,7 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.Address;
 import com.apeironsol.need.core.model.ProfilePicture;
 import com.apeironsol.need.core.model.Relation;
@@ -45,17 +46,18 @@ import com.apeironsol.need.core.model.StudentSection;
 import com.apeironsol.need.core.service.BuildingBlockService;
 import com.apeironsol.need.core.service.ProfilePictureService;
 import com.apeironsol.need.core.service.StudentAttendanceService;
-import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.financial.service.StudentFinancialService;
+import com.apeironsol.need.hostel.model.StudentAcademicYearHostelRoom;
+import com.apeironsol.need.hostel.service.StudentAcademicYearHostelRoomService;
 import com.apeironsol.need.security.model.UserAccount;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.ResidenceConstant;
 import com.apeironsol.need.util.constants.UserAccountTypeConstant;
+import com.apeironsol.need.util.constants.ViewContentConstant;
 import com.apeironsol.need.util.portal.StudentTabModel;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
 import com.apeironsol.need.util.searchcriteria.StudentSearchCriteria;
-import com.apeironsol.framework.exception.ApplicationException;
 import com.lowagie.text.BadElementException;
 import com.lowagie.text.Document;
 import com.lowagie.text.DocumentException;
@@ -69,52 +71,54 @@ public class StudentBean extends AbstractStudentBean {
 	/**
 	 * Unique serial version id for this class.
 	 */
-	private static final long				serialVersionUID		= 5977372257551033633L;
+	private static final long						serialVersionUID		= 5977372257551033633L;
 
 	@Resource
-	protected StudentFinancialService		studentFinancialService;
+	protected StudentFinancialService				studentFinancialService;
 
 	@Resource
-	protected StudentService				studentService;
+	protected BuildingBlockService					buildingBlockService;
 
 	@Resource
-	protected BuildingBlockService			buildingBlockService;
+	protected ProfilePictureService					profilePictureService;
+
+	private boolean									editStudentPersonalDetails;
+
+	private boolean									editStudentFatherDetails;
+
+	private boolean									editStudentMotherDetails;
+
+	private boolean									editStudentGuardianDetails;
+
+	private boolean									editStudentMedicalHistory;
+
+	private byte[]									profilePicture;
+
+	private boolean									loadProfilePictureFlag;
+
+	// private StudentAcademicYear studentAcademicYear;
+
+	private Collection<StudentAcademicYear>			studentAcademicYears;
+
+	private boolean									loadAcademicYearsFlag;
 
 	@Resource
-	protected ProfilePictureService			profilePictureService;
+	private StudentAttendanceService				studentAttendanceService;
 
-	private boolean							editStudentPersonalDetails;
+	private StudentSearchCriteria					studentSearchCriteria	= null;
 
-	private boolean							editStudentFatherDetails;
+	private Collection<StudentSection>				studentSectionsBySearchCriteria;
 
-	private boolean							editStudentMotherDetails;
+	private boolean									loadStudentByUserIdFlag;
 
-	private boolean							editStudentGuardianDetails;
+	private StudentTabModel							studentTabModel			= new StudentTabModel();
 
-	private boolean							editStudentMedicalHistory;
-
-	private byte[]							profilePicture;
-
-	private boolean							loadProfilePictureFlag;
-
-	private StudentAcademicYear				studentAcademicYear;
-
-	private Collection<StudentAcademicYear>	studentAcademicYears;
-
-	private boolean							loadAcademicYearsFlag;
+	private Collection<Section>						sectionsForSearhCriteriaByKlass;
 
 	@Resource
-	private StudentAttendanceService		studentAttendanceService;
+	private StudentAcademicYearHostelRoomService	studentAcademicYearHostelRoomService;
 
-	private StudentSearchCriteria			studentSearchCriteria	= null;
-
-	private Collection<StudentSection>		studentSectionsBySearchCriteria;
-
-	private boolean							loadStudentByUserIdFlag;
-
-	private StudentTabModel					studentTabModel			= new StudentTabModel();
-
-	private Collection<Section>				sectionsForSearhCriteriaByKlass;
+	Collection<StudentAcademicYearHostelRoom>		studentAcademicYearHostelRooms;
 
 	public enum StudentAction {
 
@@ -186,10 +190,10 @@ public class StudentBean extends AbstractStudentBean {
 	 */
 	public StudentAcademicYear getStudentAcademicYear() {
 
-		if (this.studentAcademicYear == null) {
-			this.studentAcademicYear = this.studentAcademicYearService.findStudentCurrentOrMostRecentAcademicYearByStudentId(this.student.getId());
+		if (this.getCurrentOrMostRecentAcademicYear() == null) {
+			this.setCurrentOrMostRecentAcademicYear(this.studentAcademicYearService.findStudentCurrentOrMostRecentAcademicYearByStudentId(this.student.getId()));
 		}
-		return this.studentAcademicYear;
+		return this.getCurrentOrMostRecentAcademicYear();
 	}
 
 	/**
@@ -197,7 +201,7 @@ public class StudentBean extends AbstractStudentBean {
 	 *            the studentAcademicYear to set
 	 */
 	public void setStudentAcademicYear(final StudentAcademicYear studentAcademicYear) {
-		this.studentAcademicYear = studentAcademicYear;
+		this.setCurrentOrMostRecentAcademicYear(studentAcademicYear);
 	}
 
 	/**
@@ -588,6 +592,8 @@ public class StudentBean extends AbstractStudentBean {
 
 		this.getStudentTabModel().getAcademicsTab().setRendered(this.grantedAuthorityBean.isUserAllowedToAccessStudentAcademics());
 
+		this.getStudentTabModel().getHostelRoomTab().setRendered(this.grantedAuthorityBean.isUserAllowedToAccessStudentHostelRoom());
+
 		final boolean accessStudentFee = this.grantedAuthorityBean.isUserAllowedToAccessStudentFees();
 
 		this.getStudentTabModel().getStudentPocketMoneyTab().setRendered(this.getStudent().getResidence().equals(ResidenceConstant.HOSTEL) && accessStudentFee);
@@ -650,7 +656,8 @@ public class StudentBean extends AbstractStudentBean {
 	public void dropoutStudentAction() {
 		this.studentCurrentAction = StudentAction.DROPOUT_STUDENT;
 
-		this.outstandingFeeDue = this.studentFinancialService.hasOutstandingFeeDue(this.student.getId(), this.studentAcademicYear.getAcademicYear().getId());
+		this.outstandingFeeDue = this.studentFinancialService.hasOutstandingFeeDue(this.student.getId(), this.getCurrentOrMostRecentAcademicYear()
+				.getAcademicYear().getId());
 
 	}
 
@@ -719,4 +726,52 @@ public class StudentBean extends AbstractStudentBean {
 		this.actionComment = actionComment;
 	}
 
+	/**
+	 * @return the studentAcademicYearHostelRooms
+	 */
+	public Collection<StudentAcademicYearHostelRoom> getStudentAcademicYearHostelRooms() {
+		return this.studentAcademicYearHostelRooms;
+	}
+
+	/**
+	 * @param studentAcademicYearHostelRooms
+	 *            the studentAcademicYearHostelRooms to set
+	 */
+	public void setStudentAcademicYearHostelRooms(final Collection<StudentAcademicYearHostelRoom> studentAcademicYearHostelRooms) {
+		this.studentAcademicYearHostelRooms = studentAcademicYearHostelRooms;
+	}
+
+	public void loadStudentAcademicYearHostelRooms() {
+
+		if (this.isLoadStudentAcademicYearHostelRooms()) {
+			this.studentAcademicYearHostelRooms = this.studentAcademicYearHostelRoomService.findAllHostelRoomsByStudentAcademicYear(this
+					.getCurrentOrMostRecentAcademicYear().getId());
+			this.setLoadStudentAcademicYearHostelRooms(false);
+		}
+
+	}
+
+	public void viewStudent() {
+		this.studentTabModel.setActiveTab(this.studentTabModel.getPersonalTab());
+		this.setViewAction(true);
+		this.loadRelationsFlag = true;
+		this.setLoadProfilePictureFlag(true);
+		this.setLoadAcademicYearsFlag(true);
+		this.setLoadSubmittedDocumentsMedicalFlag(true);
+		this.setLoadStudentLatestAcademicYearDetailsInd(true);
+		this.loadLatestAcademicYearDetailsForStudent();
+		this.loadStudentLatestAcademicYearDetails();
+		this.setLoadStudentAcademicYearHostelRooms(true);
+		this.loadStudentLatestAcademicYearDetails();
+		this.loadStudentAcademicYearHostelRooms();
+	}
+
+	/**
+	 * To use this method set parameter loadLatestAcademicYearDetailsFlag to
+	 * true.
+	 */
+	public void viewStudentFromOtherViews() {
+		this.viewContentHandlerBean.setCurrentViewContent(ViewContentConstant.BRANCH_STUDENTS);
+		this.viewStudent();
+	}
 }

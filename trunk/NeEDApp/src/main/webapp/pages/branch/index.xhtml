@@ -181,6 +181,16 @@
 				<ui:include src="/pages/branch/notifications/branch_admissions_notifications.xhtml" />
 			</c:when>
 
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchChangePassword}">
+				<ui:include src="/pages/branch/settings/change_password.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchHostelRoom}">
+				<ui:include src="/pages/branch/hostel/hostel_rooms.xhtml" />
+			</c:when>
+
 			<c:otherwise>
 				<p:panel header="Unauthorized access !!">
 

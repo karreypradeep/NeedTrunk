@@ -215,4 +215,12 @@ public class ViewContentHandlerBean implements Serializable {
 		return ViewContentConstant.BRANCH_ADMISSIONS_NOTIFICATIONS.equals(this.getCurrentViewContent());
 	}
 
+	public boolean isViewContentBranchChangePassword() {
+		return ViewContentConstant.BRANCH_CHANGE_PASSWORD.equals(this.getCurrentViewContent());
+	}
+
+	public boolean isViewContentBranchHostelRoom() {
+		return ViewContentConstant.BRANCH_HOSTEL_ROOMS.equals(this.getCurrentViewContent());
+	}
+
 }

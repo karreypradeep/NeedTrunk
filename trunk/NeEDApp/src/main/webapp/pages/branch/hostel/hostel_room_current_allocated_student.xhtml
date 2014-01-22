@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<c:choose>
+		<c:when test="#{hostelRoomBean.allocateStudentToHostelRoom}">
+			<ui:include src="hostel_room_allocate_to_student.xhtml" />
+		</c:when>
+		<c:otherwise>
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{hostelRoomBean.loadCurrentHostelStudents()}" />
+			</f:metadata>
+
+			<p:toolbar style="margin-bottom:1px;">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText value="Current students in hostel room" style="font-size:20px;" />
+				</p:toolbarGroup>
+				<p:toolbarGroup align="right">
+					<p:commandButton value="Allocate room to student" icon="ui-icon-document"
+						action="#{hostelRoomBean.newStudentAcademicYearHostelRoom()}" style="width:100%;" process="@this" update="@form"
+						disabled="#{!grantedAuthorityBean.userAllowedToCreateHostelRoom}"
+						rendered="#{(hostelRoomBean.hostelRoom.totalNumberOfBeds - hostelRoomBean.hostelRoom.bedsOccupied) > 0}">
+						<f:setPropertyActionListener target="#{hostelRoomBean.allocateStudentToHostelRoom}" value="true" />
+						<f:setPropertyActionListener target="#{hostelRoomBean.studentSearchFlag}" value="false" />
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:panel style="margin-top:1px;margin-bottom:10px;">
+
+				<p:dataTable id="students_allocate_table" var="studentAcademicYearHostRoom"
+					value="#{hostelRoomBean.currentStudentAcademicYearHostelRooms}" paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,15,20" paginatorPosition="bottom" style="margin-top:15px;">
+					<p:column>
+						<f:facet name="header">
+							Student Name
+						</f:facet>
+						<p:commandLink id="viewLink" value="#{studentAcademicYearHostRoom.studentAcademicYear.student.displayName}"
+							title="View" style="margin:0px 0px 0px;" process="@this" update="@form" action="#{hostelRoomBean.doNothing()}">
+							<f:setPropertyActionListener value="#{studentAcademicYearHostRoom}"
+								target="#{hostelRoomBean.studentAcademicYearHostelRoom}" />
+							<f:setPropertyActionListener target="#{hostelRoomBean.allocateStudentToHostelRoom}" value="true" />
+							<f:setPropertyActionListener target="#{hostelRoomBean.studentSearchFlag}" value="false" />
+						</p:commandLink>
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							Admission number
+						</f:facet>
+						<h:outputText value="#{studentAcademicYearHostRoom.studentAcademicYear.student.admissionNr}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							Ext admission number
+						</f:facet>
+						<h:outputText value="#{studentAcademicYearHostRoom.studentAcademicYear.student.externalAdmissionNr}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							Gender
+						</f:facet>
+						<h:outputText value="#{studentAcademicYearHostRoom.studentAcademicYear.student.gender.label}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

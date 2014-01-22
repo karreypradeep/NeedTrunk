@@ -5,6 +5,7 @@ import java.util.Collection;
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.dao.StudentSectionDao;
 import com.apeironsol.need.core.model.Address;
 import com.apeironsol.need.core.model.MedicalHistory;
@@ -14,19 +15,18 @@ import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.model.StudentSection;
 import com.apeironsol.need.core.model.StudentStatusHistory;
+import com.apeironsol.need.core.portal.util.ViewContentHandlerBean;
 import com.apeironsol.need.core.service.AdmissionService;
 import com.apeironsol.need.core.service.MedicalHistoryService;
 import com.apeironsol.need.core.service.RelationService;
 import com.apeironsol.need.core.service.StudentAcademicYearService;
 import com.apeironsol.need.core.service.StudentSectionService;
-import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.core.service.StudentStatusHistoryService;
 import com.apeironsol.need.util.constants.RelationTypeConstant;
 import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.need.util.constants.StudentStatusConstant;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.BusinessException;
 
 public abstract class AbstractStudentBean extends AbstractTabbedBean {
 
@@ -39,9 +39,6 @@ public abstract class AbstractStudentBean extends AbstractTabbedBean {
 	protected CountryBean						countryBean;
 
 	@Resource
-	protected StudentService					studentService;
-
-	@Resource
 	protected AdmissionService					admissionService;
 
 	@Resource
@@ -49,6 +46,8 @@ public abstract class AbstractStudentBean extends AbstractTabbedBean {
 
 	@Resource
 	protected StudentStatusHistoryService		studentStatusHistoryService;
+	@Resource
+	protected ViewContentHandlerBean			viewContentHandlerBean;
 
 	protected boolean							loadRelationsFlag					= true;
 
@@ -106,26 +105,28 @@ public abstract class AbstractStudentBean extends AbstractTabbedBean {
 	/*
 	 *
 	 */
-	private boolean	loadActiveClassesForCurrentBranchIndicator	= true;
+	private boolean							loadActiveClassesForCurrentBranchIndicator	= true;
 
-	protected boolean	editStudentAddressDetails;
+	protected boolean						editStudentAddressDetails;
 
 	@Resource
-	protected StudentSectionService	studentSectionService;
+	protected StudentSectionService			studentSectionService;
 
 	@Resource
 	protected StudentAcademicYearService	studentAcademicYearService;
 
-	protected boolean	loadLatestAcademicYearDetailsFlag;
+	protected boolean						loadLatestAcademicYearDetailsFlag;
 
 	@Resource
-	private StudentSectionDao	studentSectionDao;
+	private StudentSectionDao				studentSectionDao;
 
-	protected StudentSection	currentOrMostRecentStudentSection;
+	protected StudentSection				currentOrMostRecentStudentSection;
 
-	private StudentAcademicYear	currentOrMostRecentAcademicYear;
+	private StudentAcademicYear				currentOrMostRecentAcademicYear;
 
-	protected boolean	loadStudentLatestAcademicYearDetailsInd;
+	protected boolean						loadStudentLatestAcademicYearDetailsInd;
+
+	private boolean							loadStudentAcademicYearHostelRooms;
 
 	public MedicalHistory getMedicalHistory() {
 		return this.medicalHistory;
@@ -345,7 +346,6 @@ public abstract class AbstractStudentBean extends AbstractTabbedBean {
 
 			this.editStudentAddressDetails = false;
 
-
 		} catch (final BusinessException e) {
 			ViewExceptionHandler.handle(e);
 		} catch (final Throwable e) {
@@ -524,11 +524,8 @@ public abstract class AbstractStudentBean extends AbstractTabbedBean {
 		this.editStudentAddressDetails = editStudentAddressDetails;
 	}
 
-	public void viewStudent() {
-		this.loadStudentLatestAcademicYearDetails();
-	}
-
 	public void loadLatestAcademicYearDetailsForStudent() {
+		this.setLoadStudentAcademicYearHostelRooms(true);
 		if (this.loadLatestAcademicYearDetailsFlag) {
 			if (this.student.getId() != null) {
 				final StudentAcademicYear studentCurrentOrMostRecentAcademicYear = this.studentAcademicYearService
@@ -574,4 +571,18 @@ public abstract class AbstractStudentBean extends AbstractTabbedBean {
 		this.currentOrMostRecentAcademicYear = currentOrMostRecentAcademicYear;
 	}
 
+	/**
+	 * @return the loadStudentAcademicYearHostelRooms
+	 */
+	public boolean isLoadStudentAcademicYearHostelRooms() {
+		return this.loadStudentAcademicYearHostelRooms;
+	}
+
+	/**
+	 * @param loadStudentAcademicYearHostelRooms
+	 *            the loadStudentAcademicYearHostelRooms to set
+	 */
+	public void setLoadStudentAcademicYearHostelRooms(final boolean loadStudentAcademicYearHostelRooms) {
+		this.loadStudentAcademicYearHostelRooms = loadStudentAcademicYearHostelRooms;
+	}
 }

@@ -27,14 +27,13 @@ public interface UserService extends UserDetailsService {
 
 	UserAccount findUserAccountByUsername(String username);
 
-	void creteUserAccountForEmployee(String username, String password, String firstName, String lastName,
-			Date dateOfBirth, String employeeNumber);
+	void creteUserAccountForEmployee(String username, String password, String firstName, String lastName, Date dateOfBirth, String employeeNumber);
 
-	void creteUserAccountForStudent(String username, String password, String firstName, String lastName,
-			Date dateOfBirth, String admissionNumber);
+	void creteUserAccountForStudent(String username, String password, String firstName, String lastName, Date dateOfBirth, String admissionNumber);
 
-	void creteUserAccountForParent(String username, String password, String firstName, String lastName,
-			Date dateOfBirth, String admissionNumber);
+	void creteUserAccountForParent(String username, String password, String firstName, String lastName, Date dateOfBirth, String admissionNumber);
 
 	UserAccount updateUserAccount(UserAccount userAccount);
+
+	void updatePasswordForUserAccount(final String username, final String password);
 }

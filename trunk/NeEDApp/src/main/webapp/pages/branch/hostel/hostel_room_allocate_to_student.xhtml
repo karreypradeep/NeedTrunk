@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<c:choose>
+		<c:when test="#{!hostelRoomBean.studentSearchFlag}">
+			<h:panelGrid columns="3">
+
+				<p:outputLabel id="student_label" value="Student" />
+				<p:outputLabel id="student" required="true"
+					value="#{hostelRoomBean.studentAcademicYearHostelRoom.studentAcademicYear.student.displayName}">
+				</p:outputLabel>
+
+				<p:commandLink id="viewLink" styleClass="ui-icon ui-icon-search" title="Search student" style="margin:0px 0px 0px;"
+					process="@this" update="@form" action="#{hostelRoomBean.doNothing()}">
+					<f:setPropertyActionListener target="#{hostelRoomBean.studentSearchFlag}" value="true" />
+				</p:commandLink>
+
+
+				<p:outputLabel id="available_start_date_label" value="Start date" for="available_start_date" />
+				<p:calendar id="available_start_date" value="#{hostelRoomBean.studentAcademicYearHostelRoom.startDate}"
+					navigator="true" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button"
+					mindate="#{hostelRoomBean.hostelRoom.startDate}" maxdate="#{sessionBean.currentDate}" />
+				<p:message id="available_start_date_msg" for="available_start_date" />
+
+				<p:outputLabel id="available_end_date_label" value="End date" for="available_end_date" />
+				<p:calendar id="available_end_date" value="#{hostelRoomBean.studentAcademicYearHostelRoom.endDate}" navigator="true"
+					pattern="dd/MMM/yyyy" size="20" maxlength="20" showOn="button"
+					mindate="#{hostelRoomBean.studentAcademicYearHostelRoom.startDate}" maxdate="#{sessionBean.currentDate}" />
+				<p:message id="available_end_date_msg" for="available_end_date" />
+
+				<p:outputLabel id="bed_number_label" value="Bed number" for="bed_number" />
+				<p:inputText id="bed_number" value="#{hostelRoomBean.studentAcademicYearHostelRoom.bedNumber}">
+					<f:convertNumber pattern="000" />
+				</p:inputText>
+				<p:message id="bed_number_msg" for="bed_number" />
+
+				<p:outputLabel id="reason_for_leaving_label" value="Description" for="reason_for_leaving" />
+				<p:inputTextarea id="reason_for_leaving" value="#{hostelRoomBean.studentAcademicYearHostelRoom.reasonForLeaving}"
+					maxlength="200" rows="5" required="true">
+				</p:inputTextarea>
+				<p:message id="reason_for_leaving_msg" for="reason_for_leaving" />
+
+			</h:panelGrid>
+
+			<p:commandButton id="academic_year_expense_save" value="Save"
+				action="#{hostelRoomBean.saveHostelRoomStudentAcademicYear()}" update="@form">
+				<f:setPropertyActionListener target="#{hostelRoomBean.viewOrNewAction}" value="true" />
+				<f:setPropertyActionListener target="#{hostelRoomBean.activeTabIndex}" value="1" />
+				<f:setPropertyActionListener target="#{hostelRoomBean.studentSearchFlag}" value="false" />
+				<f:setPropertyActionListener target="#{hostelRoomBean.allocateStudentToHostelRoom}" value="false" />
+			</p:commandButton>
+			<p:commandButton id="academic_year_expense_clear" value="Cancel" immediate="true" update="@form"
+				action="#{hostelRoomBean.doNothing()}">
+				<f:setPropertyActionListener target="#{hostelRoomBean.viewOrNewAction}" value="true" />
+				<f:setPropertyActionListener target="#{hostelRoomBean.activeTabIndex}" value="1" />
+				<f:setPropertyActionListener target="#{hostelRoomBean.studentSearchFlag}" value="false" />
+				<f:setPropertyActionListener target="#{hostelRoomBean.allocateStudentToHostelRoom}" value="false" />
+			</p:commandButton>
+		</c:when>
+
+		<c:otherwise>
+
+			<p:panel style="margin-top:1px;margin-bottom:10px;">
+
+				<h:panelGrid columns="4" id="expense_type_grid1" cellpadding="4" style="border:0px;"
+					columnClasses="column-vertical-align,column-vertical-align">
+
+					<p:outputLabel id="student_name_search_label" value="#{msg.student_name}" for="student_name_search" />
+					<p:inputText id="student_name_search" value="#{hostelRoomBean.studentSearchCriteria.name}" size="20">
+					</p:inputText>
+
+					<p:outputLabel id="student_admission_number_search_label" value="#{msg.admissonNr}"
+						for="student_admission_number_search" />
+					<p:inputText id="student_admission_number_search" value="#{hostelRoomBean.studentSearchCriteria.admissionNumber}"
+						size="20">
+					</p:inputText>
+
+				</h:panelGrid>
+
+				<p:commandButton value="#{msg.search}" update="students_table"
+					action="#{hostelRoomBean.searchStudentSectionsBySearchCriteria()}" />
+
+				<p:commandButton value="Back" update="@form">
+					<f:setPropertyActionListener target="#{hostelRoomBean.studentSearchFlag}" value="false" />
+				</p:commandButton>
+
+				<p:dataTable id="students_table" var="studentSection" value="#{hostelRoomBean.studentSectionsBySearchCriteria}"
+					paginator="true" rows="10"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="10,15,20" paginatorPosition="bottom" style="margin-top:15px;"
+					currentPageReportTemplate="(Displaying {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})">
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.displayName}"
+						filterBy="#{studentSection.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+						<f:facet name="header">
+							Student name
+						</f:facet>
+						<p:commandLink id="viewLink" value="#{studentSection.studentAcademicYear.student.displayName}" title="View"
+							style="margin:0px 0px 0px;" process="@this" update="@form" action="#{hostelRoomBean.doNothing()}">
+							<f:setPropertyActionListener value="#{studentSection.studentAcademicYear}"
+								target="#{hostelRoomBean.studentAcademicYearHostelRoom.studentAcademicYear}" />
+							<f:setPropertyActionListener target="#{hostelRoomBean.viewOrNewAction}" value="true" />
+							<f:setPropertyActionListener target="#{hostelRoomBean.activeTabIndex}" value="1" />
+							<f:setPropertyActionListener target="#{hostelRoomBean.studentSearchFlag}" value="false" />
+
+						</p:commandLink>
+					</p:column>
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.admissionNr}"
+						filterBy="#{studentSection.studentAcademicYear.student.admissionNr}" filterMatchMode="contains">
+						<f:facet name="header">
+							Admission number
+						</f:facet>
+						<h:outputText value="#{studentSection.studentAcademicYear.student.admissionNr}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.studentAcademicYear.student.externalAdmissionNr}"
+						filterBy="#{studentSection.studentAcademicYear.student.externalAdmissionNr}" filterMatchMode="contains">
+						<f:facet name="header">
+							Ext admission number
+						</f:facet>
+						<h:outputText value="#{studentSection.studentAcademicYear.student.externalAdmissionNr}" />
+					</p:column>
+					<p:column>
+						<f:facet name="header">
+							Date of birth
+						</f:facet>
+						<h:outputText value="#{studentSection.studentAcademicYear.student.dateOfBirth}">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</p:column>
+					<p:column sortBy="#{studentSection.studentSectionStatus.label}"
+						filterBy="#{studentSection.studentSectionStatus.label}">
+						<f:facet name="header">
+							Status
+						</f:facet>
+						<h:outputText value="#{studentSection.studentSectionStatus.label}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.section.klass.name}" filterBy="#{studentSection.section.klass.name}">
+						<f:facet name="header">
+							Class
+						</f:facet>
+						<h:outputText value="#{studentSection.section.klass.name}" />
+					</p:column>
+					<p:column sortBy="#{studentSection.section.name}" filterBy="#{studentSection.section.name}">
+						<f:facet name="header">
+							Section
+						</f:facet>
+						<h:outputText value="#{studentSection.section.name}" />
+					</p:column>
+				</p:dataTable>
+			</p:panel>
+		</c:otherwise>
+	</c:choose>
+
+</ui:composition>

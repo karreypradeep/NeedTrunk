@@ -10,11 +10,11 @@ import javax.inject.Named;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.BuildingBlock;
 import com.apeironsol.need.core.service.BuildingBlockService;
 import com.apeironsol.need.util.constants.BuildingBlockConstant;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -116,6 +116,10 @@ public class BuildingBlockBean implements Serializable {
 
 	public BuildingBlockConstant getStudentClassification() {
 		return BuildingBlockConstant.STUDENT_CLASSIFICATION;
+	}
+
+	public BuildingBlockConstant getHostelRoomType() {
+		return BuildingBlockConstant.HOSTEL_ROOM_TYPE;
 	}
 
 	public boolean isRenderFeeTypeSelection() {

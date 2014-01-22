@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions">
+	<f:facet name="header">Status History</f:facet>
+
+	<p:dataTable id="status_table" var="studentStatusHistory" value="#{studentBean.studentStatusHistories}"
+		paginator="true" rows="15"
+		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+		rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:10px;">
+
+		<p:column headerText="Action time" sortBy="#{studentStatusHistory.auditTimestamp}"
+			filterBy="#{studentStatusHistory.auditTimestamp}" filterMatchMode="contains">
+			<h:outputText value="#{studentStatusHistory.auditTimestamp}">
+				<f:convertDateTime pattern="dd/MM/yyyy : hh:mm:ss" />
+			</h:outputText>
+
+		</p:column>
+
+		<p:column headerText="Action taken by" sortBy="#{studentStatusHistory.actionTakenBy}"
+			filterBy="#{studentStatusHistory.actionTakenBy}" filterMatchMode="contains">
+			<h:outputText value="#{studentStatusHistory.actionTakenBy}" />
+		</p:column>
+
+		<p:column headerText="Action" sortBy="#{studentStatusHistory.action}" filterBy="#{studentStatusHistory.action}"
+			filterMatchMode="contains">
+			<h:outputText value="#{studentStatusHistory.action}" />
+		</p:column>
+
+		<p:column headerText="Comments">
+			<p:commandLink value="View comments" oncomplete="actionDialog.show()" update="@form">
+				<f:setPropertyActionListener target="#{studentBean.studentStatusHistory}" value="#{studentStatusHistory}" />
+			</p:commandLink>
+		</p:column>
+
+	</p:dataTable>
+	<p:dialog header="Action details" widgetVar="actionDialog" resizable="false" showEffect="explode" hideEffect="explode"
+		width="500">
+		<h:panelGrid id="display" columns="2" cellpadding="4">
+
+			<h:outputText value="Action" />
+			<h:outputText value="#{studentBean.studentStatusHistory.action}" />
+
+			<h:outputText value="Action time" />
+			<h:outputText value="#{studentBean.studentStatusHistory.actionTakenTime}">
+				<f:convertDateTime pattern="dd/MM/yyyy : hh:mm:ss" />
+			</h:outputText>
+
+			<h:outputText value="Action taken by" />
+			<h:outputText value="#{studentBean.studentStatusHistory.actionTakenBy}" />
+
+			<h:outputText value="Comments" />
+			<h:outputText value="#{studentBean.studentStatusHistory.comments}" />
+
+		</h:panelGrid>
+	</p:dialog>
+
+</ui:composition>

@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:outputText value="Allocated Students" style="font-size:20px;" />
+		</p:toolbarGroup>
+	</p:toolbar>
+	<p:panel style="margin-top:1px;margin-bottom:10px;">
+		<f:facet name="header">
+			<h:outputLabel value="#{msg.search_criteria}" style="font-size: 16px; font-weight:bold;" />
+		</f:facet>
+		<h:panelGrid columns="2" id="expense_type_grid" cellpadding="4" style="border:0px;"
+			columnClasses="column-vertical-align,column-vertical-align">
+
+			<p:outputLabel id="academic_year_label" value="#{msg.academicYear}" for="academic_year" />
+			<p:selectOneMenu id="academic_year" value="#{hostelRoomBean.academicYearForOccupantsSearch}"
+				converter="academicYearConverter" style="width:165px;">
+				<f:selectItem itemLabel="Select academic year" itemValue="" />
+				<f:selectItems value="#{hostelRoomBean.activeAcademicYears}" var="academicYear"
+					itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+				<p:ajax process="@this" />
+			</p:selectOneMenu>
+
+		</h:panelGrid>
+
+		<p:commandButton id="students_search_buton" value="#{msg.search}"
+			action="#{hostelRoomBean.searchHostelRoomOccupants()}" update="@form" icon="ui-icon-search" />
+		<p:commandButton id="expense_type_reset" value="Reset" update="@form" action="#{hostelRoomBean.resetSearchCriteria}"
+			process="@this" icon="ui-icon-refresh" />
+
+		<p:dataTable id="students_table" var="studentAcademicYearHostelRoom"
+			value="#{hostelRoomBean.studentAcademicYearHostelRooms}" paginator="true" rows="10"
+			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+			rowsPerPageTemplate="10,15,20" paginatorPosition="bottom" style="margin-top:15px;">
+			<f:facet name="header">
+				<h:outputText value="Search Results" style="float:left;margin-top:5px;margin-bottom:5px;" />
+				<h:commandLink style="float:right;" rendered="#{hostelRoomBean.studentAcademicYearHostelRooms.size()>0}">
+					<p:graphicImage value="/images/excel.png" />
+					<p:dataExporter type="xls" target="students_table" fileName="Students" />
+				</h:commandLink>
+				<h:commandLink style="float:right;" rendered="#{hostelRoomBean.studentAcademicYearHostelRooms.size()>0}">
+					<p:graphicImage value="/images/pdf.png" />
+					<p:dataExporter type="pdf" target="students_table" fileName="Students" />
+				</h:commandLink>
+			</f:facet>
+			<p:column sortBy="#{studentAcademicYearHostelRoom.studentAcademicYear.student.displayName}"
+				filterBy="#{studentAcademicYearHostelRoom.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+				<f:facet name="header">
+							Student name
+						</f:facet>
+
+				<p:commandLink id="viewLink" value="#{studentAcademicYearHostelRoom.studentAcademicYear.student.displayName}"
+					title="View" style="margin:0px 0px 0px;" process="@this" update="@form" action="#{studentBean.viewStudentFromOtherViews()}">
+					<f:setPropertyActionListener value="#{studentAcademicYearHostelRoom.studentAcademicYear.student}"
+						target="#{studentBean.student}" />
+					 
+				</p:commandLink>
+			</p:column>
+			<p:column sortBy="#{studentAcademicYearHostelRoom.studentAcademicYear.student.admissionNr}"
+				filterBy="#{studentAcademicYearHostelRoom.studentAcademicYear.student.admissionNr}" filterMatchMode="contains">
+				<f:facet name="header">
+							Admission number
+						</f:facet>
+				<h:outputText value="#{studentAcademicYearHostelRoom.studentAcademicYear.student.admissionNr}" />
+			</p:column>
+			<p:column sortBy="#{studentAcademicYearHostelRoom.studentAcademicYear.student.externalAdmissionNr}"
+				filterBy="#{studentAcademicYearHostelRoom.studentAcademicYear.student.externalAdmissionNr}"
+				filterMatchMode="contains">
+				<f:facet name="header">
+							Ext admission number
+						</f:facet>
+				<h:outputText value="#{studentAcademicYearHostelRoom.studentAcademicYear.student.externalAdmissionNr}" />
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+							Start Date
+						</f:facet>
+				<h:outputText value="#{studentAcademicYearHostelRoom.startDate}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+							End Date
+						</f:facet>
+				<h:outputText value="#{studentAcademicYearHostelRoom.endDate}">
+					<f:convertDateTime pattern="dd/MM/yyyy" />
+				</h:outputText>
+			</p:column>
+
+		</p:dataTable>
+	</p:panel>
+
+	<p:blockUI block="form" trigger="students_search_buton">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
+
+
+</ui:composition>

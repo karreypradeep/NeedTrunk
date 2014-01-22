@@ -103,7 +103,7 @@
 				</p:commandLink>
 
 				<p:commandLink value="#{msg.process_pending_fee_transactions}" process="branch_side_menu" update="@form"
-					  actionListener="#{studentFinancialBean.instantiateStudentFeeTransactionSearchCriteria()}">
+					actionListener="#{studentFinancialBean.instantiateStudentFeeTransactionSearchCriteria()}">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
 						value="APPROVE_REFUND_DEDUCT_FEE">
 						<f:converter converterId="viewContentConverter" />
@@ -233,7 +233,7 @@
 
 		<p:tab title="#{msg.notifications}" id="left_notifications_tab">
 			<h:panelGrid columns="1" cellpadding="2">
-				<p:commandLink value="#{msg.students}" update="@form" process="branch_side_menu" >
+				<p:commandLink value="#{msg.students}" update="@form" process="branch_side_menu">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
 						value="BRANCH_STUDENTS_NOTIFICATIONS">
 						<f:converter converterId="viewContentConverter" />
@@ -363,9 +363,34 @@
 						value="#{sectionBean.sectionTabModel.sectionTab}" />
 				</p:commandLink>
 
+				<p:commandLink value="#{msg.hostel_rooms}" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessHostelRooms}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_HOSTEL_ROOMS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{hostelRoomBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{hostelRoomBean.loadHostelRoomTypesFromDB}" value="true" />
+					<f:setPropertyActionListener target="#{hostelRoomBean.loadcurrentStudentAcademicYearHostelRoomFlag}" value="true" />
+				</p:commandLink>
+
 			</h:panelGrid>
 		</p:tab>
 
+		<p:tab title="#{msg.settings}" id="left_branch_tab_settings"
+			rendered="#{grantedAuthorityBean.userAllowedToAccessBranchSettings}">
+			<h:panelGrid columns="1" cellpadding="2">
+
+				<p:commandLink value="#{msg.change_password}" process="branch_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_CHANGE_PASSWORD">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+
+
+
+
+			</h:panelGrid>
+		</p:tab>
 	</p:accordionPanel>
 
 </ui:composition>

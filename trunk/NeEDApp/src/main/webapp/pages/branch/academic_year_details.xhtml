@@ -15,7 +15,7 @@
 		</p:menuitem>
 
 		<p:menuitem value="#{msg.week_ends}" icon="ui-icon-calendar" action="#{academicYearWeekEndBean.onTabChange}"
-			process="@this" update="@all" disabled="#{academicYearBean.disableSubTab}">
+			process="@this" update="@form" disabled="#{academicYearBean.disableSubTab}">
 			<f:setPropertyActionListener target="#{academicYearBean.activeTabIndex}" value="1" />
 		</p:menuitem>
 

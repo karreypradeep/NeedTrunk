@@ -209,6 +209,8 @@ public class AdmissionBean extends AbstractStudentBean {
 
 	private double							applicationFormFee							= 0;
 
+	private boolean							previousAcademicYearAdmission				= false;
+
 	/**
 	 * @return the applicationFormFee
 	 */
@@ -1229,7 +1231,9 @@ public class AdmissionBean extends AbstractStudentBean {
 
 	public void loadAcademicYearsForAdmission() {
 		try {
-			if (!this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator()) {
+			if (this.isPreviousAcademicYearAdmission()) {
+				this.academicYearsForBatch = this.getActiveAcademicYears();
+			} else if (!this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator()) {
 				this.academicYearsForBatch = this.getAcademicYearsWithAdmissionOpen();
 			}
 		} catch (final ApplicationException e) {
@@ -1244,8 +1248,6 @@ public class AdmissionBean extends AbstractStudentBean {
 			if (this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator() && this.appliedForBatch != null) {
 				this.academicYearsForBatch = this.academicYearService.findAcademicYearsForBatchId(this.appliedForBatch.getId(), this.sessionBean
 						.getCurrentBranch().getId());
-			} else if (!this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator()) {
-				this.academicYearsForBatch = this.getAcademicYearsWithAdmissionOpen();
 			}
 		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
@@ -1583,6 +1585,21 @@ public class AdmissionBean extends AbstractStudentBean {
 			}
 		}
 
+	}
+
+	/**
+	 * @return the previousAcademicYearAdmission
+	 */
+	public boolean isPreviousAcademicYearAdmission() {
+		return this.previousAcademicYearAdmission;
+	}
+
+	/**
+	 * @param previousAcademicYearAdmission
+	 *            the previousAcademicYearAdmission to set
+	 */
+	public void setPreviousAcademicYearAdmission(final boolean previousAcademicYearAdmission) {
+		this.previousAcademicYearAdmission = previousAcademicYearAdmission;
 	}
 
 }

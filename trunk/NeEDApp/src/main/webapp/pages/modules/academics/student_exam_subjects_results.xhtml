@@ -14,7 +14,7 @@
 		title="Exam subject percentages" orientation="horizontal" min="0" max="100"
 		style="margin-top:20px;margin-bottom:15px;"
 		rendered="#{studentAcademicBean.studentExamSubjectDOs != null and studentAcademicBean.studentExamSubjectDOs.size() > 0}"
-		seriesColors="5dbd6b" />
+		seriesColors="5dbd6b" animate="true"/>
 
 	<p:dataTable id="studentExamSubjectResults" value="#{studentAcademicBean.studentExamSubjectDOs}"
 		var="studentExamSubjectDO" paginator="false" sortOrder="descending">

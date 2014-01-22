@@ -154,6 +154,16 @@
 						<f:converter converterId="viewContentConverter" />
 					</f:setPropertyActionListener>
 				</p:commandLink>
+				<p:commandLink value="#{msg.hostel_room_types}" update="@form" process="org_side_menu">
+					<f:setPropertyActionListener target="#{buildingBlockBean.buildingBlockType}"
+						value="#{buildingBlockBean.hostelRoomType}" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.renderNewBuildingBlockPanel}" value="false" />
+					<f:setPropertyActionListener target="#{buildingBlockBean.loadAction}" value="true" />
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="ORGANIZATION_BUILDING_BLOCKS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
 			</h:panelGrid>
 		</p:tab>
 		<p:tab title="#{msg.financials}" id="left_financials_tab"

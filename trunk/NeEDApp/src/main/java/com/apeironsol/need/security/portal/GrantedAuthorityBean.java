@@ -345,6 +345,10 @@ public class GrantedAuthorityBean implements Serializable {
 		return this.isUserHasAuthority(AuthorityConstant.ACCESS_BRANCH_DEFINITIONS);
 	}
 
+	public boolean isUserAllowedToAccessBranchSettings() {
+		return this.isUserHasAuthority(AuthorityConstant.ACCESS_BRANCH_SETTINGS);
+	}
+
 	public boolean isUserAllowedToAccessAcademicYears() {
 		return this.isUserHasAuthority(AuthorityConstant.ACCESS_ACADEMIC_YEARS);
 	}
@@ -407,6 +411,10 @@ public class GrantedAuthorityBean implements Serializable {
 
 	public boolean isUserAllowedToAccessStudentAttendance() {
 		return this.isUserHasAuthority(AuthorityConstant.ACCESS_STUDENT_ATTENDANCE);
+	}
+
+	public boolean isUserAllowedToAccessStudentHostelRoom() {
+		return this.isUserHasAuthority(AuthorityConstant.ACCESS_STUDENT_HOSTEL_ROOM);
 	}
 
 	public boolean isUserAllowedToAccessStudentNotifications() {
@@ -640,6 +648,18 @@ public class GrantedAuthorityBean implements Serializable {
 
 	public boolean isUserAllowedToUpdateStudentMedicalHistory() {
 		return this.isUserHasAuthority(AuthorityConstant.UPDATE_STUDENT_MEDICAL_HISTORY);
+	}
+
+	public boolean isUserAllowedToAccessHostelRooms() {
+		return this.isUserHasAuthority(AuthorityConstant.ACCESS_HOSTEL_ROOMS);
+	}
+
+	public boolean isUserAllowedToCreateHostelRoom() {
+		return this.isUserHasAuthority(AuthorityConstant.CREATE_HOSTEL_ROOM);
+	}
+
+	public boolean isUserAllowedToRemoveHostelRoom() {
+		return this.isUserHasAuthority(AuthorityConstant.REMOVE_HOSTEL_ROOM);
 	}
 
 }

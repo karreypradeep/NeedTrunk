@@ -13,7 +13,7 @@
 
 		<p:menuitem value="Deposit/Withdraw" action="#{branchBankAccountBean.onTabChange}" process="@this" update="@form"
 			disabled="#{branchBankAccountBean.currentBranchBankAccount.id ==null}" rendered="false">
-			<f:setPropertyActionListener target="#{branchBankAccountBean.activeTabIndex}" value="1" />
+			<f:setPropertyActionListener target="#{branchBankAccountBean.activeTabIndex}" value="2" />
 		</p:menuitem>
 
 		<p:menuitem value="Statement" action="#{branchBankAccountBean.onTabChange}" process="@this" update="@form"

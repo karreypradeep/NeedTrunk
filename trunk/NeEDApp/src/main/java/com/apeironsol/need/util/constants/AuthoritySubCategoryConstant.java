@@ -45,6 +45,7 @@ public enum AuthoritySubCategoryConstant implements Labeled {
 	FINANCE("finance"),
 	PURCHASE_ORDER("purchase_order"),
 	NOTIFICATIONS("notifications"),
+	HOSTEL_ROOMS("hostel_rooms"),
 	EXAM("exam");
 
 	private String	label;

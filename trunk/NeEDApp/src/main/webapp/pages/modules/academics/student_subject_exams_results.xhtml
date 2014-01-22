@@ -12,7 +12,7 @@
 	<p:lineChart id="examsPercentageChart1" value="#{studentAcademicBean.studentSubjectExamsChart}" legendPosition="w"
 		title="Subject progress for all exams" minY="0" maxY="100" style="height:300px;margin-top:20px;margin-bottom:15px;"
 		rendered="#{studentAcademicBean.studentAcademicExamDOs != null and studentAcademicBean.studentAcademicExamDOs.size() > 0}"
-		seriesColors="2163A8" shadow="false" yaxisLabel="Scored percentage" />
+		seriesColors="2163A8" shadow="false" yaxisLabel="Scored percentage" animate="true"/>
 
 
 	<p:dataTable id="subjectExamsDatatable" value="#{studentAcademicBean.studentExamSubjectDOs}"

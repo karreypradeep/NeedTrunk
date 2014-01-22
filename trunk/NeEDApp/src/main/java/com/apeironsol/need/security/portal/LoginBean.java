@@ -39,6 +39,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.security.web.savedrequest.DefaultSavedRequest;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.model.Organization;
 import com.apeironsol.need.core.portal.SessionBean;
@@ -50,7 +51,6 @@ import com.apeironsol.need.util.constants.AuthorityConstant;
 import com.apeironsol.need.util.portal.SessionAttribures;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named("loginBean")
 @Scope("session")

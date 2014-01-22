@@ -11,29 +11,31 @@ public class StudentTabModel implements Serializable {
 	 */
 	private static final long	serialVersionUID		= -701578946962644288L;
 
-	private final NeEDTab	personalTab				= new NeEDTab("personalTab");
+	private final NeEDTab		personalTab				= new NeEDTab("personalTab");
 
-	private final NeEDTab	paymentsTab				= new NeEDTab("paymentsTab");
+	private final NeEDTab		paymentsTab				= new NeEDTab("paymentsTab");
 
-	private final NeEDTab	studentAdditionalFeeTab	= new NeEDTab("studentAdditionalFeeTab");
+	private final NeEDTab		studentAdditionalFeeTab	= new NeEDTab("studentAdditionalFeeTab");
 
-	private final NeEDTab	studentPocketMoneyTab	= new NeEDTab("studentPocketMoneyTab");
+	private final NeEDTab		studentPocketMoneyTab	= new NeEDTab("studentPocketMoneyTab");
 
-	private final NeEDTab	statusHistoryTab		= new NeEDTab("statusHistoryTab");
+	private final NeEDTab		statusHistoryTab		= new NeEDTab("statusHistoryTab");
 
-	private final NeEDTab	transportationTab		= new NeEDTab("transportationTab");
+	private final NeEDTab		transportationTab		= new NeEDTab("transportationTab");
 
-	private final NeEDTab	notificationTab			= new NeEDTab("notificationTab");
+	private final NeEDTab		notificationTab			= new NeEDTab("notificationTab");
 
-	private final NeEDTab	academicsTab			= new NeEDTab("academicsTab");
+	private final NeEDTab		academicsTab			= new NeEDTab("academicsTab");
 
-	private final NeEDTab	attendanceTab			= new NeEDTab("attendanceTab");
+	private final NeEDTab		attendanceTab			= new NeEDTab("attendanceTab");
 
-	private NeEDTab			activeTab				= this.getPersonalTab();
+	private final NeEDTab		hostelRoomTab			= new NeEDTab("hostelRoomTab");
 
-	private final NeEDTab[]	tabsSequence			= new NeEDTab[] { this.getPersonalTab(), this.getPaymentsTab(), this.getStudentAdditionalFeeTab(),
-			this.getStudentPocketMoneyTab(), this.getAcademicsTab(), this.getAttendanceTab(), this.getTransportationTab(), this.getNotificationTab(),
-			this.getStatusHistoryTab()					};
+	private NeEDTab				activeTab				= this.getPersonalTab();
+
+	private final NeEDTab[]		tabsSequence			= new NeEDTab[] { this.getPersonalTab(), this.getPaymentsTab(), this.getStudentAdditionalFeeTab(),
+			this.getStudentPocketMoneyTab(), this.getAcademicsTab(), this.getAttendanceTab(), this.getHostelRoomTab(), this.getTransportationTab(),
+			this.getNotificationTab(), this.getStatusHistoryTab() };
 
 	public int getActiveTabIndex() {
 
@@ -132,11 +134,22 @@ public class StudentTabModel implements Serializable {
 		return this.activeTab != null && this.activeTab.equals(this.attendanceTab);
 	}
 
+	public boolean isHostelRoomTabActive() {
+		return this.activeTab != null && this.activeTab.equals(this.hostelRoomTab);
+	}
+
 	/**
 	 * @return the attendanceTab
 	 */
 	public NeEDTab getAttendanceTab() {
 		return this.attendanceTab;
+	}
+
+	/**
+	 * @return the hostelRoomTab
+	 */
+	public NeEDTab getHostelRoomTab() {
+		return this.hostelRoomTab;
 	}
 
 }

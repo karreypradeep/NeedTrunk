@@ -39,6 +39,8 @@ public enum AuthorityConstant implements Labeled {
 	ACCESS_BATCHS("access_batches", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 	ACCESS_CLASSES("access_classes", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 	ACCESS_SECTIONS("access_sections", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
+	ACCESS_BRANCH_SETTINGS("access_branch_settings", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
+	ACCESS_HOSTEL_ROOMS("access_hostel_rooms", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 
 	// Access Security
 	ACCESS_SECURITY("access_security", AuthorityCategoryConstant.SECURITY, AuthoritySubCategoryConstant.ACCESS),
@@ -97,6 +99,7 @@ public enum AuthorityConstant implements Labeled {
 	ACCESS_STUDENT_ACADEMICS("access_student_academics", AuthorityCategoryConstant.STUDENT, AuthoritySubCategoryConstant.ACCESS),
 	ACCESS_STUDENT_TRANSPORTATION("access_student_transportation", AuthorityCategoryConstant.STUDENT, AuthoritySubCategoryConstant.ACCESS),
 	ACCESS_STUDENT_ACTIONS("access_student_actions", AuthorityCategoryConstant.STUDENT, AuthoritySubCategoryConstant.ACCESS),
+	ACCESS_STUDENT_HOSTEL_ROOM("access_student_hostel_room", AuthorityCategoryConstant.STUDENT, AuthoritySubCategoryConstant.ACCESS),
 
 	// Update student details
 	UPDATE_STUDENT_PERSONAL_DETAILS("update_student_personal_details", AuthorityCategoryConstant.STUDENT, AuthoritySubCategoryConstant.STUDENT),
@@ -171,6 +174,10 @@ public enum AuthorityConstant implements Labeled {
 	REMOVE_TIMETABLE("remove_timetable", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.SECTION),
 	CREATE_ATTENDANCE("create_attendance", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.SECTION),
 	REMOVE_ATTENDANCE("remove_attendance", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.SECTION),
+
+	// Hostel
+	CREATE_HOSTEL_ROOM("create_hostel_room", AuthorityCategoryConstant.HOSTEL, AuthoritySubCategoryConstant.HOSTEL_ROOMS),
+	REMOVE_HOSTEL_ROOM("remove_hostel_room", AuthorityCategoryConstant.HOSTEL, AuthoritySubCategoryConstant.HOSTEL_ROOMS),
 
 	// Admissions
 	CREATE_ADMISSION("create_admission", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ADMISSION),
