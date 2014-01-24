@@ -84,6 +84,27 @@
 					<f:setPropertyActionListener target="#{examBean.loadExamsFlag}" value="true" />
 					<f:setPropertyActionListener target="#{examBean.viewOrNewAction}" value="false" />
 				</p:commandLink>
+
+				<p:commandLink value="Grade System" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessGradeSystem}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_GRADE_SYSTEM">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{gradeSystemBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{gradeSystemBean.loadGradeSystemsFlag}" value="true" />
+				</p:commandLink>
+
+				<p:commandLink value="Report card" process="branch_side_menu" update="@form"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessReportCard}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_REPORT_CARD">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>  
+					<f:setPropertyActionListener target="#{reportCardBean.viewOrNewAction}" value="false" />
+					<f:setPropertyActionListener target="#{reportCardBean.loadReportCardsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{reportCardBean.loadExamsFlag}" value="true" />
+					<f:setPropertyActionListener target="#{reportCardBean.loadGradeSystemsFlag}" value="true" />
+				</p:commandLink>
+
 			</h:panelGrid>
 		</p:tab>
 
@@ -385,9 +406,6 @@
 						<f:converter converterId="viewContentConverter" />
 					</f:setPropertyActionListener>
 				</p:commandLink>
-
-
-
 
 			</h:panelGrid>
 		</p:tab>

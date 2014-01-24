@@ -223,4 +223,12 @@ public class ViewContentHandlerBean implements Serializable {
 		return ViewContentConstant.BRANCH_HOSTEL_ROOMS.equals(this.getCurrentViewContent());
 	}
 
+	public boolean isViewContentBranchGradeSystem() {
+		return ViewContentConstant.BRANCH_GRADE_SYSTEM.equals(this.getCurrentViewContent());
+	}
+
+	public boolean isViewContentBranchReportCard() {
+		return ViewContentConstant.BRANCH_REPORT_CARD.equals(this.getCurrentViewContent());
+	}
+
 }

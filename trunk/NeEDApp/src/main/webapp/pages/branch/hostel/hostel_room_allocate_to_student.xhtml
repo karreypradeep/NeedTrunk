@@ -48,8 +48,6 @@
 				action="#{hostelRoomBean.saveHostelRoomStudentAcademicYear()}" update="@form">
 				<f:setPropertyActionListener target="#{hostelRoomBean.viewOrNewAction}" value="true" />
 				<f:setPropertyActionListener target="#{hostelRoomBean.activeTabIndex}" value="1" />
-				<f:setPropertyActionListener target="#{hostelRoomBean.studentSearchFlag}" value="false" />
-				<f:setPropertyActionListener target="#{hostelRoomBean.allocateStudentToHostelRoom}" value="false" />
 			</p:commandButton>
 			<p:commandButton id="academic_year_expense_clear" value="Cancel" immediate="true" update="@form"
 				action="#{hostelRoomBean.doNothing()}">

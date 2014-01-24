@@ -662,4 +662,28 @@ public class GrantedAuthorityBean implements Serializable {
 		return this.isUserHasAuthority(AuthorityConstant.REMOVE_HOSTEL_ROOM);
 	}
 
+	public boolean isUserAllowedToAccessGradeSystem() {
+		return this.isUserHasAuthority(AuthorityConstant.ACCESS_GRADE_SYSTEM);
+	}
+
+	public boolean isUserAllowedToCreateGradeSystem() {
+		return this.isUserHasAuthority(AuthorityConstant.CREATE_GRADE_SYSTEM);
+	}
+
+	public boolean isUserAllowedToRemoveGradeSystem() {
+		return this.isUserHasAuthority(AuthorityConstant.REMOVE_GRADE_SYSTEM);
+	}
+
+	public boolean isUserAllowedToAccessReportCard() {
+		return this.isUserHasAuthority(AuthorityConstant.ACCESS_REPORT_CARD);
+	}
+
+	public boolean isUserAllowedToCreateReportCard() {
+		return this.isUserHasAuthority(AuthorityConstant.CREATE_REPORT_CARD);
+	}
+
+	public boolean isUserAllowedToRemoveReportCard() {
+		return this.isUserHasAuthority(AuthorityConstant.REMOVE_REPORT_CARD);
+	}
+
 }

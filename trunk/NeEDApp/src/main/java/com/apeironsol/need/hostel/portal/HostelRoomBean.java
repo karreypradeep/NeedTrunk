@@ -143,6 +143,7 @@ public class HostelRoomBean extends AbstractTabbedBean {
 			this.loadcurrentStudentAcademicYearHostelRoomFlag = true;
 			this.hostelRoom = this.hostelRoomService.findHostelRoomById(this.hostelRoom.getId());
 		} catch (ApplicationException e) {
+			this.loadcurrentStudentAcademicYearHostelRoomFlag = true;
 			ViewExceptionHandler.handle(e);
 		}
 	}

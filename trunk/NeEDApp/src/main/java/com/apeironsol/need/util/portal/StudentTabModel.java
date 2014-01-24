@@ -31,11 +31,13 @@ public class StudentTabModel implements Serializable {
 
 	private final NeEDTab		hostelRoomTab			= new NeEDTab("hostelRoomTab");
 
+	private final NeEDTab		reportCardTab			= new NeEDTab("reportCardTab");
+
 	private NeEDTab				activeTab				= this.getPersonalTab();
 
 	private final NeEDTab[]		tabsSequence			= new NeEDTab[] { this.getPersonalTab(), this.getPaymentsTab(), this.getStudentAdditionalFeeTab(),
-			this.getStudentPocketMoneyTab(), this.getAcademicsTab(), this.getAttendanceTab(), this.getHostelRoomTab(), this.getTransportationTab(),
-			this.getNotificationTab(), this.getStatusHistoryTab() };
+			this.getStudentPocketMoneyTab(), this.getAcademicsTab(), this.getReportCardTab(), this.getAttendanceTab(), this.getHostelRoomTab(),
+			this.getTransportationTab(), this.getNotificationTab(), this.getStatusHistoryTab() };
 
 	public int getActiveTabIndex() {
 
@@ -138,6 +140,10 @@ public class StudentTabModel implements Serializable {
 		return this.activeTab != null && this.activeTab.equals(this.hostelRoomTab);
 	}
 
+	public boolean isReportCardTabActive() {
+		return this.activeTab != null && this.activeTab.equals(this.reportCardTab);
+	}
+
 	/**
 	 * @return the attendanceTab
 	 */
@@ -150,6 +156,13 @@ public class StudentTabModel implements Serializable {
 	 */
 	public NeEDTab getHostelRoomTab() {
 		return this.hostelRoomTab;
+	}
+
+	/**
+	 * @return the reportCardTab
+	 */
+	public NeEDTab getReportCardTab() {
+		return this.reportCardTab;
 	}
 
 }

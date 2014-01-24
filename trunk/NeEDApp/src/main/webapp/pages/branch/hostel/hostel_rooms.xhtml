@@ -98,7 +98,7 @@
 						<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
 							title="Delete" process="@this" onclick="confirmation.show()"
 							disabled="#{!grantedAuthorityBean.userAllowedToRemoveHostelRoom}">
-							<f:setPropertyActionListener value="#{section}" target="#{hostelRoomBean.hostelRoom}" />
+							<f:setPropertyActionListener value="#{hostelRoom}" target="#{hostelRoomBean.hostelRoom}" />
 						</p:commandLink>
 					</p:column>
 

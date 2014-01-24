@@ -46,10 +46,11 @@ public class StudentAcademicYearHostelRoomServiceImpl implements StudentAcademic
 		if (studentAcademicYearHostelRoom.getEndDate() == null) {
 			StudentAcademicYearHostelRoom currentStudentAcademicYearHostelRoom = this
 					.findCurrentOccupiedStudentAcademicYearHostelRoomForStudent(studentAcademicYearHostelRoom.getStudentAcademicYear().getId());
+			this.validateStudentAcademicYearHostelRoom(studentAcademicYearHostelRoom, currentStudentAcademicYearHostelRoom);
 			// Current allocated room be different to new allocated room.
 			if (currentStudentAcademicYearHostelRoom != null
 					&& !currentStudentAcademicYearHostelRoom.getHostelRoom().getId().equals(studentAcademicYearHostelRoom.getHostelRoom().getId())) {
-				this.validateStudentAcademicYearHostelRoom(studentAcademicYearHostelRoom);
+
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(studentAcademicYearHostelRoom.getStartDate());
 				cal.add(Calendar.DATE, -1);
@@ -59,7 +60,8 @@ public class StudentAcademicYearHostelRoomServiceImpl implements StudentAcademic
 			result = this.studentAcademicYearHostelRoomDao.persist(studentAcademicYearHostelRoom);
 			// If current allocated room is different then increase beds
 			// occupied in hostel room.
-			if (!currentStudentAcademicYearHostelRoom.getHostelRoom().getId().equals(studentAcademicYearHostelRoom.getHostelRoom().getId())) {
+			if (currentStudentAcademicYearHostelRoom != null
+					&& !currentStudentAcademicYearHostelRoom.getHostelRoom().getId().equals(studentAcademicYearHostelRoom.getHostelRoom().getId())) {
 				HostelRoom hostelRoom = this.hostelRoomService.findHostelRoomById(result.getHostelRoom().getId());
 				hostelRoom.setBedsOccupied((hostelRoom.getBedsOccupied() != null ? hostelRoom.getBedsOccupied() : 0) + 1);
 				this.hostelRoomService.saveHostelRoom(hostelRoom);
@@ -78,10 +80,14 @@ public class StudentAcademicYearHostelRoomServiceImpl implements StudentAcademic
 	 * 
 	 * @param studentAcademicYearHostelRoom
 	 */
-	private void validateStudentAcademicYearHostelRoom(final StudentAcademicYearHostelRoom studentAcademicYearHostelRoom) {
-		if (studentAcademicYearHostelRoom.getHostelRoom().getBedsOccupied() != null
-				&& studentAcademicYearHostelRoom.getHostelRoom().getTotalNumberOfBeds() - studentAcademicYearHostelRoom.getHostelRoom().getBedsOccupied() <= 0) {
-			throw new BusinessException("There are no beds available in room " + studentAcademicYearHostelRoom.getHostelRoom().getRoomnNumber());
+	private void validateStudentAcademicYearHostelRoom(final StudentAcademicYearHostelRoom studentAcademicYearHostelRoom,
+			final StudentAcademicYearHostelRoom currentStudentAcademicYearHostelRoom) {
+		if (currentStudentAcademicYearHostelRoom != null
+				&& !currentStudentAcademicYearHostelRoom.getHostelRoom().getId().equals(studentAcademicYearHostelRoom.getHostelRoom().getId())) {
+			if (studentAcademicYearHostelRoom.getHostelRoom().getBedsOccupied() != null
+					&& studentAcademicYearHostelRoom.getHostelRoom().getTotalNumberOfBeds() - studentAcademicYearHostelRoom.getHostelRoom().getBedsOccupied() <= 0) {
+				throw new BusinessException("There are no beds available in room " + studentAcademicYearHostelRoom.getHostelRoom().getRoomnNumber());
+			}
 		}
 		StudentAcademicYearHostelRoom studentAcademicYearHostelRoomforSamePeriod = this.findStudentAcademicYearHostelRoomForStudentForDate(
 				studentAcademicYearHostelRoom.getStudentAcademicYear().getId(), studentAcademicYearHostelRoom.getStartDate());
@@ -95,6 +101,11 @@ public class StudentAcademicYearHostelRoomServiceImpl implements StudentAcademic
 
 	@Override
 	public void removeStudentAcademicYearHostelRoom(final StudentAcademicYearHostelRoom studentAcademicYearHostelRoom) throws BusinessException {
+		if (studentAcademicYearHostelRoom != null && studentAcademicYearHostelRoom.getEndDate() == null) {
+			HostelRoom hostelRoom = this.hostelRoomService.findHostelRoomById(studentAcademicYearHostelRoom.getHostelRoom().getId());
+			hostelRoom.setBedsOccupied((hostelRoom.getBedsOccupied() != null ? hostelRoom.getBedsOccupied() : 0) - 1);
+			this.hostelRoomService.saveHostelRoom(hostelRoom);
+		}
 		this.studentAcademicYearHostelRoomDao.remove(studentAcademicYearHostelRoom);
 	}
 

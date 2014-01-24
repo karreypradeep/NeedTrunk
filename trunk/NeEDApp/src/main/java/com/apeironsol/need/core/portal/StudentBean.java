@@ -592,6 +592,8 @@ public class StudentBean extends AbstractStudentBean {
 
 		this.getStudentTabModel().getAcademicsTab().setRendered(this.grantedAuthorityBean.isUserAllowedToAccessStudentAcademics());
 
+		this.getStudentTabModel().getReportCardTab().setRendered(this.grantedAuthorityBean.isUserAllowedToAccessStudentAcademics());
+
 		this.getStudentTabModel()
 				.getHostelRoomTab()
 				.setRendered(

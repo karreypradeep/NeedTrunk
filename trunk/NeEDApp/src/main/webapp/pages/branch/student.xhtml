@@ -65,11 +65,19 @@
 						value="#{studentBean.studentTabModel.studentPocketMoneyTab}" />
 				</p:menuitem>
 
-				<p:menuitem value="Academics" icon="ui-icon-note" process="@this" update="@form"
+				<p:menuitem value="Exam results" icon="ui-icon-note" process="@this" update="@form"
 					action="#{studentAcademicBean.viewStudentExamWiseResults()}"
 					rendered="#{studentBean.studentTabModel.academicsTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.academicsTab}" />
+					<f:setPropertyActionListener target="#{studentBean.loadExamsFlag}" value="true" />
+				</p:menuitem>
+
+				<p:menuitem value="Report card" icon="ui-icon-note" process="@this" update="@form"
+					action="#{studentReportCardBean.fetchReportCardsForAcademicYear()}"
+					rendered="#{studentBean.studentTabModel.reportCardTab.rendered}">
+					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
+						value="#{studentBean.studentTabModel.reportCardTab}" />
 					<f:setPropertyActionListener target="#{studentBean.loadExamsFlag}" value="true" />
 				</p:menuitem>
 
@@ -178,6 +186,10 @@
 
 				<c:if test="#{studentBean.studentTabModel.academicsTabActive}">
 					<ui:include src="/pages/modules/academics/student_academics.xhtml" />
+				</c:if>
+
+				<c:if test="#{studentBean.studentTabModel.reportCardTabActive}">  
+					<ui:include src="/pages/modules/academics/student_report_card.xhtml" />
 				</c:if>
 
 				<c:if test="#{studentBean.studentTabModel.hostelRoomTabActive}">

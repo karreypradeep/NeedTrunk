@@ -191,6 +191,16 @@
 				<ui:include src="/pages/branch/hostel/hostel_rooms.xhtml" />
 			</c:when>
 
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchGradeSystem}">
+				<ui:include src="/pages/branch/academics/grade_systems.xhtml" />
+			</c:when>
+
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchReportCard}">
+				<ui:include src="/pages/branch/academics/report_cards.xhtml" />
+			</c:when>   
+
 			<c:otherwise>
 				<p:panel header="Unauthorized access !!">
 

@@ -41,6 +41,8 @@ public enum AuthorityConstant implements Labeled {
 	ACCESS_SECTIONS("access_sections", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 	ACCESS_BRANCH_SETTINGS("access_branch_settings", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 	ACCESS_HOSTEL_ROOMS("access_hostel_rooms", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
+	ACCESS_GRADE_SYSTEM("access_grade_system", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
+	ACCESS_REPORT_CARD("access_report_card", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 
 	// Access Security
 	ACCESS_SECURITY("access_security", AuthorityCategoryConstant.SECURITY, AuthoritySubCategoryConstant.ACCESS),
@@ -267,6 +269,12 @@ public enum AuthorityConstant implements Labeled {
 	REMOVE_EXAM("remove_exam", AuthorityCategoryConstant.ACADEMICS, AuthoritySubCategoryConstant.EXAM),
 	SCHEDULE_EXAM("schedule_exam", AuthorityCategoryConstant.ACADEMICS, AuthoritySubCategoryConstant.EXAM),
 
+	CREATE_GRADE_SYSTEM("create_grade_system", AuthorityCategoryConstant.ACADEMICS, AuthoritySubCategoryConstant.GRADE_SYSTEM),
+	REMOVE_GRADE_SYSTEM("remove_grade_system", AuthorityCategoryConstant.ACADEMICS, AuthoritySubCategoryConstant.GRADE_SYSTEM),
+
+	CREATE_REPORT_CARD("create_report_card", AuthorityCategoryConstant.ACADEMICS, AuthoritySubCategoryConstant.GRADE_SYSTEM),
+	REMOVE_REPORT_CARD("remove_report_card", AuthorityCategoryConstant.ACADEMICS, AuthoritySubCategoryConstant.GRADE_SYSTEM),
+
 	NOTIFICATIONS_BRANCH_LEVEL("send_notifications_branch", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.NOTIFICATIONS),
 	NOTIFICATIONS_CLASS_LEVEL("send_notifications_class", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.NOTIFICATIONS),
 	NOTIFICATIONS_SECTION_LEVEL("send_notifications_section", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.NOTIFICATIONS),
@@ -327,6 +335,9 @@ public enum AuthorityConstant implements Labeled {
 		// Access Academics
 		getAllAuthorities().add(ACCESS_ACADEMICS);
 		getAllAuthorities().add(ACCESS_EXAMS);
+		getAllAuthorities().add(ACCESS_REPORT_CARD);
+		getAllAuthorities().add(CREATE_REPORT_CARD);
+		getAllAuthorities().add(REMOVE_REPORT_CARD);
 
 		// Access Transportation
 		getAllAuthorities().add(ACCESS_TRANSPORTATION);
@@ -498,10 +509,18 @@ public enum AuthorityConstant implements Labeled {
 		getAllAuthorities().add(CREATE_BALANCE_SHEET);
 		getAllAuthorities().add(REMOVE_BALANCE_SHEET);
 
+		getAllAuthorities().add(ACCESS_HOSTEL_ROOMS);
+		getAllAuthorities().add(CREATE_HOSTEL_ROOM);
+		getAllAuthorities().add(REMOVE_HOSTEL_ROOM);
+
 		// Exams
 		getAllAuthorities().add(CREATE_EXAM);
 		getAllAuthorities().add(REMOVE_EXAM);
 		getAllAuthorities().add(SCHEDULE_EXAM);
+
+		getAllAuthorities().add(ACCESS_GRADE_SYSTEM);
+		getAllAuthorities().add(REMOVE_GRADE_SYSTEM);
+		getAllAuthorities().add(CREATE_GRADE_SYSTEM);
 
 		// Notifications
 		getAllAuthorities().add(NOTIFICATIONS_BRANCH_LEVEL);

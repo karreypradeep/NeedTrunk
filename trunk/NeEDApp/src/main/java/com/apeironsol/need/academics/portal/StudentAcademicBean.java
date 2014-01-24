@@ -109,11 +109,10 @@ public class StudentAcademicBean extends AbstractPortalBean {
 		comparator.setAscending();
 		Collections.sort(chartDate, comparator);
 
-		int i = 0;
 		for (StudentAcademicExamDO studentAcademicExamDO : chartDate) {
 
-			double percent = (studentAcademicExamDO.getTotalScoredMarks() * 100) / studentAcademicExamDO.getTotalMaximumMarks();
-			percentage.set(String.valueOf(++i), percent);
+			double percent = studentAcademicExamDO.getTotalScoredMarks() * 100 / studentAcademicExamDO.getTotalMaximumMarks();
+			percentage.set(studentAcademicExamDO.getExam().getName(), percent);
 		}
 
 		this.getStudentAcademicExamsChart().addSeries(percentage);
@@ -143,8 +142,8 @@ public class StudentAcademicBean extends AbstractPortalBean {
 
 		for (StudentExamSubjectDO studentExamSubjectDO : results) {
 
-			double percentage = studentExamSubjectDO.getStudentExamSubject().getScoredMarks() != null ? ((studentExamSubjectDO.getStudentExamSubject()
-					.getScoredMarks() * 100) / studentExamSubjectDO.getSectionExamSubject().getMaximumMarks()) : 0d;
+			double percentage = studentExamSubjectDO.getStudentExamSubject().getScoredMarks() != null ? studentExamSubjectDO.getStudentExamSubject()
+					.getScoredMarks() * 100 / studentExamSubjectDO.getSectionExamSubject().getMaximumMarks() : 0d;
 
 			percentages.set(studentExamSubjectDO.getSubject().getName(), percentage);
 		}
@@ -175,8 +174,8 @@ public class StudentAcademicBean extends AbstractPortalBean {
 
 		for (StudentAcademicSubjectDO studentAcademicSubjectDO : chartDate) {
 
-			double percentage = studentAcademicSubjectDO.getTotalScoredMarks() != null ? ((studentAcademicSubjectDO.getTotalScoredMarks() * 100) / studentAcademicSubjectDO
-					.getTotalMaximumMarks()) : 0d;
+			double percentage = studentAcademicSubjectDO.getTotalScoredMarks() != null ? studentAcademicSubjectDO.getTotalScoredMarks() * 100
+					/ studentAcademicSubjectDO.getTotalMaximumMarks() : 0d;
 
 			percentages.set(studentAcademicSubjectDO.getSubject().getName(), percentage);
 		}
@@ -215,7 +214,7 @@ public class StudentAcademicBean extends AbstractPortalBean {
 			double scoredMarks = studentExamSubjectDO.getStudentExamSubject().getScoredMarks() == null ? 0d : studentExamSubjectDO.getStudentExamSubject()
 					.getScoredMarks();
 
-			double percent = (scoredMarks * 100) / maxMarks;
+			double percent = scoredMarks * 100 / maxMarks;
 
 			percentage.set(String.valueOf(++i), percent);
 		}

@@ -66,7 +66,7 @@ public class StudentExamDO implements Serializable {
 		this.totalMarksScoredByStudent = 0;
 		for (StudentExamSubject studentExamSubject : this.studentExamSubjects) {
 			this.totalMarksScoredByStudent += studentExamSubject.getScoredMarks() != null ? studentExamSubject.getScoredMarks() : 0;
-			this.totalMarksScoredByStudent += studentExamSubject.getSectionExamSubject().getMaximumMarks() != null ? studentExamSubject.getSectionExamSubject()
+			this.totalMarksForExam += studentExamSubject.getSectionExamSubject().getMaximumMarks() != null ? studentExamSubject.getSectionExamSubject()
 					.getMaximumMarks() : 0;
 		}
 	}
@@ -100,4 +100,5 @@ public class StudentExamDO implements Serializable {
 	public void setTotalMarksScoredByStudent(final double totalMarksScoredByStudent) {
 		this.totalMarksScoredByStudent = totalMarksScoredByStudent;
 	}
+
 }
