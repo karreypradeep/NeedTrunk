@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.SectionExam;
+import com.apeironsol.need.util.constants.StudentSubjectExamResultConstant;
 
 public class StudentAcademicExamDO implements Serializable {
 
@@ -25,6 +26,10 @@ public class StudentAcademicExamDO implements Serializable {
 	private double								percentageScored;
 
 	private boolean								failed;
+
+	private double								percentageForReportCard;
+
+	private double								scoredPercentageForReportCard;
 
 	public Exam getExam() {
 		return this.exam;
@@ -90,4 +95,51 @@ public class StudentAcademicExamDO implements Serializable {
 		this.failed = failed;
 	}
 
+	/**
+	 * @return the studentSubjectExamResult
+	 */
+	public StudentSubjectExamResultConstant getStudentExamResult() {
+		StudentSubjectExamResultConstant studentSubjectExamResult = StudentSubjectExamResultConstant.NOT_APPLICABLE;
+		if (this.studentExamSubjectDOs != null) {
+			for (StudentExamSubjectDO studentExamSubjectDO : this.studentExamSubjectDOs) {
+				if (StudentSubjectExamResultConstant.NOT_APPLICABLE.equals(studentExamSubjectDO.getStudentSubjectExamResult())
+						|| StudentSubjectExamResultConstant.FAIL.equals(studentExamSubjectDO.getStudentSubjectExamResult())) {
+					studentSubjectExamResult = studentExamSubjectDO.getStudentSubjectExamResult();
+					break;
+				}
+				studentSubjectExamResult = StudentSubjectExamResultConstant.PASS;
+			}
+		}
+		return studentSubjectExamResult;
+	}
+
+	/**
+	 * @return the percentageForReportCard
+	 */
+	public double getPercentageForReportCard() {
+		return this.percentageForReportCard;
+	}
+
+	/**
+	 * @param percentageForReportCard
+	 *            the percentageForReportCard to set
+	 */
+	public void setPercentageForReportCard(final double percentageForReportCard) {
+		this.percentageForReportCard = percentageForReportCard;
+	}
+
+	/**
+	 * @return the scoredPercentageForReportCard
+	 */
+	public double getScoredPercentageForReportCard() {
+		return this.scoredPercentageForReportCard;
+	}
+
+	/**
+	 * @param scoredPercentageForReportCard
+	 *            the scoredPercentageForReportCard to set
+	 */
+	public void setScoredPercentageForReportCard(final double scoredPercentageForReportCard) {
+		this.scoredPercentageForReportCard = scoredPercentageForReportCard;
+	}
 }

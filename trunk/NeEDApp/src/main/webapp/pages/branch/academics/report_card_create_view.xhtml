@@ -5,6 +5,7 @@
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 	<f:metadata>
 		<f:event type="preRenderView" listener="#{reportCardBean.loadExams()}" />
+		<f:event type="preRenderView" listener="#{reportCardBean.loadGradeSystems()}" />
 	</f:metadata>
 
 	<p:panel style="margin-top:1px;border:0px">
@@ -22,10 +23,19 @@
 			</p:inputText>
 			<p:message id="report_card_name_msg" for="report_card_name" />
 
+			<p:outputLabel id="created_date_label" value="Created date" for="created_date" />
+			<p:calendar id="created_date" value="#{reportCardBean.reportCard.createdDate}" showOn="button" pattern="dd/MM/yyyy"
+				size="10" maxlength="10" required="true" mindate="#{sessionBean.currentBranch.startDate}">
+				<p:ajax process="@this" update="@this"></p:ajax>
+			</p:calendar>
+			<p:message id="created_date_msg" for="created_date" />
+
 			<p:outputLabel id="grading_system_name_label" value="Grade system" for="grading_system_name" />
-			<p:selectOneMenu id="grading_system_name" value="#{reportCardExam.exam}" converter="gradeSystemConverter">
+			<p:selectOneMenu id="grading_system_name" value="#{reportCardBean.reportCard.gradeSystem}"
+				converter="gradeSystemConverter">
 				<f:selectItem itemLabel="Select Grade system" itemValue="" />
-				<f:selectItems value="#{reportCardBean.exams}" var="exam" itemLabel="#{exam.name}" itemValue="#{exam}" />
+				<f:selectItems value="#{reportCardBean.gradeSystems}" var="gradeSystem" itemLabel="#{gradeSystem.name}"
+					itemValue="#{gradeSystem}" />
 				<p:ajax process="@this" update="@this"></p:ajax>
 			</p:selectOneMenu>
 			<p:message id="grading_system_name_msg" for="grading_system_name" />

@@ -8,6 +8,7 @@
 package com.apeironsol.need.academics.model;
 
 import java.util.Collection;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +17,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.apeironsol.framework.BaseEntity;
 import com.apeironsol.need.core.model.Branch;
@@ -38,13 +42,18 @@ public class ReportCard extends BaseEntity {
 	@JoinColumn(name = "BRANCH_ID", nullable = false)
 	private Branch						branch;
 
+	@ManyToOne
 	@JoinColumn(name = "GRADE_SYSTEM_ID")
 	private GradeSystem					gradeSystem;
 
 	@Column(name = "NAME", length = 50, nullable = false)
 	private String						name;
 
+	@Column(name = "CREATED_DATE", nullable = false)
+	private Date						createdDate;
+
 	@OneToMany(mappedBy = "reportCard", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<ReportCardExam>	reportCardExams;
 
 	/**
@@ -105,6 +114,21 @@ public class ReportCard extends BaseEntity {
 	 */
 	public void setGradeSystem(final GradeSystem gradeSystem) {
 		this.gradeSystem = gradeSystem;
+	}
+
+	/**
+	 * @return the createdDate
+	 */
+	public Date getCreatedDate() {
+		return this.createdDate;
+	}
+
+	/**
+	 * @param createdDate
+	 *            the createdDate to set
+	 */
+	public void setCreatedDate(final Date createdDate) {
+		this.createdDate = createdDate;
 	}
 
 }

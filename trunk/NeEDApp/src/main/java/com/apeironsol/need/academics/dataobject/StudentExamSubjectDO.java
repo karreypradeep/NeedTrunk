@@ -6,6 +6,8 @@ import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.SectionExamSubject;
 import com.apeironsol.need.academics.model.StudentExamSubject;
 import com.apeironsol.need.core.model.Subject;
+import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
+import com.apeironsol.need.util.constants.StudentSubjectExamResultConstant;
 
 public class StudentExamSubjectDO implements Serializable {
 
@@ -49,6 +51,23 @@ public class StudentExamSubjectDO implements Serializable {
 
 	public void setExam(final Exam exam) {
 		this.exam = exam;
+	}
+
+	/**
+	 * @return the studentSubjectExamResult
+	 */
+	public StudentSubjectExamResultConstant getStudentSubjectExamResult() {
+		StudentSubjectExamResultConstant studentSubjectExamResult = StudentSubjectExamResultConstant.NOT_APPLICABLE;
+		if (StudentExamSubjectStatusConstant.ASSIGNED.equals(this.studentExamSubject.getStudentExamSubjectStatus())) {
+			studentSubjectExamResult = StudentSubjectExamResultConstant.NOT_APPLICABLE;
+		} else if (this.studentExamSubject != null && this.sectionExamSubject != null) {
+			if (this.sectionExamSubject.getPassMarks() > this.studentExamSubject.getScoredMarks()) {
+				studentSubjectExamResult = StudentSubjectExamResultConstant.FAIL;
+			} else {
+				studentSubjectExamResult = StudentSubjectExamResultConstant.PASS;
+			}
+		}
+		return studentSubjectExamResult;
 	}
 
 }

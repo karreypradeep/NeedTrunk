@@ -17,6 +17,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.apeironsol.framework.BaseEntity;
 import com.apeironsol.need.core.model.Branch;
 
@@ -49,6 +52,7 @@ public class GradeSystem extends BaseEntity {
 	private boolean							defaultGrade;
 
 	@OneToMany(mappedBy = "gradeSystem", fetch = FetchType.EAGER)
+	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<GradeSystemRange>	gradeSystemRange;
 
 	/**

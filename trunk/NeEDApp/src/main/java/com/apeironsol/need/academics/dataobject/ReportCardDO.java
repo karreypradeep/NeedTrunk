@@ -4,10 +4,15 @@
 package com.apeironsol.need.academics.dataobject;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.apeironsol.need.academics.model.GradeSystem;
+import com.apeironsol.need.academics.model.GradeSystemRange;
 import com.apeironsol.need.academics.model.ReportCard;
+import com.apeironsol.need.util.constants.StudentSubjectExamResultConstant;
 
 /**
  * @author pradeep
@@ -36,6 +41,8 @@ public class ReportCardDO implements Serializable {
 	private double								totalMarksForReportCard;
 
 	private double								scoredMarksForReportCard;
+
+	private String								gradeForReportCard;
 
 	/**
 	 * @return the totalPercentageForReportCard
@@ -143,9 +150,68 @@ public class ReportCardDO implements Serializable {
 	}
 
 	public void computeReportCard() {
+		this.totalPercentageForReportCard = 0;
+		this.scoredPercentageForReportCard = 0;
 		for (Map.Entry<Long, Integer> entry : this.examPercentages.entrySet()) {
+			this.examByStudentAcademicExamDOMap.get(entry.getKey()).setPercentageForReportCard(entry.getValue());
+			this.examByStudentAcademicExamDOMap.get(entry.getKey()).setScoredPercentageForReportCard(
+					(double) entry.getValue() * this.examByStudentAcademicExamDOMap.get(entry.getKey()).getPercentageScored());
 			this.totalPercentageForReportCard += entry.getValue();
 			this.scoredPercentageForReportCard += (double) entry.getValue() * this.examByStudentAcademicExamDOMap.get(entry.getKey()).getPercentageScored();
 		}
+	}
+
+	/**
+	 * @return the gradeForReportCard
+	 */
+	public String getGradeForReportCard() {
+		if (StudentSubjectExamResultConstant.NOT_APPLICABLE.equals(this.getStudentReportCardResult())) {
+			this.gradeForReportCard = StudentSubjectExamResultConstant.NOT_APPLICABLE.getLabel();
+		} else {
+			if (this.scoredPercentageForReportCard <= 0) {
+				this.computeReportCard();
+			}
+			if (this.reportCard != null && this.reportCard.getGradeSystem() != null) {
+				GradeSystem gradeSystem = this.reportCard.getGradeSystem();
+				Collection<GradeSystemRange> gradeSystemRanges = gradeSystem.getGradeSystemRange();
+				for (GradeSystemRange gradeSystemRange : gradeSystemRanges) {
+					if (this.scoredPercentageForReportCard >= gradeSystemRange.getMinimumRange()
+							&& this.scoredPercentageForReportCard <= gradeSystemRange.getMaximumRange()) {
+						this.gradeForReportCard = gradeSystemRange.getDistinction();
+					}
+				}
+			}
+		}
+		return this.gradeForReportCard;
+	}
+
+	/**
+	 * @return the studentSubjectExamResult
+	 */
+	public StudentSubjectExamResultConstant getStudentReportCardResult() {
+		StudentSubjectExamResultConstant studentSubjectExamResult = StudentSubjectExamResultConstant.NOT_APPLICABLE;
+		if (this.examByStudentAcademicExamDOMap != null) {
+			for (StudentAcademicExamDO studentAcademicExamDO : this.examByStudentAcademicExamDOMap.values()) {
+				if (StudentSubjectExamResultConstant.NOT_APPLICABLE.equals(studentAcademicExamDO.getStudentExamResult())
+						|| StudentSubjectExamResultConstant.FAIL.equals(studentAcademicExamDO.getStudentExamResult())) {
+					studentSubjectExamResult = studentAcademicExamDO.getStudentExamResult();
+					break;
+				}
+				studentSubjectExamResult = StudentSubjectExamResultConstant.PASS;
+			}
+		}
+		return studentSubjectExamResult;
+	}
+
+	/**
+	 * @return the selectedReportCardDO
+	 */
+	public Collection<StudentAcademicExamDO> getStudentAcademicExamDOs() {
+		Collection<StudentAcademicExamDO> studentAcademicExamDOs = new ArrayList<StudentAcademicExamDO>();
+		if (this.getExamByStudentAcademicExamDOMap() != null) {
+			studentAcademicExamDOs.addAll(this.getExamByStudentAcademicExamDOMap().values());
+		}
+
+		return studentAcademicExamDOs;
 	}
 }
