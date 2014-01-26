@@ -19,6 +19,9 @@ import org.springframework.jms.core.JmsTemplate;
 import org.springframework.stereotype.Service;
 
 import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.need.academics.model.ReportCardExam;
+import com.apeironsol.need.academics.model.SectionExam;
+import com.apeironsol.need.academics.service.SectionExamService;
 import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
@@ -35,7 +38,6 @@ import com.apeironsol.need.notifications.producer.util.NotificationProducerUtil;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
-import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
 
 @Service("notificationService")
 public class NotificationServiceImpl implements NotificationService {
@@ -76,6 +78,9 @@ public class NotificationServiceImpl implements NotificationService {
 	@Autowired
 	private StudentAbsentService	studentAbsentService;
 
+	@Autowired
+	private SectionExamService		sectionExamService;
+
 	private NotificationProducerUtil createNotificationProducerUtil(final NotificationTypeConstant notificationTypeConstant) {
 		final NotificationProducerUtil notificationProducerUtil = new NotificationProducerUtil();
 		notificationProducerUtil.setBatchLogService(this.batchLogService);
@@ -91,7 +96,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public BatchLog sendNotificationForStudent(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
-		if (batchLog == null) {
+		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 
@@ -112,7 +117,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public BatchLog sendNotificationForStudent(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
-		if (batchLog == null) {
+		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
@@ -134,7 +139,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public BatchLog sendNotificationForStudent(final Section section, final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
-		if (batchLog == null) {
+		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
@@ -160,7 +165,7 @@ public class NotificationServiceImpl implements NotificationService {
 	public BatchLog sendNotificationForStudent(final Long academicYearId, final Klass klass, final BatchLog batchLog) throws ApplicationException {
 
 		BatchLog result = batchLog;
-		if (batchLog == null) {
+		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
@@ -185,7 +190,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public BatchLog sendNotificationForStudent(final Long academicYearId, final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
-		if (batchLog == null) {
+		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
@@ -215,7 +220,7 @@ public class NotificationServiceImpl implements NotificationService {
 	@Override
 	public BatchLog sendNotification(final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
-		if (batchLog == null) {
+		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
@@ -227,10 +232,9 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public BatchLog sendNotificationForStudent(final Collection<Section> sections, final StudentSectionStatusConstant studentSectionStatusConstant,
-			final BatchLog batchLog) throws ApplicationException {
+	public BatchLog sendNotificationForStudent(final BatchLog batchLog, final Collection<Section> sections) throws ApplicationException {
 		BatchLog result = batchLog;
-		if (batchLog == null) {
+		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
@@ -281,5 +285,25 @@ public class NotificationServiceImpl implements NotificationService {
 			studentAcademicYears = this.studentService.findStudentAcademicYearsWithActiveStatusBySectionIds(sectionIDs);
 		}
 		return studentAcademicYears;
+	}
+
+	@Override
+	public BatchLog sendReportCardNotificationForStudent(final BatchLog batchLog) throws ApplicationException {
+		BatchLog result = batchLog;
+		if (result == null) {
+			throw new ApplicationException("BatchLog cannot be null");
+		}
+		Collection<Long> examIds = new ArrayList<Long>();
+		for (ReportCardExam reportCardExam : batchLog.getReportCard().getReportCardExams()) {
+			examIds.add(reportCardExam.getExam().getId());
+		}
+		Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsByExamIdsandAcademicYearId(examIds, batchLog.getReportCard()
+				.getAcademicYear().getId());
+		Collection<Section> sections = new ArrayList<Section>();
+		for (SectionExam sectionExam : sectionExams) {
+			sections.add(sectionExam.getSection());
+		}
+		result = this.sendNotificationForStudent(batchLog, sections);
+		return result;
 	}
 }

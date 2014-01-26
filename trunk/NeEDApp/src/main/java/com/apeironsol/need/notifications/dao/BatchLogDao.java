@@ -8,9 +8,9 @@ package com.apeironsol.need.notifications.dao;
 
 import java.util.Collection;
 
+import com.apeironsol.framework.BaseDao;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
-import com.apeironsol.framework.BaseDao;
 
 /**
  * Data access interface for batch log.
@@ -40,7 +40,24 @@ public interface BatchLogDao extends BaseDao<BatchLog> {
 	 *            notificationLevelId.
 	 * @return collection of batch logs for the supplied branch id.
 	 */
-	Collection<BatchLog> findBatchLogsByNotificationLevelAndNotificationLevelId(final Long branchId,
-			final NotificationLevelConstant notificationLevelConstant, final Long notificationLevelId);
+	Collection<BatchLog> findBatchLogsByNotificationLevelAndNotificationLevelId(final Long branchId, final NotificationLevelConstant notificationLevelConstant,
+			final Long notificationLevelId);
 
+	/**
+	 * 
+	 * @param branchId
+	 * @param notificationLevelConstant
+	 * @param notificationLevelId
+	 * @param reportCardId
+	 * @return
+	 */
+	Collection<BatchLog> findBatchLogsForReportCardByNotificationLevelAndNotificationLevelId(final Long branchId,
+			final NotificationLevelConstant notificationLevelConstant, final Long notificationLevelId, final Long reportCardId);
+
+	/**
+	 * 
+	 * @param reportCardId
+	 * @return
+	 */
+	Collection<BatchLog> findBatchLogsForReportCardId(final Long reportCardId);
 }

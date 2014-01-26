@@ -42,6 +42,9 @@ public class SMSWorkerFactory {
 			case NEW_ADMISSION_NOTIFICATION:
 				workerClass = ApplicationContextUtils.getApplicationContext().getBean(NewAdmissionSMSWorker.class);
 				break;
+			case REPORT_CARD_NOTIFICATION:
+				workerClass = ApplicationContextUtils.getApplicationContext().getBean(ReportCardSMSWorker.class);
+				break;
 			default:
 				workerClass = ApplicationContextUtils.getApplicationContext().getBean(FeeDueSMSWorker.class);
 		}

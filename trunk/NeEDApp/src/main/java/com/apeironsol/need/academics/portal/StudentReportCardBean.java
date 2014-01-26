@@ -57,7 +57,7 @@ public class StudentReportCardBean implements Serializable {
 	 * @return the reportCardDOs
 	 */
 	public Collection<ReportCardDO> getReportCardDOs() {
-		Collections.sort((List<ReportCardDO>) this.reportCardDOs, new ReportCardDOComparator(ReportCardDOComparator.Order.CREATED_DATE));
+		Collections.sort((List<ReportCardDO>) this.reportCardDOs, new ReportCardDOComparator(ReportCardDOComparator.Order.ACADEMIC_YEAR));
 		return this.reportCardDOs;
 	}
 

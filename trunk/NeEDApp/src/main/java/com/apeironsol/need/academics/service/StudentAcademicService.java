@@ -11,4 +11,5 @@ public interface StudentAcademicService {
 
 	Collection<StudentAcademicSubjectDO> getStudentAcademicDetailsBySubjectWise(Long studentAcademicYearId);
 
+	Collection<StudentAcademicExamDO> getStudentAcademicDetailsByExams(final Long studentAcademicYearId, final Collection<Long> examIds);
 }

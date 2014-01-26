@@ -14,7 +14,6 @@ import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.model.BatchLog;
-import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
 
 public interface NotificationService {
 
@@ -26,10 +25,11 @@ public interface NotificationService {
 
 	BatchLog sendNotificationForStudent(Long academicYearId, Klass klass, BatchLog batchLog) throws ApplicationException;
 
-	BatchLog sendNotificationForStudent(Collection<Section> sections, StudentSectionStatusConstant studentSectionStatusConstant, BatchLog batchLog)
-			throws ApplicationException;
+	BatchLog sendNotificationForStudent(BatchLog batchLog, Collection<Section> sections) throws ApplicationException;
 
 	BatchLog sendNotificationForStudent(Long academicYearId, BatchLog batchLog) throws ApplicationException;
+
+	BatchLog sendReportCardNotificationForStudent(BatchLog batchLog) throws ApplicationException;
 
 	BatchLog sendNotification(BatchLog batchLog) throws ApplicationException;
 }

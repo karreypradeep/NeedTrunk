@@ -17,19 +17,19 @@ import com.apeironsol.need.util.portal.ViewUtil;
  */
 public enum NotificationSubTypeConstant implements Labeled {
 
-	FEE_DUE_NOTIFICATION("fee_due_notification", true, false, true, false),
-	FEE_PAID_NOTIFICATION("fee_paid_notification", false, false, true, true),
-	FEE_REFUND_NOTIFICATION("fee_refund_notification", false, false, true, true),
-	MARKS_NOTIFICATION("marks_notification", true, false, false, false),
-	HOLIDAY_NOTIFICATION("holiday_notification", true, true, false, false),
-	EXPENSES_INCURRED_NOTIFICATION("expenses_incurred_notification", true, false, true, true),
-	INVOICE_NOTIFICATION("expenses_incurred_notification", true, false, true, true),
-	ABSENT_NOTIFICATION("absent_notification", true, false, false, false),
-	EXAM_ABSENT_NOTIFICATION("exam_absent_notification", true, false, false, false),
-	EXAM_SCHEDULE_NOTIFICATION("exam_schedule_notification", true, false, false, false),
-	NEW_ADMISSION_NOTIFICATION("new_admission_notification", false, false, true, true),
-	REPORT_CARD_NOTIFICATION("report_card_notification", true, true, false, false),
-	ADHOC_NOTIFICATION("adhoc_notification", true, true, false, false);
+	FEE_DUE_NOTIFICATION("fee_due_notification", true, false, true, false, false, true),
+	FEE_PAID_NOTIFICATION("fee_paid_notification", false, false, true, true, false, false),
+	FEE_REFUND_NOTIFICATION("fee_refund_notification", false, false, true, true, false, false),
+	MARKS_NOTIFICATION("marks_notification", true, false, false, false, false, false),
+	HOLIDAY_NOTIFICATION("holiday_notification", true, true, false, false, false, false),
+	EXPENSES_INCURRED_NOTIFICATION("expenses_incurred_notification", true, false, true, true, true, false),
+	INVOICE_NOTIFICATION("expenses_incurred_notification", true, false, true, true, true, false),
+	ABSENT_NOTIFICATION("absent_notification", true, false, false, false, false, false),
+	EXAM_ABSENT_NOTIFICATION("exam_absent_notification", true, false, false, false, false, false),
+	EXAM_SCHEDULE_NOTIFICATION("exam_schedule_notification", true, false, false, false, false, false),
+	NEW_ADMISSION_NOTIFICATION("new_admission_notification", false, false, true, true, false, false),
+	REPORT_CARD_NOTIFICATION("report_card_notification", true, true, false, false, false, false),
+	ADHOC_NOTIFICATION("adhoc_notification", true, true, false, false, false, false);
 
 	private String											label;
 
@@ -41,6 +41,14 @@ public enum NotificationSubTypeConstant implements Labeled {
 	// system. If false then this notification can be used to send explicit
 	// messages.
 	private final boolean									isImplicitMessage;
+
+	// If the message requires contact details like for sending expenses record,
+	// set this variable to true.
+	private final boolean									contactDetalisRequired;
+
+	// If message is allowed to be scheduled at a particular time, then set this
+	// attribute as true.
+	private final boolean									isAllowedTobeScheduled;
 
 	private static final List<NotificationSubTypeConstant>	brachNotifications	= new ArrayList<NotificationSubTypeConstant>();
 
@@ -80,12 +88,14 @@ public enum NotificationSubTypeConstant implements Labeled {
 	}
 
 	NotificationSubTypeConstant(final String label, final boolean groupMessage, final boolean messageRequired, final boolean minimumAmountRequired,
-			final boolean isImplicitMessage) {
+			final boolean isImplicitMessage, final boolean contactDetalisRequired, final boolean isAllowedTobeScheduled) {
 		this.label = label;
 		this.groupMessage = groupMessage;
 		this.messageRequired = messageRequired;
 		this.minimumAmountRequired = minimumAmountRequired;
 		this.isImplicitMessage = isImplicitMessage;
+		this.contactDetalisRequired = contactDetalisRequired;
+		this.isAllowedTobeScheduled = isAllowedTobeScheduled;
 	}
 
 	@Override
@@ -124,6 +134,20 @@ public enum NotificationSubTypeConstant implements Labeled {
 	 */
 	public boolean isImplicitMessage() {
 		return this.isImplicitMessage;
+	}
+
+	/**
+	 * @return the contactDetalisRequired
+	 */
+	public boolean isContactDetalisRequired() {
+		return this.contactDetalisRequired;
+	}
+
+	/**
+	 * @return the isAllowedTobeScheduled
+	 */
+	public boolean isAllowedTobeScheduled() {
+		return this.isAllowedTobeScheduled;
 	}
 
 }

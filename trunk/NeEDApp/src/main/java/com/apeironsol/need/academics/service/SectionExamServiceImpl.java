@@ -8,14 +8,14 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.academics.dao.SectionExamDao;
 import com.apeironsol.need.academics.dao.SectionExamSubjectDao;
 import com.apeironsol.need.academics.dataobject.SectionExamDO;
 import com.apeironsol.need.academics.dataobject.SectionExamSubjectDO;
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.academics.model.SectionExamSubject;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 @Service("sectionExamService")
 @Transactional(rollbackFor = Exception.class)
@@ -84,6 +84,11 @@ public class SectionExamServiceImpl implements SectionExamService {
 	@Override
 	public Collection<SectionExam> findSectionExamsByKlassId(final Long klassId, final Long academicYearId) {
 		return this.sectionExamDao.findSectionExamsByKlassId(klassId, academicYearId);
+	}
+
+	@Override
+	public Collection<SectionExam> findSectionExamsByExamIdsandAcademicYearId(final Collection<Long> examIDs, final Long academicYearId) {
+		return this.sectionExamDao.findSectionExamsByExamIdsandAcademicYearId(examIDs, academicYearId);
 	}
 
 }

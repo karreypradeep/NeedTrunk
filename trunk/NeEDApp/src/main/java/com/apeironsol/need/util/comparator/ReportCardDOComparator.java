@@ -27,7 +27,7 @@ public class ReportCardDOComparator implements Comparator<ReportCardDO>, Seriali
 
 	public static enum Order {
 
-		CREATED_DATE;
+		ACADEMIC_YEAR;
 	};
 
 	private final Order	orderBy;
@@ -41,8 +41,9 @@ public class ReportCardDOComparator implements Comparator<ReportCardDO>, Seriali
 	@Override
 	public int compare(final ReportCardDO source, final ReportCardDO target) {
 		int result = 0;
-		if (Order.CREATED_DATE.equals(this.orderBy) && source.getReportCard().getCreatedDate() != null && target.getReportCard().getCreatedDate() != null) {
-			result = source.getReportCard().getCreatedDate().compareTo(target.getReportCard().getCreatedDate());
+		if (Order.ACADEMIC_YEAR.equals(this.orderBy) && source.getReportCard().getAcademicYear().getStartDate() != null
+				&& target.getReportCard().getAcademicYear().getStartDate() != null) {
+			result = source.getReportCard().getAcademicYear().getStartDate().compareTo(target.getReportCard().getAcademicYear().getStartDate());
 		}
 		return result != 0 ? this.ascending ? result : result == 1 ? -1 : 1 : result;
 	}

@@ -10,36 +10,66 @@
 		value="#{branchNotificationSettingsBean.branchNotifications}" paginator="true" rows="10"
 		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 		rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
-		<p:column headerText="Notification Type" sortBy="#{branchNotification.notificationSubType.label}"
-			filterBy="#{branchNotification.notificationSubType.label}" filterMatchMode="contains">
+		<p:column headerText="Notification Type">
 			<h:outputText value="#{branchNotification.notificationSubType.label}" />
 		</p:column>
 
-		<p:column headerText="Minimum Amount" sortBy="#{branchNotification.minimumAmount}"
-			filterBy="#{branchNotification.minimumAmount}" filterMatchMode="contains" >
-			<pe:inputNumber value="#{branchNotification.minimumAmount}" rendered="#{branchNotification.notificationSubType.minimumAmountRequired}"/>
+		<p:column headerText="Minimum Amount">
+			<pe:inputNumber value="#{branchNotification.minimumAmount}"
+				rendered="#{branchNotification.notificationSubType.minimumAmountRequired}" />
 		</p:column>
 
-		<p:column headerText="SMS notification">
+		<p:column headerText="SMS">
 			<center>
 				<p:selectBooleanCheckbox value="#{branchNotification.smsIndicator}" />
 			</center>
 		</p:column>
 
-		<p:column headerText="Contact Numbers for SMS" sortBy="#{branchNotification.contactNumbers}"
-			filterBy="#{branchNotification.contactNumbers}" filterMatchMode="contains">
-			<p:inputTextarea value="#{branchNotification.contactNumbers}" rows="1" cols="30" maxlength="255" autoResize="false" />
+		<p:column headerText="Contact Numbers for SMS">
+			<p:inputTextarea value="#{branchNotification.contactNumbers}" rows="1" cols="20" maxlength="255" autoResize="false"
+				disabled="#{not branchNotification.notificationSubType.contactDetalisRequired}" />
 		</p:column>
 
-		<p:column headerText="Email notification">
+		<p:column headerText="SMS Schedule" width="200">
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:outputLabel id="schedule_date_sms_label" value="Start Date" for="schedule_date_sms"
+					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
+				<p:calendar id="schedule_date_sms" value="#{branchNotification.scheduleDateSMSNotification}" navigator="true"
+					pattern="dd/MM/yyyy" yearRange="1900" mindate="#{sessionBean.currentBranch.startDate}"
+					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
+
+				<p:outputLabel id="frequency_sms_label" value="Freq Mins" for="frequency_sms"
+					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
+				<pe:inputNumber id="frequency_sms" value="#{branchNotification.frequencyInMinutesSMSNotification}"
+					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
+
+			</p:panelGrid>
+		</p:column>
+
+		<p:column headerText="Email">
 			<center>
 				<p:selectBooleanCheckbox value="#{branchNotification.emailIndicator}" />
 			</center>
 		</p:column>
 
-		<p:column headerText="Email Id's" sortBy="#{branchNotification.emailIDs}" filterBy="#{branchNotification.emailIDs}"
-			filterMatchMode="contains">
-			<p:inputTextarea value="#{branchNotification.emailIDs}" rows="1" cols="30" maxlength="255" autoResize="false" />
+		<p:column headerText="Email Id's">
+			<p:inputTextarea value="#{branchNotification.emailIDs}" rows="1" cols="30" maxlength="255" autoResize="false"
+				disabled="#{not branchNotification.notificationSubType.contactDetalisRequired}" />
+		</p:column>
+
+		<p:column headerText="Email Schedule" width="200">
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:outputLabel id="schedule_date_email_label" value="Date" for="schedule_date_email"
+					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
+				<p:calendar id="schedule_date_email" value="#{branchNotification.scheduleDateEmailNotification}" navigator="true"
+					pattern="dd/MM/yyyy" yearRange="1900" mindate="#{sessionBean.currentBranch.startDate}"
+					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
+
+				<p:outputLabel id="frequency_email_label" value="Freq Mins" for="frequency_email"
+					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
+				<pe:inputNumber id="frequency_email" value="#{branchNotification.frequencyInMinutesEmailNotification}"
+					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
+			</p:panelGrid>
 		</p:column>
 
 	</p:dataTable>

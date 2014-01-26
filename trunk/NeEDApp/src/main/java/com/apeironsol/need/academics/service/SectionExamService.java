@@ -2,10 +2,10 @@ package com.apeironsol.need.academics.service;
 
 import java.util.Collection;
 
-import com.apeironsol.need.academics.dataobject.SectionExamDO;
-import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.SystemException;
+import com.apeironsol.need.academics.dataobject.SectionExamDO;
+import com.apeironsol.need.academics.model.SectionExam;
 
 public interface SectionExamService {
 
@@ -43,4 +43,14 @@ public interface SectionExamService {
 	 * @return section exams by sections.
 	 */
 	Collection<SectionExam> findSectionExamsByKlassId(final Long klassId, final Long academicYearId);
+
+	/**
+	 * Find section exams by section id.
+	 * 
+	 * @param sectionId
+	 *            section id.
+	 * @return section exams by section id.
+	 */
+	Collection<SectionExam> findSectionExamsByExamIdsandAcademicYearId(Collection<Long> examIDs, final Long academicYearId);
+
 }

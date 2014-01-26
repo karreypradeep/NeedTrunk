@@ -7,9 +7,9 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
+import com.apeironsol.framework.BaseDaoImpl;
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.core.model.Section;
-import com.apeironsol.framework.BaseDaoImpl;
 
 @Repository
 public class SectionExamDaoImpl extends BaseDaoImpl<SectionExam> implements SectionExamDao {
@@ -84,6 +84,15 @@ public class SectionExamDaoImpl extends BaseDaoImpl<SectionExam> implements Sect
 		TypedQuery<SectionExam> query = this.getEntityManager().createQuery(
 				"select s from SectionExam s where s.section.klass.id = :klassId and s.section.academicYear.id = :academicYearId", SectionExam.class);
 		query.setParameter("klassId", klassId);
+		query.setParameter("academicYearId", academicYearId);
+		return query.getResultList();
+	}
+
+	@Override
+	public Collection<SectionExam> findSectionExamsByExamIdsandAcademicYearId(final Collection<Long> examIDs, final Long academicYearId) {
+		TypedQuery<SectionExam> query = this.getEntityManager().createQuery(
+				"select s from SectionExam s where s.exam.id in :examIDs and s.section.academicYear.id = :academicYearId", SectionExam.class);
+		query.setParameter("examIDs", examIDs);
 		query.setParameter("academicYearId", academicYearId);
 		return query.getResultList();
 	}

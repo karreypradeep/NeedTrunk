@@ -21,13 +21,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.apeironsol.framework.BaseEntity;
+import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
-import com.apeironsol.framework.BaseEntity;
 
 @Entity
 @Table(name = "BATCH_LOG")
@@ -139,6 +140,13 @@ public class BatchLog extends BaseEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "SECTION_EXAM_ID")
 	private SectionExam					sectionExam;
+
+	/**
+	 * Attendance Id.
+	 */
+	@ManyToOne
+	@JoinColumn(name = "REPORT_CARD_ID")
+	private ReportCard					reportCard;
 
 	/**
 	 * Returns the number of elements.
@@ -416,6 +424,28 @@ public class BatchLog extends BaseEntity implements Serializable {
 	 */
 	public void setAttendanceDate(final Date attendanceDate) {
 		this.attendanceDate = attendanceDate;
+	}
+
+	/**
+	 * @return the reportCard
+	 */
+	public ReportCard getReportCard() {
+		return this.reportCard;
+	}
+
+	/**
+	 * @param reportCard
+	 *            the reportCard to set
+	 */
+	public void setReportCard(final ReportCard reportCard) {
+		this.reportCard = reportCard;
+	}
+
+	/**
+	 * @return the completedIndicator
+	 */
+	public Boolean getCompletedIndicator() {
+		return this.completedIndicator;
 	}
 
 }

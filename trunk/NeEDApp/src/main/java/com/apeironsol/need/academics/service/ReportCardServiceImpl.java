@@ -23,6 +23,7 @@ import com.apeironsol.need.academics.dao.ReportCardDao;
 import com.apeironsol.need.academics.dao.ReportCardExamDao;
 import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.ReportCardExam;
+import com.apeironsol.need.notifications.service.BatchLogService;
 
 /**
  * Service implementation interface for student.
@@ -39,6 +40,9 @@ public class ReportCardServiceImpl implements ReportCardService {
 
 	@Resource
 	private ReportCardExamDao	reportCardRangeDao;
+
+	@Resource
+	private BatchLogService		batchLogService;
 
 	/**
 	 * {@inheritDoc}
@@ -86,6 +90,9 @@ public class ReportCardServiceImpl implements ReportCardService {
 	 */
 	@Override
 	public void removeReportCard(final ReportCard reportCard) {
+		if (this.batchLogService.findBatchLogsForReportCardId(reportCard.getId()) != null) {
+			throw new ApplicationException("Notifications have been sent. Report card cannot be deleted.");
+		}
 		for (ReportCardExam reportCardRange : reportCard.getReportCardExams()) {
 			this.reportCardRangeDao.remove(reportCardRange);
 		}

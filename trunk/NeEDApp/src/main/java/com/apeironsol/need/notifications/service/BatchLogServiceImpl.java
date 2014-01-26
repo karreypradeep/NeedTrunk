@@ -68,4 +68,16 @@ public class BatchLogServiceImpl implements BatchLogService {
 		return this.batchLogDao.persist(batchLog);
 	}
 
+	@Override
+	public Collection<BatchLog> findBatchLogsForReportCardByNotificationLevelAndNotificationLevelId(final Long branchId,
+			final NotificationLevelConstant notificationLevelConstant, final Long notificationLevelId, final Long reportCardId) {
+		return this.batchLogDao.findBatchLogsForReportCardByNotificationLevelAndNotificationLevelId(branchId, notificationLevelConstant, notificationLevelId,
+				reportCardId);
+	}
+
+	@Override
+	public Collection<BatchLog> findBatchLogsForReportCardId(final Long reportCardId) {
+		return this.batchLogDao.findBatchLogsForReportCardId(reportCardId);
+	}
+
 }

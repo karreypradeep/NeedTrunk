@@ -119,6 +119,53 @@ public class StudentAcademicServiceImpl implements StudentAcademicService {
 	}
 
 	@Override
+	public Collection<StudentAcademicExamDO> getStudentAcademicDetailsByExams(final Long studentAcademicYearId, final Collection<Long> examIds) {
+		Collection<StudentSection> studentSections = this.studentSectionDao.findStudentSectionByStudendAcademicYearId(studentAcademicYearId);
+		Collection<StudentAcademicExamDO> studentAcademicExamDOs = new ArrayList<StudentAcademicExamDO>();
+		for (StudentSection studentSection : studentSections) {
+			Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsBySectionId(studentSection.getSection().getId());
+			for (SectionExam sectionExam : sectionExams) {
+				if (examIds.contains(sectionExam.getExam().getId())) {
+					Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam.getId());
+					int totalSubjectsScheduled = sectionExamSubjects.size();
+					double totalMaximumMarks = 0d;
+					double totalScoredMarks = 0d;
+					boolean failed = false;
+					Collection<StudentExamSubjectDO> studentExamSubjectDOs = new ArrayList<StudentExamSubjectDO>();
+					for (SectionExamSubject sectionExamSubject : sectionExamSubjects) {
+						StudentExamSubject studentExamSubject = this.studentExamSubjectDao
+								.findStudentExamSubjectByStudentAcademicYearIdAndSectionExamSubjectId(studentAcademicYearId, sectionExamSubject.getId());
+						if (studentExamSubject != null) {
+							StudentExamSubjectDO studentExamSubjectDO = new StudentExamSubjectDO();
+							studentExamSubjectDO.setSubject(sectionExamSubject.getSectionSubject().getSubject());
+							studentExamSubjectDO.setSectionExamSubject(sectionExamSubject);
+							studentExamSubjectDO.setStudentExamSubject(studentExamSubject);
+							studentExamSubjectDOs.add(studentExamSubjectDO);
+							if (studentExamSubject.getScoredMarks() != null && studentExamSubject.getScoredMarks() < sectionExamSubject.getPassMarks()) {
+								failed = true;
+							}
+							totalMaximumMarks = totalMaximumMarks + sectionExamSubject.getMaximumMarks();
+							totalScoredMarks = totalScoredMarks + (studentExamSubject.getScoredMarks() != null ? studentExamSubject.getScoredMarks() : 0d);
+						}
+					}
+
+					StudentAcademicExamDO studentAcademicExamDO = new StudentAcademicExamDO();
+					studentAcademicExamDO.setExam(sectionExam.getExam());
+					studentAcademicExamDO.setSectionExam(sectionExam);
+					studentAcademicExamDO.setTotalMaximumMarks(totalMaximumMarks);
+					studentAcademicExamDO.setTotalScoredMarks(totalScoredMarks);
+					studentAcademicExamDO.setTotalSubjectsScheduled(totalSubjectsScheduled);
+					studentAcademicExamDO.setPercentageScored(totalScoredMarks / totalMaximumMarks);
+					studentAcademicExamDO.setFailed(failed);
+					studentAcademicExamDO.setStudentExamSubjectDOs(studentExamSubjectDOs);
+					studentAcademicExamDOs.add(studentAcademicExamDO);
+				}
+			}
+		}
+		return studentAcademicExamDOs;
+	}
+
+	@Override
 	public Collection<StudentAcademicSubjectDO> getStudentAcademicDetailsBySubjectWise(final Long studentAcademicYearId) {
 
 		Collection<StudentSection> studentSections = this.studentSectionDao.findStudentSectionByStudendAcademicYearId(studentAcademicYearId);

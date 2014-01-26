@@ -15,8 +15,7 @@
 		</p:column>
 
 		<p:column headerText="Date">
-			<h:outputText value="#{reportCardDO.reportCard.createdDate}">
-				<f:convertDateTime pattern="dd/MM/yyyy" timeZone="#{sessionBean.defaultTimeZone}" />
+			<h:outputText value="#{reportCardDO.reportCard.academicYear.displayLabel}">
 			</h:outputText>
 		</p:column>
 

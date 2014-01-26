@@ -10,7 +10,7 @@
 	<c:choose>
 		<c:when test="#{reportCardBean.viewOrNewAction}">
 			<ui:include src="report_card.xhtml" />
-		</c:when>  
+		</c:when>
 
 		<c:otherwise>
 
@@ -20,8 +20,8 @@
 				</p:toolbarGroup>
 
 				<p:toolbarGroup align="right">
-					<p:commandButton value="New Report card" icon="ui-icon-document"
-						action="#{reportCardBean.newReportCard()}" style="width:100%;" process="@this" update="@form"
+					<p:commandButton value="New Report card" icon="ui-icon-document" action="#{reportCardBean.newReportCard()}"
+						style="width:100%;" process="@this" update="@form"
 						disabled="#{!grantedAuthorityBean.userAllowedToCreateReportCard}">
 						<f:setPropertyActionListener target="#{reportCardBean.viewOrNewAction}" value="true" />
 					</p:commandButton>
@@ -32,21 +32,29 @@
 			<p:panel style="margin-top:1px;">
 				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
 
-				<p:dataTable id="grading_system_datatable" var="repCard" value="#{reportCardBean.reportCards}"
-					paginator="true" rows="10"
+				<p:dataTable id="grading_system_datatable" var="repCard" value="#{reportCardBean.reportCards}" paginator="true"
+					rows="10"
 					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 					rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
 
 
-					<p:column headerText="Report card" sortBy="#{repCard.name}" filterBy="#{repCard.name}"
-						filterMatchMode="contains">
+					<p:column headerText="Report card" sortBy="#{repCard.name}" filterBy="#{repCard.name}" filterMatchMode="contains">
 
 						<p:commandLink value="#{repCard.name}" action="#{reportCardBean.viewReportCard}" title="View"
 							style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
 							<f:setPropertyActionListener target="#{reportCardBean.viewOrNewAction}" value="true" />
 							<f:setPropertyActionListener target="#{reportCardBean.activeTabIndex}" value="0" />
 							<f:setPropertyActionListener value="#{repCard}" target="#{reportCardBean.reportCard}" />
+							<f:setPropertyActionListener target="#{reportCardNotificationsBean.loadBatchLogsFromDB}" value="true" />
 						</p:commandLink>
+					</p:column>
+
+					<p:column headerText="Academic year">
+						<h:outputText value="#{repCard.academicYear.displayLabel}" />
+					</p:column>
+
+					<p:column headerText="Grade system">
+						<h:outputText value="#{repCard.gradeSystem.name}" />
 					</p:column>
 
 					<p:column headerText="#{msg.options}" styleClass="options-column">

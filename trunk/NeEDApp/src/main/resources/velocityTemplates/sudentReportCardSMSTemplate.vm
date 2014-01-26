@@ -1,0 +1,7 @@
+Dear Parent,
+Below is Report card ${reportCardName} details for your ward ${studentName}.
+Maximum Marks:${maximumMarks}
+Marks Scored:${marksScore}
+Percentage scored:${percentageScored}
+Grade:${grade}
+Result:${result}

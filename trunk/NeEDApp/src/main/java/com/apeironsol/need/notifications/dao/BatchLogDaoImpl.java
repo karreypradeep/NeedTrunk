@@ -12,9 +12,9 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
+import com.apeironsol.framework.BaseDaoImpl;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
-import com.apeironsol.framework.BaseDaoImpl;
 
 /**
  * Data access class for batch log.
@@ -29,8 +29,7 @@ public class BatchLogDaoImpl extends BaseDaoImpl<BatchLog> implements BatchLogDa
 	 */
 	@Override
 	public Collection<BatchLog> findBatchLogsByBranchId(final Long branchId) {
-		TypedQuery<BatchLog> query = this.getEntityManager().createQuery(
-				"select bl from BatchLog bl where bl.branch.id = :id", BatchLog.class);
+		TypedQuery<BatchLog> query = this.getEntityManager().createQuery("select bl from BatchLog bl where bl.branch.id = :id", BatchLog.class);
 		query.setParameter("id", branchId);
 		return query.getResultList();
 	}
@@ -42,13 +41,35 @@ public class BatchLogDaoImpl extends BaseDaoImpl<BatchLog> implements BatchLogDa
 	public Collection<BatchLog> findBatchLogsByNotificationLevelAndNotificationLevelId(final Long branchId,
 			final NotificationLevelConstant notificationLevelConstant, final Long notificationLevelId) {
 		TypedQuery<BatchLog> query = this.getEntityManager().createQuery(
-				"select bl from BatchLog bl where bl.branch.id = :id and"
-						+ " bl.notificationLevelConstant = :notificationLevelConstant "
-						+ "and bl.notificationLevelId = :notificationLevelId order by bl.executionStartDate DESC",
-				BatchLog.class);
+				"select bl from BatchLog bl where bl.branch.id = :id and" + " bl.notificationLevelConstant = :notificationLevelConstant "
+						+ "and bl.notificationLevelId = :notificationLevelId order by bl.executionStartDate DESC", BatchLog.class);
 		query.setParameter("id", branchId);
 		query.setParameter("notificationLevelId", notificationLevelId);
 		query.setParameter("notificationLevelConstant", notificationLevelConstant);
+		return query.getResultList();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Collection<BatchLog> findBatchLogsForReportCardByNotificationLevelAndNotificationLevelId(final Long branchId,
+			final NotificationLevelConstant notificationLevelConstant, final Long notificationLevelId, final Long reportCardId) {
+		TypedQuery<BatchLog> query = this.getEntityManager().createQuery(
+				"select bl from BatchLog bl where bl.branch.id = :id and" + " bl.notificationLevelConstant = :notificationLevelConstant "
+						+ "and bl.notificationLevelId = :notificationLevelId and bl.reportCard.id = :reportCardId order by bl.executionStartDate DESC",
+				BatchLog.class);
+		query.setParameter("id", branchId);
+		query.setParameter("notificationLevelId", notificationLevelId);
+		query.setParameter("reportCardId", reportCardId);
+		query.setParameter("notificationLevelConstant", notificationLevelConstant);
+		return query.getResultList();
+	}
+
+	@Override
+	public Collection<BatchLog> findBatchLogsForReportCardId(final Long reportCardId) {
+		TypedQuery<BatchLog> query = this.getEntityManager().createQuery("select bl from BatchLog bl where  bl.reportCard.id = :reportCardId", BatchLog.class);
+		query.setParameter("reportCardId", reportCardId);
 		return query.getResultList();
 	}
 }

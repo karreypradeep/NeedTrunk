@@ -2,6 +2,7 @@ package com.apeironsol.need.notifications.producer.util;
 
 import java.util.Date;
 
+import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.notifications.model.BatchLog;
@@ -24,6 +25,7 @@ public class BatchLogBuilder {
 	private String						studentFeeTransactionNr;
 	private Date						attendanceDate;
 	private SectionExam					sectionExam;
+	private ReportCard					reportCard;
 	private String						messageToBeSent;
 
 	public BatchLogBuilder messageToBeSent(final String messageToBeSent) {
@@ -76,6 +78,11 @@ public class BatchLogBuilder {
 		return this;
 	}
 
+	public BatchLogBuilder reportCard(final ReportCard reportCard) {
+		this.reportCard = reportCard;
+		return this;
+	}
+
 	public BatchLog build() {
 		return this.getBatchLog(this);
 	}
@@ -91,6 +98,7 @@ public class BatchLogBuilder {
 		batchLog.setAttendanceDate(builder.attendanceDate);
 		batchLog.setSectionExam(builder.sectionExam);
 		batchLog.setMessage(builder.messageToBeSent);
+		batchLog.setReportCard(this.reportCard);
 		if (this.nrElements != null) {
 			batchLog.setNrElements(builder.nrElements);
 			batchLog.setBatchStatusConstant(builder.nrElements > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);

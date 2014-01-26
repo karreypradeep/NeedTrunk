@@ -152,12 +152,16 @@ public class ReportCardDO implements Serializable {
 	public void computeReportCard() {
 		this.totalPercentageForReportCard = 0;
 		this.scoredPercentageForReportCard = 0;
+		this.totalMarksForReportCard = 0;
+		this.scoredMarksForReportCard = 0;
 		for (Map.Entry<Long, Integer> entry : this.examPercentages.entrySet()) {
 			this.examByStudentAcademicExamDOMap.get(entry.getKey()).setPercentageForReportCard(entry.getValue());
 			this.examByStudentAcademicExamDOMap.get(entry.getKey()).setScoredPercentageForReportCard(
 					(double) entry.getValue() * this.examByStudentAcademicExamDOMap.get(entry.getKey()).getPercentageScored());
 			this.totalPercentageForReportCard += entry.getValue();
 			this.scoredPercentageForReportCard += (double) entry.getValue() * this.examByStudentAcademicExamDOMap.get(entry.getKey()).getPercentageScored();
+			this.totalMarksForReportCard += this.examByStudentAcademicExamDOMap.get(entry.getKey()).getTotalMaximumMarks();
+			this.scoredMarksForReportCard += this.examByStudentAcademicExamDOMap.get(entry.getKey()).getTotalScoredMarks();
 		}
 	}
 

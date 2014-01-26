@@ -8,7 +8,6 @@
 package com.apeironsol.need.academics.model;
 
 import java.util.Collection;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,6 +21,7 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 import com.apeironsol.framework.BaseEntity;
+import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Branch;
 
 /**
@@ -49,8 +49,9 @@ public class ReportCard extends BaseEntity {
 	@Column(name = "NAME", length = 50, nullable = false)
 	private String						name;
 
-	@Column(name = "CREATED_DATE", nullable = false)
-	private Date						createdDate;
+	@ManyToOne
+	@JoinColumn(name = "ACADEMIC_YEAR_ID", nullable = false)
+	private AcademicYear				academicYear;
 
 	@OneToMany(mappedBy = "reportCard", fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
@@ -117,18 +118,18 @@ public class ReportCard extends BaseEntity {
 	}
 
 	/**
-	 * @return the createdDate
+	 * @return the academicYear
 	 */
-	public Date getCreatedDate() {
-		return this.createdDate;
+	public AcademicYear getAcademicYear() {
+		return this.academicYear;
 	}
 
 	/**
-	 * @param createdDate
-	 *            the createdDate to set
+	 * @param academicYear
+	 *            the academicYear to set
 	 */
-	public void setCreatedDate(final Date createdDate) {
-		this.createdDate = createdDate;
+	public void setAcademicYear(final AcademicYear academicYear) {
+		this.academicYear = academicYear;
 	}
 
 }
