@@ -3,47 +3,39 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
-
-	<p:dataTable id="status_table" var="reportCardDO" value="#{studentReportCardBean.reportCardDOs}"
-		style="margin-top:10px;">
+	<f:metadata>
+		<f:event type="preRenderView" listener="#{studentReportCardBean.buildReportCardTreeTable()}" />
+	</f:metadata>
+	<p:treeTable value="#{studentReportCardBean.reportCardRoot}" var="reprotCardTreeNode">
 
 		<p:column headerText="Report card name">
-			<p:commandLink value="#{reportCardDO.reportCard.name}" oncomplete="actionDialog.show()" update="@form"
-				action="#{studentReportCardBean.buildExamResultsTreeTable}">
-				<f:setPropertyActionListener target="#{studentReportCardBean.selectedReportCardDO}" value="#{reportCardDO}" />
+			<p:commandLink value="#{reprotCardTreeNode.name}" oncomplete="actionDialog.show()" update="@form"
+				action="#{studentReportCardBean.buildExamResultsTreeTable}" rendered="#{reprotCardTreeNode.reportCardId != null}">
+				<f:setPropertyActionListener target="#{studentReportCardBean.selectedReportCardId}" value="#{reprotCardTreeNode.reportCardId}" />
 			</p:commandLink>
-		</p:column>
-
-		<p:column headerText="Date">
-			<h:outputText value="#{reportCardDO.reportCard.academicYear.displayLabel}">
-			</h:outputText>
-		</p:column>
-
-		<p:column headerText="Total percentage">
-			<h:outputText value="#{reportCardDO.totalPercentageForReportCard}">
+			<h:outputText value="#{reprotCardTreeNode.name}" rendered="#{reprotCardTreeNode.reportCardId == null}">
 			</h:outputText>
 		</p:column>
 
 		<p:column headerText="Percentage scored">
-			<h:outputText value="#{reportCardDO.scoredPercentageForReportCard}">
+			<h:outputText value="#{reprotCardTreeNode.scoredPercentage}">
 			</h:outputText>
 		</p:column>
 
 		<p:column headerText="Grade">
-			<h:outputText value="#{reportCardDO.gradeForReportCard}">
+			<h:outputText value="#{reprotCardTreeNode.grade}">
 			</h:outputText>
 		</p:column>
 
 		<p:column headerText="Result">
-			<h:outputText value="#{reportCardDO.studentReportCardResult.label}">
+			<h:outputText value="#{reprotCardTreeNode.result.label}">
 			</h:outputText>
 		</p:column>
 
-	</p:dataTable>
-
+	</p:treeTable>
 
 	<p:dialog header="Report card : #{studentReportCardBean.selectedReportCardDO.reportCard.name}" widgetVar="actionDialog"
-		resizable="false" showEffect="explode" hideEffect="explode" width="800">
+		resizable="false" showEffect="explode" hideEffect="explode" width="1000">
 
 
 		<p:treeTable value="#{studentReportCardBean.root}" var="examSubjectResultTreeNode">
@@ -52,18 +44,27 @@
 				</h:outputText>
 			</p:column>
 
-			<p:column headerText="Total percentage">
-				<h:outputText value="#{examSubjectResultTreeNode.totalPercentage}">
-				</h:outputText>
-			</p:column>
-
 			<p:column headerText="Exam status">
-				<h:outputText value="#{examSubjectResultTreeNode.status}">
+				<h:outputText value="#{examSubjectResultTreeNode.status}"
+					rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}">
 				</h:outputText>
 			</p:column>
 
-			<p:column headerText="Scored percentage">
-				<h:outputText value="#{examSubjectResultTreeNode.percentageScored}">
+			<p:column headerText="Total Marks">
+				<h:outputText value="#{examSubjectResultTreeNode.totalMarks}"
+					rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}">
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Scored Marks">
+				<h:outputText value="#{examSubjectResultTreeNode.marksScored}"
+					rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}">
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Percentage">
+				<h:outputText value="#{examSubjectResultTreeNode.scoredPercentage} %"
+					rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}">
 				</h:outputText>
 			</p:column>
 
@@ -71,6 +72,17 @@
 				<h:outputText value="#{examSubjectResultTreeNode.studentSubjectExamResult.label}">
 				</h:outputText>
 			</p:column>
+
+			<p:column headerText="Total % for report card">
+				<h:outputText value="#{examSubjectResultTreeNode.percentageForReportCard} %">
+				</h:outputText>
+			</p:column>
+
+			<p:column headerText="Scored % for report card">
+				<h:outputText value="#{examSubjectResultTreeNode.scoredPercentageForReportCard} %">
+				</h:outputText>
+			</p:column>
+
 
 		</p:treeTable>
 

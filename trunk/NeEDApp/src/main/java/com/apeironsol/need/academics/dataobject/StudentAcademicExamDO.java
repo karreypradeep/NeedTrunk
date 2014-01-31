@@ -27,9 +27,6 @@ public class StudentAcademicExamDO implements Serializable {
 
 	private boolean								failed;
 
-	private double								percentageForReportCard;
-
-	private double								scoredPercentageForReportCard;
 
 	public Exam getExam() {
 		return this.exam;
@@ -113,33 +110,5 @@ public class StudentAcademicExamDO implements Serializable {
 		return studentSubjectExamResult;
 	}
 
-	/**
-	 * @return the percentageForReportCard
-	 */
-	public double getPercentageForReportCard() {
-		return this.percentageForReportCard;
-	}
-
-	/**
-	 * @param percentageForReportCard
-	 *            the percentageForReportCard to set
-	 */
-	public void setPercentageForReportCard(final double percentageForReportCard) {
-		this.percentageForReportCard = percentageForReportCard;
-	}
-
-	/**
-	 * @return the scoredPercentageForReportCard
-	 */
-	public double getScoredPercentageForReportCard() {
-		return this.scoredPercentageForReportCard;
-	}
-
-	/**
-	 * @param scoredPercentageForReportCard
-	 *            the scoredPercentageForReportCard to set
-	 */
-	public void setScoredPercentageForReportCard(final double scoredPercentageForReportCard) {
-		this.scoredPercentageForReportCard = scoredPercentageForReportCard;
-	}
+	 
 }

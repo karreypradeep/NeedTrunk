@@ -44,6 +44,13 @@
 			<p:message id="grading_system_name_msg" for="grading_system_name" />
 
 
+			<p:outputLabel id="pass_marks_label" value="Pass marks out of 100" for="pass_marks" />
+			<p:inputText id="pass_marks" value="#{reportCardBean.reportCard.passMarksForEachSubject}" required="true">
+			<f:convertNumber pattern="00"/>
+				<p:ajax process="@this" update="@this"></p:ajax>
+			</p:inputText>
+			<p:message id="pass_marks_msg" for="pass_marks" />
+
 		</h:panelGrid>
 
 		<p:commandButton id="grading_system_save" value="Save" action="#{reportCardBean.saveReportCard()}" update="@form">

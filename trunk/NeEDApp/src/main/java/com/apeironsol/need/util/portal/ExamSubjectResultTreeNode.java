@@ -12,17 +12,25 @@ public class ExamSubjectResultTreeNode extends DefaultTreeNode implements Serial
 	/**
 	 * 
 	 */
-	private static final long					serialVersionUID	= 2443706691126629898L;
+	private static final long					serialVersionUID			= 2443706691126629898L;
 
-	private StudentSubjectExamResultConstant	studentSubjectExamResult;
-
-	private double								totalPercentage;
-
-	private double								percentageScored;
+	private double								marksScored;
 
 	private String								name;
 
+	private double								percentageForReportCard;
+
 	private String								status;
+
+	private StudentSubjectExamResultConstant	studentSubjectExamResult;
+
+	private double								totalMarks;
+
+	private double								scoredPercentage;
+
+	private boolean								reportCardExamDetailsInd	= false;
+
+	private double								scoredPercentageForReportCard;
 
 	public ExamSubjectResultTreeNode() {
 		super();
@@ -37,12 +45,43 @@ public class ExamSubjectResultTreeNode extends DefaultTreeNode implements Serial
 		super(type, data, parent);
 	}
 
+	/**
+	 * @return the marksScored
+	 */
+	public double getMarksScored() {
+		return this.marksScored;
+	}
+
 	public String getName() {
 		return this.name;
 	}
 
-	public void setName(final String name) {
-		this.name = name;
+	/**
+	 * @return the percentageForReportCard
+	 */
+	public double getPercentageForReportCard() {
+		return this.percentageForReportCard;
+	}
+
+	/**
+	 * @return the scoredPercentage
+	 */
+	public double getScoredPercentage() {
+		return this.scoredPercentage;
+	}
+
+	/**
+	 * @return the scoredPercentageForReportCard
+	 */
+	public double getScoredPercentageForReportCard() {
+		return this.scoredPercentageForReportCard;
+	}
+
+	/**
+	 * @return the status
+	 */
+	public String getStatus() {
+		return this.status;
 	}
 
 	/**
@@ -50,6 +89,72 @@ public class ExamSubjectResultTreeNode extends DefaultTreeNode implements Serial
 	 */
 	public StudentSubjectExamResultConstant getStudentSubjectExamResult() {
 		return this.studentSubjectExamResult;
+	}
+
+	/**
+	 * @return the totalMarks
+	 */
+	public double getTotalMarks() {
+		return this.totalMarks;
+	}
+
+	/**
+	 * @return the reportCardExamDetailsInd
+	 */
+	public boolean isReportCardExamDetailsInd() {
+		return this.reportCardExamDetailsInd;
+	}
+
+	/**
+	 * @param marksScored
+	 *            the marksScored to set
+	 */
+	public void setMarksScored(final double marksScored) {
+		this.marksScored = marksScored;
+	}
+
+	public void setName(final String name) {
+		this.name = name;
+	}
+
+	/**
+	 * @param percentageForReportCard
+	 *            the percentageForReportCard to set
+	 */
+	public void setPercentageForReportCard(final double percentageForReportCard) {
+		this.percentageForReportCard = percentageForReportCard;
+	}
+
+	/**
+	 * @param reportCardExamDetailsInd
+	 *            the reportCardExamDetailsInd to set
+	 */
+	public void setReportCardExamDetailsInd(final boolean reportCardExamDetailsInd) {
+		this.reportCardExamDetailsInd = reportCardExamDetailsInd;
+	}
+
+	/**
+	 * @param scoredPercentage
+	 *            the scoredPercentage to set
+	 */
+	public void setScoredPercentage(final double scoredPercentage) {
+		this.scoredPercentage = scoredPercentage;
+	}
+
+	/**
+	 * @param scoredPercentageForReportCard
+	 *            the scoredPercentageForReportCard to set
+	 */
+	public void setScoredPercentageForReportCard(final double scoredPercentageForReportCard) {
+		this.scoredPercentageForReportCard = scoredPercentageForReportCard;
+	}
+
+	/**
+	 * @param status
+	 *            the status to set
+	 */
+	public void setStatus(final String status) {
+		this.status = status;
 	}
 
 	/**
@@ -61,48 +166,11 @@ public class ExamSubjectResultTreeNode extends DefaultTreeNode implements Serial
 	}
 
 	/**
-	 * @return the totalPercentage
+	 * @param totalMarks
+	 *            the totalMarks to set
 	 */
-	public double getTotalPercentage() {
-		return this.totalPercentage;
-	}
-
-	/**
-	 * @param totalPercentage
-	 *            the totalPercentage to set
-	 */
-	public void setTotalPercentage(final double totalPercentage) {
-		this.totalPercentage = totalPercentage;
-	}
-
-	/**
-	 * @return the percentageScored
-	 */
-	public double getPercentageScored() {
-		return this.percentageScored;
-	}
-
-	/**
-	 * @param percentageScored
-	 *            the percentageScored to set
-	 */
-	public void setPercentageScored(final double percentageScored) {
-		this.percentageScored = percentageScored;
-	}
-
-	/**
-	 * @return the status
-	 */
-	public String getStatus() {
-		return this.status;
-	}
-
-	/**
-	 * @param status
-	 *            the status to set
-	 */
-	public void setStatus(final String status) {
-		this.status = status;
+	public void setTotalMarks(final double totalMarks) {
+		this.totalMarks = totalMarks;
 	}
 
 }

@@ -109,7 +109,7 @@
                 </datasource>
                 <xa-datasource jta="true" jndi-name="java:jboss/apeironsol/XADatasourceSMS" pool-name="XADatasourceSMSPool" enabled="true" use-java-context="true" use-ccm="true">
                     <xa-datasource-property name="URL">
-                        jdbc:mysql://localhost:3306/NexEDApp_db
+                        jdbc:mysql://localhost:3306/need
                     </xa-datasource-property>
                     <driver>com.mysql</driver>
                     <transaction-isolation>TRANSACTION_READ_COMMITTED</transaction-isolation>

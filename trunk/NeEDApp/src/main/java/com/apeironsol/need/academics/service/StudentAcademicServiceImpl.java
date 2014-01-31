@@ -28,9 +28,6 @@ import com.apeironsol.need.core.model.Subject;
 public class StudentAcademicServiceImpl implements StudentAcademicService {
 
 	@Resource
-	private SubjectDao				subjectDao;
-
-	@Resource
 	private SectionExamDao			sectionExamDao;
 
 	@Resource
@@ -42,22 +39,73 @@ public class StudentAcademicServiceImpl implements StudentAcademicService {
 	@Resource
 	private StudentSectionDao		studentSectionDao;
 
+	@Resource
+	private SubjectDao				subjectDao;
+
+	@Override
+	public Collection<StudentAcademicExamDO> getStudentAcademicDetailsByExams(final Long studentAcademicYearId, final Collection<Long> examIds) {
+		final Collection<StudentSection> studentSections = this.studentSectionDao.findStudentSectionByStudendAcademicYearId(studentAcademicYearId);
+		final Collection<StudentAcademicExamDO> studentAcademicExamDOs = new ArrayList<StudentAcademicExamDO>();
+		for (final StudentSection studentSection : studentSections) {
+			final Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsBySectionId(studentSection.getSection().getId());
+			for (final SectionExam sectionExam : sectionExams) {
+				if (examIds.contains(sectionExam.getExam().getId())) {
+					final Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam
+							.getId());
+					final int totalSubjectsScheduled = sectionExamSubjects.size();
+					double totalMaximumMarks = 0d;
+					double totalScoredMarks = 0d;
+					boolean failed = false;
+					final Collection<StudentExamSubjectDO> studentExamSubjectDOs = new ArrayList<StudentExamSubjectDO>();
+					for (final SectionExamSubject sectionExamSubject : sectionExamSubjects) {
+						final StudentExamSubject studentExamSubject = this.studentExamSubjectDao
+								.findStudentExamSubjectByStudentAcademicYearIdAndSectionExamSubjectId(studentAcademicYearId, sectionExamSubject.getId());
+						if (studentExamSubject != null) {
+							final StudentExamSubjectDO studentExamSubjectDO = new StudentExamSubjectDO();
+							studentExamSubjectDO.setSectionExamSubject(sectionExamSubject);
+							studentExamSubjectDO.setStudentExamSubject(studentExamSubject);
+							studentExamSubjectDOs.add(studentExamSubjectDO);
+							if ((studentExamSubject.getScoredMarks() != null) && (studentExamSubject.getScoredMarks() < sectionExamSubject.getPassMarks())) {
+								failed = true;
+							}
+							totalMaximumMarks = totalMaximumMarks + sectionExamSubject.getMaximumMarks();
+							totalScoredMarks = totalScoredMarks + (studentExamSubject.getScoredMarks() != null ? studentExamSubject.getScoredMarks() : 0d);
+						}
+					}
+
+					final StudentAcademicExamDO studentAcademicExamDO = new StudentAcademicExamDO();
+					studentAcademicExamDO.setExam(sectionExam.getExam());
+					studentAcademicExamDO.setSectionExam(sectionExam);
+					studentAcademicExamDO.setTotalMaximumMarks(totalMaximumMarks);
+					studentAcademicExamDO.setTotalScoredMarks(totalScoredMarks);
+					studentAcademicExamDO.setTotalSubjectsScheduled(totalSubjectsScheduled);
+					studentAcademicExamDO.setPercentageScored(totalScoredMarks / totalMaximumMarks);
+					studentAcademicExamDO.setFailed(failed);
+					studentAcademicExamDO.setStudentExamSubjectDOs(studentExamSubjectDOs);
+					studentAcademicExamDOs.add(studentAcademicExamDO);
+				}
+			}
+		}
+		return studentAcademicExamDOs;
+	}
+
 	@Override
 	public Collection<StudentAcademicExamDO> getStudentAcademicDetailsByExamWise(final Long studentAcademicYearId) {
 
-		Collection<StudentSection> studentSections = this.studentSectionDao.findStudentSectionByStudendAcademicYearId(studentAcademicYearId);
+		final Collection<StudentSection> studentSections = this.studentSectionDao.findStudentSectionByStudendAcademicYearId(studentAcademicYearId);
 
-		Collection<StudentAcademicExamDO> studentAcademicExamDOs = new ArrayList<StudentAcademicExamDO>();
+		final Collection<StudentAcademicExamDO> studentAcademicExamDOs = new ArrayList<StudentAcademicExamDO>();
 
-		for (StudentSection studentSection : studentSections) {
+		for (final StudentSection studentSection : studentSections) {
 
-			Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsBySectionId(studentSection.getSection().getId());
+			final Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsBySectionId(studentSection.getSection().getId());
 
-			for (SectionExam sectionExam : sectionExams) {
+			for (final SectionExam sectionExam : sectionExams) {
 
-				Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam.getId());
+				final Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam
+						.getId());
 
-				int totalSubjectsScheduled = sectionExamSubjects.size();
+				final int totalSubjectsScheduled = sectionExamSubjects.size();
 
 				double totalMaximumMarks = 0d;
 
@@ -65,15 +113,14 @@ public class StudentAcademicServiceImpl implements StudentAcademicService {
 
 				boolean failed = false;
 
-				Collection<StudentExamSubjectDO> studentExamSubjectDOs = new ArrayList<StudentExamSubjectDO>();
+				final Collection<StudentExamSubjectDO> studentExamSubjectDOs = new ArrayList<StudentExamSubjectDO>();
 
-				for (SectionExamSubject sectionExamSubject : sectionExamSubjects) {
+				for (final SectionExamSubject sectionExamSubject : sectionExamSubjects) {
 
-					StudentExamSubject studentExamSubject = this.studentExamSubjectDao.findStudentExamSubjectByStudentAcademicYearIdAndSectionExamSubjectId(
-							studentAcademicYearId, sectionExamSubject.getId());
+					final StudentExamSubject studentExamSubject = this.studentExamSubjectDao
+							.findStudentExamSubjectByStudentAcademicYearIdAndSectionExamSubjectId(studentAcademicYearId, sectionExamSubject.getId());
 					if (studentExamSubject != null) {
-						StudentExamSubjectDO studentExamSubjectDO = new StudentExamSubjectDO();
-						studentExamSubjectDO.setSubject(sectionExamSubject.getSectionSubject().getSubject());
+						final StudentExamSubjectDO studentExamSubjectDO = new StudentExamSubjectDO();
 
 						studentExamSubjectDO.setSectionExamSubject(sectionExamSubject);
 
@@ -81,7 +128,7 @@ public class StudentAcademicServiceImpl implements StudentAcademicService {
 
 						studentExamSubjectDOs.add(studentExamSubjectDO);
 
-						if (studentExamSubject.getScoredMarks() != null && studentExamSubject.getScoredMarks() < sectionExamSubject.getPassMarks()) {
+						if ((studentExamSubject.getScoredMarks() != null) && (studentExamSubject.getScoredMarks() < sectionExamSubject.getPassMarks())) {
 							failed = true;
 						}
 
@@ -91,7 +138,7 @@ public class StudentAcademicServiceImpl implements StudentAcademicService {
 					}
 				}
 
-				StudentAcademicExamDO studentAcademicExamDO = new StudentAcademicExamDO();
+				final StudentAcademicExamDO studentAcademicExamDO = new StudentAcademicExamDO();
 
 				studentAcademicExamDO.setExam(sectionExam.getExam());
 
@@ -119,68 +166,21 @@ public class StudentAcademicServiceImpl implements StudentAcademicService {
 	}
 
 	@Override
-	public Collection<StudentAcademicExamDO> getStudentAcademicDetailsByExams(final Long studentAcademicYearId, final Collection<Long> examIds) {
-		Collection<StudentSection> studentSections = this.studentSectionDao.findStudentSectionByStudendAcademicYearId(studentAcademicYearId);
-		Collection<StudentAcademicExamDO> studentAcademicExamDOs = new ArrayList<StudentAcademicExamDO>();
-		for (StudentSection studentSection : studentSections) {
-			Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsBySectionId(studentSection.getSection().getId());
-			for (SectionExam sectionExam : sectionExams) {
-				if (examIds.contains(sectionExam.getExam().getId())) {
-					Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam.getId());
-					int totalSubjectsScheduled = sectionExamSubjects.size();
-					double totalMaximumMarks = 0d;
-					double totalScoredMarks = 0d;
-					boolean failed = false;
-					Collection<StudentExamSubjectDO> studentExamSubjectDOs = new ArrayList<StudentExamSubjectDO>();
-					for (SectionExamSubject sectionExamSubject : sectionExamSubjects) {
-						StudentExamSubject studentExamSubject = this.studentExamSubjectDao
-								.findStudentExamSubjectByStudentAcademicYearIdAndSectionExamSubjectId(studentAcademicYearId, sectionExamSubject.getId());
-						if (studentExamSubject != null) {
-							StudentExamSubjectDO studentExamSubjectDO = new StudentExamSubjectDO();
-							studentExamSubjectDO.setSubject(sectionExamSubject.getSectionSubject().getSubject());
-							studentExamSubjectDO.setSectionExamSubject(sectionExamSubject);
-							studentExamSubjectDO.setStudentExamSubject(studentExamSubject);
-							studentExamSubjectDOs.add(studentExamSubjectDO);
-							if (studentExamSubject.getScoredMarks() != null && studentExamSubject.getScoredMarks() < sectionExamSubject.getPassMarks()) {
-								failed = true;
-							}
-							totalMaximumMarks = totalMaximumMarks + sectionExamSubject.getMaximumMarks();
-							totalScoredMarks = totalScoredMarks + (studentExamSubject.getScoredMarks() != null ? studentExamSubject.getScoredMarks() : 0d);
-						}
-					}
-
-					StudentAcademicExamDO studentAcademicExamDO = new StudentAcademicExamDO();
-					studentAcademicExamDO.setExam(sectionExam.getExam());
-					studentAcademicExamDO.setSectionExam(sectionExam);
-					studentAcademicExamDO.setTotalMaximumMarks(totalMaximumMarks);
-					studentAcademicExamDO.setTotalScoredMarks(totalScoredMarks);
-					studentAcademicExamDO.setTotalSubjectsScheduled(totalSubjectsScheduled);
-					studentAcademicExamDO.setPercentageScored(totalScoredMarks / totalMaximumMarks);
-					studentAcademicExamDO.setFailed(failed);
-					studentAcademicExamDO.setStudentExamSubjectDOs(studentExamSubjectDOs);
-					studentAcademicExamDOs.add(studentAcademicExamDO);
-				}
-			}
-		}
-		return studentAcademicExamDOs;
-	}
-
-	@Override
 	public Collection<StudentAcademicSubjectDO> getStudentAcademicDetailsBySubjectWise(final Long studentAcademicYearId) {
 
-		Collection<StudentSection> studentSections = this.studentSectionDao.findStudentSectionByStudendAcademicYearId(studentAcademicYearId);
+		final Collection<StudentSection> studentSections = this.studentSectionDao.findStudentSectionByStudendAcademicYearId(studentAcademicYearId);
 
-		Collection<Section> sections = new ArrayList<Section>();
+		final Collection<Section> sections = new ArrayList<Section>();
 
-		for (StudentSection studentSection : studentSections) {
+		for (final StudentSection studentSection : studentSections) {
 			sections.add(studentSection.getSection());
 		}
 
-		Collection<Subject> subjects = this.subjectDao.findDistenctSubjectsAmongSections(sections);
+		final Collection<Subject> subjects = this.subjectDao.findDistenctSubjectsAmongSections(sections);
 
-		Collection<StudentAcademicSubjectDO> studentAcademicSubjectDOs = new ArrayList<StudentAcademicSubjectDO>();
+		final Collection<StudentAcademicSubjectDO> studentAcademicSubjectDOs = new ArrayList<StudentAcademicSubjectDO>();
 
-		for (Subject subject : subjects) {
+		for (final Subject subject : subjects) {
 
 			double totalMaximumMarks = 0d;
 
@@ -188,14 +188,14 @@ public class StudentAcademicServiceImpl implements StudentAcademicService {
 
 			double totalScoredMarks = 0d;
 
-			Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectDao.findStudentExamSubjectsBySubjectIdAndStudentAcademicYearId(
+			final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectDao.findStudentExamSubjectsBySubjectIdAndStudentAcademicYearId(
 					subject.getId(), studentAcademicYearId);
 
-			Collection<StudentExamSubjectDO> studentExamSubjectDOs = new ArrayList<StudentExamSubjectDO>();
+			final Collection<StudentExamSubjectDO> studentExamSubjectDOs = new ArrayList<StudentExamSubjectDO>();
 
-			for (StudentExamSubject studentExamSubject : studentExamSubjects) {
+			for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
 
-				StudentExamSubjectDO studentExamSubjectDO = new StudentExamSubjectDO();
+				final StudentExamSubjectDO studentExamSubjectDO = new StudentExamSubjectDO();
 
 				studentExamSubjectDO.setSectionExamSubject(studentExamSubject.getSectionExamSubject());
 
@@ -213,7 +213,7 @@ public class StudentAcademicServiceImpl implements StudentAcademicService {
 
 			}
 
-			StudentAcademicSubjectDO studentAcademicSubjectDO = new StudentAcademicSubjectDO();
+			final StudentAcademicSubjectDO studentAcademicSubjectDO = new StudentAcademicSubjectDO();
 
 			studentAcademicSubjectDO.setSubject(subject);
 

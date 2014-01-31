@@ -15,42 +15,24 @@ public class StudentExamSubjectDO implements Serializable {
 
 	private Exam				exam;
 
-	private Subject				subject;
-
 	private SectionExamSubject	sectionExamSubject;
 
 	private StudentExamSubject	studentExamSubject;
-
-	public SectionExamSubject getSectionExamSubject() {
-		return this.sectionExamSubject;
-	}
-
-	public void setSectionExamSubject(final SectionExamSubject sectionExamSubject) {
-		this.sectionExamSubject = sectionExamSubject;
-	}
-
-	public StudentExamSubject getStudentExamSubject() {
-		return this.studentExamSubject;
-	}
-
-	public void setStudentExamSubject(final StudentExamSubject studentExamSubject) {
-		this.studentExamSubject = studentExamSubject;
-	}
-
-	public Subject getSubject() {
-		return this.subject;
-	}
-
-	public void setSubject(final Subject subject) {
-		this.subject = subject;
-	}
 
 	public Exam getExam() {
 		return this.exam;
 	}
 
-	public void setExam(final Exam exam) {
-		this.exam = exam;
+	public double getPercentageScoredForSubject() {
+		return (this.studentExamSubject.getScoredMarks() * 100) / this.sectionExamSubject.getMaximumMarks();
+	}
+
+	public SectionExamSubject getSectionExamSubject() {
+		return this.sectionExamSubject;
+	}
+
+	public StudentExamSubject getStudentExamSubject() {
+		return this.studentExamSubject;
 	}
 
 	/**
@@ -60,7 +42,7 @@ public class StudentExamSubjectDO implements Serializable {
 		StudentSubjectExamResultConstant studentSubjectExamResult = StudentSubjectExamResultConstant.NOT_APPLICABLE;
 		if (StudentExamSubjectStatusConstant.ASSIGNED.equals(this.studentExamSubject.getStudentExamSubjectStatus())) {
 			studentSubjectExamResult = StudentSubjectExamResultConstant.NOT_APPLICABLE;
-		} else if (this.studentExamSubject != null && this.sectionExamSubject != null) {
+		} else if ((this.studentExamSubject != null) && (this.sectionExamSubject != null)) {
 			if (this.sectionExamSubject.getPassMarks() > this.studentExamSubject.getScoredMarks()) {
 				studentSubjectExamResult = StudentSubjectExamResultConstant.FAIL;
 			} else {
@@ -68,6 +50,22 @@ public class StudentExamSubjectDO implements Serializable {
 			}
 		}
 		return studentSubjectExamResult;
+	}
+
+	public Subject getSubject() {
+		return this.sectionExamSubject.getSectionSubject().getSubject();
+	}
+
+	public void setExam(final Exam exam) {
+		this.exam = exam;
+	}
+
+	public void setSectionExamSubject(final SectionExamSubject sectionExamSubject) {
+		this.sectionExamSubject = sectionExamSubject;
+	}
+
+	public void setStudentExamSubject(final StudentExamSubject studentExamSubject) {
+		this.studentExamSubject = studentExamSubject;
 	}
 
 }

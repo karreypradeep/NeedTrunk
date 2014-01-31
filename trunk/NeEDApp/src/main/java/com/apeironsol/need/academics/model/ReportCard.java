@@ -38,6 +38,10 @@ public class ReportCard extends BaseEntity {
 	 */
 	private static final long			serialVersionUID	= 3758991075643514285L;
 
+	@ManyToOne
+	@JoinColumn(name = "ACADEMIC_YEAR_ID", nullable = false)
+	private AcademicYear				academicYear;
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "BRANCH_ID", nullable = false)
 	private Branch						branch;
@@ -49,19 +53,61 @@ public class ReportCard extends BaseEntity {
 	@Column(name = "NAME", length = 50, nullable = false)
 	private String						name;
 
-	@ManyToOne
-	@JoinColumn(name = "ACADEMIC_YEAR_ID", nullable = false)
-	private AcademicYear				academicYear;
+	@Column(name = "PASS_MARK_EACH_SUBJECT")
+	private Integer						passMarksForEachSubject;
 
 	@OneToMany(mappedBy = "reportCard", fetch = FetchType.EAGER)
 	@Fetch(value = FetchMode.SUBSELECT)
 	private Collection<ReportCardExam>	reportCardExams;
 
 	/**
+	 * @return the academicYear
+	 */
+	public AcademicYear getAcademicYear() {
+		return this.academicYear;
+	}
+
+	/**
 	 * @return the branch
 	 */
 	public Branch getBranch() {
 		return this.branch;
+	}
+
+	/**
+	 * @return the gradeSystem
+	 */
+	public GradeSystem getGradeSystem() {
+		return this.gradeSystem;
+	}
+
+	/**
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * @return the passMarksForEachSubject
+	 */
+	public Integer getPassMarksForEachSubject() {
+		return this.passMarksForEachSubject;
+	}
+
+	/**
+	 * @return the reportCardExams
+	 */
+	public Collection<ReportCardExam> getReportCardExams() {
+		return this.reportCardExams;
+	}
+
+	/**
+	 * @param academicYear
+	 *            the academicYear to set
+	 */
+	public void setAcademicYear(final AcademicYear academicYear) {
+		this.academicYear = academicYear;
 	}
 
 	/**
@@ -73,10 +119,11 @@ public class ReportCard extends BaseEntity {
 	}
 
 	/**
-	 * @return the name
+	 * @param gradeSystem
+	 *            the gradeSystem to set
 	 */
-	public String getName() {
-		return this.name;
+	public void setGradeSystem(final GradeSystem gradeSystem) {
+		this.gradeSystem = gradeSystem;
 	}
 
 	/**
@@ -88,10 +135,11 @@ public class ReportCard extends BaseEntity {
 	}
 
 	/**
-	 * @return the reportCardExams
+	 * @param passMarksForEachSubject
+	 *            the passMarksForEachSubject to set
 	 */
-	public Collection<ReportCardExam> getReportCardExams() {
-		return this.reportCardExams;
+	public void setPassMarksForEachSubject(final Integer passMarksForEachSubject) {
+		this.passMarksForEachSubject = passMarksForEachSubject;
 	}
 
 	/**
@@ -100,36 +148,6 @@ public class ReportCard extends BaseEntity {
 	 */
 	public void setReportCardExams(final Collection<ReportCardExam> reportCardExams) {
 		this.reportCardExams = reportCardExams;
-	}
-
-	/**
-	 * @return the gradeSystem
-	 */
-	public GradeSystem getGradeSystem() {
-		return this.gradeSystem;
-	}
-
-	/**
-	 * @param gradeSystem
-	 *            the gradeSystem to set
-	 */
-	public void setGradeSystem(final GradeSystem gradeSystem) {
-		this.gradeSystem = gradeSystem;
-	}
-
-	/**
-	 * @return the academicYear
-	 */
-	public AcademicYear getAcademicYear() {
-		return this.academicYear;
-	}
-
-	/**
-	 * @param academicYear
-	 *            the academicYear to set
-	 */
-	public void setAcademicYear(final AcademicYear academicYear) {
-		this.academicYear = academicYear;
 	}
 
 }
