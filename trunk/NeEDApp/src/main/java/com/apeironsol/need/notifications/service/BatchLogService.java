@@ -7,11 +7,13 @@
 package com.apeironsol.need.notifications.service;
 
 import java.util.Collection;
+import java.util.Date;
 
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 
 /**
  * Service interface for batch log.
@@ -120,4 +122,21 @@ public interface BatchLogService {
 	 * @return
 	 */
 	Collection<BatchLog> findBatchLogsForReportCardId(final Long reportCardId);
+
+	/**
+	 * 
+	 * @param branchId
+	 * @param attendanceDate
+	 * @return
+	 */
+	Collection<BatchLog> findBatchLogsForAttendanceDate(final Long branchId, final Date attendanceDate);
+
+	/**
+	 * 
+	 * @param branchId
+	 * @param attendanceDate
+	 * @return
+	 */
+	Collection<BatchLog> findBatchLogsForExamAndNotificationAcademicYear(final Long examId, final Long academicYearId,
+			final NotificationSubTypeConstant notificationSubTypeConstant);
 }

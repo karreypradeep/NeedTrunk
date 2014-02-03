@@ -7,6 +7,7 @@
 package com.apeironsol.need.notifications.service;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.notifications.dao.BatchLogDao;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 
 /**
  * Service class for batch log.
@@ -78,6 +80,17 @@ public class BatchLogServiceImpl implements BatchLogService {
 	@Override
 	public Collection<BatchLog> findBatchLogsForReportCardId(final Long reportCardId) {
 		return this.batchLogDao.findBatchLogsForReportCardId(reportCardId);
+	}
+
+	@Override
+	public Collection<BatchLog> findBatchLogsForAttendanceDate(final Long branchId, final Date attendanceDate) {
+		return this.batchLogDao.findBatchLogsForAttendanceDate(branchId, attendanceDate);
+	}
+
+	@Override
+	public Collection<BatchLog> findBatchLogsForExamAndNotificationAcademicYear(final Long examId, final Long academicYearId,
+			final NotificationSubTypeConstant notificationSubTypeConstant) {
+		return this.batchLogDao.findBatchLogsForExamAndNotificationAcademicYear(examId, academicYearId, notificationSubTypeConstant);
 	}
 
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.annotation.Resource;
-import javax.faces.application.FacesMessage;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +26,6 @@ import com.apeironsol.need.core.service.StudentAcademicYearService;
 import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.util.constants.SectionExamStatusConstant;
 import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
-import com.apeironsol.need.util.portal.ViewUtil;
 
 @Service("examService")
 @Transactional(rollbackFor = Exception.class)
@@ -101,16 +99,16 @@ public class ExamServiceImpl implements ExamService {
 	public void scheduleExam(final SectionExam sectionExam, final Collection<SectionExamSubject> sectionExamSubjects) throws BusinessException,
 			SystemException, InvalidArgumentException {
 
-		if (sectionExamSubjects.isEmpty()) {
-			ViewUtil.addMessage("Scheduling details are requried for atleast one subject.", FacesMessage.SEVERITY_ERROR);
-			return;
-		}
 		final Collection<SectionExamSubject> toBeSavedSectionExamSubjects = new ArrayList<SectionExamSubject>();
 		for (final SectionExamSubject sectionExamSubject : sectionExamSubjects) {
 			if ((sectionExamSubject.getScheduledDate() != null) || (sectionExamSubject.getStartTime() != null) || (sectionExamSubject.getEndTime() != null)
 					|| (sectionExamSubject.getPassMarks() != null) || (sectionExamSubject.getMaximumMarks() != null)) {
 				toBeSavedSectionExamSubjects.add(sectionExamSubject);
 			}
+		}
+
+		if (toBeSavedSectionExamSubjects.isEmpty()) {
+			throw new BusinessException("Scheduling details are requried for atleast one subject.");
 		}
 
 		sectionExam.setSectionExamStatus(SectionExamStatusConstant.SCHEDULED);
@@ -132,7 +130,10 @@ public class ExamServiceImpl implements ExamService {
 			}
 
 		}
-		sectionExam.getSectionExamSubjects().clear();
+
+		if (sectionExam.getSectionExamSubjects() != null) {
+			sectionExam.getSectionExamSubjects().clear();
+		}
 
 		sectionExam.setSectionExamSubjects(toBeSavedSectionExamSubjects);
 

@@ -7,10 +7,12 @@
 package com.apeironsol.need.notifications.dao;
 
 import java.util.Collection;
+import java.util.Date;
 
 import com.apeironsol.framework.BaseDao;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 
 /**
  * Data access interface for batch log.
@@ -60,4 +62,22 @@ public interface BatchLogDao extends BaseDao<BatchLog> {
 	 * @return
 	 */
 	Collection<BatchLog> findBatchLogsForReportCardId(final Long reportCardId);
+
+	/**
+	 * 
+	 * @param branchId
+	 * @param attendanceDate
+	 * @return
+	 */
+	Collection<BatchLog> findBatchLogsForAttendanceDate(final Long branchId, final Date attendanceDate);
+
+	/**
+	 * 
+	 * @param branchId
+	 * @param attendanceDate
+	 * @return
+	 */
+	Collection<BatchLog> findBatchLogsForExamAndNotificationAcademicYear(final Long examId, final Long academicYearId,
+			final NotificationSubTypeConstant notificationSubTypeConstant);
+
 }

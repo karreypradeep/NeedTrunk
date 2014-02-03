@@ -1,2 +1,3 @@
 Dear Parent,
-Your child ${studentName} is absent for subjects: ${subjects} for exam : ${examName} conducted on ${dates}.
+Your ward ${studentName} is absent for exam ${examName}
+${subjects}  conducted on ${dates}.

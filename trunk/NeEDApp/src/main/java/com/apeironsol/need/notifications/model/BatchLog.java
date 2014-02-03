@@ -25,6 +25,7 @@ import com.apeironsol.framework.BaseEntity;
 import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.SectionExam;
+import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
@@ -133,6 +134,7 @@ public class BatchLog extends BaseEntity implements Serializable {
 	 * Attendance Id.
 	 */
 	@Column(name = "ATTENDANCE_DATE")
+	@Temporal(TemporalType.DATE)
 	private Date						attendanceDate;
 
 	/**
@@ -155,6 +157,13 @@ public class BatchLog extends BaseEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "EXAM_ID")
 	private Exam						exam;
+
+	/**
+	 * Attendance Id.
+	 */
+	@ManyToOne
+	@JoinColumn(name = "NOTI_SEND_ACADEMIC_YEAR_ID")
+	private AcademicYear				notificationSendForAcademicYear;
 
 	/**
 	 * @return the exam
@@ -469,6 +478,21 @@ public class BatchLog extends BaseEntity implements Serializable {
 	 */
 	public Boolean getCompletedIndicator() {
 		return this.completedIndicator;
+	}
+
+	/**
+	 * @return the notificationSendForAcademicYear
+	 */
+	public AcademicYear getNotificationSendForAcademicYear() {
+		return this.notificationSendForAcademicYear;
+	}
+
+	/**
+	 * @param notificationSendForAcademicYear
+	 *            the notificationSendForAcademicYear to set
+	 */
+	public void setNotificationSendForAcademicYear(final AcademicYear notificationSendForAcademicYear) {
+		this.notificationSendForAcademicYear = notificationSendForAcademicYear;
 	}
 
 }

@@ -9,10 +9,10 @@ package com.apeironsol.need.notifications.dao;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import com.apeironsol.need.notifications.model.BatchLogMessage;
-import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.framework.BaseDao;
 import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.need.notifications.model.BatchLogMessage;
+import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 
 /**
  * Data access interface for batch log.
@@ -41,8 +41,7 @@ public interface BatchLogMessageDao extends BaseDao<BatchLogMessage> {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIdAndSectionId(final Long batchLogId, final Long sectionId)
-			throws BusinessException;
+	Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIdAndSectionId(final Long batchLogId, final Long sectionId) throws BusinessException;
 
 	/**
 	 * Find all batch log messages for student academic year.
@@ -53,8 +52,7 @@ public interface BatchLogMessageDao extends BaseDao<BatchLogMessage> {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId)
-			throws BusinessException;
+	Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId) throws BusinessException;
 
 	/**
 	 * Find number of batch log messages processed with status as supplied for
@@ -69,8 +67,8 @@ public interface BatchLogMessageDao extends BaseDao<BatchLogMessage> {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	Long findNumberOfBatchLogMessagesByBatchLogIdAndStatus(final Long batchLogId,
-			final EnumSet<BatchLogMessageStatusConstant> statusConstants) throws BusinessException;
+	Long findNumberOfBatchLogMessagesByBatchLogIdAndStatus(final Long batchLogId, final EnumSet<BatchLogMessageStatusConstant> statusConstants)
+			throws BusinessException;
 
 	/**
 	 * Find batch log message for batch log id and student academic year id.
@@ -83,6 +81,16 @@ public interface BatchLogMessageDao extends BaseDao<BatchLogMessage> {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId,
-			final Long studentAcademicYearId) throws BusinessException;
+	BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId, final Long studentAcademicYearId) throws BusinessException;
+
+	/**
+	 * Find all batch log messages for batch logs.
+	 * 
+	 * @param batchLogIds
+	 *            branchLogId.
+	 * @return collection of all batch log messages for batch log.
+	 * @throws BusinessException
+	 *             In case of exception.
+	 */
+	Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIds(final Collection<Long> batchLogIds) throws BusinessException;
 }

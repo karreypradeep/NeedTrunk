@@ -9,10 +9,10 @@ package com.apeironsol.need.notifications.service;
 import java.util.Collection;
 import java.util.EnumSet;
 
-import com.apeironsol.need.notifications.model.BatchLogMessage;
-import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.InvalidArgumentException;
+import com.apeironsol.need.notifications.model.BatchLogMessage;
+import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 
 /**
  * Service interface for batch log message.
@@ -41,8 +41,7 @@ public interface BatchLogMessageService {
 	 *             In case of exception.
 	 * @throws InvalidArgumentException
 	 */
-	BatchLogMessage saveBatchLogMessage(BatchLogMessage batchLogMessage) throws BusinessException,
-			InvalidArgumentException;
+	BatchLogMessage saveBatchLogMessage(BatchLogMessage batchLogMessage) throws BusinessException, InvalidArgumentException;
 
 	/**
 	 * Remove batch log message.
@@ -87,8 +86,8 @@ public interface BatchLogMessageService {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	Long findNumberOfBatchLogMessagesByBatchLogIdAndStatus(final Long batchLogId,
-			final EnumSet<BatchLogMessageStatusConstant> statusConstants) throws BusinessException;
+	Long findNumberOfBatchLogMessagesByBatchLogIdAndStatus(final Long batchLogId, final EnumSet<BatchLogMessageStatusConstant> statusConstants)
+			throws BusinessException;
 
 	/**
 	 * Find all batch log messages for batch log and section id.
@@ -101,8 +100,7 @@ public interface BatchLogMessageService {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIdAndSectionId(final Long batchLogId, final Long sectionId)
-			throws BusinessException;
+	Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIdAndSectionId(final Long batchLogId, final Long sectionId) throws BusinessException;
 
 	/**
 	 * Find all batch log messages for student academic year.
@@ -113,8 +111,7 @@ public interface BatchLogMessageService {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId)
-			throws BusinessException;
+	Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId) throws BusinessException;
 
 	/**
 	 * Find batch log message for batch log id and student academic year id.
@@ -127,8 +124,7 @@ public interface BatchLogMessageService {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId,
-			final Long studentAcademicYearId) throws BusinessException;
+	BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId, final Long studentAcademicYearId) throws BusinessException;
 
 	/**
 	 * Save batch log message in new transaction.
@@ -138,6 +134,17 @@ public interface BatchLogMessageService {
 	 * @throws BusinessException
 	 * @throws InvalidArgumentException
 	 */
-	BatchLogMessage saveBatchLogMessageInNewTransaction(final BatchLogMessage batchLogMessage)
-			throws BusinessException, InvalidArgumentException;
+	BatchLogMessage saveBatchLogMessageInNewTransaction(final BatchLogMessage batchLogMessage) throws BusinessException, InvalidArgumentException;
+
+	/**
+	 * Find all batch log messages for batch logs.
+	 * 
+	 * @param batchLogIds
+	 *            branchLogId.
+	 * @return collection of all batch log messages for batch log.
+	 * @throws BusinessException
+	 *             In case of exception.
+	 */
+	Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIds(final Collection<Long> batchLogIds) throws BusinessException;
+
 }

@@ -85,4 +85,9 @@ public class BatchLogMessageServiceImpl implements BatchLogMessageService {
 		return this.batchLogMessageDao.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLogId, studentAcademicYearId);
 	}
 
+	@Override
+	public Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIds(final Collection<Long> batchLogIds) throws BusinessException {
+		return this.batchLogMessageDao.findBatchLogMessagesByBatchLogIds(batchLogIds);
+	}
+
 }

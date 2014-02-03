@@ -17,10 +17,10 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Repository;
 
-import com.apeironsol.need.notifications.model.BatchLogMessage;
-import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.framework.BaseDaoImpl;
 import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.need.notifications.model.BatchLogMessage;
+import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 
 /**
  * Data access class for batch message log.
@@ -40,8 +40,8 @@ public class BatchLogMessageDaoImpl extends BaseDaoImpl<BatchLogMessage> impleme
 	 */
 	@Override
 	public Collection<BatchLogMessage> findBatchLogMessagesByBatchLogId(final Long batchLogId) {
-		TypedQuery<BatchLogMessage> query = this.getEntityManager().createQuery(
-				"select blm from BatchLogMessage blm where blm.batchLog.id = :batchLogId", BatchLogMessage.class);
+		final TypedQuery<BatchLogMessage> query = getEntityManager().createQuery("select blm from BatchLogMessage blm where blm.batchLog.id = :batchLogId",
+				BatchLogMessage.class);
 		query.setParameter("batchLogId", batchLogId);
 		return query.getResultList();
 	}
@@ -50,12 +50,10 @@ public class BatchLogMessageDaoImpl extends BaseDaoImpl<BatchLogMessage> impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIdAndSectionId(final Long batchLogId,
-			final Long sectionId) throws BusinessException {
-		TypedQuery<BatchLogMessage> query = this.getEntityManager().createQuery(
+	public Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIdAndSectionId(final Long batchLogId, final Long sectionId) throws BusinessException {
+		final TypedQuery<BatchLogMessage> query = getEntityManager().createQuery(
 				"select blm from BatchLogMessage blm where blm.batchLog.id = :batchLogId and blm.studentAcademicYear in "
-						+ "(select ss.studentAcademicYear.id from StudentSection ss where ss.section.id = :sectionId)",
-				BatchLogMessage.class);
+						+ "(select ss.studentAcademicYear.id from StudentSection ss where ss.section.id = :sectionId)", BatchLogMessage.class);
 		query.setParameter("batchLogId", batchLogId);
 		query.setParameter("sectionId", sectionId);
 		return query.getResultList();
@@ -66,13 +64,10 @@ public class BatchLogMessageDaoImpl extends BaseDaoImpl<BatchLogMessage> impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId)
-			throws BusinessException {
-		TypedQuery<BatchLogMessage> query = this
-				.getEntityManager()
-				.createQuery(
-						"select blm from BatchLogMessage blm where blm.studentAcademicYear.id = :studentAcademicYearId order by blm.messageSentTime DESC",
-						BatchLogMessage.class);
+	public Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId) throws BusinessException {
+		final TypedQuery<BatchLogMessage> query = getEntityManager().createQuery(
+				"select blm from BatchLogMessage blm where blm.studentAcademicYear.id = :studentAcademicYearId order by blm.messageSentTime DESC",
+				BatchLogMessage.class);
 		query.setParameter("studentAcademicYearId", studentAcademicYearId);
 		return query.getResultList();
 
@@ -83,16 +78,14 @@ public class BatchLogMessageDaoImpl extends BaseDaoImpl<BatchLogMessage> impleme
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public Long findNumberOfBatchLogMessagesByBatchLogIdAndStatus(final Long batchLogId,
-			final EnumSet<BatchLogMessageStatusConstant> statusConstants) throws BusinessException {
-		Query query = this
-				.getEntityManager()
-				.createQuery(
-						"select count(blm) from BatchLogMessage blm where blm.batchLog.id = :batchLogId and blm.batchLogMessageStatusConstant in :statusConstants");
+	public Long findNumberOfBatchLogMessagesByBatchLogIdAndStatus(final Long batchLogId, final EnumSet<BatchLogMessageStatusConstant> statusConstants)
+			throws BusinessException {
+		final Query query = getEntityManager().createQuery(
+				"select count(blm) from BatchLogMessage blm where blm.batchLog.id = :batchLogId and blm.batchLogMessageStatusConstant in :statusConstants");
 		query.setParameter("batchLogId", batchLogId);
 		query.setParameter("statusConstants", statusConstants);
-		List<Object> obs = query.getResultList();
-		long count = (Long) obs.get(0);
+		final List<Object> obs = query.getResultList();
+		final long count = (Long) obs.get(0);
 		return count;
 	}
 
@@ -100,21 +93,27 @@ public class BatchLogMessageDaoImpl extends BaseDaoImpl<BatchLogMessage> impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId,
-			final Long studentAcademicYearId) throws BusinessException {
+	public BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId, final Long studentAcademicYearId)
+			throws BusinessException {
 		try {
-			TypedQuery<BatchLogMessage> query = this
-					.getEntityManager()
-					.createQuery(
-							"select blm from BatchLogMessage blm where blm.batchLog.id = :batchLogId and blm.studentAcademicYear.id = :studentAcademicYearId",
-							BatchLogMessage.class);
+			final TypedQuery<BatchLogMessage> query = getEntityManager().createQuery(
+					"select blm from BatchLogMessage blm where blm.batchLog.id = :batchLogId and blm.studentAcademicYear.id = :studentAcademicYearId",
+					BatchLogMessage.class);
 			query.setParameter("batchLogId", batchLogId);
 			query.setParameter("studentAcademicYearId", studentAcademicYearId);
 			return query.getSingleResult();
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			log.info(e.getMessage());
 			return null;
 		}
+	}
+
+	@Override
+	public Collection<BatchLogMessage> findBatchLogMessagesByBatchLogIds(final Collection<Long> batchLogIds) throws BusinessException {
+		final TypedQuery<BatchLogMessage> query = getEntityManager().createQuery("select blm from BatchLogMessage blm where blm.batchLog.id in :batchLogIds",
+				BatchLogMessage.class);
+		query.setParameter("batchLogIds", batchLogIds);
+		return query.getResultList();
 	}
 
 }
