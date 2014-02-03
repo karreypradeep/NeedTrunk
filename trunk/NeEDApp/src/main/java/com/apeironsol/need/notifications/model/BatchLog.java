@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import com.apeironsol.framework.BaseEntity;
+import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.core.model.Branch;
@@ -147,6 +148,28 @@ public class BatchLog extends BaseEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "REPORT_CARD_ID")
 	private ReportCard					reportCard;
+
+	/**
+	 * Attendance Id.
+	 */
+	@ManyToOne
+	@JoinColumn(name = "EXAM_ID")
+	private Exam						exam;
+
+	/**
+	 * @return the exam
+	 */
+	public Exam getExam() {
+		return this.exam;
+	}
+
+	/**
+	 * @param exam
+	 *            the exam to set
+	 */
+	public void setExam(final Exam exam) {
+		this.exam = exam;
+	}
 
 	/**
 	 * Returns the number of elements.

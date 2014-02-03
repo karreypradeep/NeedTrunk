@@ -45,23 +45,23 @@ public class SectionExamServiceImpl implements SectionExamService {
 	@Override
 	public Collection<SectionExamDO> getSectionExamsBySectionId(final Long sectionId) throws BusinessException, SystemException {
 
-		Collection<SectionExamDO> sectionExamDos = new ArrayList<SectionExamDO>();
+		final Collection<SectionExamDO> sectionExamDos = new ArrayList<SectionExamDO>();
 
-		Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsBySectionId(sectionId);
+		final Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsBySectionId(sectionId);
 
-		for (SectionExam sectionExam : sectionExams) {
+		for (final SectionExam sectionExam : sectionExams) {
 
-			SectionExamDO sectionExamDO = new SectionExamDO();
+			final SectionExamDO sectionExamDO = new SectionExamDO();
 
 			sectionExamDO.setSectionExam(sectionExam);
 
-			Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam.getId());
+			final Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam.getId());
 
-			Collection<SectionExamSubjectDO> sectionExamSubjectDOs = new ArrayList<SectionExamSubjectDO>();
+			final Collection<SectionExamSubjectDO> sectionExamSubjectDOs = new ArrayList<SectionExamSubjectDO>();
 
-			for (SectionExamSubject sectionExamSubject : sectionExamSubjects) {
+			for (final SectionExamSubject sectionExamSubject : sectionExamSubjects) {
 
-				SectionExamSubjectDO sectionExamSubjectDO = new SectionExamSubjectDO();
+				final SectionExamSubjectDO sectionExamSubjectDO = new SectionExamSubjectDO();
 				sectionExamSubjectDO.setSectionExamSubject(sectionExamSubject);
 				sectionExamSubjectDO.setSubject(sectionExamSubject.getSectionSubject().getSubject());
 				sectionExamSubjectDOs.add(sectionExamSubjectDO);
@@ -89,6 +89,16 @@ public class SectionExamServiceImpl implements SectionExamService {
 	@Override
 	public Collection<SectionExam> findSectionExamsByExamIdsandAcademicYearId(final Collection<Long> examIDs, final Long academicYearId) {
 		return this.sectionExamDao.findSectionExamsByExamIdsandAcademicYearId(examIDs, academicYearId);
+	}
+
+	@Override
+	public Collection<SectionExam> findSectionExamsByAcademicYearId(final Long academicYearId) {
+		return this.sectionExamDao.findSectionExamsByAcademicYearId(academicYearId);
+	}
+
+	@Override
+	public Collection<SectionExam> findSectionExamsBySectionIdsAndExamId(final Collection<Long> sectionIds, final Long examId) {
+		return this.sectionExamDao.findSectionExamsBySectionIdsAndExamId(sectionIds, examId);
 	}
 
 }

@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+
+	<p:panel id="panel" style="margin-bottom:1px;">
+
+		<p:messages id="messages1" globalOnly="true" autoUpdate="true" closable="true" />
+
+		<h:panelGrid columns="2" cellpadding="5" cellspacing="5">
+
+			<p:outputLabel value="Academic year" />
+			<p:outputLabel value="#{sectionExamScheduleBean.schedulingAcademicYear.displayLabel}" />
+
+			<p:outputLabel value="Class" />
+			<p:outputLabel value="#{sectionExamScheduleBean.schedulingKlass.name}" />
+
+			<p:outputLabel value="Section" />
+			<p:outputLabel value="#{sectionExamScheduleBean.schedulingSection.name}" />
+
+			<p:outputLabel value="Start date" />
+			<h:outputText value="#{sectionExamScheduleBean.sectionExam.startDate}" style="width:100%;">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+
+			<p:outputLabel value="End date" />
+			<h:outputText value="#{sectionExamScheduleBean.sectionExam.endDate}" style="width:100%;">
+				<f:convertDateTime pattern="dd/MM/yyyy" />
+			</h:outputText>
+			
+		</h:panelGrid>
+
+
+		<p:dataTable id="sectionExamSubjectTable" value="#{sectionExamScheduleBean.sectionExamSubjects}"
+			var="sectionExamSubject" editable="true" sortOrder="descending" style="margin-top:20px;">
+			<f:facet name="header">
+				<h:outputLabel value="Schedule exam for subjects" style="float:left;" />
+			</f:facet>
+
+			<p:ajax event="rowEdit" update="@this" />
+
+			<p:column headerText="Subject">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{sectionExamSubject.sectionSubject.subject.name}" style="width:100%" />
+					</f:facet>
+					<f:facet name="input">
+						<h:outputText value="#{sectionExamSubject.sectionSubject.subject.name}" style="width:100%" />
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+
+			<p:column headerText="Schedule Date">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{sectionExamSubject.scheduledDate}" style="width:100%;">
+							<f:convertDateTime pattern="dd/MM/yyyy" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<f:facet name="input">
+							<p:calendar value="#{sectionExamSubject.scheduledDate}" navigator="true" showOn="button" pattern="dd/MM/yyyy"
+								mindate="#{sectionExamScheduleBean.sectionExam.startDate}"
+								maxdate="#{sectionExamScheduleBean.sectionExam.endDate}">
+
+								<p:ajax event="dateSelect" process="@this" />
+
+							</p:calendar>
+						</f:facet>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column headerText="Start time">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{sectionExamSubject.startTime}" style="width:100%">
+							<f:convertDateTime pattern="hh:mm a" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:calendar value="#{sectionExamSubject.startTime}" pattern="hh:mm a" timeOnly="true" autocomplete="false">
+							<p:ajax event="dateSelect" process="@this" />
+						</p:calendar>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column headerText="End time">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{sectionExamSubject.endTime}" style="width:100%">
+							<f:convertDateTime pattern="hh:mm a" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:calendar value="#{sectionExamSubject.endTime}" pattern="hh:mm a" timeOnly="true" autocomplete="false">
+							<p:ajax event="dateSelect" process="@this" />
+						</p:calendar>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column headerText="Pass Marks">
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{sectionExamSubject.passMarks}" style="width:100%">
+							<f:convertNumber pattern="0.00" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{sectionExamSubject.passMarks}" style="width:100%">
+							<f:convertNumber pattern="0.00" />
+							<p:ajax process="@this" />
+						</p:inputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+
+			<p:column headerText="Maximum marks">
+				<h:outputText value="#{sectionExamSubject.maximumMarks}" style="width:100%">
+					<f:convertNumber pattern="0.00" />
+				</h:outputText>
+			</p:column>
+
+		</p:dataTable>
+
+		<br />
+
+		<p:commandButton id="schedule_exam_back" value="Back" process="@this" update="@form" icon="ui-icon-circle-arrow-w">
+			<f:setPropertyActionListener target="#{sectionExamScheduleBean.sectionExamScheduleWizardStep}"
+				value="all_scheduled_exams" />
+		</p:commandButton>
+
+	</p:panel>
+
+</ui:composition>

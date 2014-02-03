@@ -13,6 +13,7 @@ import com.apeironsol.need.academics.model.GradeSystem;
 import com.apeironsol.need.academics.model.GradeSystemRange;
 import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.core.model.Subject;
+import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
 import com.apeironsol.need.util.constants.StudentSubjectExamResultConstant;
 
 /**
@@ -49,7 +50,10 @@ public class ReportCardDO implements Serializable {
 
 	private double								totalPercentageForReportCard;
 
+	private boolean								reportCardCalculated			= false;
+
 	public void computeReportCard() {
+		this.reportCardCalculated = true;
 		this.totalPercentageForReportCard = 0;
 		this.scoredPercentageForReportCard = 0;
 		this.totalMarksForReportCard = 0;
@@ -60,11 +64,17 @@ public class ReportCardDO implements Serializable {
 			this.examScoredPercentages.put(entry.getKey(), (double) entry.getValue()
 					* this.examByStudentAcademicExamDOMap.get(entry.getKey()).getPercentageScored());
 			for (final StudentExamSubjectDO studentExamSubjectDO : this.examByStudentAcademicExamDOMap.get(entry.getKey()).getStudentExamSubjectDOs()) {
-				final double marksBySubject = (studentExamSubjectDO.getStudentExamSubject().getScoredMarks() * entry.getValue()) / 100;
-				if (this.scoresBySubject.get(studentExamSubjectDO.getSubject()) != null) {
-					this.scoresBySubject.put(studentExamSubjectDO.getSubject(), marksBySubject + this.scoresBySubject.get(studentExamSubjectDO.getSubject()));
+				if (StudentExamSubjectStatusConstant.ASSIGNED.equals(studentExamSubjectDO.getStudentExamSubject().getStudentExamSubjectStatus())
+						|| StudentExamSubjectStatusConstant.NOT_APPLICABLE.equals(studentExamSubjectDO.getStudentExamSubject().getStudentExamSubjectStatus())) {
+					this.scoresBySubject.put(studentExamSubjectDO.getSubject(), -1d);
 				} else {
-					this.scoresBySubject.put(studentExamSubjectDO.getSubject(), marksBySubject);
+					final double marksBySubject = (studentExamSubjectDO.getStudentExamSubject().getScoredMarks() * entry.getValue()) / 100;
+					if (this.scoresBySubject.get(studentExamSubjectDO.getSubject()) != null) {
+						this.scoresBySubject.put(studentExamSubjectDO.getSubject(),
+								marksBySubject + this.scoresBySubject.get(studentExamSubjectDO.getSubject()));
+					} else {
+						this.scoresBySubject.put(studentExamSubjectDO.getSubject(), marksBySubject);
+					}
 				}
 			}
 			this.totalPercentageForReportCard += entry.getValue();
@@ -109,9 +119,10 @@ public class ReportCardDO implements Serializable {
 			if ((this.reportCard != null) && (this.reportCard.getGradeSystem() != null)) {
 				final GradeSystem gradeSystem = this.reportCard.getGradeSystem();
 				final Collection<GradeSystemRange> gradeSystemRanges = gradeSystem.getGradeSystemRange();
+				final double roundedscoredPercentageForReportCard = Math.round(this.scoredPercentageForReportCard);
 				for (final GradeSystemRange gradeSystemRange : gradeSystemRanges) {
-					if ((this.scoredPercentageForReportCard >= gradeSystemRange.getMinimumRange())
-							&& (this.scoredPercentageForReportCard <= gradeSystemRange.getMaximumRange())) {
+					if ((roundedscoredPercentageForReportCard >= gradeSystemRange.getMinimumRange())
+							&& (roundedscoredPercentageForReportCard <= gradeSystemRange.getMaximumRange())) {
 						this.gradeForReportCard = gradeSystemRange.getDistinction();
 						break;
 					}
@@ -125,10 +136,10 @@ public class ReportCardDO implements Serializable {
 	 * @return the gradeForReportCard
 	 */
 	public String getGradeForReportCardSubject(final Subject subject) {
-		if (this.scoredPercentageForReportCard <= 0) {
+		if (!this.reportCardCalculated && (this.scoredPercentageForReportCard <= 0)) {
 			computeReportCard();
 		}
-		String subjectGrade = "";
+		String subjectGrade = "N/A";
 		if ((this.scoresBySubject != null) && (this.scoresBySubject.get(subject) != null)) {
 			final int subjectPercentage = this.scoresBySubject.get(subject).intValue();
 			final GradeSystem gradeSystem = this.reportCard.getGradeSystem();
@@ -188,7 +199,10 @@ public class ReportCardDO implements Serializable {
 		if ((this.scoresBySubject != null)) {
 			final int passMarks = this.reportCard.getPassMarksForEachSubject();
 			for (final Map.Entry<Subject, Double> entry : this.scoresBySubject.entrySet()) {
-				if (entry.getValue() < passMarks) {
+				if (entry.getValue() == -1) {
+					studentSubjectExamResult = StudentSubjectExamResultConstant.NOT_APPLICABLE;
+					break;
+				} else if (entry.getValue() < passMarks) {
 					studentSubjectExamResult = StudentSubjectExamResultConstant.FAIL;
 				}
 			}
@@ -206,7 +220,9 @@ public class ReportCardDO implements Serializable {
 		if ((this.scoresBySubject != null) && (this.scoresBySubject.get(subject) != null)) {
 			final int passMarks = this.reportCard.getPassMarksForEachSubject();
 			final int subjectPercentage = this.scoresBySubject.get(subject).intValue();
-			if (subjectPercentage < passMarks) {
+			if (subjectPercentage == -1) {
+				studentSubjectExamResult = StudentSubjectExamResultConstant.NOT_APPLICABLE;
+			} else if (subjectPercentage < passMarks) {
 				studentSubjectExamResult = StudentSubjectExamResultConstant.FAIL;
 			}
 		}

@@ -17,6 +17,7 @@ import javax.inject.Named;
 import org.primefaces.model.DefaultTreeNode;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.academics.dataobject.SectionExamDO;
 import com.apeironsol.need.academics.dataobject.SectionExamSubjectDO;
 import com.apeironsol.need.academics.model.SectionExam;
@@ -31,7 +32,6 @@ import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
 import com.apeironsol.need.util.portal.SectionExamTreeNode;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 /**
  * JSF managed for financial income.
@@ -45,7 +45,7 @@ public class SectionExamsBean extends AbstractTabbedBean implements Serializable
 	/**
 	 * Unique serial version id for this class.
 	 */
-	private static final long				serialVersionUID	= 6608427341321954354L;
+	private static final long				serialVersionUID			= 6608427341321954354L;
 
 	@Resource
 	private SectionBean						sectionBean;
@@ -68,34 +68,59 @@ public class SectionExamsBean extends AbstractTabbedBean implements Serializable
 
 	private boolean							sectionExamSubjectFlag;
 
-	private SectionExamTreeNode				root				= new SectionExamTreeNode("SectionExamTreeRoot", null);
+	private boolean							sectionAllExamSubjectsFlag	= false;
+
+	private SectionExamTreeNode				root						= new SectionExamTreeNode("SectionExamTreeRoot", null);
+
+	private String							sectionExamWizardStep		= SectionExamWizard.SUBJECTS_RESULTS.getKey();
+
+	public enum SectionExamWizard {
+
+		SUBJECT_WISE("subject_wise"), ALL_SUBJECTS("all_subjects"), SUBJECTS_RESULTS("subjects_results");
+
+		private String	key;
+
+		SectionExamWizard(final String key) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return this.key;
+		}
+
+		public void setKey(final String key) {
+			this.key = key;
+		}
+	};
 
 	@Override
 	public void onTabChange() {
-
+		this.sectionExamWizardStep = SectionExamWizard.SUBJECTS_RESULTS.getKey();
+		this.buildSectionExamTreeFlag = true;
 	}
 
 	public void buildSectionExamTreeTable() {
 		if (this.buildSectionExamTreeFlag) {
 
-			Collection<SectionExamDO> sectionExamDOs = this.sectionExamService.getSectionExamsBySectionId(this.sectionBean.getSection().getId());
+			final Collection<SectionExamDO> sectionExamDOs = this.sectionExamService.getSectionExamsBySectionId(this.sectionBean.getSection().getId());
 
 			this.root = new SectionExamTreeNode("SectionExamTreeRoot", null);
 
-			for (SectionExamDO sectionExamDO : sectionExamDOs) {
+			for (final SectionExamDO sectionExamDO : sectionExamDOs) {
 
-				SectionExamTreeNode sectionExamTreeNode = new SectionExamTreeNode();
+				final SectionExamTreeNode sectionExamTreeNode = new SectionExamTreeNode();
 
 				sectionExamTreeNode.setName(sectionExamDO.getSectionExam().getExam().getName());
+				sectionExamTreeNode.setSectionExam(sectionExamDO.getSectionExam());
 
-				SectionExamTreeNode sectionExamTreeTableNode = new SectionExamTreeNode(sectionExamTreeNode, this.getRoot());
+				final SectionExamTreeNode sectionExamTreeTableNode = new SectionExamTreeNode(sectionExamTreeNode, getRoot());
 				sectionExamTreeTableNode.setExpanded(false);
 
-				Collection<SectionExamSubjectDO> sectionExamSubjectDOs = sectionExamDO.getSectionExamSubjectDOs();
+				final Collection<SectionExamSubjectDO> sectionExamSubjectDOs = sectionExamDO.getSectionExamSubjectDOs();
 
-				for (SectionExamSubjectDO sectionExamSubjectDO : sectionExamSubjectDOs) {
+				for (final SectionExamSubjectDO sectionExamSubjectDO : sectionExamSubjectDOs) {
 
-					SectionExamTreeNode sectionExamTreeTableNode1 = new SectionExamTreeNode();
+					final SectionExamTreeNode sectionExamTreeTableNode1 = new SectionExamTreeNode();
 
 					sectionExamTreeTableNode1.setSectionExam(sectionExamDO.getSectionExam());
 
@@ -128,15 +153,15 @@ public class SectionExamsBean extends AbstractTabbedBean implements Serializable
 
 	public void viewSectionSubjectExamDetailsForStudents() {
 
-		this.setStudentExamSubjects(this.studentExamSubjectService.findStudentExamSubjectsByStudentIdAndSubjectExamId(this.sectionExamSubject.getId()));
+		setStudentExamSubjects(this.studentExamSubjectService.findStudentExamSubjectsByStudentIdAndSubjectExamId(this.sectionExamSubject.getId()));
 		this.sectionExamSubjectFlag = true;
 	}
 
 	public void submitMarksObtained() {
 		try {
-			this.setStudentExamSubjects(this.studentExamSubjectService.saveStudentExamSubjects(this.getStudentExamSubjects()));
+			setStudentExamSubjects(this.studentExamSubjectService.saveStudentExamSubjects(getStudentExamSubjects()));
 			ViewUtil.addMessage("Markes saved successfully.", FacesMessage.SEVERITY_INFO);
-		} catch (ApplicationException applicationException) {
+		} catch (final ApplicationException applicationException) {
 			ViewExceptionHandler.handle(applicationException);
 		}
 	}
@@ -203,5 +228,35 @@ public class SectionExamsBean extends AbstractTabbedBean implements Serializable
 
 	public boolean isStudentExamSubjectMarksDisabled(final StudentExamSubject studentExamSubject) {
 		return !StudentExamSubjectStatusConstant.TAKEN.equals(studentExamSubject.getStudentExamSubjectStatus());
+	}
+
+	/**
+	 * @return the sectionAllExamSubjectsFlag
+	 */
+	public boolean isSectionAllExamSubjectsFlag() {
+		return this.sectionAllExamSubjectsFlag;
+	}
+
+	/**
+	 * @param sectionAllExamSubjectsFlag
+	 *            the sectionAllExamSubjectsFlag to set
+	 */
+	public void setSectionAllExamSubjectsFlag(final boolean sectionAllExamSubjectsFlag) {
+		this.sectionAllExamSubjectsFlag = sectionAllExamSubjectsFlag;
+	}
+
+	/**
+	 * @return the sectionExamWizardStep
+	 */
+	public String getSectionExamWizardStep() {
+		return this.sectionExamWizardStep;
+	}
+
+	/**
+	 * @param sectionExamWizardStep
+	 *            the sectionExamWizardStep to set
+	 */
+	public void setSectionExamWizardStep(final String sectionExamWizardStep) {
+		this.sectionExamWizardStep = sectionExamWizardStep;
 	}
 }

@@ -189,8 +189,8 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	public void onTabChange() {
 		this.viewActionString = ViewAction.VIEW_BATCH_LOGS;
 		this.loadBatchLogsFromDB = true;
-		this.loadBranchNotification();
-		this.getBranchNotificationByNotificationType();
+		loadBranchNotification();
+		getBranchNotificationByNotificationType();
 	}
 
 	/**
@@ -217,12 +217,12 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 			return null;
 		} else {
 			try {
-				if (this.notificationSubTypeConstant.isMessageRequired() && (this.notificationText == null || this.notificationText.trim().isEmpty())) {
+				if (this.notificationSubTypeConstant.isMessageRequired() && ((this.notificationText == null) || this.notificationText.trim().isEmpty())) {
 					ViewUtil.addMessage("Message required for this notification type.", FacesMessage.SEVERITY_ERROR);
 					return null;
 				} else if (this.notificationSubTypeConstant.equals(NotificationSubTypeConstant.ABSENT_NOTIFICATION)) {
-					Attendance attendance = this.attendanceService.findAttendanceBySectionIdAndAttendanceDateForDailyAttendance(this.sectionBean.getSection()
-							.getId(), DateUtil.getSystemDate());
+					final Attendance attendance = this.attendanceService.findAttendanceBySectionIdAndAttendanceDateForDailyAttendance(this.sectionBean
+							.getSection().getId(), DateUtil.getSystemDate());
 					if (attendance == null) {
 						ViewUtil.addMessage("Attendance not taken for today. Could not send absent notifications.", FacesMessage.SEVERITY_ERROR);
 						return null;
@@ -234,13 +234,13 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 						.messageToBeSent(this.notificationText).attendanceDate(DateUtil.getSystemDate()).build();
 
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.sectionBean.getSection(), this.scheduledBatchLog);
-			} catch (Exception e) {
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
-				this.addMessage(message);
+			} catch (final Exception e) {
+				final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
+				addMessage(message);
 			}
-			this.setViewBatchLogs();
+			setViewBatchLogs();
 			this.loadBatchLogsFromDB = true;
-			this.loadBatchLogsBySectionLevelAndSectionId();
+			loadBatchLogsBySectionLevelAndSectionId();
 			this.batchFinished = false;
 			this.elementsProcessed = 0;
 		}
@@ -267,7 +267,7 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	 */
 	public void loadBatchLogsBySectionLevelAndSectionId() {
 		if (this.loadBatchLogsFromDB) {
-			this.setSectionBatchLogs(this.batchLogService.findBatchLogsByNotificationLevelAndNotificationLevelId(this.sessionBean.getCurrentBranch().getId(),
+			setSectionBatchLogs(this.batchLogService.findBatchLogsByNotificationLevelAndNotificationLevelId(this.sessionBean.getCurrentBranch().getId(),
 					NotificationLevelConstant.SECTION, this.sectionBean.getSection().getId()));
 			this.loadBatchLogsFromDB = false;
 		}
@@ -278,7 +278,7 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	 */
 	public void loadBatchLogMessagesByBatchLog() {
 		if (this.loadBatchLogMessagesFromDB) {
-			this.setSectionBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByBatchLogId(this.getBatchLog().getId()));
+			setSectionBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByBatchLogId(getBatchLog().getId()));
 			this.loadBatchLogMessagesFromDB = false;
 		}
 	}
@@ -335,12 +335,12 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 
 	public String setViewBatchLogMessages() {
 		this.viewActionString = ViewAction.VIEW_BATCH_LOG_MESSAGES;
-		this.clearBatchLogMesagesCollection();
+		clearBatchLogMesagesCollection();
 		return null;
 	}
 
 	public void clearBatchLogMesagesCollection() {
-		if (this.sectionBatchLogMessages != null && !this.sectionBatchLogMessages.isEmpty()) {
+		if ((this.sectionBatchLogMessages != null) && !this.sectionBatchLogMessages.isEmpty()) {
 			this.sectionBatchLogMessages.clear();
 		}
 	}
@@ -442,7 +442,7 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 				this.batchLog = this.scheduledBatchLog;
 				this.scheduledBatchLog = null;
 				this.loadBatchLogsFromDB = true;
-				this.loadBatchLogsBySectionLevelAndSectionId();
+				loadBatchLogsBySectionLevelAndSectionId();
 			}
 		}
 	}
@@ -452,7 +452,7 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	 * has finished.
 	 */
 	public void pollListener() {
-		this.checkBatchStopped();
+		checkBatchStopped();
 	}
 
 	/**
@@ -477,11 +477,11 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 				progress = 100;
 				this.batchFinished = true;
 			} else {
-				long totalElements = this.scheduledBatchLog.getNrElements();
-				Long processedElements = this.batchLogMessageService.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(this.scheduledBatchLog.getId(),
+				final long totalElements = this.scheduledBatchLog.getNrElements();
+				final Long processedElements = this.batchLogMessageService.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(this.scheduledBatchLog.getId(),
 						EnumSet.allOf(BatchLogMessageStatusConstant.class));
 				this.elementsProcessed = processedElements != null ? processedElements : 0;
-				progress = totalElements > 0 ? Long.valueOf(this.elementsProcessed * 100 / totalElements).intValue() : 1;
+				progress = totalElements > 0 ? Long.valueOf((this.elementsProcessed * 100) / totalElements).intValue() : 1;
 			}
 
 		}
@@ -547,7 +547,7 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	 *            the notificationText to set
 	 */
 	public void setNotificationText(final String notificationText) {
-		if (notificationText == null || notificationText.trim().isEmpty()) {
+		if ((notificationText == null) || notificationText.trim().isEmpty()) {
 			this.notificationText = null;
 		} else {
 			this.notificationText = notificationText;
@@ -570,21 +570,25 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	}
 
 	public String handleNotificationTypeChange() {
-		this.getBranchNotificationByNotificationType();
+		getBranchNotificationByNotificationType();
 		this.notificationSubTypeConstant = null;
-		this.handleNotificationSubTypeChange();
+		handleNotificationSubTypeChange();
 		return null;
 	}
 
 	public void getBranchNotificationByNotificationType() {
 		this.notificationSubTypeAvailable = new ArrayList<NotificationSubTypeConstant>();
-		for (BranchNotification branchNotification : this.branchNotifications) {
+		for (final BranchNotification branchNotification : this.branchNotifications) {
 			if (!branchNotification.getNotificationSubType().isImplicitMessage()) {
-				if (NotificationTypeConstant.EMAIL_NOTIFICATION.equals(this.notificationTypeConstant) && branchNotification.getEmailIndicator()) {
+				if (NotificationTypeConstant.EMAIL_NOTIFICATION.equals(this.notificationTypeConstant) && (null != branchNotification.getEmailIndicator())
+						&& branchNotification.getEmailIndicator()) {
 					this.notificationSubTypeAvailable.add(branchNotification.getNotificationSubType());
-				} else if (NotificationTypeConstant.SMS_NOTIFICATION.equals(this.notificationTypeConstant) && branchNotification.getSmsIndicator()) {
+				} else if (NotificationTypeConstant.SMS_NOTIFICATION.equals(this.notificationTypeConstant) && (null != branchNotification.getSmsIndicator())
+						&& branchNotification.getSmsIndicator()) {
 					this.notificationSubTypeAvailable.add(branchNotification.getNotificationSubType());
-				} else if (this.notificationTypeConstant == null && (branchNotification.getSmsIndicator() || branchNotification.getEmailIndicator())) {
+				} else if ((this.notificationTypeConstant == null)
+						&& (((null != branchNotification.getSmsIndicator()) && branchNotification.getSmsIndicator()) || ((null != branchNotification
+								.getEmailIndicator()) && branchNotification.getEmailIndicator()))) {
 					this.notificationSubTypeAvailable.add(branchNotification.getNotificationSubType());
 				}
 			}
@@ -592,7 +596,7 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	}
 
 	public void loadBranchNotification() {
-		this.setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
+		setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
 	}
 
 	/**
@@ -632,12 +636,12 @@ public class SectionNotificationsBean extends AbstractTabbedBean {
 	 */
 	public String handleNotificationSubTypeChange() {
 		this.selectedSectionExam = null;
-		if (this.getSectionExams() != null) {
-			this.getSectionExams().clear();
+		if (getSectionExams() != null) {
+			getSectionExams().clear();
 		}
 		if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(this.notificationSubTypeConstant)
 				|| NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(this.notificationSubTypeConstant)) {
-			this.setSectionExams(this.sectionExamService.findSectionExamsBySectionId(this.sectionBean.getSection().getId()));
+			setSectionExams(this.sectionExamService.findSectionExamsBySectionId(this.sectionBean.getSection().getId()));
 			this.renderSectionExamIndicator = true;
 		} else {
 			this.renderSectionExamIndicator = false;

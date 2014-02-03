@@ -21,7 +21,11 @@
 					renderAcademicYearIndicator="true" notificationTypeConstants="#{enumConstantsBean.notificationTypeConstants}"
 					notificationTypeAjaxMethod="#{branchStudentsNotificationsBean.handleNotificationTypeChange()}"
 					notificationSubTypeAjaxMethod="#{branchStudentsNotificationsBean.handleNotificationSubTypeChange()}"
-					academicYearAjaxMethod="#{branchStudentsNotificationsBean.handleAcademicYearChange()}"/>
+					academicYearAjaxMethod="#{branchStudentsNotificationsBean.handleAcademicYearChange()}"
+					renderExamIndicator="#{branchStudentsNotificationsBean.disaplyExamDropdownForNotification}"
+					scheduledExams="#{branchStudentsNotificationsBean.examsForNotification}"
+					selectedScheduledExam="#{branchStudentsNotificationsBean.selectedExamForNotification}"  
+					/>
 			</c:when>
 
 			<c:when test="#{branchStudentsNotificationsBean.viewActionString == 'VIEW_BATCH_LOG_MESSAGES'}">

@@ -11,14 +11,16 @@
 		<p:column headerText="Report card name">
 			<p:commandLink value="#{reprotCardTreeNode.name}" oncomplete="actionDialog.show()" update="@form"
 				action="#{studentReportCardBean.buildExamResultsTreeTable}" rendered="#{reprotCardTreeNode.reportCardId != null}">
-				<f:setPropertyActionListener target="#{studentReportCardBean.selectedReportCardId}" value="#{reprotCardTreeNode.reportCardId}" />
+				<f:setPropertyActionListener target="#{studentReportCardBean.selectedReportCardId}"
+					value="#{reprotCardTreeNode.reportCardId}" />
 			</p:commandLink>
 			<h:outputText value="#{reprotCardTreeNode.name}" rendered="#{reprotCardTreeNode.reportCardId == null}">
 			</h:outputText>
 		</p:column>
 
 		<p:column headerText="Percentage scored">
-			<h:outputText value="#{reprotCardTreeNode.scoredPercentage}">
+			<h:outputText value="#{reprotCardTreeNode.scoredPercentage}" rendered="#{reprotCardTreeNode.scoredPercentage gt 0}">
+				<f:convertNumber maxFractionDigits="2" groupingUsed="false" />
 			</h:outputText>
 		</p:column>
 
@@ -53,19 +55,24 @@
 			<p:column headerText="Total Marks">
 				<h:outputText value="#{examSubjectResultTreeNode.totalMarks}"
 					rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}">
+					<f:convertNumber maxFractionDigits="2" groupingUsed="false" />
 				</h:outputText>
 			</p:column>
 
 			<p:column headerText="Scored Marks">
 				<h:outputText value="#{examSubjectResultTreeNode.marksScored}"
 					rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}">
+					<f:convertNumber maxFractionDigits="2" groupingUsed="false" />
 				</h:outputText>
+				<h:outputLabel value="%" rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}"/>
 			</p:column>
 
 			<p:column headerText="Percentage">
-				<h:outputText value="#{examSubjectResultTreeNode.scoredPercentage} %"
+				<h:outputText value="#{examSubjectResultTreeNode.scoredPercentage}"
 					rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}">
+					<f:convertNumber maxFractionDigits="2" groupingUsed="false" />
 				</h:outputText>
+				<h:outputLabel value="%" rendered="#{! examSubjectResultTreeNode.reportCardExamDetailsInd}"/>
 			</p:column>
 
 			<p:column headerText="Result">
@@ -74,13 +81,17 @@
 			</p:column>
 
 			<p:column headerText="Total % for report card">
-				<h:outputText value="#{examSubjectResultTreeNode.percentageForReportCard} %">
+				<h:outputText value="#{examSubjectResultTreeNode.percentageForReportCard}">
+					<f:convertNumber maxFractionDigits="2" groupingUsed="false" />
 				</h:outputText>
+				<h:outputLabel value="%" />
 			</p:column>
 
 			<p:column headerText="Scored % for report card">
-				<h:outputText value="#{examSubjectResultTreeNode.scoredPercentageForReportCard} %">
+				<h:outputText value="#{examSubjectResultTreeNode.scoredPercentageForReportCard}">
+					<f:convertNumber maxFractionDigits="2" groupingUsed="false" />  
 				</h:outputText>
+				<h:outputLabel value="%" />
 			</p:column>
 
 

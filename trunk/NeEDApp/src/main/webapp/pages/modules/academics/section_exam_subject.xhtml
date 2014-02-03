@@ -33,6 +33,13 @@
 
 	</h:panelGrid>
 
+	<p:commandButton id="submit_marks_cancle" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
+		<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamWizardStep}" value="subjects_results" />
+	</p:commandButton>
+
+	<p:commandButton id="submit_marks_save" value="Save" update="@form" icon="ui-icon-circle-check"
+		action="#{sectionExamsBean.submitMarksObtained}" />
+
 
 	<p:dataTable id="feeDetails" value="#{sectionExamsBean.studentExamSubjects}" var="studentExamSubject" editable="true"
 		style="margin-top : 15px;margin-bottom:10px;" rendered="#{sectionExamsBean.studentExamSubjects.size() > 0}">
@@ -47,18 +54,14 @@
 				<p:dataExporter type="pdf" target="feeDetails" fileName="StudentsSubjectExams" />
 			</h:commandLink>
 		</f:facet>
-		<p:column sortBy="#{studentExamSubject.studentAcademicYear.student.displayName}"
-			filterBy="#{studentExamSubject.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+		<p:column sortBy="#{studentExamSubject.studentAcademicYear.student.displayName}">
 			<f:facet name="header">
 							Student name
 						</f:facet>
 			<h:outputText value="#{studentExamSubject.studentAcademicYear.student.displayName}" style="width:100%;" />
 		</p:column>
 
-		<p:column
-			sortBy="#{studentExamSubject.studentAcademicYear.student.externalAdmissionNr!=null ? studentExamSubject.studentAcademicYear.student.externalAdmissionNr :studentExamSubject.studentAcademicYear.student.admissionNr}"
-			filterBy="#{studentExamSubject.studentAcademicYear.student.externalAdmissionNr!=null ? studentExamSubject.studentAcademicYear.student.externalAdmissionNr :studentExamSubject.studentAcademicYear.student.admissionNr}"
-			filterMatchMode="contains">
+		<p:column>
 			<f:facet name="header">
 							Admission Number
 						</f:facet>
@@ -88,15 +91,12 @@
 		</p:column>
 	</p:dataTable>
 
-	<p:commandButton id="submit_marks_cancle" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
+	<p:commandButton id="submit_marks_cancle1" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
 		<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamSubjectFlag}" value="false" />
+		<f:setPropertyActionListener target="#{sectionExamsBean.buildSectionExamTreeFlag}" value="true" />
 	</p:commandButton>
 
-	<p:commandButton id="submit_marks_save" value="Save" update="@form" icon="ui-icon-circle-check"
+	<p:commandButton id="submit_marks_save1" value="Save" update="@form" icon="ui-icon-circle-check"
 		action="#{sectionExamsBean.submitMarksObtained}" />
-
-
-
-
 
 </ui:composition>

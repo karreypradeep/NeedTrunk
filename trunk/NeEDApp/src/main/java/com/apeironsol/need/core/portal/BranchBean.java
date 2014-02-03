@@ -18,6 +18,7 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.Address;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.service.BranchService;
@@ -25,7 +26,6 @@ import com.apeironsol.need.security.portal.BranchesAppStatusBean;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewPathConstants;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -94,7 +94,7 @@ public class BranchBean extends AbstractBranchBean {
 	 */
 	public void setBranchInfo(final Branch branch) {
 		this.branch = branch;
-		this.sessionBean.setCurrentBranch(branch);
+		// this.sessionBean.setCurrentBranch(branch);
 		this.sessionBean.setLoadBranchTreeFromDatabase(true);
 		this.sessionBean.setLoadBranchBuildingBlockTreeFromDatabase(true);
 	}
@@ -129,7 +129,7 @@ public class BranchBean extends AbstractBranchBean {
 				this.loadBranchesFlag = false;
 			}
 
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}
@@ -143,8 +143,8 @@ public class BranchBean extends AbstractBranchBean {
 	public void newBranch() {
 		this.branch = new Branch();
 		this.branch.setAddress(new Address());
-		this.setBranchInfo(this.branch);
-		this.setViewOrNewAction(true);
+		setBranchInfo(this.branch);
+		setViewOrNewAction(true);
 
 	}
 
@@ -155,12 +155,12 @@ public class BranchBean extends AbstractBranchBean {
 	 */
 	public void removeBranch() {
 		try {
-			this.branchService.removeBranch(this.getBranch());
+			this.branchService.removeBranch(getBranch());
 			ViewUtil.addMessage("Branch removed successfully.", FacesMessage.SEVERITY_INFO);
-			this.setLoadBranchesFlag(true);
-			this.setViewOrNewAction(false);
+			setLoadBranchesFlag(true);
+			setViewOrNewAction(false);
 			this.branchesAppStatusBean.reloadBranchesStatus();
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}
@@ -173,23 +173,23 @@ public class BranchBean extends AbstractBranchBean {
 	 */
 	public String saveBranch() {
 		try {
-			this.getBranch().setOrganization(this.getOrganization());
+			getBranch().setOrganization(getOrganization());
 
-			if (this.getBranch().getId() != null) {
-				this.branch = this.branchService.saveBranch(this.getBranch());
-				this.setBranchInfo(this.branch);
+			if (getBranch().getId() != null) {
+				this.branch = this.branchService.saveBranch(getBranch());
+				setBranchInfo(this.branch);
 			} else {
 
 				this.branch = this.branchService.createNewBranch(this.branch);
-				this.setBranchInfo(this.branch);
+				setBranchInfo(this.branch);
 			}
 			this.branchesAppStatusBean.reloadBranchesStatus();
 			ViewUtil.addMessage("Branch saved successfully.", FacesMessage.SEVERITY_INFO);
 
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
-		} catch (Throwable ex) {
+		} catch (final Throwable ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}
@@ -202,12 +202,12 @@ public class BranchBean extends AbstractBranchBean {
 	 * @return
 	 */
 	public String cancleAction() {
-		this.setBranchInfo(new Branch());
+		setBranchInfo(new Branch());
 		return ViewPathConstants.ORGANIZATION_BRANCHES;
 	}
 
 	public boolean isDisbledBranchSubTabs() {
-		if (this.getBranch() == null || this.getBranch().getId() == null) {
+		if ((getBranch() == null) || (getBranch().getId() == null)) {
 			return true;
 		}
 
@@ -217,10 +217,10 @@ public class BranchBean extends AbstractBranchBean {
 	public void performSanityCheck() {
 		try {
 
-			this.branchService.performSanityCheck(this.getBranch());
+			this.branchService.performSanityCheck(getBranch());
 
 			ViewUtil.addMessage("Branch passed sanity check successfully.", FacesMessage.SEVERITY_INFO);
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}
@@ -228,7 +228,7 @@ public class BranchBean extends AbstractBranchBean {
 
 	public boolean isDisableSanityCheck() {
 
-		if (this.branch == null || this.branch.getId() == null) {
+		if ((this.branch == null) || (this.branch.getId() == null)) {
 			return true;
 		}
 		return false;
@@ -237,12 +237,12 @@ public class BranchBean extends AbstractBranchBean {
 	public void activateBranch() {
 		try {
 
-			this.branchService.performSanityCheck(this.getBranch());
-			this.setBranchInfo(this.branchService.activateBranch(this.getBranch()));
+			this.branchService.performSanityCheck(getBranch());
+			setBranchInfo(this.branchService.activateBranch(getBranch()));
 			this.branchesAppStatusBean.reloadBranchesStatus();
 			ViewUtil.addMessage("Branch has bean activated sucessfully.", FacesMessage.SEVERITY_INFO);
 
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}
@@ -255,12 +255,12 @@ public class BranchBean extends AbstractBranchBean {
 
 	public void inactivateBranch() {
 		try {
-			this.sessionBean.setCurrentBranch(null);
-			this.getBranch().setActive(Boolean.FALSE);
-			this.setBranchInfo(this.branchService.saveBranch(this.getBranch()));
+			// this.sessionBean.setCurrentBranch(null);
+			getBranch().setActive(Boolean.FALSE);
+			setBranchInfo(this.branchService.saveBranch(getBranch()));
 			this.branchesAppStatusBean.reloadBranchesStatus();
 			ViewUtil.addMessage("Branch has bean in activated sucessfully.", FacesMessage.SEVERITY_INFO);
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}
@@ -268,14 +268,14 @@ public class BranchBean extends AbstractBranchBean {
 	}
 
 	public boolean isDisableActivate() {
-		if (this.branch != null && !this.branch.isActive()) {
+		if ((this.branch != null) && !this.branch.isActive()) {
 			return false;
 		}
 		return true;
 	}
 
 	public boolean isDisableInActivate() {
-		if (this.branch != null && this.branch.isActive()) {
+		if ((this.branch != null) && this.branch.isActive()) {
 			return false;
 		}
 		return true;

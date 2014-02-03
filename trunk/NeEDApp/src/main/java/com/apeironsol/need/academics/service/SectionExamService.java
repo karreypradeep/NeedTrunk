@@ -53,4 +53,15 @@ public interface SectionExamService {
 	 */
 	Collection<SectionExam> findSectionExamsByExamIdsandAcademicYearId(Collection<Long> examIDs, final Long academicYearId);
 
+	/**
+	 * Find section exams by academic year id.
+	 * 
+	 * @param sectionId
+	 *            section id.
+	 * @return section exams by section id.
+	 */
+	Collection<SectionExam> findSectionExamsByAcademicYearId(final Long academicYearId);
+
+	Collection<SectionExam> findSectionExamsBySectionIdsAndExamId(Collection<Long> sectionIds, Long examId);
+
 }

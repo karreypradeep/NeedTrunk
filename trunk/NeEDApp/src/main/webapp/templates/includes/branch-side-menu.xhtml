@@ -259,6 +259,7 @@
 						value="BRANCH_STUDENTS_NOTIFICATIONS">
 						<f:converter converterId="viewContentConverter" />
 					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchStudentsNotificationsBean.loadBatchLogsFromDB}" value="true" />
 				</p:commandLink>
 				<p:commandLink value="#{msg.admissions}" update="@form" process="branch_side_menu" rendered="false">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"

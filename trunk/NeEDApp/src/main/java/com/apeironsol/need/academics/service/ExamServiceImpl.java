@@ -4,10 +4,14 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import javax.annotation.Resource;
+import javax.faces.application.FacesMessage;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.InvalidArgumentException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.academics.dao.ExamDao;
 import com.apeironsol.need.academics.dao.SectionExamDao;
 import com.apeironsol.need.academics.dao.SectionExamSubjectDao;
@@ -23,9 +27,7 @@ import com.apeironsol.need.core.service.StudentAcademicYearService;
 import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.util.constants.SectionExamStatusConstant;
 import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
-import com.apeironsol.framework.exception.SystemException;
+import com.apeironsol.need.util.portal.ViewUtil;
 
 @Service("examService")
 @Transactional(rollbackFor = Exception.class)
@@ -77,23 +79,20 @@ public class ExamServiceImpl implements ExamService {
 		Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectDao.findStudentExamSubjectBySectionExamIdAndScoredMarksNotNull(sectionExam
 				.getId());
 
-		if (studentExamSubjects != null && !studentExamSubjects.isEmpty()) {
+		if ((studentExamSubjects != null) && !studentExamSubjects.isEmpty()) {
 			throw new BusinessException("Exam cannot be un-scheduled because , this exam is already evalvated and scored marks are already entered.");
 		}
 
 		studentExamSubjects = this.studentExamSubjectDao.findStudentExamSubjectsBySectionExamId(sectionExam.getId());
 
-		for (StudentExamSubject studentExamSubject : studentExamSubjects) {
+		for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
 			this.studentExamSubjectDao.remove(studentExamSubject);
 		}
 
-		Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam.getId());
-
-		for (SectionExamSubject studentExamSubject : sectionExamSubjects) {
-
-			this.sectionExamSubjectDao.remove(studentExamSubject);
+		final Collection<SectionExamSubject> sectionExamSubjects = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExam.getId());
+		for (final SectionExamSubject sectionExamSubject : sectionExamSubjects) {
+			this.sectionExamSubjectDao.remove(sectionExamSubject);
 		}
-
 		this.sectionExamDao.remove(sectionExam);
 
 	}
@@ -102,15 +101,27 @@ public class ExamServiceImpl implements ExamService {
 	public void scheduleExam(final SectionExam sectionExam, final Collection<SectionExamSubject> sectionExamSubjects) throws BusinessException,
 			SystemException, InvalidArgumentException {
 
+		if (sectionExamSubjects.isEmpty()) {
+			ViewUtil.addMessage("Scheduling details are requried for atleast one subject.", FacesMessage.SEVERITY_ERROR);
+			return;
+		}
+		final Collection<SectionExamSubject> toBeSavedSectionExamSubjects = new ArrayList<SectionExamSubject>();
+		for (final SectionExamSubject sectionExamSubject : sectionExamSubjects) {
+			if ((sectionExamSubject.getScheduledDate() != null) || (sectionExamSubject.getStartTime() != null) || (sectionExamSubject.getEndTime() != null)
+					|| (sectionExamSubject.getPassMarks() != null) || (sectionExamSubject.getMaximumMarks() != null)) {
+				toBeSavedSectionExamSubjects.add(sectionExamSubject);
+			}
+		}
+
 		sectionExam.setSectionExamStatus(SectionExamStatusConstant.SCHEDULED);
 
-		for (SectionExamSubject sectionExamSubject : sectionExamSubjects) {
+		for (final SectionExamSubject sectionExamSubject : toBeSavedSectionExamSubjects) {
 
-			this.validateSectionExamSubject(sectionExamSubject);
+			validateSectionExamSubject(sectionExamSubject);
 
 			sectionExamSubject.setSectionExam(sectionExam);
 
-			SectionExamSubject sectionExamSubjectOverlaping = this.sectionExamSubjectDao
+			final SectionExamSubject sectionExamSubjectOverlaping = this.sectionExamSubjectDao
 					.findSectionExamSubjectBySectionIdAndScheduledDateBetweenStartAndEndTime(sectionExam.getSection().getId(),
 							sectionExamSubject.getScheduledDate(), sectionExamSubject.getStartTime(), sectionExamSubject.getEndTime());
 
@@ -121,25 +132,26 @@ public class ExamServiceImpl implements ExamService {
 			}
 
 		}
+		sectionExam.getSectionExamSubjects().clear();
 
-		sectionExam.setSectionExamSubjects(sectionExamSubjects);
+		sectionExam.setSectionExamSubjects(toBeSavedSectionExamSubjects);
 
-		SectionExam sectionExamLocal = this.sectionExamDao.persist(sectionExam);
+		final SectionExam sectionExamLocal = this.sectionExamDao.persist(sectionExam);
 
-		Collection<SectionExamSubject> sectionExamSubjects2 = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExamLocal.getId());
+		final Collection<SectionExamSubject> sectionExamSubjects2 = this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExamLocal.getId());
 
-		for (SectionExamSubject sectionExamSubject : sectionExamSubjects2) {
+		for (final SectionExamSubject sectionExamSubject : sectionExamSubjects2) {
 
-			Collection<Student> students = this.studentService.findActiveStudentsBySectionId(sectionExam.getSection().getId());
+			final Collection<Student> students = this.studentService.findActiveStudentsBySectionId(sectionExam.getSection().getId());
 
-			Collection<StudentExamSubject> studentExamSubjects = new ArrayList<StudentExamSubject>();
+			final Collection<StudentExamSubject> studentExamSubjects = new ArrayList<StudentExamSubject>();
 
-			for (Student student : students) {
+			for (final Student student : students) {
 
-				StudentAcademicYear studentAcademicYear = this.studentAcademicYearService
-						.findStudentCurrentOrMostRecentAcademicYearByStudentId(student.getId());
+				final StudentAcademicYear studentAcademicYear = this.studentAcademicYearService.findStudentCurrentOrMostRecentAcademicYearByStudentId(student
+						.getId());
 
-				StudentExamSubject studentExamSubject = new StudentExamSubject();
+				final StudentExamSubject studentExamSubject = new StudentExamSubject();
 				studentExamSubject.setStudentExamSubjectStatus(StudentExamSubjectStatusConstant.ASSIGNED);
 				studentExamSubject.setSectionExamSubject(sectionExamSubject);
 				studentExamSubject.setStudentAcademicYear(studentAcademicYear);
@@ -153,6 +165,11 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	private void validateSectionExamSubject(final SectionExamSubject sectionExamSubject) {
+		if ((sectionExamSubject.getScheduledDate() != null) || (sectionExamSubject.getStartTime() != null) || (sectionExamSubject.getEndTime() != null)
+				|| (sectionExamSubject.getPassMarks() != null) || (sectionExamSubject.getMaximumMarks() != null)) {
+
+		}
+
 		if (sectionExamSubject.getScheduledDate() == null) {
 			throw new InvalidArgumentException("Exam scheduled date should not be empty.");
 		}
@@ -185,13 +202,13 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	public Collection<SectionExamDO> findSectionExamsByBranchId(final Long branchId) throws BusinessException, SystemException {
 
-		Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsByBranchId(branchId);
+		final Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsByBranchId(branchId);
 
-		Collection<SectionExamDO> sectionExamDOs = new ArrayList<SectionExamDO>();
+		final Collection<SectionExamDO> sectionExamDOs = new ArrayList<SectionExamDO>();
 
-		for (SectionExam sectionExam : sectionExams) {
+		for (final SectionExam sectionExam : sectionExams) {
 
-			SectionExamDO sectionExamDO = new SectionExamDO();
+			final SectionExamDO sectionExamDO = new SectionExamDO();
 			sectionExamDO.setAcademicYear(sectionExam.getSection().getAcademicYear());
 			sectionExamDO.setKlass(sectionExam.getSection().getKlass());
 			sectionExamDO.setSection(sectionExam.getSection());
@@ -208,13 +225,13 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	public Collection<SectionExamDO> findSectionExamsByBranchIdAndExamId(final Long branchId, final Long examId) throws BusinessException, SystemException {
 
-		Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsByBranchIdAndExamId(branchId, examId);
+		final Collection<SectionExam> sectionExams = this.sectionExamDao.findSectionExamsByBranchIdAndExamId(branchId, examId);
 
-		Collection<SectionExamDO> sectionExamDOs = new ArrayList<SectionExamDO>();
+		final Collection<SectionExamDO> sectionExamDOs = new ArrayList<SectionExamDO>();
 
-		for (SectionExam sectionExam : sectionExams) {
+		for (final SectionExam sectionExam : sectionExams) {
 
-			SectionExamDO sectionExamDO = new SectionExamDO();
+			final SectionExamDO sectionExamDO = new SectionExamDO();
 			sectionExamDO.setAcademicYear(sectionExam.getSection().getAcademicYear());
 			sectionExamDO.setKlass(sectionExam.getSection().getKlass());
 			sectionExamDO.setSection(sectionExam.getSection());

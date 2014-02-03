@@ -33,7 +33,6 @@ import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
-import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -43,7 +42,7 @@ import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
  * @author Pradeep
  */
 @Component
-public class StudentAbsentForExamSMSWorker implements SMSWorker {
+public class ExamResultSMSWorker implements SMSWorker {
 
 	/**
 	 * Velocity engine for compiling and merging text with velocity templates.
@@ -57,7 +56,7 @@ public class StudentAbsentForExamSMSWorker implements SMSWorker {
 	/**
 	 * Velocity template path for notification.
 	 */
-	private static final String			VELOCITY_TEMPLATE_PATH	= "velocityTemplates/studentAbsentForExamSMSTemplate.vm";
+	private static final String			VELOCITY_TEMPLATE_PATH	= "velocityTemplates/examScheduledSMSTemplate.vm";
 
 	/**
 	 * Asynchronous method for sending fee pending notification mail for
@@ -92,11 +91,15 @@ public class StudentAbsentForExamSMSWorker implements SMSWorker {
 					studentAcademicYear.getId(), exam.getId());
 			String subjects = "";
 			String dates = "";
+			String scheduleStartDate = "";
+			String scheduleEndDate = "";
 			for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
-				if (StudentExamSubjectStatusConstant.ABSENT.equals(studentExamSubject.getStudentExamSubjectStatus())) {
-					subjects += studentExamSubject.getSectionExamSubject().getSectionSubject().getSubject().getName() + ",";
-					dates += DateUtil.getDateAsStringInDefaultFormat(studentExamSubject.getSectionExamSubject().getScheduledDate()) + ",";
+				if (scheduleStartDate.trim().length() > 0) {
+					scheduleStartDate = DateUtil.getDateAsStringInDefaultFormat(studentExamSubject.getSectionExamSubject().getSectionExam().getStartDate());
+					scheduleEndDate = DateUtil.getDateAsStringInDefaultFormat(studentExamSubject.getSectionExamSubject().getSectionExam().getEndDate());
 				}
+				subjects += studentExamSubject.getSectionExamSubject().getSectionSubject().getSubject().getName() + ",";
+				dates += DateUtil.getDateAsStringInDefaultFormat(studentExamSubject.getSectionExamSubject().getScheduledDate()) + ",";
 			}
 			if (subjects.indexOf(",") > 0) {
 				subjects = subjects.substring(0, subjects.lastIndexOf(","));
@@ -105,6 +108,8 @@ public class StudentAbsentForExamSMSWorker implements SMSWorker {
 				dates = dates.substring(0, dates.lastIndexOf(","));
 			}
 			model.put("subjects", subjects);
+			model.put("fromDate", scheduleStartDate);
+			model.put("toDate", scheduleEndDate);
 			model.put("dates", dates);
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 		}

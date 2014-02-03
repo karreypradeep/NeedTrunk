@@ -6,9 +6,13 @@
 
 	<c:choose>
 
-		<c:when test="#{sectionExamsBean.sectionExamSubjectFlag}">
-				<ui:include src="/pages/modules/academics/section_exam_subject.xhtml"></ui:include>
-	
+
+		<c:when test="#{sectionExamsBean.sectionExamWizardStep == 'subject_wise'}">
+			<ui:include src="/pages/modules/academics/section_exam_subject.xhtml"></ui:include>
+		</c:when>
+
+		<c:when test="#{sectionExamsBean.sectionExamWizardStep == 'all_subjects'}">
+			<ui:include src="/pages/modules/academics/section_exam_all_subjects.xhtml"></ui:include>
 		</c:when>
 
 		<c:otherwise>
@@ -17,61 +21,58 @@
 				<f:event type="preRenderView" listener="#{sectionExamsBean.buildSectionExamTreeTable()}" />
 			</f:metadata>
 
-				<p:treeTable value="#{sectionExamsBean.root}" var="sectionExamTree">
+			<p:treeTable value="#{sectionExamsBean.root}" var="sectionExamTree">
 
-					<p:column headerText="Exam Name">
-						<p:commandLink value="#{sectionExamTree.name}" rendered="#{sectionExamTree.optionsNode}"
-							action="#{sectionExamsBean.viewSectionSubjectExamDetailsForStudents()}" process="@this" update="@form">
-							
-							
-							<f:setPropertyActionListener target="#{sectionExamsBean.sectionExam}"
-								value="#{sectionExamTree.sectionExam}" />
-								
-							<f:setPropertyActionListener target="#{sectionExamsBean.subject}"
-								value="#{sectionExamTree.subject}" />
+				<p:column headerText="Exam Name">
+					<p:commandLink value="#{sectionExamTree.name}" rendered="#{sectionExamTree.optionsNode}"
+						action="#{sectionExamsBean.viewSectionSubjectExamDetailsForStudents()}" process="@this" update="@form">
 
-							<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamSubject}"
-								value="#{sectionExamTree.sectionExamSubject}" />
+						<f:setPropertyActionListener target="#{sectionExamsBean.sectionExam}" value="#{sectionExamTree.sectionExam}" />
+						<f:setPropertyActionListener target="#{sectionExamsBean.subject}" value="#{sectionExamTree.subject}" />
+						<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamSubject}"
+							value="#{sectionExamTree.sectionExamSubject}" />
+						<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamWizardStep}" value="subject_wise" />
+					</p:commandLink>
 
-						</p:commandLink>
+					<p:commandLink value="#{sectionExamTree.name}" rendered="#{!sectionExamTree.optionsNode}" update="@form" process="@this">
+						<f:setPropertyActionListener target="#{sectionExamsBean.sectionExam}" value="#{sectionExamTree.sectionExam}" />
+						<f:setPropertyActionListener target="#{sectionExamAllSubjectsBean.loadStudentExamAllSubjectsDOs}" value="true" />
+						<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamWizardStep}" value="all_subjects" />
+					</p:commandLink>
 
-						<h:outputLabel value="#{sectionExamTree.name}" rendered="#{!sectionExamTree.optionsNode}" />
-					</p:column>
+				</p:column>
 
-					<p:column headerText="Scheduled Date">
-						<h:outputLabel value="#{sectionExamTree.scheduledDate}">
-							<f:convertDateTime pattern="dd/MM/yyyy" />
-						</h:outputLabel>
-					</p:column>
+				<p:column headerText="Scheduled Date">
+					<h:outputLabel value="#{sectionExamTree.scheduledDate}">
+						<f:convertDateTime pattern="dd/MM/yyyy" />
+					</h:outputLabel>
+				</p:column>
 
-					<p:column headerText="Start time">
-						<h:outputLabel value="#{sectionExamTree.startTime}">
-							<f:convertDateTime pattern="hh:mm a" />
-						</h:outputLabel>
-					</p:column>
+				<p:column headerText="Start time">
+					<h:outputLabel value="#{sectionExamTree.startTime}">
+						<f:convertDateTime pattern="hh:mm a" />
+					</h:outputLabel>
+				</p:column>
 
-					<p:column headerText="End time">
-						<h:outputLabel value="#{sectionExamTree.endTime}">
-							<f:convertDateTime pattern="hh:mm a" />
-						</h:outputLabel>
-					</p:column>
+				<p:column headerText="End time">
+					<h:outputLabel value="#{sectionExamTree.endTime}">
+						<f:convertDateTime pattern="hh:mm a" />
+					</h:outputLabel>
+				</p:column>
 
-					<p:column headerText="Pass marks">
-						<h:outputLabel value="#{sectionExamTree.passMarks}">
-							<f:convertNumber pattern="0.00" />
-						</h:outputLabel>
-					</p:column>
+				<p:column headerText="Pass marks">
+					<h:outputLabel value="#{sectionExamTree.passMarks}">
+						<f:convertNumber pattern="0.00" />
+					</h:outputLabel>
+				</p:column>
 
-					<p:column headerText="Maximim marks">
-						<h:outputLabel value="#{sectionExamTree.maximumMarks}">
-							<f:convertNumber pattern="0.00" />
-						</h:outputLabel>
-					</p:column>
+				<p:column headerText="Maximim marks">
+					<h:outputLabel value="#{sectionExamTree.maximumMarks}">
+						<f:convertNumber pattern="0.00" />
+					</h:outputLabel>
+				</p:column>
 
-
-				</p:treeTable>
-
-
+			</p:treeTable>
 
 		</c:otherwise>
 

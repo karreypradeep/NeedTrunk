@@ -1,2 +1,3 @@
 Dear Parent,
-Exam ${examName} is scheduled for your child ${studentName} on date ${date}.
+Exam ${examName} is scheduled for your ward ${studentName} from ${fromDate} to ${toDate}.
+Subjects: ${subjects}

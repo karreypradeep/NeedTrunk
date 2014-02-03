@@ -9,6 +9,8 @@ package com.apeironsol.need.notifications.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.jms.ConnectionFactory;
@@ -21,7 +23,9 @@ import org.springframework.stereotype.Service;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.academics.model.ReportCardExam;
 import com.apeironsol.need.academics.model.SectionExam;
+import com.apeironsol.need.academics.model.StudentExamSubject;
 import com.apeironsol.need.academics.service.SectionExamService;
+import com.apeironsol.need.academics.service.StudentExamSubjectService;
 import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
@@ -35,6 +39,7 @@ import com.apeironsol.need.core.service.StudentAbsentService;
 import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.producer.util.NotificationProducerUtil;
+import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
@@ -43,43 +48,46 @@ import com.apeironsol.need.util.constants.NotificationTypeConstant;
 public class NotificationServiceImpl implements NotificationService {
 
 	@Resource(name = "jmsTemplateSMS")
-	JmsTemplate						jmsTemplateSMS;
+	JmsTemplate							jmsTemplateSMS;
 
 	@Resource(name = "smsDestination")
-	Destination						smsDestination;
+	Destination							smsDestination;
 
 	@Resource(name = "jmsTemplateEmail")
-	JmsTemplate						jmsTemplateEmail;
+	JmsTemplate							jmsTemplateEmail;
 
 	@Resource(name = "emailDestination")
-	Destination						emailDestination;
+	Destination							emailDestination;
 
 	@Resource(name = "jmsConnectionFactory")
-	ConnectionFactory				jmsConnectionFactory;
+	ConnectionFactory					jmsConnectionFactory;
 
 	@Autowired
-	private BranchService			branchService;
+	private BranchService				branchService;
 
 	@Autowired
-	private BatchLogService			batchLogService;
+	private BatchLogService				batchLogService;
 
 	@Autowired
-	private StudentService			studentService;
+	private StudentService				studentService;
 
 	@Autowired
-	private KlassService			klassService;
+	private KlassService				klassService;
 
 	@Autowired
-	private SectionService			sectionService;
+	private SectionService				sectionService;
 
 	@Autowired
-	private AttendanceService		attendanceService;
+	private AttendanceService			attendanceService;
 
 	@Autowired
-	private StudentAbsentService	studentAbsentService;
+	private StudentAbsentService		studentAbsentService;
 
 	@Autowired
-	private SectionExamService		sectionExamService;
+	private SectionExamService			sectionExamService;
+
+	@Autowired
+	private StudentExamSubjectService	studentExamSubjectService;
 
 	private NotificationProducerUtil createNotificationProducerUtil(final NotificationTypeConstant notificationTypeConstant) {
 		final NotificationProducerUtil notificationProducerUtil = new NotificationProducerUtil();
@@ -100,7 +108,7 @@ public class NotificationServiceImpl implements NotificationService {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
 
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(1));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
@@ -120,7 +128,7 @@ public class NotificationServiceImpl implements NotificationService {
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
@@ -142,10 +150,10 @@ public class NotificationServiceImpl implements NotificationService {
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
-		Collection<Section> sections = new ArrayList<Section>();
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		final Collection<Section> sections = new ArrayList<Section>();
 		sections.add(section);
-		Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
+		final Collection<StudentAcademicYear> studentAcademicYears = getStudentAcademicYearsToSendNotification(sections, batchLog);
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
@@ -168,9 +176,9 @@ public class NotificationServiceImpl implements NotificationService {
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		final Collection<Section> sections = this.sectionService.findActiveSectionsByKlassIdAndAcademicYearId(klass.getId(), academicYearId);
-		Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
+		final Collection<StudentAcademicYear> studentAcademicYears = getStudentAcademicYearsToSendNotification(sections, batchLog);
 
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
@@ -193,26 +201,35 @@ public class NotificationServiceImpl implements NotificationService {
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		final Collection<Long> klasseIDs = new ArrayList<Long>();
 		final Collection<Klass> klasses = this.klassService.findActiveKlassesByBranchId(batchLog.getBranch().getId());
 		for (final Klass klass : klasses) {
 			klasseIDs.add(klass.getId());
 		}
 		final Collection<Section> sections = this.sectionService.findActiveSectionsByKlassIdsAndAcademicYearId(klasseIDs, academicYearId);
-		Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
 
-		if (result.getId() == null) {
-			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
-			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
-			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
-			if (result.getNrElements() == 0) {
-				result.setExecutionTime(Long.valueOf(0));
+		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION)) {
+			result = sendExamAbsentNotification(sections, batchLog);
+		} else if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION)) {
+			result = sendExamScheduleNotification(sections, batchLog);
+		} else if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION)) {
+			// result = sendExamScheduleNotification(sections, batchLog);
+		} else {
+			final Collection<StudentAcademicYear> studentAcademicYears = getStudentAcademicYearsToSendNotification(sections, batchLog);
+
+			if (result.getId() == null) {
+				result.setNrElements(Long.valueOf(studentAcademicYears.size()));
+				result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+				result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+				if (result.getNrElements() == 0) {
+					result.setExecutionTime(Long.valueOf(0));
+				}
+				result = notificationProducerUtil.createBatchLog(result);
 			}
-			result = notificationProducerUtil.createBatchLog(result);
-		}
-		if (studentAcademicYears.size() > 0) {
-			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+			if (studentAcademicYears.size() > 0) {
+				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+			}
 		}
 		return result;
 	}
@@ -223,7 +240,7 @@ public class NotificationServiceImpl implements NotificationService {
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		if (result.getId() == null) {
 			result = notificationProducerUtil.createBatchLog(result);
 		}
@@ -237,8 +254,8 @@ public class NotificationServiceImpl implements NotificationService {
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
-		Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		final Collection<StudentAcademicYear> studentAcademicYears = getStudentAcademicYearsToSendNotification(sections, batchLog);
 		if (result.getId() == null) {
 			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
@@ -268,11 +285,11 @@ public class NotificationServiceImpl implements NotificationService {
 		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.ABSENT_NOTIFICATION)) {
 			studentAcademicYears = new ArrayList<StudentAcademicYear>();
 			for (final Section section : sections) {
-				Attendance attendance = this.attendanceService.findAttendanceBySectionIdAndAttendanceDateForDailyAttendance(section.getId(),
+				final Attendance attendance = this.attendanceService.findAttendanceBySectionIdAndAttendanceDateForDailyAttendance(section.getId(),
 						batchLog.getAttendanceDate());
 				if (attendance != null) {
-					Collection<StudentAbsent> studentAbsents = this.studentAbsentService.findStudentAttendanceByAttendance(attendance);
-					for (StudentAbsent studentAbsent : studentAbsents) {
+					final Collection<StudentAbsent> studentAbsents = this.studentAbsentService.findStudentAttendanceByAttendance(attendance);
+					for (final StudentAbsent studentAbsent : studentAbsents) {
 						studentAcademicYears.add(studentAbsent.getStudentAcademicYear());
 					}
 				}
@@ -293,17 +310,101 @@ public class NotificationServiceImpl implements NotificationService {
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		}
-		Collection<Long> examIds = new ArrayList<Long>();
-		for (ReportCardExam reportCardExam : batchLog.getReportCard().getReportCardExams()) {
+		final Collection<Long> examIds = new ArrayList<Long>();
+		for (final ReportCardExam reportCardExam : batchLog.getReportCard().getReportCardExams()) {
 			examIds.add(reportCardExam.getExam().getId());
 		}
-		Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsByExamIdsandAcademicYearId(examIds, batchLog.getReportCard()
+		final Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsByExamIdsandAcademicYearId(examIds, batchLog.getReportCard()
 				.getAcademicYear().getId());
-		Collection<Section> sections = new ArrayList<Section>();
-		for (SectionExam sectionExam : sectionExams) {
+		final Collection<Section> sections = new ArrayList<Section>();
+		for (final SectionExam sectionExam : sectionExams) {
 			sections.add(sectionExam.getSection());
 		}
 		result = this.sendNotificationForStudent(batchLog, sections);
+		return result;
+	}
+
+	private BatchLog sendExamAbsentNotification(final Collection<Section> sections, final BatchLog batchLog) throws ApplicationException {
+		BatchLog result = batchLog;
+		final Collection<Long> listOfIDs = new ArrayList<Long>();
+		for (final Section section : sections) {
+			listOfIDs.add(section.getId());
+		}
+		if (batchLog.getExam() == null) {
+			result.setBatchStatusConstant(BatchStatusConstant.CANCELLED);
+			result.setNrElements(0l);
+			result = this.batchLogService.saveBatchLog(result);
+			return result;
+		}
+
+		final Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsBySectionIdsAndExamId(listOfIDs, batchLog.getExam().getId());
+		listOfIDs.clear();
+		for (final SectionExam sectionExam : sectionExams) {
+			listOfIDs.add(sectionExam.getId());
+		}
+
+		final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findAbsentStudentSubjectsForSectionExamIds(listOfIDs);
+		final Map<Long, StudentAcademicYear> studentAcademicYearMap = new HashMap<Long, StudentAcademicYear>();
+		for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
+			studentAcademicYearMap.put(studentExamSubject.getStudentAcademicYear().getId(), studentExamSubject.getStudentAcademicYear());
+		}
+
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		if (result.getId() == null) {
+			result.setNrElements(Long.valueOf(studentAcademicYearMap.values().size()));
+			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
+			result = notificationProducerUtil.createBatchLog(result);
+			if (studentAcademicYearMap.values().size() > 0) {
+				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearMap.values(), result);
+			}
+		}
+		return result;
+	}
+
+	private BatchLog sendExamScheduleNotification(final Collection<Section> sections, final BatchLog batchLog) throws ApplicationException {
+		BatchLog result = batchLog;
+		final Collection<Long> listOfIDs = new ArrayList<Long>();
+		for (final Section section : sections) {
+			listOfIDs.add(section.getId());
+		}
+		if (batchLog.getExam() == null) {
+			result.setBatchStatusConstant(BatchStatusConstant.CANCELLED);
+			result.setNrElements(0l);
+			result = this.batchLogService.saveBatchLog(result);
+			return result;
+		}
+
+		final Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsBySectionIdsAndExamId(listOfIDs, batchLog.getExam().getId());
+		listOfIDs.clear();
+		for (final SectionExam sectionExam : sectionExams) {
+			if (!sectionExam.getStartDate().before(DateUtil.getSystemDate())) {
+				listOfIDs.add(sectionExam.getId());
+			}
+		}
+
+		final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findAllStudentExamSubjectsForSectionExamIds(listOfIDs);
+		final Map<Long, StudentAcademicYear> studentAcademicYearMap = new HashMap<Long, StudentAcademicYear>();
+		for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
+			studentAcademicYearMap.put(studentExamSubject.getStudentAcademicYear().getId(), studentExamSubject.getStudentAcademicYear());
+		}
+
+		final NotificationProducerUtil notificationProducerUtil = createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		if (result.getId() == null) {
+			result.setNrElements(Long.valueOf(studentAcademicYearMap.values().size()));
+			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
+			result = notificationProducerUtil.createBatchLog(result);
+			if (studentAcademicYearMap.values().size() > 0) {
+				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearMap.values(), result);
+			}
+		}
 		return result;
 	}
 }

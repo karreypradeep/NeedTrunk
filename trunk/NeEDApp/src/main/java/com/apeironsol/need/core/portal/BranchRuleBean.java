@@ -7,12 +7,12 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.BranchRule;
 import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.util.constants.BranchTabConstant;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -26,7 +26,7 @@ public class BranchRuleBean extends AbstractBranchBean {
 	/**
 	 * Logger for the class.
 	 */
-	private static final Logger						log					= Logger.getLogger(BranchRuleBean.class);
+	private static final Logger	log					= Logger.getLogger(BranchRuleBean.class);
 
 	@Resource
 	SessionBean					sessionBean;
@@ -63,9 +63,8 @@ public class BranchRuleBean extends AbstractBranchBean {
 	 */
 	public void loadBranchRule() {
 		if (this.branchBean.getActiveTabIndex() == BranchTabConstant.RULES.getTabIndex()) {
-			if (this.sessionBean.getCurrentBranch() != null && this.sessionBean.getCurrentBranch().getId() != null) {
-				this.branchRule = this.branchRuleService.findBranchRuleByBranchId(this.sessionBean.getCurrentBranch()
-						.getId());
+			if ((this.branchBean.getBranch() != null) && (this.branchBean.getBranch().getId() != null)) {
+				this.branchRule = this.branchRuleService.findBranchRuleByBranchId(this.branchBean.getBranch().getId());
 			}
 		}
 		this.branchRule = this.branchRule == null ? new BranchRule() : this.branchRule;
@@ -78,9 +77,9 @@ public class BranchRuleBean extends AbstractBranchBean {
 	 */
 	public String saveBranchRule() {
 		try {
-			this.branchRule.setBranch(this.sessionBean.getCurrentBranch());
+			this.branchRule.setBranch(this.branchBean.getBranch());
 			this.branchRule = this.branchRuleService.saveBranchRule(this.branchRule);
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			log.info(exception.getMessage());
 			ViewExceptionHandler.handle(exception);
 		}

@@ -8,7 +8,6 @@
 package com.apeironsol.need.notifications.model;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -19,8 +18,6 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 
 import com.apeironsol.framework.BaseEntity;
 import com.apeironsol.need.core.model.Branch;
@@ -63,32 +60,6 @@ public class BranchNotification extends BaseEntity implements Serializable {
 
 	@Column(name = "EMAIL_IDS", length = 225)
 	private String						emailIDs;
-
-	/**
-	 * Schedule date.
-	 */
-	@Column(name = "SCHEDULE_DATE_SMS")
-	@Temporal(TemporalType.DATE)
-	private Date						scheduleDateSMSNotification;
-
-	/**
-	 * Schedule date.
-	 */
-	@Column(name = "FREQUENCY_MINUTES_SMS")
-	private Integer						frequencyInMinutesSMSNotification;
-
-	/**
-	 * Schedule date.
-	 */
-	@Column(name = "SCHEDULE_DATE_EMAIL")
-	@Temporal(TemporalType.DATE)
-	private Date						scheduleDateEmailNotification;
-
-	/**
-	 * Schedule date.
-	 */
-	@Column(name = "FREQUENCY_MINUTES_EMAIL")
-	private Integer						frequencyInMinutesEmailNotification;
 
 	/**
 	 * @return the notificationSubType
@@ -193,66 +164,6 @@ public class BranchNotification extends BaseEntity implements Serializable {
 	 */
 	public void setEmailIDs(final String emailIDs) {
 		this.emailIDs = emailIDs;
-	}
-
-	/**
-	 * @return the scheduleDateSMSNotification
-	 */
-	public Date getScheduleDateSMSNotification() {
-		return this.scheduleDateSMSNotification;
-	}
-
-	/**
-	 * @param scheduleDateSMSNotification
-	 *            the scheduleDateSMSNotification to set
-	 */
-	public void setScheduleDateSMSNotification(final Date scheduleDateSMSNotification) {
-		this.scheduleDateSMSNotification = scheduleDateSMSNotification;
-	}
-
-	/**
-	 * @return the frequencyInMinutesSMSNotification
-	 */
-	public Integer getFrequencyInMinutesSMSNotification() {
-		return this.frequencyInMinutesSMSNotification;
-	}
-
-	/**
-	 * @param frequencyInMinutesSMSNotification
-	 *            the frequencyInMinutesSMSNotification to set
-	 */
-	public void setFrequencyInMinutesSMSNotification(final Integer frequencyInMinutesSMSNotification) {
-		this.frequencyInMinutesSMSNotification = frequencyInMinutesSMSNotification;
-	}
-
-	/**
-	 * @return the scheduleDateEmailNotification
-	 */
-	public Date getScheduleDateEmailNotification() {
-		return this.scheduleDateEmailNotification;
-	}
-
-	/**
-	 * @param scheduleDateEmailNotification
-	 *            the scheduleDateEmailNotification to set
-	 */
-	public void setScheduleDateEmailNotification(final Date scheduleDateEmailNotification) {
-		this.scheduleDateEmailNotification = scheduleDateEmailNotification;
-	}
-
-	/**
-	 * @return the frequencyInMinutesEmailNotification
-	 */
-	public Integer getFrequencyInMinutesEmailNotification() {
-		return this.frequencyInMinutesEmailNotification;
-	}
-
-	/**
-	 * @param frequencyInMinutesEmailNotification
-	 *            the frequencyInMinutesEmailNotification to set
-	 */
-	public void setFrequencyInMinutesEmailNotification(final Integer frequencyInMinutesEmailNotification) {
-		this.frequencyInMinutesEmailNotification = frequencyInMinutesEmailNotification;
 	}
 
 }

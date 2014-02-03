@@ -18,7 +18,7 @@ public class SectionExamSubjectServiceImpl implements SectionExamSubjectService 
 	private SectionExamSubjectDao	sectionExamSubjectDao;
 
 	@Override
-	public Collection<SectionExamSubject> findSectionExamSubjectsBySectionIdAndSubjectExamId(final Long sectionExamId) {
+	public Collection<SectionExamSubject> findSectionExamSubjectsBySubjectExamId(final Long sectionExamId) {
 		return this.sectionExamSubjectDao.findSectionExamSubjectsBySectionExamId(sectionExamId);
 	}
 

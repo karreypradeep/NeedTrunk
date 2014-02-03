@@ -11,13 +11,14 @@ import javax.inject.Named;
 
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.portal.AbstractBranchBean;
+import com.apeironsol.need.core.portal.BranchBean;
 import com.apeironsol.need.notifications.model.BranchNotification;
 import com.apeironsol.need.notifications.service.BranchNotificationService;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -32,6 +33,9 @@ public class BranchNotificationSettingsBean extends AbstractBranchBean {
 
 	@Resource
 	BranchNotificationService				branchNotificationService;
+
+	@Resource
+	BranchBean								branchBean;
 
 	private boolean							loadBranchNotificationFlag;
 
@@ -63,17 +67,17 @@ public class BranchNotificationSettingsBean extends AbstractBranchBean {
 
 	public void loadBranchNotifications() {
 		if (this.loadBranchNotificationFlag) {
-			this.setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
-			Map<NotificationSubTypeConstant, BranchNotification> map = new HashMap<NotificationSubTypeConstant, BranchNotification>();
-			for (BranchNotification branchNotification : this.getBranchNotifications()) {
+			setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.branchBean.getBranch().getId()));
+			final Map<NotificationSubTypeConstant, BranchNotification> map = new HashMap<NotificationSubTypeConstant, BranchNotification>();
+			for (final BranchNotification branchNotification : getBranchNotifications()) {
 				map.put(branchNotification.getNotificationSubType(), branchNotification);
 			}
-			for (NotificationSubTypeConstant notificationSubTypeConstant : NotificationSubTypeConstant.getBrachNotifications()) {
+			for (final NotificationSubTypeConstant notificationSubTypeConstant : NotificationSubTypeConstant.getBrachNotifications()) {
 				if (map.get(notificationSubTypeConstant) == null) {
-					BranchNotification branchNotification = new BranchNotification();
+					final BranchNotification branchNotification = new BranchNotification();
 					branchNotification.setBranch(this.sessionBean.getCurrentBranch());
 					branchNotification.setNotificationSubType(notificationSubTypeConstant);
-					this.addBranchNotification(branchNotification);
+					addBranchNotification(branchNotification);
 				}
 			}
 			this.loadBranchNotificationFlag = false;
@@ -92,8 +96,8 @@ public class BranchNotificationSettingsBean extends AbstractBranchBean {
 	 */
 	public String saveBranchNotifications() {
 		try {
-			this.setBranchNotifications(this.branchNotificationService.saveBranchNotifications(this.getBranchNotifications()));
-		} catch (ApplicationException exception) {
+			setBranchNotifications(this.branchNotificationService.saveBranchNotifications(getBranchNotifications()));
+		} catch (final ApplicationException exception) {
 			ViewExceptionHandler.handle(exception);
 		}
 		ViewUtil.addMessage("Branch rules saved successfully.", FacesMessage.SEVERITY_INFO);

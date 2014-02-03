@@ -37,8 +37,18 @@ public class SMSProviderServiceImpl implements SMSProviderService {
 
 	@Override
 	public SMSProvider saveSMSProvider(final SMSProvider smsProvider) throws BusinessException, InvalidArgumentException {
-		String encodedPassword = PasswordEncoder.encrypt(smsProvider.getPassword());
-		smsProvider.setPassword(encodedPassword);
+		boolean encryptPassword = true;
+
+		if (smsProvider.getId() != null) {
+			final String oldEncodedPassword = findSMSProviderById(smsProvider.getId()).getPassword();
+			if (oldEncodedPassword.equals(smsProvider.getPassword())) {
+				encryptPassword = false;
+			}
+		}
+		if (encryptPassword) {
+			final String encodedPassword = PasswordEncoder.encrypt(smsProvider.getPassword());
+			smsProvider.setPassword(encodedPassword);
+		}
 		return this.sMSProviderDao.persist(smsProvider);
 	}
 

@@ -29,7 +29,7 @@
 
 			<p:outputLabel id="klass_label" value="Class" for="klass" />
 			<p:selectOneMenu id="klass" value="#{sectionExamScheduleBean.schedulingKlass}" style="width:155px;" required="true">
-				<f:selectItem itemLabel="Select applying class" />
+				<f:selectItem itemLabel="Select class" />
 				<f:selectItems value="#{sectionExamScheduleBean.activeKlassesForBranch}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
 				<f:converter converterId="klassConverter" />
 				<p:ajax process="@this" update="panel" listener="#{sectionExamScheduleBean.onKlassesSelect()}" />
@@ -38,7 +38,7 @@
 
 			<p:outputLabel id="section_label" value="Unscheduled section" for="section" />
 			<p:selectOneMenu id="section" value="#{sectionExamScheduleBean.schedulingSection}" style="width:155px;" required="true">
-				<f:selectItem itemLabel="Select applying class" />
+				<f:selectItem itemLabel="Select section" />
 				<f:selectItems value="#{sectionExamScheduleBean.activeSectionsForKlassAndAcademicYear}" var="section" itemLabel="#{section.name}" itemValue="#{section}" />
 				<f:converter converterId="sectionConverter" />
 				<p:ajax process="@this" update="panel" listener="#{sectionExamScheduleBean.onSectionSelect()}" />
@@ -183,7 +183,7 @@
 		<br />
 
 		<p:commandButton id="schedule_exam_back" value="Back" process="@this" update="@form" icon="ui-icon-circle-arrow-w">
-			<f:setPropertyActionListener target="#{sectionExamScheduleBean.scheduleExamFlag}" value="false" />
+			<f:setPropertyActionListener target="#{sectionExamScheduleBean.sectionExamScheduleWizardStep}" value="all_scheduled_exams" />
 		</p:commandButton>
 
 		<p:spacer width="5px" />

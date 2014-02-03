@@ -16,22 +16,22 @@ public class SectionExamDaoImpl extends BaseDaoImpl<SectionExam> implements Sect
 
 	@Override
 	public Collection<SectionExam> findSectionExamsByBranchId(final Long branchId) {
-		TypedQuery<SectionExam> query = this.getEntityManager()
-				.createQuery("select s from SectionExam s where s.exam.branch.id = :branchId", SectionExam.class);
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery("select s from SectionExam s where s.exam.branch.id = :branchId",
+				SectionExam.class);
 		query.setParameter("branchId", branchId);
 		return query.getResultList();
 	}
 
 	@Override
 	public Collection<SectionExam> findSectionExamsBySectionId(final Long sectionId) {
-		TypedQuery<SectionExam> query = this.getEntityManager().createQuery("select s from SectionExam s where s.section.id = :sectionId", SectionExam.class);
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery("select s from SectionExam s where s.section.id = :sectionId", SectionExam.class);
 		query.setParameter("sectionId", sectionId);
 		return query.getResultList();
 	}
 
 	@Override
 	public Collection<SectionExam> findSectionExamsByKlassIdAndExamId(final Long klassId, final Long examId) {
-		TypedQuery<SectionExam> query = this.getEntityManager().createQuery(
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery(
 				"select s from SectionExam s where s.section.klass.id = :klassId and s.exam.id = :examId", SectionExam.class);
 		query.setParameter("klassId", klassId);
 		query.setParameter("examId", examId);
@@ -40,7 +40,7 @@ public class SectionExamDaoImpl extends BaseDaoImpl<SectionExam> implements Sect
 
 	@Override
 	public Collection<Section> findSectionsByKlassIdAndExamId(final Long klassId, final Long examId) {
-		TypedQuery<Section> query = this.getEntityManager().createQuery(
+		final TypedQuery<Section> query = getEntityManager().createQuery(
 				"select s.section from SectionExam s where s.section.klass.id = :klassId and s.exam.id = :examId", Section.class);
 		query.setParameter("klassId", klassId);
 		query.setParameter("examId", examId);
@@ -49,7 +49,7 @@ public class SectionExamDaoImpl extends BaseDaoImpl<SectionExam> implements Sect
 
 	@Override
 	public Collection<SectionExam> findSectionExamsByBranchIdAndExamId(final Long branchId, final Long examId) {
-		TypedQuery<SectionExam> query = this.getEntityManager().createQuery(
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery(
 				"select s from SectionExam s where s.exam.branch.id = :branchId and s.exam.id = :examId", SectionExam.class);
 		query.setParameter("branchId", branchId);
 		query.setParameter("examId", examId);
@@ -58,7 +58,7 @@ public class SectionExamDaoImpl extends BaseDaoImpl<SectionExam> implements Sect
 
 	@Override
 	public Collection<SectionExam> findSectionExamsBySectionIdAndExamTypeId(final Long sectionId, final Long examTypeId) {
-		TypedQuery<SectionExam> query = this.getEntityManager().createQuery(
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery(
 				"select s from SectionExam s where s.section.id = :sectionId and s.exam.buildingBlock.id =:examTypeId", SectionExam.class);
 		query.setParameter("sectionId", sectionId);
 		query.setParameter("examTypeId", examTypeId);
@@ -68,20 +68,20 @@ public class SectionExamDaoImpl extends BaseDaoImpl<SectionExam> implements Sect
 	@Override
 	public SectionExam findSectionExamsBySectionIdAndExamId(final Long sectionId, final Long examId) {
 		try {
-			TypedQuery<SectionExam> query = this.getEntityManager().createQuery(
+			final TypedQuery<SectionExam> query = getEntityManager().createQuery(
 					"select s from SectionExam s where s.section.id = :sectionId and s.exam.id = :examId", SectionExam.class);
 			query.setParameter("sectionId", sectionId);
 			query.setParameter("examId", examId);
 			return query.getSingleResult();
 
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Collection<SectionExam> findSectionExamsByKlassId(final Long klassId, final Long academicYearId) {
-		TypedQuery<SectionExam> query = this.getEntityManager().createQuery(
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery(
 				"select s from SectionExam s where s.section.klass.id = :klassId and s.section.academicYear.id = :academicYearId", SectionExam.class);
 		query.setParameter("klassId", klassId);
 		query.setParameter("academicYearId", academicYearId);
@@ -90,10 +90,28 @@ public class SectionExamDaoImpl extends BaseDaoImpl<SectionExam> implements Sect
 
 	@Override
 	public Collection<SectionExam> findSectionExamsByExamIdsandAcademicYearId(final Collection<Long> examIDs, final Long academicYearId) {
-		TypedQuery<SectionExam> query = this.getEntityManager().createQuery(
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery(
 				"select s from SectionExam s where s.exam.id in :examIDs and s.section.academicYear.id = :academicYearId", SectionExam.class);
 		query.setParameter("examIDs", examIDs);
 		query.setParameter("academicYearId", academicYearId);
 		return query.getResultList();
+	}
+
+	@Override
+	public Collection<SectionExam> findSectionExamsByAcademicYearId(final Long academicYearId) {
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery("select s from SectionExam s where  s.section.academicYear.id = :academicYearId",
+				SectionExam.class);
+		query.setParameter("academicYearId", academicYearId);
+		return query.getResultList();
+	}
+
+	@Override
+	public Collection<SectionExam> findSectionExamsBySectionIdsAndExamId(final Collection<Long> sectionIds, final Long examId) {
+		final TypedQuery<SectionExam> query = getEntityManager().createQuery(
+				"select s from SectionExam s where s.section.id in :sectionIds and s.exam.id = :examId", SectionExam.class);
+		query.setParameter("sectionIds", sectionIds);
+		query.setParameter("examId", examId);
+		return query.getResultList();
+
 	}
 }

@@ -19,7 +19,7 @@
 							<f:setPropertyActionListener target="#{sessionBean.currentBranch}" value="" />
 							<f:setPropertyActionListener target="#{loginBean.branchId}" value="" />
 						</p:commandLink></li>
-					<li class="navItem"><p:commandLink value="Organization" action="organization_index" process="@this">
+					<li class="navItem"><p:commandLink value="Organization" action="organization_index" process="@this" rendered="false">
 							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="organization" />
 							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
 							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="ORGANIZATION_ORGANIZATION">
@@ -29,7 +29,7 @@
 				</c:if>
 
 				<c:if test="#{accessBean.currentAccess == 'organization'}">
-					<li class="navItem"><p:commandLink value="Branch" action="branch_index" process="@this">
+					<li class="navItem"><p:commandLink value="Branch" action="branch_index" process="@this" rendered="false">
 							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_STUDENTS">
 								<f:converter converterId="viewContentConverter" />
 							</f:setPropertyActionListener>
@@ -39,7 +39,7 @@
 							<f:setPropertyActionListener target="#{studentBean.loadBranchStudentsFlag}" value="true" />
 						</p:commandLink></li>
 
-					<li class="navItem" ><p:commandLink value="Organization" action="organization_index" rendered="false" process="@this">
+					<li class="navItem" ><p:commandLink value="Organization" action="organization_index" rendered="false" process="@this" >
 							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="organization" />
 							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
 							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="ORGANIZATION_ORGANIZATION">

@@ -21,6 +21,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.model.BranchAssembly;
 import com.apeironsol.need.core.model.BuildingBlock;
@@ -32,7 +33,6 @@ import com.apeironsol.need.util.constants.BuildingBlockConstant;
 import com.apeironsol.need.util.constants.ViewContentConstant;
 import com.apeironsol.need.util.portal.BuildingBlockTreeNode;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -46,7 +46,7 @@ public class BranchTreeBean extends AbstractBranchBean {
 	/**
 	 * Logger for the class.
 	 */
-	private static final Logger							log					= Logger.getLogger(BranchTreeBean.class);
+	private static final Logger		log					= Logger.getLogger(BranchTreeBean.class);
 
 	/**
 	 * Branch service resource.
@@ -102,7 +102,7 @@ public class BranchTreeBean extends AbstractBranchBean {
 	 * @return the branch object.
 	 */
 	public Branch getBranch() {
-		return this.sessionBean.getCurrentBranch();
+		return this.branchBean.getBranch();
 	}
 
 	/**
@@ -123,17 +123,17 @@ public class BranchTreeBean extends AbstractBranchBean {
 	public void onNodeSelect(final NodeSelectEvent event) {
 		try {
 			// Recursive check of selected.
-			this.updateNodeForSelected(this.branchNameNode, event.getTreeNode());
+			updateNodeForSelected(this.branchNameNode, event.getTreeNode());
 
-			if (event.getTreeNode() != null && event.getTreeNode() instanceof BuildingBlockTreeNode) {
-				BuildingBlockTreeNode treeNode = (BuildingBlockTreeNode) event.getTreeNode();
+			if ((event.getTreeNode() != null) && (event.getTreeNode() instanceof BuildingBlockTreeNode)) {
+				final BuildingBlockTreeNode treeNode = (BuildingBlockTreeNode) event.getTreeNode();
 
 				if (treeNode.getBuildingBlock() != null) {
-					BuildingBlock selectedBuildingBlock = treeNode.getBuildingBlock();
+					final BuildingBlock selectedBuildingBlock = treeNode.getBuildingBlock();
 					if (BuildingBlockConstant.FEE_TYPE.equals(selectedBuildingBlock.getType())) {
 
-						BranchAssembly branchAssembly = this.branchAssemblyService
-								.findBranchAssemblyByBuildingBlockIdAndBranch(selectedBuildingBlock, this.getBranch());
+						final BranchAssembly branchAssembly = this.branchAssemblyService.findBranchAssemblyByBuildingBlockIdAndBranch(selectedBuildingBlock,
+								getBranch());
 						this.branchFeeBean.setBranchAssembly(branchAssembly);
 						this.branchFeeBean.setBuildingBlock(selectedBuildingBlock);
 						this.branchFeeBean.setLoadBranchFeeTypesFromDB(true);
@@ -148,8 +148,8 @@ public class BranchTreeBean extends AbstractBranchBean {
 
 					} else if (BuildingBlockConstant.EXPENSE_TYPE.equals(selectedBuildingBlock.getType())) {
 
-						BranchAssembly branchAssembly = this.branchAssemblyService
-								.findBranchAssemblyByBuildingBlockIdAndBranch(selectedBuildingBlock, this.getBranch());
+						final BranchAssembly branchAssembly = this.branchAssemblyService.findBranchAssemblyByBuildingBlockIdAndBranch(selectedBuildingBlock,
+								getBranch());
 						this.branchExpenseBean.setBranchAssembly(branchAssembly);
 						this.branchExpenseBean.setBuildingBlock(selectedBuildingBlock);
 						this.branchExpenseBean.setLoadBranchExpenseTypesFromDB(true);
@@ -161,8 +161,8 @@ public class BranchTreeBean extends AbstractBranchBean {
 						// null,
 						// ViewPathConstants.ORGANIZATION_BRANCH_EXPENSE_TYPE_PERIODICALS);
 					} else if (BuildingBlockConstant.DEPARTMENT.equals(selectedBuildingBlock.getType())) {
-						BranchAssembly branchAssembly = this.branchAssemblyService
-								.findBranchAssemblyByBuildingBlockIdAndBranch(selectedBuildingBlock, this.getBranch());
+						final BranchAssembly branchAssembly = this.branchAssemblyService.findBranchAssemblyByBuildingBlockIdAndBranch(selectedBuildingBlock,
+								getBranch());
 						this.branchDepartmentBean.setBranchAssembly(branchAssembly);
 						this.branchDepartmentBean.setBuildingBlock(selectedBuildingBlock);
 						this.branchDepartmentBean.setLoadBranchFeeTypesFromDB(true);
@@ -181,14 +181,14 @@ public class BranchTreeBean extends AbstractBranchBean {
 
 			}
 
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			log.info(exception.getMessage());
 			ViewExceptionHandler.handle(exception);
 		}
 	}
 
 	private void updateNodeForSelected(final TreeNode treeNode, final TreeNode selectedTreeNode) {
-		if (selectedTreeNode != null && treeNode != null) {
+		if ((selectedTreeNode != null) && (treeNode != null)) {
 			if (treeNode == selectedTreeNode) {
 				selectedTreeNode.setSelected(true);
 			} else {
@@ -196,8 +196,8 @@ public class BranchTreeBean extends AbstractBranchBean {
 			}
 
 			if (treeNode.getChildCount() != 0) {
-				for (TreeNode child : treeNode.getChildren()) {
-					this.updateNodeForSelected(child, selectedTreeNode);
+				for (final TreeNode child : treeNode.getChildren()) {
+					updateNodeForSelected(child, selectedTreeNode);
 				}
 
 			}
@@ -207,29 +207,26 @@ public class BranchTreeBean extends AbstractBranchBean {
 	private void prepareBranchTree(final TreeNode branchTreeNode) {
 
 		// For each of building block type which can be coupled to branch.
-		for (BuildingBlockConstant buildingBlockType : BuildingBlockConstant
-				.getAllSortedBuildingBlocksForBranchAssemblies()) {
+		for (final BuildingBlockConstant buildingBlockType : BuildingBlockConstant.getAllSortedBuildingBlocksForBranchAssemblies()) {
 
 			Collection<BuildingBlock> branchBuildBlocksByType = null;
 			try {
-				branchBuildBlocksByType = this.buildingBlockService.findBuildingBlocksbyBranchIdAndBuildingBlockType(
-						this.getBranch().getId(), buildingBlockType);
-			} catch (ApplicationException ex) {
+				branchBuildBlocksByType = this.buildingBlockService.findBuildingBlocksbyBranchIdAndBuildingBlockType(getBranch().getId(), buildingBlockType);
+			} catch (final ApplicationException ex) {
 				log.info(ex.getMessage());
 				ViewExceptionHandler.handle(ex);
 			}
 
-			if (branchBuildBlocksByType != null && !branchBuildBlocksByType.isEmpty()) {
-				TreeNode buildingBlockTypeNode = new DefaultTreeNode(buildingBlockType.getLabel(), branchTreeNode);
+			if ((branchBuildBlocksByType != null) && !branchBuildBlocksByType.isEmpty()) {
+				final TreeNode buildingBlockTypeNode = new DefaultTreeNode(buildingBlockType.getLabel(), branchTreeNode);
 				buildingBlockTypeNode.setExpanded(true);
 				buildingBlockTypeNode.setSelectable(false);
-				List<BuildingBlock> sortedBuildingBlocks = new ArrayList<BuildingBlock>(branchBuildBlocksByType);
+				final List<BuildingBlock> sortedBuildingBlocks = new ArrayList<BuildingBlock>(branchBuildBlocksByType);
 				Collections.sort(sortedBuildingBlocks, new BuildingBlockComparator(BuildingBlockComparator.NAME));
 
-				for (BuildingBlock buildingBlock : sortedBuildingBlocks) {
+				for (final BuildingBlock buildingBlock : sortedBuildingBlocks) {
 
-					BuildingBlockTreeNode buildingBlockTreeNode = new BuildingBlockTreeNode(buildingBlock.getName(),
-							buildingBlock, buildingBlockTypeNode);
+					final BuildingBlockTreeNode buildingBlockTreeNode = new BuildingBlockTreeNode(buildingBlock.getName(), buildingBlock, buildingBlockTypeNode);
 					buildingBlockTreeNode.setSelectable(false);
 				}
 
@@ -244,9 +241,8 @@ public class BranchTreeBean extends AbstractBranchBean {
 	 * @return true if branch tree has to be rendered.
 	 */
 	public boolean isDisplayBranchTree() {
-		if (ViewContentConstant.ORGANIZATION_BRANCHES.equals(this.viewContentHandlerBean.getCurrentViewContent())
-				&& this.branchBean.getBranch() != null && this.branchBean.getBranch().getId() != null
-				&& this.branchBean.isViewOrNewAction()) {
+		if (ViewContentConstant.ORGANIZATION_BRANCHES.equals(this.viewContentHandlerBean.getCurrentViewContent()) && (this.branchBean.getBranch() != null)
+				&& (this.branchBean.getBranch().getId() != null) && this.branchBean.isViewOrNewAction()) {
 			return true;
 		} else {
 			return false;
@@ -286,13 +282,13 @@ public class BranchTreeBean extends AbstractBranchBean {
 			if (this.sessionBean.isLoadBranchTreeFromDatabase()) {
 				this.branchRootNode = new DefaultTreeNode("Root", null);
 				this.branchRootNode.setExpanded(Boolean.TRUE);
-				this.removeAllChildsOfRootNode(this.branchRootNode);
-				this.branchNameNode = new DefaultTreeNode(this.getBranch().getName(), this.branchRootNode);
+				removeAllChildsOfRootNode(this.branchRootNode);
+				this.branchNameNode = new DefaultTreeNode(getBranch().getName(), this.branchRootNode);
 				this.branchNameNode.setExpanded(Boolean.TRUE);
 				this.branchNameNode.setSelected(true);
 
 				// Prepare branch tree
-				this.prepareBranchTree(this.branchNameNode);
+				prepareBranchTree(this.branchNameNode);
 				this.sessionBean.setLoadBranchTreeFromDatabase(false);
 			}
 		}
@@ -302,8 +298,8 @@ public class BranchTreeBean extends AbstractBranchBean {
 	 * Removes all child nodes of the supplied root node.
 	 */
 	private void removeAllChildsOfRootNode(final TreeNode rootNode) {
-		if (rootNode != null && rootNode.getChildCount() > 0) {
-			TreeNode[] array = rootNode.getChildren().toArray(new TreeNode[rootNode.getChildCount()]);
+		if ((rootNode != null) && (rootNode.getChildCount() > 0)) {
+			final TreeNode[] array = rootNode.getChildren().toArray(new TreeNode[rootNode.getChildCount()]);
 			for (TreeNode child : array) {
 				child.setParent(null);
 				child = null;

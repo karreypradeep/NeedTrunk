@@ -32,7 +32,7 @@ public class UniversalSMSProvider {
 
 	public UniversalSMSProvider(final SMSProvider sMSProvider) throws SystemException {
 		if (sMSProvider == null) {
-			throw new SystemException("SMSProvider cannot be null. Please define SMS Provider to branch.");
+			throw new SystemException("SMSProvider is not defined for the branch. Please define SMS Provider to branch.");
 		}
 		this.sMSProvider = sMSProvider;
 	}
@@ -41,12 +41,12 @@ public class UniversalSMSProvider {
 		String retval = "";
 		try {
 			// give all Parameters In String
-			StringBuffer mobilenumber = new StringBuffer();
+			final StringBuffer mobilenumber = new StringBuffer();
 			int counter = 1;
 			for (String string : phoneNumbers) {
 				string = string.replace("(M)", "").trim();
 				mobilenumber.append(string);
-				if (phoneNumbers.length > 1 && counter != phoneNumbers.length) {
+				if ((phoneNumbers.length > 1) && (counter != phoneNumbers.length)) {
 					mobilenumber.append(",");
 				}
 				counter++;
@@ -67,25 +67,25 @@ public class UniversalSMSProvider {
 				postData += "&" + URLEncoder.encode(this.sMSProvider.getAdditionalParameter2Key(), "UTF-8") + "="
 						+ URLEncoder.encode(this.sMSProvider.getAdditionalParameter2Value(), "UTF-8");
 			}
-			String urlHost = "http://" + this.sMSProvider.getHost() + "/" + this.sMSProvider.getPath();
-			URL url = new URL(urlHost);
-			HttpURLConnection urlconnection = (HttpURLConnection) url.openConnection();
+			final String urlHost = "http://" + this.sMSProvider.getHost() + "/" + this.sMSProvider.getPath();
+			final URL url = new URL(urlHost);
+			final HttpURLConnection urlconnection = (HttpURLConnection) url.openConnection();
 
 			urlconnection.setRequestMethod("POST");
 			urlconnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 			urlconnection.setDoOutput(true);
-			OutputStreamWriter out = new OutputStreamWriter(urlconnection.getOutputStream(), Charset.forName("UTF-8"));
+			final OutputStreamWriter out = new OutputStreamWriter(urlconnection.getOutputStream(), Charset.forName("UTF-8"));
 			out.write(postData);
 			out.close();
-			BufferedReader in = new BufferedReader(new InputStreamReader(urlconnection.getInputStream(), Charset.forName("UTF-8")));
+			final BufferedReader in = new BufferedReader(new InputStreamReader(urlconnection.getInputStream(), Charset.forName("UTF-8")));
 			String decodedString;
 			while ((decodedString = in.readLine()) != null) {
 				retval += decodedString;
 			}
 			in.close();
 
-			System.out.println(retval);
-		} catch (IOException exception) {
+			// System.out.println(retval);
+		} catch (final IOException exception) {
 			throw new ApplicationException(exception);
 		}
 		return retval;

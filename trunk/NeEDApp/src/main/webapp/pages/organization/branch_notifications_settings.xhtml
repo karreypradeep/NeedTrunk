@@ -7,9 +7,7 @@
 		<f:event type="preRenderView" listener="#{branchNotificationSettingsBean.loadBranchNotifications}" />
 	</f:metadata>
 	<p:dataTable id="branchNotificationTable" var="branchNotification"
-		value="#{branchNotificationSettingsBean.branchNotifications}" paginator="true" rows="10"
-		paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-		rowsPerPageTemplate="5,10,15" paginatorPosition="bottom">
+		value="#{branchNotificationSettingsBean.branchNotifications}">
 		<p:column headerText="Notification Type">
 			<h:outputText value="#{branchNotification.notificationSubType.label}" />
 		</p:column>
@@ -27,23 +25,7 @@
 
 		<p:column headerText="Contact Numbers for SMS">
 			<p:inputTextarea value="#{branchNotification.contactNumbers}" rows="1" cols="20" maxlength="255" autoResize="false"
-				disabled="#{not branchNotification.notificationSubType.contactDetalisRequired}" />
-		</p:column>
-
-		<p:column headerText="SMS Schedule" width="200">
-			<p:panelGrid columns="2" style="border:0px;">
-				<p:outputLabel id="schedule_date_sms_label" value="Start Date" for="schedule_date_sms"
-					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
-				<p:calendar id="schedule_date_sms" value="#{branchNotification.scheduleDateSMSNotification}" navigator="true"
-					pattern="dd/MM/yyyy" yearRange="1900" mindate="#{sessionBean.currentBranch.startDate}"
-					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
-
-				<p:outputLabel id="frequency_sms_label" value="Freq Mins" for="frequency_sms"
-					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
-				<pe:inputNumber id="frequency_sms" value="#{branchNotification.frequencyInMinutesSMSNotification}"
-					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
-
-			</p:panelGrid>
+				rendered="#{branchNotification.notificationSubType.contactDetalisRequired}" />
 		</p:column>
 
 		<p:column headerText="Email">
@@ -54,22 +36,7 @@
 
 		<p:column headerText="Email Id's">
 			<p:inputTextarea value="#{branchNotification.emailIDs}" rows="1" cols="30" maxlength="255" autoResize="false"
-				disabled="#{not branchNotification.notificationSubType.contactDetalisRequired}" />
-		</p:column>
-
-		<p:column headerText="Email Schedule" width="200">
-			<p:panelGrid columns="2" style="border:0px;">
-				<p:outputLabel id="schedule_date_email_label" value="Date" for="schedule_date_email"
-					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
-				<p:calendar id="schedule_date_email" value="#{branchNotification.scheduleDateEmailNotification}" navigator="true"
-					pattern="dd/MM/yyyy" yearRange="1900" mindate="#{sessionBean.currentBranch.startDate}"
-					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
-
-				<p:outputLabel id="frequency_email_label" value="Freq Mins" for="frequency_email"
-					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
-				<pe:inputNumber id="frequency_email" value="#{branchNotification.frequencyInMinutesEmailNotification}"
-					rendered="#{branchNotification.notificationSubType.allowedTobeScheduled}" />
-			</p:panelGrid>
+				rendered="#{branchNotification.notificationSubType.contactDetalisRequired}" />
 		</p:column>
 
 	</p:dataTable>

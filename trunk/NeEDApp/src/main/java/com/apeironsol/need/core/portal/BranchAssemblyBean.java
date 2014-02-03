@@ -15,7 +15,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
 
-import com.apeironsol.need.core.model.Branch;
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.BranchAssembly;
 import com.apeironsol.need.core.model.BuildingBlock;
 import com.apeironsol.need.core.service.BranchAssemblyService;
@@ -26,7 +26,6 @@ import com.apeironsol.need.util.constants.BuildingBlockConstant;
 import com.apeironsol.need.util.portal.BuildingBlockTreeNode;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -74,12 +73,6 @@ public class BranchAssemblyBean extends AbstractBranchBean {
 	@Resource
 	BranchBean							branchBean;
 
-	/**
-	 * Branch service resource.
-	 */
-	@Resource
-	private SessionBean					sessionBean;
-
 	@Resource
 	private BuildingBlockService		buildingBlockService;
 
@@ -90,15 +83,6 @@ public class BranchAssemblyBean extends AbstractBranchBean {
 	@PostConstruct
 	public void init() {
 		this.branchBuildingBlocks = new ArrayList<BuildingBlock>();
-	}
-
-	/**
-	 * Returns the branch object.
-	 * 
-	 * @return the branch object.
-	 */
-	public Branch getBranch() {
-		return this.sessionBean.getCurrentBranch();
 	}
 
 	/**
@@ -128,8 +112,8 @@ public class BranchAssemblyBean extends AbstractBranchBean {
 	 * @return the building block.
 	 */
 	public Collection<BuildingBlock> getBuildingBlocksByType(final BuildingBlockConstant type) {
-		Collection<BuildingBlock> result = new ArrayList<BuildingBlock>();
-		for (BuildingBlock buildingBlock : this.buildingBlocks) {
+		final Collection<BuildingBlock> result = new ArrayList<BuildingBlock>();
+		for (final BuildingBlock buildingBlock : this.buildingBlocks) {
 			if (buildingBlock.getType().equals(type)) {
 				result.add(buildingBlock);
 			}
@@ -174,23 +158,23 @@ public class BranchAssemblyBean extends AbstractBranchBean {
 	 */
 	public void saveBranchAssemblies() {
 		try {
-			Collection<BuildingBlock> selectedBuildingBlocks = new ArrayList<BuildingBlock>();
-			for (TreeNode treeNode : this.selectedAssemblies) {
+			final Collection<BuildingBlock> selectedBuildingBlocks = new ArrayList<BuildingBlock>();
+			for (final TreeNode treeNode : this.selectedAssemblies) {
 				if (treeNode instanceof BuildingBlockTreeNode) {
-					BuildingBlockTreeNode buildingBlockTreeNode = (BuildingBlockTreeNode) treeNode;
-					BuildingBlock buildingBlock = buildingBlockTreeNode.getBuildingBlock();
+					final BuildingBlockTreeNode buildingBlockTreeNode = (BuildingBlockTreeNode) treeNode;
+					final BuildingBlock buildingBlock = buildingBlockTreeNode.getBuildingBlock();
 					selectedBuildingBlocks.add(buildingBlock);
 				}
 			}
 			if (!selectedBuildingBlocks.isEmpty()) {
-				this.branchAssemblyService.createOrRemoveBranchAssemblies(this.getBranch(), selectedBuildingBlocks);
+				this.branchAssemblyService.createOrRemoveBranchAssemblies(this.branchBean.getBranch(), selectedBuildingBlocks);
 				this.sessionBean.setLoadBranchTreeFromDatabase(true);
 				this.sessionBean.setLoadBranchBuildingBlockTreeFromDatabase(true);
 			}
 
 			ViewUtil.addMessage("Builiding blocks assembled/un-assembled to the branch sucessfully.", FacesMessage.SEVERITY_INFO);
 
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.info(ex.getMessage());
 			this.sessionBean.setLoadBranchBuildingBlockTreeFromDatabase(true);
 			ViewUtil.addMessage(ex.getMessage(), FacesMessage.SEVERITY_ERROR);
@@ -207,23 +191,23 @@ public class BranchAssemblyBean extends AbstractBranchBean {
 	public void prepareBuildingBlockTree(final TreeNode root) {
 
 		// For each of building block type which can be coupled to branch.
-		for (BuildingBlockConstant buildingBlockType : BuildingBlockConstant.getAllSortedBuildingBlocksForBranchAssemblies()) {
+		for (final BuildingBlockConstant buildingBlockType : BuildingBlockConstant.getAllSortedBuildingBlocksForBranchAssemblies()) {
 
-			TreeNode buildingBlockParentNode = new DefaultTreeNode(buildingBlockType.getLabel(), root);
+			final TreeNode buildingBlockParentNode = new DefaultTreeNode(buildingBlockType.getLabel(), root);
 
 			// For all the building blocks.
 			if (this.buildingBlocks != null) {
 
-				List<BuildingBlock> sortedBuildingBlocks = new ArrayList<BuildingBlock>(this.buildingBlocks);
+				final List<BuildingBlock> sortedBuildingBlocks = new ArrayList<BuildingBlock>(this.buildingBlocks);
 				Collections.sort(sortedBuildingBlocks, new BuildingBlockComparator(BuildingBlockComparator.NAME));
 
-				for (BuildingBlock buildingBlock : sortedBuildingBlocks) {
+				for (final BuildingBlock buildingBlock : sortedBuildingBlocks) {
 
 					// For each building block type build a child tree.
 					if (buildingBlockType.equals(buildingBlock.getType())) {
 
 						// Create building block node.
-						TreeNode buildingBlockNode = new BuildingBlockTreeNode(buildingBlock.getName(), buildingBlock, buildingBlockParentNode);
+						final TreeNode buildingBlockNode = new BuildingBlockTreeNode(buildingBlock.getName(), buildingBlock, buildingBlockParentNode);
 
 						// if building block is already assembled to branch,
 						// mark as selected.
@@ -243,18 +227,18 @@ public class BranchAssemblyBean extends AbstractBranchBean {
 	 */
 	public void prepareSelectedBuildingBlocksMap() {
 		try {
-			if (this.branchBean.getBranch() != null && this.branchBean.getActiveTabIndex() == BranchTabConstant.ASSEMBLY.getTabIndex()) {
+			if ((this.branchBean.getBranch() != null) && (this.branchBean.getActiveTabIndex() == BranchTabConstant.ASSEMBLY.getTabIndex())) {
 				if (this.sessionBean.isLoadBranchBuildingBlockTreeFromDatabase()) {
 
 					this.branchBuildingBlocks = this.buildingBlockService.findBuildingBlocksbyBranchId(this.branchBean.getBranch().getId());
 
 					// Prepare buildings blocks tree
 					this.buildingBlocksRoot = new DefaultTreeNode("Root", null);
-					this.prepareBuildingBlockTree(this.buildingBlocksRoot);
+					prepareBuildingBlockTree(this.buildingBlocksRoot);
 					this.sessionBean.setLoadBranchBuildingBlockTreeFromDatabase(false);
 				}
 			}
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}
@@ -267,7 +251,7 @@ public class BranchAssemblyBean extends AbstractBranchBean {
 				this.buildingBlocks = this.buildingBlockService.findAllBuildingBlocks();
 				this.loadBuildingBlocksFlag = false;
 			}
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}

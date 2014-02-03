@@ -1,2 +1,2 @@
 Dear Parent,
-Your child ${studentName} is absent for ${examName} conducted on date ${date}.
+Your child ${studentName} is absent for subjects: ${subjects} for exam : ${examName} conducted on ${dates}.

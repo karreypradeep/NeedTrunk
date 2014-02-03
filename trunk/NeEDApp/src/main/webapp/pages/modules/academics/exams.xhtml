@@ -11,14 +11,13 @@
 			<c:when test="#{examBean.viewOrNewAction}">
 				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
 					<c:choose>
-						<c:when test="#{sectionExamScheduleBean.scheduleExamFlag}">
+						<c:when test="#{sectionExamScheduleBean.sectionExamScheduleWizardStep != 'all_scheduled_exams'}">
 							<h:outputText value="Schedule Exam : #{examBean.exam.name}" style="font-size:20px;" />
 
 						</c:when>
 
 						<c:otherwise>
 							<h:outputText value="Exam details" style="font-size:20px;" />
-
 						</c:otherwise>
 					</c:choose>
 				</p:toolbarGroup>
@@ -73,7 +72,7 @@
 						<f:setPropertyActionListener value="#{exam}" target="#{examBean.exam}" />
 						<f:setPropertyActionListener target="#{examBean.viewOrNewAction}" value="true" />
 						<f:setPropertyActionListener target="#{examBean.loadSectionExamsFlag}" value="true" />
-						<f:setPropertyActionListener target="#{sectionExamScheduleBean.scheduleExamFlag}" value="false" />
+						<f:setPropertyActionListener target="#{sectionExamScheduleBean.sectionExamScheduleWizardStep}" value="all_scheduled_exams" />
 						<f:setPropertyActionListener target="#{examBean.loadExamTypeBuildingBlockFalg}" value="true" />
 					</p:commandLink>
 				</p:column>

@@ -5,14 +5,15 @@
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 
 	<c:choose>
-		<c:when test="#{sectionExamScheduleBean.scheduleExamFlag}">
-
+		<c:when test="#{sectionExamScheduleBean.sectionExamScheduleWizardStep == 'schedule_exam'}">
 			<ui:include src="/pages/modules/academics/schedule_exam.xhtml" />
+		</c:when>
 
+		<c:when test="#{sectionExamScheduleBean.sectionExamScheduleWizardStep == 'reschedule_exam'}">
+			<ui:include src="/pages/modules/academics/reschedule_exam.xhtml" />
 		</c:when>
 
 		<c:otherwise>
-
 
 			<f:metadata>
 				<f:event type="preRenderView" listener="#{examBean.loadExamTypeBuildingBlocks()}" />
@@ -46,7 +47,7 @@
 							disabled="#{examBean.exam.id == null || !grantedAuthorityBean.userAllowedToScheduleExam}"
 							action="#{sectionExamScheduleBean.reset()}">
 							<f:setPropertyActionListener target="#{sectionExamScheduleBean.schedulingExam}" value="#{examBean.exam}" />
-							<f:setPropertyActionListener target="#{sectionExamScheduleBean.scheduleExamFlag}" value="true" />
+							<f:setPropertyActionListener target="#{sectionExamScheduleBean.sectionExamScheduleWizardStep}" value="schedule_exam" />
 							<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadAllAcademicYearsFlag}" value="true" />
 							<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadActiveKlassesForBranchFlag}" value="true" />
 							<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadActiveSectionsForKlassAndAcademicYearFlag}"
@@ -126,6 +127,19 @@
 
 
 				<p:column headerText="#{msg.options}" styleClass="options-column">
+
+					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" title="View"
+						style="margin:0px 0px 0px;float:left;" process="@this" update="@form"
+						disabled="#{examBean.exam.id == null || !grantedAuthorityBean.userAllowedToScheduleExam}"
+						action="#{sectionExamScheduleBean.viewScheduleExam()}">
+						<f:setPropertyActionListener value="#{sectionExamDO.sectionExam}" target="#{sectionExamScheduleBean.sectionExam}" />
+						<f:setPropertyActionListener target="#{sectionExamScheduleBean.schedulingExam}" value="#{examBean.exam}" />
+							<f:setPropertyActionListener target="#{sectionExamScheduleBean.sectionExamScheduleWizardStep}" value="reschedule_exam" />
+						<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadAllAcademicYearsFlag}" value="true" />
+						<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadActiveKlassesForBranchFlag}" value="true" />
+						<f:setPropertyActionListener target="#{sectionExamScheduleBean.loadActiveSectionsForKlassAndAcademicYearFlag}"
+							value="true" />
+					</p:commandLink>
 					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
 						process="@this" onclick="confirmation.show()" title="Delete"
 						disabled="#{!grantedAuthorityBean.userAllowedToScheduleExam}">
@@ -134,8 +148,8 @@
 				</p:column>
 			</p:dataTable>
 
-			<p:confirmDialog id="confirmDialog" message="Are you want to un-schedule exam?" header="Confirmation" severity="alert"
-				widgetVar="confirmation">
+			<p:confirmDialog id="confirmDialog" message="Are you want to un-schedule exam?" header="Confirmation"
+				severity="alert" widgetVar="confirmation">
 				<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
 					action="#{sectionExamScheduleBean.unScheduleExam()}" />
 				<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />

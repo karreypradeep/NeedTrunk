@@ -10,11 +10,13 @@ import javax.inject.Named;
 import org.primefaces.event.DateSelectEvent;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.academics.model.SectionExamSubject;
 import com.apeironsol.need.academics.service.ExamService;
 import com.apeironsol.need.academics.service.SectionExamService;
+import com.apeironsol.need.academics.service.SectionExamSubjectService;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
@@ -23,8 +25,6 @@ import com.apeironsol.need.core.service.SectionService;
 import com.apeironsol.need.core.service.SectionSubjectService;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 @Named
 @Scope(value = "session")
@@ -33,7 +33,7 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 	/**
 	 * Universal serial version id for this class.
 	 */
-	private static final long				serialVersionUID	= -3254580279620415693L;
+	private static final long				serialVersionUID				= -3254580279620415693L;
 
 	@Resource
 	private ExamBean						examBean;
@@ -48,9 +48,10 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 	private SectionExamService				sectionExamService;
 
 	@Resource
-	private SectionSubjectService			sectionSubjectService;
+	private SectionExamSubjectService		sectionExamSubjectService;
 
-	private boolean							scheduleExamFlag;
+	@Resource
+	private SectionSubjectService			sectionSubjectService;
 
 	private Klass							schedulingKlass;
 
@@ -70,11 +71,40 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 	private Collection<SectionSubject>		sessionSubjects;
 
+	private String							sectionExamScheduleWizardStep	= SectionExamScheduleWizard.ALL_SCHEDULED_EXAMS.getKey();
+
+	public enum SectionExamScheduleWizard {
+
+		SCHEDULE_EXAM("schedule_exam"), RESCHEDULE_EXAM("reschedule_exam"), ALL_SCHEDULED_EXAMS("all_scheduled_exams");
+
+		private String	key;
+
+		SectionExamScheduleWizard(final String key) {
+			this.key = key;
+		}
+
+		public String getKey() {
+			return this.key;
+		}
+
+		public void setKey(final String key) {
+			this.key = key;
+		}
+	};
+
 	public void reset() {
 		this.schedulingAcademicYear = null;
 		this.schedulingKlass = null;
 		this.schedulingSection = null;
 		this.sectionExam = new SectionExam();
+	}
+
+	public void viewScheduleExam() {
+		this.schedulingAcademicYear = this.sectionExam.getSection().getAcademicYear();
+		this.schedulingKlass = this.sectionExam.getSection().getKlass();
+		this.schedulingSection = this.sectionExam.getSection();
+		this.sectionExamSubjects = this.sectionExamSubjectService.findSectionExamSubjectsBySubjectExamId(this.sectionExam.getId());
+
 	}
 
 	public void onAcademicYearSelect() {
@@ -100,7 +130,7 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 		this.sectionExamSubjects = new ArrayList<SectionExamSubject>();
 
-		this.loadActiveSectionsForKlassAndAcademicYear();
+		loadActiveSectionsForKlassAndAcademicYear();
 
 	}
 
@@ -108,7 +138,7 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 		this.sessionSubjects = this.sectionSubjectService.findSectionSubjectsByScetionId(this.schedulingSection.getId());
 
-		this.populateSectionExamSubjects();
+		populateSectionExamSubjects();
 
 	}
 
@@ -116,9 +146,9 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 		this.sectionExamSubjects = new ArrayList<SectionExamSubject>();
 
-		for (SectionSubject sectionSubject : this.sessionSubjects) {
+		for (final SectionSubject sectionSubject : this.sessionSubjects) {
 
-			SectionExamSubject sectionExamSubject = new SectionExamSubject();
+			final SectionExamSubject sectionExamSubject = new SectionExamSubject();
 			sectionExamSubject.setSectionSubject(sectionSubject);
 			this.sectionExamSubjects.add(sectionExamSubject);
 
@@ -133,21 +163,22 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 	public void onEndDateSelect(final DateSelectEvent event) {
 
-		this.populateSectionExamSubjects();
+		populateSectionExamSubjects();
 	}
 
 	public void loadActiveSectionsForKlassAndAcademicYear() {
 		if (this.loadActiveSectionsForKlassAndAcademicYearFlag) {
 			try {
 
-				if (this.schedulingKlass != null && this.schedulingAcademicYear != null) {
+				if ((this.schedulingKlass != null) && (this.schedulingAcademicYear != null)) {
 					this.activeSectionsForKlassAndAcademicYear = this.sectionService.findActiveSectionsByKlassIdAndAcademicYearId(this.schedulingKlass.getId(),
 							this.schedulingAcademicYear.getId());
 
-					Collection<Section> sections = new ArrayList<Section>();
-					for (Section section : this.activeSectionsForKlassAndAcademicYear) {
+					final Collection<Section> sections = new ArrayList<Section>();
+					for (final Section section : this.activeSectionsForKlassAndAcademicYear) {
 
-						SectionExam sectionExam = this.sectionExamService.findSectionExamsBySectionIdAndExamId(section.getId(), this.schedulingExam.getId());
+						final SectionExam sectionExam = this.sectionExamService.findSectionExamsBySectionIdAndExamId(section.getId(),
+								this.schedulingExam.getId());
 
 						if (sectionExam == null) {
 							sections.add(section);
@@ -159,9 +190,9 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 				}
 				this.loadActiveSectionsForKlassAndAcademicYearFlag = false;
-			} catch (ApplicationException e) {
+			} catch (final ApplicationException e) {
 				ViewExceptionHandler.handle(e);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				ViewExceptionHandler.handle(e);
 			}
 
@@ -177,28 +208,7 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 			this.sectionExam.setExam(this.schedulingExam);
 
-			Collection<SectionExamSubject> sectionExamSubjects = new ArrayList<SectionExamSubject>();
-
-			for (SectionExamSubject sectionExamSubject : this.sectionExamSubjects) {
-
-				if (sectionExamSubject.getScheduledDate() != null || sectionExamSubject.getStartTime() != null || sectionExamSubject.getEndTime() != null
-						|| sectionExamSubject.getPassMarks() != null || sectionExamSubject.getMaximumMarks() != null) {
-
-					this.validateSectionExamSubject(sectionExamSubject);
-
-					sectionExamSubjects.add(sectionExamSubject);
-				}
-
-			}
-
-			if (sectionExamSubjects.isEmpty()) {
-
-				ViewUtil.addMessage("Scheduling details are requried for atleast one subject.", FacesMessage.SEVERITY_ERROR);
-				return;
-
-			}
-
-			this.examService.scheduleExam(this.sectionExam, sectionExamSubjects);
+			this.examService.scheduleExam(this.sectionExam, this.sectionExamSubjects);
 
 			this.schedulingExam = this.examService.findExamById(this.schedulingExam.getId());
 
@@ -206,44 +216,14 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 			this.examBean.setLoadSectionExamsFlag(true);
 
-			this.scheduleExamFlag = false;
+			this.sectionExamScheduleWizardStep = SectionExamScheduleWizard.ALL_SCHEDULED_EXAMS.getKey();
 
-		} catch (ApplicationException e) {
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ViewExceptionHandler.handle(e);
 		}
 
-	}
-
-	private void validateSectionExamSubject(final SectionExamSubject sectionExamSubject) {
-		if (sectionExamSubject.getScheduledDate() == null) {
-			throw new InvalidArgumentException("Exam scheduled date should not be empty.");
-		}
-
-		if (sectionExamSubject.getStartTime() == null) {
-			throw new InvalidArgumentException("Exam start time should not be empty.");
-		}
-
-		if (sectionExamSubject.getEndTime() == null) {
-			throw new InvalidArgumentException("Exam end time should not be empty.");
-		}
-
-		if (sectionExamSubject.getEndTime().before(sectionExamSubject.getStartTime())) {
-			throw new InvalidArgumentException("Exam start time  should be before end time.");
-		}
-
-		if (sectionExamSubject.getPassMarks() == null) {
-			throw new InvalidArgumentException("Exam pass marks should not be empty.");
-		}
-
-		if (sectionExamSubject.getMaximumMarks() == null) {
-			throw new InvalidArgumentException("Exam maximum marks  should not be empty.");
-		}
-
-		if (sectionExamSubject.getMaximumMarks() < sectionExamSubject.getPassMarks()) {
-			throw new InvalidArgumentException("Exam pass marks should not be grater then maximum marks.");
-		}
 	}
 
 	public void unScheduleExam() {
@@ -252,21 +232,13 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 			this.examService.unScheduleExam(this.sectionExam);
 
 			this.examBean.setLoadSectionExamsFlag(true);
-			this.reset();
-		} catch (ApplicationException e) {
+			reset();
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ViewExceptionHandler.handle(e);
 		}
 
-	}
-
-	public boolean isScheduleExamFlag() {
-		return this.scheduleExamFlag;
-	}
-
-	public void setScheduleExamFlag(final boolean scheduleExamFlag) {
-		this.scheduleExamFlag = scheduleExamFlag;
 	}
 
 	public Klass getSchedulingKlass() {
@@ -339,6 +311,21 @@ public class SectionExamScheduleBean extends AbstractExamBean {
 
 	public void setSessionSubjects(final Collection<SectionSubject> sessionSubjects) {
 		this.sessionSubjects = sessionSubjects;
+	}
+
+	/**
+	 * @return the sectionExamScheduleWizardStep
+	 */
+	public String getSectionExamScheduleWizardStep() {
+		return this.sectionExamScheduleWizardStep;
+	}
+
+	/**
+	 * @param sectionExamScheduleWizardStep
+	 *            the sectionExamScheduleWizardStep to set
+	 */
+	public void setSectionExamScheduleWizardStep(final String sectionExamScheduleWizardStep) {
+		this.sectionExamScheduleWizardStep = sectionExamScheduleWizardStep;
 	}
 
 }

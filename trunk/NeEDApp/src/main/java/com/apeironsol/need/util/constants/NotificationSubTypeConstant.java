@@ -27,9 +27,23 @@ public enum NotificationSubTypeConstant implements Labeled {
 	ABSENT_NOTIFICATION("absent_notification", true, false, false, false, false, false),
 	EXAM_ABSENT_NOTIFICATION("exam_absent_notification", true, false, false, false, false, false),
 	EXAM_SCHEDULE_NOTIFICATION("exam_schedule_notification", true, false, false, false, false, false),
-	NEW_ADMISSION_NOTIFICATION("new_admission_notification", false, false, true, true, false, false),
-	REPORT_CARD_NOTIFICATION("report_card_notification", true, true, false, false, false, false),
+	NEW_ADMISSION_ACCEPTED_NOTIFICATION("new_admission_accepted_notification", false, false, false, true, false, false),
+	NEW_ADMISSION_SUBMITTED_NOTIFICATION("new_admission_submitted_notification", false, false, false, true, false, false),
+	NEW_ADMISSION_NOTIFICATION("new_admission_admitted_notification", false, false, false, true, false, false),
+	REPORT_CARD_NOTIFICATION("report_card_notification", true, false, false, false, false, false),
+	EXAM_RESULT_NOTIFICATION("exam_result_notification", true, false, false, false, false, false),
 	ADHOC_NOTIFICATION("adhoc_notification", true, true, false, false, false, false);
+
+	NotificationSubTypeConstant(final String label, final boolean groupMessage, final boolean messageRequired, final boolean minimumAmountRequired,
+			final boolean isImplicitMessage, final boolean contactDetalisRequired, final boolean isAllowedTobeScheduled) {
+		this.label = label;
+		this.groupMessage = groupMessage;
+		this.messageRequired = messageRequired;
+		this.minimumAmountRequired = minimumAmountRequired;
+		this.isImplicitMessage = isImplicitMessage;
+		this.contactDetalisRequired = contactDetalisRequired;
+		this.isAllowedTobeScheduled = isAllowedTobeScheduled;
+	}
 
 	private String											label;
 
@@ -63,8 +77,11 @@ public enum NotificationSubTypeConstant implements Labeled {
 		brachNotifications.add(ABSENT_NOTIFICATION);
 		brachNotifications.add(EXAM_ABSENT_NOTIFICATION);
 		brachNotifications.add(EXAM_SCHEDULE_NOTIFICATION);
+		brachNotifications.add(NEW_ADMISSION_ACCEPTED_NOTIFICATION);
+		brachNotifications.add(NEW_ADMISSION_SUBMITTED_NOTIFICATION);
 		brachNotifications.add(NEW_ADMISSION_NOTIFICATION);
 		brachNotifications.add(REPORT_CARD_NOTIFICATION);
+		brachNotifications.add(EXAM_RESULT_NOTIFICATION);
 	}
 
 	/**
@@ -78,24 +95,13 @@ public enum NotificationSubTypeConstant implements Labeled {
 	 * @return the brachLevelNotifications
 	 */
 	public static NotificationSubTypeConstant[] getBrachGroupNotifications() {
-		List<NotificationSubTypeConstant> brachGroupNotifications = new ArrayList<NotificationSubTypeConstant>();
-		for (NotificationSubTypeConstant constant : brachNotifications) {
+		final List<NotificationSubTypeConstant> brachGroupNotifications = new ArrayList<NotificationSubTypeConstant>();
+		for (final NotificationSubTypeConstant constant : brachNotifications) {
 			if (constant.isGroupMessage()) {
 				brachGroupNotifications.add(constant);
 			}
 		}
 		return brachGroupNotifications.toArray(new NotificationSubTypeConstant[brachGroupNotifications.size()]);
-	}
-
-	NotificationSubTypeConstant(final String label, final boolean groupMessage, final boolean messageRequired, final boolean minimumAmountRequired,
-			final boolean isImplicitMessage, final boolean contactDetalisRequired, final boolean isAllowedTobeScheduled) {
-		this.label = label;
-		this.groupMessage = groupMessage;
-		this.messageRequired = messageRequired;
-		this.minimumAmountRequired = minimumAmountRequired;
-		this.isImplicitMessage = isImplicitMessage;
-		this.contactDetalisRequired = contactDetalisRequired;
-		this.isAllowedTobeScheduled = isAllowedTobeScheduled;
 	}
 
 	@Override

@@ -170,8 +170,8 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	public void onTabChange() {
 		this.viewActionString = ViewAction.VIEW_BATCH_LOG_MESSAGES;
 		this.loadBatchLogMessagesFromDB = true;
-		this.loadBranchNotification();
-		this.getBranchNotificationByNotificationType();
+		loadBranchNotification();
+		getBranchNotificationByNotificationType();
 	}
 
 	/**
@@ -198,7 +198,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 			return null;
 		} else {
 			try {
-				if (this.notificationSubTypeConstant.isMessageRequired() && (this.notificationText == null || this.notificationText.trim().isEmpty())) {
+				if (this.notificationSubTypeConstant.isMessageRequired() && ((this.notificationText == null) || this.notificationText.trim().isEmpty())) {
 					ViewUtil.addMessage("Message required for this notification type.", FacesMessage.SEVERITY_ERROR);
 					return null;
 				}
@@ -208,14 +208,14 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 						.messageToBeSent(this.notificationText).attendanceDate(DateUtil.getSystemDate()).build();
 
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.studentBean.getStudentAcademicYear(), this.scheduledBatchLog);
-			} catch (Exception e) {
-				FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
-				this.addMessage(message);
+			} catch (final Exception e) {
+				final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
+				addMessage(message);
 			}
-			this.setViewBatchLogMessages();
+			setViewBatchLogMessages();
 			this.loadBatchLogMessagesFromDB = true;
 			this.batchFinished = false;
-			this.loadBatchLogMessagesByStudentAcademicYear();
+			loadBatchLogMessagesByStudentAcademicYear();
 			this.progressBarIncrementor = 1;
 			this.batchFinished = false;
 		}
@@ -242,7 +242,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 */
 	public void loadBatchLogMessagesByStudentAcademicYear() {
 		if (this.loadBatchLogMessagesFromDB) {
-			this.setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean.getStudentAcademicYear()
+			setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean.getStudentAcademicYear()
 					.getId()));
 			this.loadBatchLogMessagesFromDB = false;
 		}
@@ -288,7 +288,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 		this.notificationTypeConstant = null;
 		this.notificationSubTypeConstant = null;
 		this.notificationText = null;
-		this.getBranchNotificationByNotificationType();
+		getBranchNotificationByNotificationType();
 		return null;
 	}
 
@@ -363,10 +363,10 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 					|| BatchStatusConstant.DISTRIBUTED.equals(this.scheduledBatchLog.getBatchStatusConstant())) {
 				this.batchFinished = false;
 			} else {
-				this.setBatchLog(this.scheduledBatchLog);
+				setBatchLog(this.scheduledBatchLog);
 				this.scheduledBatchLog = null;
-				this.setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean
-						.getStudentAcademicYear().getId()));
+				setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean.getStudentAcademicYear()
+						.getId()));
 			}
 		}
 	}
@@ -376,7 +376,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 * has finished.
 	 */
 	public void pollListener() {
-		this.checkBatchStopped();
+		checkBatchStopped();
 	}
 
 	/**
@@ -413,9 +413,9 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 				progress = 100;
 				this.batchFinished = true;
 			} else {
-				long totalElements = this.scheduledBatchLog.getNrElements();
-				long totalProcessed = this.scheduledBatchLog.getNrElementsProcessed();
-				progress = totalElements > 0 ? Long.valueOf(totalProcessed * 100 / totalElements).intValue() : 100;
+				final long totalElements = this.scheduledBatchLog.getNrElements();
+				final long totalProcessed = this.scheduledBatchLog.getNrElementsProcessed();
+				progress = totalElements > 0 ? Long.valueOf((totalProcessed * 100) / totalElements).intValue() : 100;
 			}
 
 		} else {
@@ -454,7 +454,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 *            the notificationText to set
 	 */
 	public void setNotificationText(final String notificationText) {
-		if (notificationText == null || notificationText.trim().isEmpty()) {
+		if ((notificationText == null) || notificationText.trim().isEmpty()) {
 			this.notificationText = null;
 		} else {
 			this.notificationText = notificationText;
@@ -462,19 +462,23 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	}
 
 	public String handleNotificationTypeChange() {
-		this.getBranchNotificationByNotificationType();
+		getBranchNotificationByNotificationType();
 		return null;
 	}
 
 	public void getBranchNotificationByNotificationType() {
 		this.notificationSubTypeAvailable = new ArrayList<NotificationSubTypeConstant>();
-		for (BranchNotification branchNotification : this.branchNotifications) {
+		for (final BranchNotification branchNotification : this.branchNotifications) {
 			if (!branchNotification.getNotificationSubType().isImplicitMessage()) {
-				if (NotificationTypeConstant.EMAIL_NOTIFICATION.equals(this.notificationTypeConstant) && branchNotification.getEmailIndicator()) {
+				if (NotificationTypeConstant.EMAIL_NOTIFICATION.equals(this.notificationTypeConstant) && (null != branchNotification.getEmailIndicator())
+						&& branchNotification.getEmailIndicator()) {
 					this.notificationSubTypeAvailable.add(branchNotification.getNotificationSubType());
-				} else if (NotificationTypeConstant.SMS_NOTIFICATION.equals(this.notificationTypeConstant) && branchNotification.getSmsIndicator()) {
+				} else if (NotificationTypeConstant.SMS_NOTIFICATION.equals(this.notificationTypeConstant) && (null != branchNotification.getSmsIndicator())
+						&& branchNotification.getSmsIndicator()) {
 					this.notificationSubTypeAvailable.add(branchNotification.getNotificationSubType());
-				} else if (this.notificationTypeConstant == null && (branchNotification.getSmsIndicator() || branchNotification.getEmailIndicator())) {
+				} else if ((null == this.notificationTypeConstant)
+						&& (((null != branchNotification.getSmsIndicator()) && branchNotification.getSmsIndicator()) || ((null != branchNotification
+								.getEmailIndicator()) && branchNotification.getEmailIndicator()))) {
 					this.notificationSubTypeAvailable.add(branchNotification.getNotificationSubType());
 				}
 			}
@@ -482,7 +486,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	}
 
 	public void loadBranchNotification() {
-		this.setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
+		setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
 	}
 
 	/**
@@ -522,12 +526,12 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 */
 	public String handleNotificationSubTypeChange() {
 		this.selectedSectionExam = null;
-		if (this.getSectionExams() != null) {
-			this.getSectionExams().clear();
+		if (getSectionExams() != null) {
+			getSectionExams().clear();
 		}
 		if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(this.notificationSubTypeConstant)
 				|| NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(this.notificationSubTypeConstant)) {
-			this.setSectionExams(this.sectionExamService.findSectionExamsBySectionId(this.studentBean.getStudentSection().getSection().getId()));
+			setSectionExams(this.sectionExamService.findSectionExamsBySectionId(this.studentBean.getStudentSection().getSection().getId()));
 			this.renderSectionExamIndicator = true;
 		} else {
 			this.renderSectionExamIndicator = false;

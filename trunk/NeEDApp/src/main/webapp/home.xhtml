@@ -8,12 +8,36 @@
 		<f:event type="preRenderView" listener="#{loginBean.putHomeURLInSeccion}" />
 	</f:metadata>
 	<ui:define name="body">
+		<center>
+			<div class="home" style="padding-top: 125px; padding-left: 5px;">
 
-		<div class="home" style="padding-top: 125px; padding-left: 5px;">
-			
+				<h:panelGrid columns="2">
+					<p:commandLink action="organization_index">
+						<p:graphicImage url="/images/home-icon1.png" width="192" height="175" />
+
+						<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="organization" />
+						<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+						<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+							value="ORGANIZATION_ORGANIZATION">
+							<f:converter converterId="viewContentConverter" />
+						</f:setPropertyActionListener>
+					</p:commandLink>
+
+					<p:commandLink action="branch_index">
+						<p:graphicImage url="/images/home-icon2.png" width="192" height="175" />
+						<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_STUDENTS">
+							<f:converter converterId="viewContentConverter" />
+						</f:setPropertyActionListener>
+						<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="branch" />
+						<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+						<f:setPropertyActionListener target="#{studentBean.loadBranchStudentsFlag}" value="true" />
+						<f:setPropertyActionListener target="#{studentBean.viewAction}" value="false" />
+					</p:commandLink>
+				</h:panelGrid>
+
+				<!-- 
 			<h:panelGrid columns="5">
-
-				<p:commandLink action="organization_index">
+				<p:commandLink action="organization_index" >
 					<p:graphicImage url="/images/home-icon1.png"  width="192" height="175"/>
 
 					<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="organization" />
@@ -35,11 +59,11 @@
 					<f:setPropertyActionListener target="#{studentBean.viewAction}" value="false" />
 				</p:commandLink>
 
-				<p:commandLink action="parent_index">
+				<p:commandLink action="parent_index" rendered="false">
 					<p:graphicImage url="/images/home-icon3.png" width="192" height="175"/>
 				</p:commandLink>
 
-				<p:commandLink action="student_index">
+				<p:commandLink action="student_index" rendered="false">
 					<p:graphicImage url="/images/home-icon4.png" width="192" height="175"/>
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="STUDENT_PORTAL_PERSONAL">
 						<f:converter converterId="viewContentConverter" />
@@ -51,7 +75,7 @@
 					<f:setPropertyActionListener target="#{studentBean.loadLatestAcademicYearDetailsFlag}" value="true" />
 				</p:commandLink>
 
-				<p:commandLink action="employee_index">
+				<p:commandLink action="employee_index" rendered="false">
 					<p:graphicImage url="/images/home-icon5.png" width="192" height="175"/>
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="EMPLOYEE_PORTAL_PERSONAL">
 						<f:converter converterId="viewContentConverter" />
@@ -63,7 +87,10 @@
 				</p:commandLink>
 
 			</h:panelGrid>
-		</div>
+			
+			 -->
+			</div>
+		</center>
 	</ui:define>
 </ui:composition>
 </html>

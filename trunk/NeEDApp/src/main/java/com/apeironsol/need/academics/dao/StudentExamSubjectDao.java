@@ -2,8 +2,9 @@ package com.apeironsol.need.academics.dao;
 
 import java.util.Collection;
 
-import com.apeironsol.need.academics.model.StudentExamSubject;
 import com.apeironsol.framework.BaseDao;
+import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.need.academics.model.StudentExamSubject;
 
 public interface StudentExamSubjectDao extends BaseDao<StudentExamSubject> {
 
@@ -77,4 +78,32 @@ public interface StudentExamSubjectDao extends BaseDao<StudentExamSubject> {
 	 */
 	Collection<StudentExamSubject> findStudentExamSubjectsBySubjectIdAndStudentAcademicYearId(Long subjectId, Long studentAcademicYearId);
 
+	/**
+	 * Find section exams by section id and exam id.
+	 * 
+	 * @param sectionExamId
+	 *            exam type id.
+	 * @return section exams by section id and exam id.
+	 */
+	Collection<StudentExamSubject> findStudentExamAllSubjectsDOsBySubjectExamSubjectIds(final Collection<Long> subjectExamSubjectIds);
+
+	/**
+	 * Find student exam subjects by section exam subject id.
+	 * 
+	 * @param sectionExamSubjectId
+	 *            section exam subject id.
+	 * @return student exam subjects by section exam subject id.
+	 */
+	Collection<StudentExamSubject> findAbsentStudentSubjectsForSectionExamIds(Collection<Long> sectionExamIds) throws ApplicationException;
+
+	Collection<StudentExamSubject> findStudentExamSubjectsByStudentAcademicYearIdAndExamId(final Long studentAcademicYearId, final Long examId);
+
+	/**
+	 * Find student exam subjects by section exam subject id.
+	 * 
+	 * @param sectionExamSubjectId
+	 *            section exam subject id.
+	 * @return student exam subjects by section exam subject id.
+	 */
+	Collection<StudentExamSubject> findAllStudentExamSubjectsForSectionExamIds(Collection<Long> sectionExamIds) throws ApplicationException;
 }

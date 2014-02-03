@@ -49,7 +49,7 @@ public class AccessBean implements Serializable {
 	}
 
 	public boolean isAcccessingOrganization() {
-		if ("organization".equals(this.getResourceAccessLevel())) {
+		if ("organization".equals(getResourceAccessLevel())) {
 			return true;
 		} else {
 			return false;
@@ -57,11 +57,11 @@ public class AccessBean implements Serializable {
 	}
 
 	public boolean isAccessingBranch() {
-		if ("branch".equals(this.getResourceAccessLevel())) {
+		if ("branch".equals(getResourceAccessLevel())) {
 			return true;
-		} else if ("student".equals(this.getResourceAccessLevel())) {
+		} else if ("student".equals(getResourceAccessLevel())) {
 			return false;
-		} else if ("admission".equals(this.getResourceAccessLevel())) {
+		} else if ("admission".equals(getResourceAccessLevel())) {
 			return false;
 		} else {
 			return false;
@@ -69,7 +69,7 @@ public class AccessBean implements Serializable {
 	}
 
 	public boolean isAccessingStudent() {
-		if ("student".equals(this.getResourceAccessLevel())) {
+		if ("student".equals(getResourceAccessLevel())) {
 			return true;
 		} else {
 			return false;
@@ -77,7 +77,7 @@ public class AccessBean implements Serializable {
 	}
 
 	public boolean isAccessingParent() {
-		if ("parent".equals(this.getResourceAccessLevel())) {
+		if ("parent".equals(getResourceAccessLevel())) {
 			return true;
 		} else {
 			return false;
@@ -85,7 +85,7 @@ public class AccessBean implements Serializable {
 	}
 
 	public boolean isAccessingEmployee() {
-		if ("employee".equals(this.getResourceAccessLevel())) {
+		if ("employee".equals(getResourceAccessLevel())) {
 			return true;
 		} else {
 			return false;
@@ -93,15 +93,14 @@ public class AccessBean implements Serializable {
 	}
 
 	public String getResourceAccessLevel() {
-		ExternalContext context = ViewUtil.getExternalContext();
-		HttpServletRequest request = (HttpServletRequest) context.getRequest();
+		final ExternalContext context = ViewUtil.getExternalContext();
+		final HttpServletRequest request = (HttpServletRequest) context.getRequest();
 		String requestURL = request.getRequestURI();
 		if (StringUtils.isEmpty(requestURL)) {
 			return null;
 		} else if (requestURL.contains("access-denied")) {
 
-			DefaultSavedRequest defaultSavedRequest = (DefaultSavedRequest) context.getSessionMap().get(
-					WebAttributes.SAVED_REQUEST);
+			final DefaultSavedRequest defaultSavedRequest = (DefaultSavedRequest) context.getSessionMap().get(WebAttributes.SAVED_REQUEST);
 			if (defaultSavedRequest != null) {
 				requestURL = defaultSavedRequest.getRequestURL();
 			}
@@ -125,8 +124,8 @@ public class AccessBean implements Serializable {
 	}
 
 	public boolean isSessionExists() {
-		ExternalContext context = ViewUtil.getExternalContext();
-		if (context.getSession(false) != null && ViewUtil.getPrincipal() != null) {
+		final ExternalContext context = ViewUtil.getExternalContext();
+		if ((context.getSession(false) != null) && (ViewUtil.getPrincipal() != null)) {
 			return true;
 		}
 		return false;
@@ -137,9 +136,9 @@ public class AccessBean implements Serializable {
 		ViewUtil.addMessage("UnAuthorized to access error.", FacesMessage.SEVERITY_ERROR);
 		ViewUtil.addMessage("User 					: " + ViewUtil.getPrincipal(), FacesMessage.SEVERITY_ERROR);
 
-		Collection<GrantedAuthority> grantedAuthorities = ViewUtil.getGrantedAuthorities();
+		final Collection<GrantedAuthority> grantedAuthorities = ViewUtil.getGrantedAuthorities();
 		String auths = "";
-		for (GrantedAuthority grantedAuthority : grantedAuthorities) {
+		for (final GrantedAuthority grantedAuthority : grantedAuthorities) {
 			auths = auths + grantedAuthority.getAuthority();
 			auths = auths + " , ";
 		}

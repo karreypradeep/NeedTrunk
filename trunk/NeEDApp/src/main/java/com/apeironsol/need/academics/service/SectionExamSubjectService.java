@@ -13,7 +13,7 @@ public interface SectionExamSubjectService {
 	 *            exam type id.
 	 * @return section exams by section id and exam id.
 	 */
-	Collection<SectionExamSubject> findSectionExamSubjectsBySectionIdAndSubjectExamId(Long sectionExamId);
+	Collection<SectionExamSubject> findSectionExamSubjectsBySubjectExamId(Long sectionExamId);
 
 	/**
 	 * Find section exam subject by id.

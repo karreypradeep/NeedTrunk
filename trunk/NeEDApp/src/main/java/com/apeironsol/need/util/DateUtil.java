@@ -241,7 +241,7 @@ public class DateUtil {
 			if (weekOfMonth == numOfWeeksInMonth) {
 				lastDateOfWeekOfMonth = numOfDaysInMonth;
 				break;
-			} else if (calendar.get(Calendar.WEEK_OF_MONTH) == weekOfMonth + 1) {
+			} else if (calendar.get(Calendar.WEEK_OF_MONTH) == (weekOfMonth + 1)) {
 				lastDateOfWeekOfMonth = i - 1;
 				break;
 			}
@@ -256,14 +256,22 @@ public class DateUtil {
 	}
 
 	public static Date getDateForDisplayFormat(final Date date) {
+		final DateTimeZone zone = DateTimeZone.forID(ViewUtil.getSystemTimezone());
+		final DateTime localtime = new DateTime(date, zone);
+		final String dateString = localtime.toString("MM/dd/yyyy");
 		final DateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-		Date formattedDate = date;
+		Date formattedDate = localtime.toDate();
 		try {
-			formattedDate = formatter.parse(date.toString());
+			formattedDate = formatter.parse(dateString);
 		} catch (final ParseException e) {
 			e.printStackTrace();
 		}
 		return formattedDate;
 	}
 
+	public static String getDateAsStringInDefaultFormat(final Date date) {
+		final DateTimeZone zone = DateTimeZone.forID(ViewUtil.getSystemTimezone());
+		final DateTime localtime = new DateTime(date, zone);
+		return localtime.toString("MM/dd/yyyy");
+	}
 }

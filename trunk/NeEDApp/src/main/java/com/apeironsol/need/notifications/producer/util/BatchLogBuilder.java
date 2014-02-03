@@ -2,6 +2,7 @@ package com.apeironsol.need.notifications.producer.util;
 
 import java.util.Date;
 
+import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.core.model.Branch;
@@ -27,6 +28,7 @@ public class BatchLogBuilder {
 	private SectionExam					sectionExam;
 	private ReportCard					reportCard;
 	private String						messageToBeSent;
+	private Exam						exam;
 
 	public BatchLogBuilder messageToBeSent(final String messageToBeSent) {
 		this.messageToBeSent = messageToBeSent;
@@ -83,12 +85,17 @@ public class BatchLogBuilder {
 		return this;
 	}
 
+	public BatchLogBuilder exam(final Exam exam) {
+		this.exam = exam;
+		return this;
+	}
+
 	public BatchLog build() {
-		return this.getBatchLog(this);
+		return getBatchLog(this);
 	}
 
 	private BatchLog getBatchLog(final BatchLogBuilder builder) {
-		BatchLog batchLog = new BatchLog();
+		final BatchLog batchLog = new BatchLog();
 		batchLog.setStudentFeeTransactionNr(builder.studentFeeTransactionNr);
 		batchLog.setNotificationTypeConstant(builder.notificationTypeConstant);
 		batchLog.setNotificationSubTypeConstant(builder.notificationSubTypeConstant);
@@ -99,6 +106,7 @@ public class BatchLogBuilder {
 		batchLog.setSectionExam(builder.sectionExam);
 		batchLog.setMessage(builder.messageToBeSent);
 		batchLog.setReportCard(this.reportCard);
+		batchLog.setExam(this.exam);
 		if (this.nrElements != null) {
 			batchLog.setNrElements(builder.nrElements);
 			batchLog.setBatchStatusConstant(builder.nrElements > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
