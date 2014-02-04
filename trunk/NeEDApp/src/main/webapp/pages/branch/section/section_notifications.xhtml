@@ -14,10 +14,10 @@
 				notificationMessage="#{sectionNotificationsBean.notificationText}"
 				notificationTypeConstants="#{enumConstantsBean.notificationTypeConstants}"
 				notificationTypeAjaxMethod="#{sectionNotificationsBean.handleNotificationTypeChange()}"
-				sectionExams="#{sectionNotificationsBean.sectionExams}"
+				sectionExams="#{sectionNotificationsBean.examsForNotification}"
 				notificationSubTypeAjaxMethod="#{sectionNotificationsBean.handleNotificationSubTypeChange()}"
-				renderSectionExamIndicator="#{sectionNotificationsBean.renderSectionExamIndicator}"
-				selectedSectionExam="#{sectionNotificationsBean.selectedSectionExam}" />
+				renderSectionExamIndicator="#{sectionNotificationsBean.disaplyExamDropdownForNotification}"
+				selectedSectionExam="#{sectionNotificationsBean.selectedExamForNotification}" />  
 		</c:when>
 
 		<c:when test="#{sectionNotificationsBean.viewActionString == 'VIEW_BATCH_LOG_MESSAGES'}">

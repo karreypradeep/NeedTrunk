@@ -16,11 +16,11 @@
 					academicYearForNotification="#{klassNotificationsBean.academicYearForNotification}"
 					renderAcademicYearIndicator="true" notificationTypeConstants="#{enumConstantsBean.notificationTypeConstants}"
 					notificationTypeAjaxMethod="#{klassNotificationsBean.handleNotificationTypeChange()}"
-					sectionExams="#{klassNotificationsBean.sectionExams}"
 					notificationSubTypeAjaxMethod="#{klassNotificationsBean.handleNotificationSubTypeChange()}"
-					renderSectionExamIndicator="#{klassNotificationsBean.renderSectionExamIndicator}"
-					selectedSectionExam="#{klassNotificationsBean.selectedSectionExam}" 
-					academicYearAjaxMethod="#{klassNotificationsBean.handleAcademicYearChange()}"/>
+					renderSectionExamIndicator="#{klassNotificationsBean.disaplyExamDropdownForNotification}"
+					academicYearAjaxMethod="#{klassNotificationsBean.handleAcademicYearChange()}"
+					scheduledExams="#{klassNotificationsBean.examsForNotification}"  
+					selectedScheduledExam="#{klassNotificationsBean.selectedExamForNotification}" />
 			</c:when>
 
 			<c:when test="#{klassNotificationsBean.viewActionString == 'VIEW_BATCH_LOG_MESSAGES'}">
