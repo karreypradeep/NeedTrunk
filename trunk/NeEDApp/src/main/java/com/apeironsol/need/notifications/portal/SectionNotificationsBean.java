@@ -445,24 +445,22 @@ public class SectionNotificationsBean extends AbstractNotificationBean {
 		if (getExamsForNotification() != null) {
 			getExamsForNotification().clear();
 		}
-		if (getAcademicYearForNotification() != null) {
-			final Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsBySectionId(this.sectionBean.getSection().getId());
-			final Map<Long, Exam> examsMap = new HashMap<Long, Exam>();
-			for (final SectionExam sectionExam : sectionExams) {
-				if (examsMap.get(sectionExam.getExam().getId()) == null) {
-					if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(getNotificationSubTypeConstant())
-							|| NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION.equals(getNotificationSubTypeConstant())) {
-						if (sectionExam.getEndDate().before(DateUtil.getSystemDate())) {
-							examsMap.put(sectionExam.getExam().getId(), sectionExam.getExam());
-						}
-					} else if (NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(getNotificationSubTypeConstant())) {
-						if (!sectionExam.getStartDate().before(DateUtil.getSystemDate())) {
-							examsMap.put(sectionExam.getExam().getId(), sectionExam.getExam());
-						}
+		final Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsBySectionId(this.sectionBean.getSection().getId());
+		final Map<Long, Exam> examsMap = new HashMap<Long, Exam>();
+		for (final SectionExam sectionExam : sectionExams) {
+			if (examsMap.get(sectionExam.getExam().getId()) == null) {
+				if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(getNotificationSubTypeConstant())
+						|| NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION.equals(getNotificationSubTypeConstant())) {
+					if (sectionExam.getEndDate().before(DateUtil.getSystemDate())) {
+						examsMap.put(sectionExam.getExam().getId(), sectionExam.getExam());
+					}
+				} else if (NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(getNotificationSubTypeConstant())) {
+					if (!sectionExam.getStartDate().before(DateUtil.getSystemDate())) {
+						examsMap.put(sectionExam.getExam().getId(), sectionExam.getExam());
 					}
 				}
 			}
-			setExamsForNotification(examsMap.values());
 		}
+		setExamsForNotification(examsMap.values());
 	}
 }
