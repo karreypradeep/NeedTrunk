@@ -8,6 +8,8 @@ package com.apeironsol.need.notifications.portal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
@@ -29,6 +31,7 @@ import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.notifications.service.BranchNotificationService;
 import com.apeironsol.need.notifications.service.NotificationService;
 import com.apeironsol.need.util.DateUtil;
+import com.apeironsol.need.util.comparator.BatchLogMessageComparator;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
@@ -244,6 +247,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 		if (this.loadBatchLogMessagesFromDB) {
 			setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean.getStudentAcademicYear()
 					.getId()));
+			Collections.sort((List<BatchLogMessage>) getStudentBatchLogMessages(), new BatchLogMessageComparator(BatchLogMessageComparator.Order.ID));
 			this.loadBatchLogMessagesFromDB = false;
 		}
 	}
@@ -394,11 +398,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 * @return
 	 */
 	public int getBatchPollInterval() {
-		int interval = 0;
-		if (this.scheduledBatchLog != null) {
-			interval = 2;
-		}
-		return interval;
+		return 15;
 	}
 
 	/**

@@ -74,14 +74,14 @@
 		<p:dialog header="Error message" widgetVar="errorMessageDlg" modal="true">
 			<h:outputLabel id="errorMessageLabel" value="#{cc.attrs.errorMessage}" escape="false" />
 			<f:facet name="footer">
-				<p:commandButton value="Calcel" oncomplete="errorMessageDlg.hide();" update=":form" process="@this" />
+				<p:commandButton value="Ok" oncomplete="errorMessageDlg.hide();" update=":form" process="@this" />
 			</f:facet>
 		</p:dialog>
 
 		<p:dialog header="Message sent" widgetVar="stackTraceDlg" modal="true">
 			<h:outputLabel id="stackTraceLabel" value="#{cc.attrs.messageSent}" escape="false" />
 			<f:facet name="footer">
-				<p:commandButton value="Calcel" oncomplete="stackTraceDlg.hide();" update="@form" process="@this" />
+				<p:commandButton value="Ok" oncomplete="stackTraceDlg.hide();" update="@form" process="@this" />
 			</f:facet>
 		</p:dialog>
 	</composite:implementation>

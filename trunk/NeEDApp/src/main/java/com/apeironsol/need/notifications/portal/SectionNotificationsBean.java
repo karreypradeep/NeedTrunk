@@ -8,8 +8,10 @@ package com.apeironsol.need.notifications.portal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
@@ -30,6 +32,7 @@ import com.apeironsol.need.notifications.producer.util.BatchLogBuilder;
 import com.apeironsol.need.notifications.service.BatchLogMessageService;
 import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.util.DateUtil;
+import com.apeironsol.need.util.comparator.BatchLogComparator;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
@@ -196,6 +199,7 @@ public class SectionNotificationsBean extends AbstractNotificationBean {
 		if (this.loadBatchLogsFromDB) {
 			setSectionBatchLogs(this.batchLogService.findBatchLogsByNotificationLevelAndNotificationLevelId(this.sessionBean.getCurrentBranch().getId(),
 					NotificationLevelConstant.SECTION, this.sectionBean.getSection().getId()));
+			Collections.sort((List<BatchLog>) getSectionBatchLogs(), new BatchLogComparator(BatchLogComparator.Order.ID));
 			this.loadBatchLogsFromDB = false;
 		}
 	}
@@ -402,11 +406,7 @@ public class SectionNotificationsBean extends AbstractNotificationBean {
 	 * @return
 	 */
 	public int getBatchPollInterval() {
-		int interval = 15;
-		if (this.scheduledBatchLog != null) {
-			interval = 5;
-		}
-		return interval;
+		return 30;
 	}
 
 	/**

@@ -22,7 +22,8 @@
 				<h:outputText value="#{batchLog.id}" />
 			</p:column>
 
-			<p:column headerText="Status" sortBy="#{batchLog.batchStatusConstant}">
+			<p:column headerText="Status" sortBy="#{batchLog.batchStatusConstant}" filterBy="#{batchLog.batchStatusConstant}"
+						filterMatchMode="contains">
 				<h:outputText value="#{batchLog.batchStatusConstant}" />
 			</p:column>
 
@@ -32,11 +33,13 @@
 				</h:outputText>
 			</p:column>
 
-			<p:column headerText="Type" sortBy="#{batchLog.notificationTypeConstant.label}">
+			<p:column headerText="Type" sortBy="#{batchLog.notificationTypeConstant.label}" filterBy="#{batchLog.notificationTypeConstant.label}"
+						filterMatchMode="contains">
 				<h:outputText value="#{batchLog.notificationTypeConstant.label}" />
 			</p:column>
 
-			<p:column headerText="Sub type" sortBy="#{batchLog.notificationSubTypeConstant.label}">
+			<p:column headerText="Sub type" sortBy="#{batchLog.notificationSubTypeConstant.label}" filterBy="#{batchLog.notificationSubTypeConstant.label}"
+						filterMatchMode="contains">
 				<h:outputText value="#{batchLog.notificationSubTypeConstant.label}" />
 			</p:column>
 

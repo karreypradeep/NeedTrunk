@@ -215,9 +215,9 @@ public abstract class AbstractPortalBean implements Serializable {
 	 * @return collection of active academic years
 	 */
 	public Collection<AcademicYear> getActiveAcademicYears() {
-		if (this.activeAcademicYears == null || this.activeAcademicYears.isEmpty()) {
+		if ((this.activeAcademicYears == null) || this.activeAcademicYears.isEmpty()) {
 			this.loadActiveAcademicYearsFlag = true;
-			this.loadActiveAcademicYearsForCurrentBranch();
+			loadActiveAcademicYearsForCurrentBranch();
 		}
 		return this.activeAcademicYears;
 	}
@@ -312,7 +312,7 @@ public abstract class AbstractPortalBean implements Serializable {
 	protected Collection<Branch> getAllBranchs() {
 		try {
 			return this.branchService.findAllBranchs();
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.info(ex.getMessage());
 			ViewUtil.addMessage(ex.getMessage(), FacesMessage.SEVERITY_ERROR);
 			return null;
@@ -333,11 +333,11 @@ public abstract class AbstractPortalBean implements Serializable {
 	 */
 	public void loadActiveAcademicYearsForCurrentBranch() {
 		if (this.loadActiveAcademicYearsFlag) {
-			Branch branch = this.sessionBean.getCurrentBranch();
+			final Branch branch = this.sessionBean.getCurrentBranch();
 			if (branch != null) {
 				try {
-					this.setActiveAcademicYears(this.academicYearService.findAcademicYearsByBranchIdAndActiveStatus(branch.getId(), true));
-				} catch (BusinessException e) {
+					setActiveAcademicYears(this.academicYearService.findAcademicYearsByBranchIdAndActiveStatus(branch.getId(), true));
+				} catch (final BusinessException e) {
 					ViewExceptionHandler.handle(e);
 				}
 				this.loadActiveAcademicYearsFlag = false;
@@ -351,10 +351,10 @@ public abstract class AbstractPortalBean implements Serializable {
 	 */
 	public void loadAcademicYearsForAdmissionsOpened() {
 		if (this.loadAcademicYearsForAdmissionsOpenedFlag) {
-			Branch branch = this.sessionBean.getCurrentBranch();
+			final Branch branch = this.sessionBean.getCurrentBranch();
 			try {
 				this.academicYearsWithAdmissionOpen = this.academicYearService.findActiveAcademicYearsByBranchIdAndAdmissionsOpen(branch.getId());
-			} catch (BusinessException e) {
+			} catch (final BusinessException e) {
 				ViewExceptionHandler.handle(e);
 			}
 			this.loadAcademicYearsForAdmissionsOpenedFlag = false;
@@ -374,10 +374,10 @@ public abstract class AbstractPortalBean implements Serializable {
 	 * Load classes from database.
 	 */
 	public void loadKlasses() {
-		if (this.isLoadKlassesFlag()) {
+		if (isLoadKlassesFlag()) {
 			try {
-				this.setKlasses(this.klassService.findKlassesByBranchId(this.sessionBean.getCurrentBranch().getId()));
-			} catch (BusinessException e) {
+				setKlasses(this.klassService.findKlassesByBranchId(this.sessionBean.getCurrentBranch().getId()));
+			} catch (final BusinessException e) {
 				ViewExceptionHandler.handle(e);
 			}
 			this.loadKlassesFlag = false;
@@ -559,12 +559,12 @@ public abstract class AbstractPortalBean implements Serializable {
 	 */
 	public void loadAllAcademicYearsForCurrentBranch() {
 		try {
-			if (this.isLoadAllAcademicYearsFlag()) {
-				Branch currentBranch = this.sessionBean.getCurrentBranch();
+			if (isLoadAllAcademicYearsFlag()) {
+				final Branch currentBranch = this.sessionBean.getCurrentBranch();
 				this.allAcademicYearsForCurrentBranch = this.academicYearService.findAcademicYearsByBranchId(currentBranch.getId());
-				this.setLoadAllAcademicYearsFlag(false);
+				setLoadAllAcademicYearsFlag(false);
 			}
-		} catch (ApplicationException ex) {
+		} catch (final ApplicationException ex) {
 			log.info(ex.getMessage());
 			ViewExceptionHandler.handle(ex);
 		}
@@ -599,11 +599,11 @@ public abstract class AbstractPortalBean implements Serializable {
 	 */
 	public AcademicYear getAcademicYearById(final Long academicYearId) {
 		AcademicYear result = null;
-		if (this.allAcademicYearsForCurrentBranch == null || this.allAcademicYearsForCurrentBranch.isEmpty()) {
+		if ((this.allAcademicYearsForCurrentBranch == null) || this.allAcademicYearsForCurrentBranch.isEmpty()) {
 			this.loadAllAcademicYearsFlag = true;
-			this.loadAllAcademicYearsForCurrentBranch();
+			loadAllAcademicYearsForCurrentBranch();
 		}
-		for (AcademicYear academicYear : this.allAcademicYearsForCurrentBranch) {
+		for (final AcademicYear academicYear : this.allAcademicYearsForCurrentBranch) {
 			if (academicYear.getId().equals(academicYearId)) {
 				result = academicYear;
 				break;
@@ -622,10 +622,10 @@ public abstract class AbstractPortalBean implements Serializable {
 
 	public int getNoOfAttendanceDaysForCurrentBranchAndAcademisYearById(final Long academicYearId) {
 		int noOfDays = 365;
-		AcademicYear academicYear = this.getAcademicYearById(academicYearId);
+		final AcademicYear academicYear = getAcademicYearById(academicYearId);
 		noOfDays = DateUtil.dateDiffInDays(academicYear.getStartDate(), academicYear.getEndDate());
-		Collection<AcademicYearHoliday> academicYearHolidays = this.getAcademicYearHolidaysForAcademicYearId(academicYearId);
-		Collection<AcademicYearHoliday> academicYearWeekEnds = this.getAcademicYearWeekEndsForAcademicYearId(academicYearId);
+		final Collection<AcademicYearHoliday> academicYearHolidays = getAcademicYearHolidaysForAcademicYearId(academicYearId);
+		final Collection<AcademicYearHoliday> academicYearWeekEnds = getAcademicYearWeekEndsForAcademicYearId(academicYearId);
 		if (academicYearHolidays != null) {
 			noOfDays = noOfDays - academicYearHolidays.size();
 		}
@@ -732,7 +732,7 @@ public abstract class AbstractPortalBean implements Serializable {
 
 			this.activeKlassesForBranch = this.klassService.findActiveKlassesByBranchId(this.sessionBean.getCurrentBranch().getId());
 
-			this.loadActiveKlassesForBranchFlag = true;
+			this.loadActiveKlassesForBranchFlag = false;
 		}
 	}
 
