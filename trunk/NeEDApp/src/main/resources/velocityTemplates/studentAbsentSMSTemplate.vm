@@ -1,3 +1,2 @@
 Dear Parent,
-Your child ${studentName} is absent today ${date}.
-Reason:${reason}
+Your ward ${studentName} was absent on ${date}.

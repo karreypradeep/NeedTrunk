@@ -8,7 +8,6 @@ package com.apeironsol.need.notifications.consumers.worker.sms;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,8 +30,8 @@ import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
-import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
+import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -56,7 +55,7 @@ public class ExamResultSMSWorker implements SMSWorker {
 	/**
 	 * Velocity template path for notification.
 	 */
-	private static final String			VELOCITY_TEMPLATE_PATH	= "velocityTemplates/examScheduledSMSTemplate.vm";
+	private static final String			VELOCITY_TEMPLATE_PATH	= "velocityTemplates/examResultsSMSTemplate.vm";
 
 	/**
 	 * Asynchronous method for sending fee pending notification mail for
@@ -82,7 +81,6 @@ public class ExamResultSMSWorker implements SMSWorker {
 			if (exam != null) {
 				model.put("examName", batchLog.getExam().getName());
 			} else {
-				notificationMessage.setSentAddress("Exam details not available.");
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
 				notificationMessage.setErrorMessage("Exam is null in batch log.");
 				return notificationMessage;
@@ -90,27 +88,28 @@ public class ExamResultSMSWorker implements SMSWorker {
 			final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findStudentExamSubjectsByStudentAcademicYearIdAndExamId(
 					studentAcademicYear.getId(), exam.getId());
 			String subjects = "";
-			String dates = "";
-			String scheduleStartDate = "";
-			String scheduleEndDate = "";
+			double total = 0;
+			double maxMarks = 0;
+			double scoredMarksForSubject = 0;
+			double maxMarksForSubject = 0;
 			for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
-				if (scheduleStartDate.trim().length() > 0) {
-					scheduleStartDate = DateUtil.getDateAsStringInDefaultFormat(studentExamSubject.getSectionExamSubject().getSectionExam().getStartDate());
-					scheduleEndDate = DateUtil.getDateAsStringInDefaultFormat(studentExamSubject.getSectionExamSubject().getSectionExam().getEndDate());
+				if (StudentExamSubjectStatusConstant.ABSENT.equals(studentExamSubject.getStudentExamSubjectStatus())
+						|| StudentExamSubjectStatusConstant.TAKEN.equals(studentExamSubject.getStudentExamSubjectStatus())) {
+					scoredMarksForSubject = studentExamSubject.getScoredMarks() != null ? studentExamSubject.getScoredMarks() : 0;
+					maxMarksForSubject = studentExamSubject.getSectionExamSubject().getMaximumMarks();
+					total += scoredMarksForSubject;
+					maxMarks += maxMarksForSubject;
+					subjects += studentExamSubject.getSectionExamSubject().getSectionSubject().getSubject().getName() + ":" + scoredMarksForSubject + "/"
+							+ maxMarksForSubject;
+				} else {
+					notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
+					notificationMessage.setErrorMessage("Exam results not available.");
+					return notificationMessage;
 				}
-				subjects += studentExamSubject.getSectionExamSubject().getSectionSubject().getSubject().getName() + ",";
-				dates += DateUtil.getDateAsStringInDefaultFormat(studentExamSubject.getSectionExamSubject().getScheduledDate()) + ",";
 			}
-			if (subjects.indexOf(",") > 0) {
-				subjects = subjects.substring(0, subjects.lastIndexOf(","));
-			}
-			if (dates.endsWith(",")) {
-				dates = dates.substring(0, dates.lastIndexOf(","));
-			}
+			final String totalMarksForExam = "Total:" + total + "/" + maxMarks;
 			model.put("subjects", subjects);
-			model.put("fromDate", scheduleStartDate);
-			model.put("toDate", scheduleEndDate);
-			model.put("dates", dates);
+			model.put("total", totalMarksForExam);
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 		}
 		notificationMessage.setMessage(smsText);
@@ -139,8 +138,28 @@ public class ExamResultSMSWorker implements SMSWorker {
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			final Map<String, String> model = new HashMap<String, String>();
 			model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
-			model.put("examName", batchLog.getSectionExam().getExam().getName());
-			model.put("date", new SimpleDateFormat("dd/mm/yyyy").format(batchLog.getSectionExam().getStartDate()));
+			model.put("examName", batchLog.getExam().getName());
+			final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findStudentExamSubjectsByStudentAcademicYearIdAndExamId(
+					studentAcademicYear.getId(), batchLog.getExam().getId());
+			String subjects = "";
+			double total = 0;
+			double maxMarks = 0;
+			double scoredMarksForSubject = 0;
+			double maxMarksForSubject = 0;
+			for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
+				if (StudentExamSubjectStatusConstant.ABSENT.equals(studentExamSubject.getStudentExamSubjectStatus())
+						|| StudentExamSubjectStatusConstant.ASSIGNED.equals(studentExamSubject.getStudentExamSubjectStatus())) {
+					scoredMarksForSubject = studentExamSubject.getScoredMarks() != null ? studentExamSubject.getScoredMarks() : 0;
+					maxMarksForSubject = studentExamSubject.getSectionExamSubject().getMaximumMarks();
+					total += scoredMarksForSubject;
+					maxMarks += maxMarksForSubject;
+					subjects += studentExamSubject.getSectionExamSubject().getSectionSubject().getSubject().getName() + ":" + scoredMarksForSubject + "/"
+							+ maxMarksForSubject;
+				}
+			}
+			final String totalMarksForExam = "Total:" + total + "/" + maxMarks;
+			model.put("subjects", subjects);
+			model.put("total", totalMarksForExam);
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 		}
 		return smsText;

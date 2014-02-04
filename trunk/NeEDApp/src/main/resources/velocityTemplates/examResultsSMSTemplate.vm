@@ -1,0 +1,5 @@
+Dear Parent,
+Your ward ${studentName}
+${examName} Results:
+${subjects}
+${total}

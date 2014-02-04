@@ -11,7 +11,7 @@
 		<composite:attribute name="academicYearForNotification" />
 		<composite:attribute name="academicYears" />
 		<composite:attribute name="renderAcademicYearIndicator" default="false" />
-		<composite:attribute name="academicYearAjaxMethod"  required="false" method-signature="java.lang.String action()" />
+		<composite:attribute name="academicYearAjaxMethod" required="false" method-signature="java.lang.String action()" />
 
 		<composite:attribute name="notificationSubType" required="true" />
 		<composite:attribute name="notificationSubTypeConstants" required="true" />
@@ -22,10 +22,10 @@
 		<composite:attribute name="cancelActionMethod" required="true" method-signature="java.lang.String action()" />
 
 		<composite:attribute name="notificationTypeAjaxMethod" required="true" method-signature="java.lang.String action()" />
-		<composite:attribute name="notificationSubTypeAjaxMethod"  required="true" method-signature="java.lang.String action()" />
+		<composite:attribute name="notificationSubTypeAjaxMethod" required="true" method-signature="java.lang.String action()" />
 
-		<composite:attribute name="scheduledExams"  />
-		<composite:attribute name="renderExamIndicator" default="false" />  
+		<composite:attribute name="scheduledExams" />
+		<composite:attribute name="renderExamIndicator" default="false" />
 		<composite:attribute name="selectedScheduledExam" />
 
 		<composite:attribute name="renderClassIndicator" default="false" />
@@ -65,9 +65,11 @@
 				</p:selectOneListbox>
 				<p:message id="notification_sub_type_msg" for="notification_sub_type" />
 
-				<p:outputLabel id="message_text_label" value="Message text: " for="message_text" rendered="#{cc.attrs.notificationSubType.messageRequired}" />
+				<p:outputLabel id="message_text_label" value="Message text: " for="message_text"
+					rendered="#{cc.attrs.notificationSubType.messageRequired}" />
 				<p:inputTextarea rows="5" cols="40" counter="counter" maxlength="200" counterTemplate="{0} characters remaining."
-					autoResize="false" value="#{cc.attrs.notificationMessage}" id="message_text" rendered="#{cc.attrs.notificationSubType.messageRequired}" required="true"/>
+					autoResize="false" value="#{cc.attrs.notificationMessage}" id="message_text"
+					rendered="#{cc.attrs.notificationSubType.messageRequired}" required="true" />
 				<h:outputText id="counter" rendered="#{cc.attrs.notificationSubType.messageRequired}" />
 
 				<p:outputLabel id="scheduled_exam_label" value="Exam" for="scheduled_exam"
@@ -90,6 +92,10 @@
 				</f:facet>
 
 			</h:panelGrid>
+			<p:blockUI block="notificationPanel" trigger="send_notification">  
+        		Request is processing, please wait<br />
+				<p:graphicImage value="/images/ajax-loader.gif" /> 
+			</p:blockUI>
 		</p:panel>
 	</composite:implementation>
 </ui:composition>

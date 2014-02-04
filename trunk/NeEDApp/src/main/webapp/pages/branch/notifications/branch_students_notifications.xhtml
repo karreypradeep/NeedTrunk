@@ -3,10 +3,11 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components/notifications">
-	<p:panel style="margin-botton:0px;margin-top:0px;border:0px;" id="klassNotificationPanel">
+	<p:panel style="margin-botton:0px;margin-top:0px;" id="klassNotificationPanel" toggleTitle="Send notification" header="Send notification">
+		<p:messages globalOnly="true" autoUpdate="true" closable="true" />
 		<c:choose>
 			<c:when test="#{branchStudentsNotificationsBean.viewActionString == 'VIEW_SEND_NOTIFICATION'}">
-				<f:metadata>  
+				<f:metadata>
 					<f:event type="preRenderView" listener="#{branchStudentsNotificationsBean.loadBranchNotification}" />
 					<f:event type="preRenderView" listener="#{branchStudentsNotificationsBean.getBranchNotificationByNotificationType}" />
 				</f:metadata>
@@ -15,7 +16,7 @@
 					notificationSubTypeConstants="#{branchStudentsNotificationsBean.notificationSubTypeAvailable}"
 					cancelActionMethod="#{branchStudentsNotificationsBean.setViewBatchLogs()}"
 					sendNotificationActionMethod="#{branchStudentsNotificationsBean.sendNotification()}"
-					notificationMessage="#{branchStudentsNotificationsBean.notificationText}" 
+					notificationMessage="#{branchStudentsNotificationsBean.notificationText}"
 					academicYears="#{branchStudentsNotificationsBean.activeAcademicYears}"
 					academicYearForNotification="#{branchStudentsNotificationsBean.academicYearForNotification}"
 					renderAcademicYearIndicator="true" notificationTypeConstants="#{enumConstantsBean.notificationTypeConstants}"
@@ -24,8 +25,7 @@
 					academicYearAjaxMethod="#{branchStudentsNotificationsBean.handleAcademicYearChange()}"
 					renderExamIndicator="#{branchStudentsNotificationsBean.disaplyExamDropdownForNotification}"
 					scheduledExams="#{branchStudentsNotificationsBean.examsForNotification}"
-					selectedScheduledExam="#{branchStudentsNotificationsBean.selectedExamForNotification}"  
-					/>
+					selectedScheduledExam="#{branchStudentsNotificationsBean.selectedExamForNotification}" />
 			</c:when>
 
 			<c:when test="#{branchStudentsNotificationsBean.viewActionString == 'VIEW_BATCH_LOG_MESSAGES'}">
@@ -41,7 +41,8 @@
 
 			</c:when>
 			<c:otherwise>
-				<p:poll listener="#{branchStudentsNotificationsBean.pollListener()}" stop="#{branchStudentsNotificationsBean.batchFinished}"
+				<p:poll listener="#{branchStudentsNotificationsBean.pollListener()}"
+					stop="#{branchStudentsNotificationsBean.batchFinished}"
 					interval="#{branchStudentsNotificationsBean.batchPollInterval}" update="klassNotificationPanel"></p:poll>
 				<p:toolbar style="margin-bottom:1px;">
 					<p:toolbarGroup align="right">
