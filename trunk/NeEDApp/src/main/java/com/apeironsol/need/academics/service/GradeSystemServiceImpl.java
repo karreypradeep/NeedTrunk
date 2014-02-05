@@ -46,39 +46,39 @@ public class GradeSystemServiceImpl implements GradeSystemService {
 	 */
 	@Override
 	public GradeSystem saveGradeSystem(final GradeSystem gradeSystem) {
-		this.validate(gradeSystem);
+		validate(gradeSystem);
 		GradeSystem result = this.gradeSystemDao.persist(gradeSystem);
-		for (GradeSystemRange gradeSystemRange : gradeSystem.getGradeSystemRange()) {
+		for (final GradeSystemRange gradeSystemRange : gradeSystem.getGradeSystemRange()) {
 			gradeSystemRange.setGradeSystem(result);
 			this.gradeSystemRangeDao.persist(gradeSystemRange);
 		}
-		result = this.findGradeSystemById(result.getId());
+		result = findGradeSystemById(result.getId());
 		return result;
 	}
 
 	private void validate(final GradeSystem gradeSystem) {
-		for (GradeSystemRange gradeSystemRange : gradeSystem.getGradeSystemRange()) {
-			if (gradeSystemRange.getMaximumRange() == null) {
+		for (final GradeSystemRange gradeSystemRange : gradeSystem.getGradeSystemRange()) {
+			if ((gradeSystemRange.getMaximumRange() == null) || (gradeSystemRange.getMaximumRange() == 0)) {
 				throw new ApplicationException("Please enter Maximum percentage.");
-			} else if (gradeSystemRange.getDistinction() == null) {
+			} else if ((gradeSystemRange.getDistinction() == null) || (gradeSystemRange.getDistinction().trim().length() == 0)) {
 				throw new ApplicationException("Please enter Distinction.");
 			}
 		}
 
-		if (gradeSystem.getGradeSystemRange() == null || gradeSystem.getGradeSystemRange().size() == 0) {
+		if ((gradeSystem.getGradeSystemRange() == null) || (gradeSystem.getGradeSystemRange().size() == 0)) {
 			throw new BusinessException("Please define percentage ranges for grading system.");
 		} else {
 			int minValue = 100, maxValue = 0;
-			Collection<GradeSystemRange> gradeSystemRanges = gradeSystem.getGradeSystemRange();
+			final Collection<GradeSystemRange> gradeSystemRanges = gradeSystem.getGradeSystemRange();
 			if (gradeSystemRanges != null) {
 				Collections.sort((List<GradeSystemRange>) gradeSystemRanges, new GradeSystemRangeComparator(GradeSystemRangeComparator.Order.MIN_PERCENTAGE));
 				GradeSystemRange previousGradeSystemRange = null;
-				for (GradeSystemRange gradeSystemRange : gradeSystem.getGradeSystemRange()) {
+				for (final GradeSystemRange gradeSystemRange : gradeSystem.getGradeSystemRange()) {
 					if (gradeSystemRange.getMinimumRange() >= gradeSystemRange.getMaximumRange()) {
 						throw new BusinessException("Minimum percentage " + gradeSystemRange.getMinimumRange() + " should be less than maximum percentage "
 								+ gradeSystemRange.getMaximumRange() + ".");
 					}
-					if (previousGradeSystemRange != null && gradeSystemRange.getMinimumRange() <= previousGradeSystemRange.getMaximumRange()) {
+					if ((previousGradeSystemRange != null) && (gradeSystemRange.getMinimumRange() <= previousGradeSystemRange.getMaximumRange())) {
 						throw new BusinessException("Ranges cannot overlap. Please check.");
 					}
 					if (gradeSystemRange.getMinimumRange() < minValue) {
@@ -97,8 +97,8 @@ public class GradeSystemServiceImpl implements GradeSystemService {
 			}
 		}
 		if (gradeSystem.isDefaultGrade()) {
-			GradeSystem defaultGradeSystem = this.findDefaultGradeSystemForBranch(gradeSystem.getBranch().getId());
-			if (defaultGradeSystem != null && !defaultGradeSystem.getId().equals(gradeSystem.getId())) {
+			final GradeSystem defaultGradeSystem = findDefaultGradeSystemForBranch(gradeSystem.getBranch().getId());
+			if ((defaultGradeSystem != null) && !defaultGradeSystem.getId().equals(gradeSystem.getId())) {
 				throw new BusinessException("A default grading systen " + defaultGradeSystem.getName() + " already exists for the branch.");
 			}
 		}
@@ -109,7 +109,7 @@ public class GradeSystemServiceImpl implements GradeSystemService {
 	 */
 	@Override
 	public void removeGradeSystem(final GradeSystem gradeSystem) {
-		for (GradeSystemRange gradeSystemRange : gradeSystem.getGradeSystemRange()) {
+		for (final GradeSystemRange gradeSystemRange : gradeSystem.getGradeSystemRange()) {
 			this.gradeSystemRangeDao.remove(gradeSystemRange);
 		}
 		this.gradeSystemDao.remove(gradeSystem);

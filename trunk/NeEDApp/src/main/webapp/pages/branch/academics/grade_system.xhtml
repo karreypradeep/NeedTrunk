@@ -79,5 +79,9 @@
 				action="#{gradeSystemBean.removeGradeSystemRange}" />
 			<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />
 		</p:confirmDialog>
+		<p:blockUI block="form" trigger="grading_system_save">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
 	</p:panel>
 </ui:composition>

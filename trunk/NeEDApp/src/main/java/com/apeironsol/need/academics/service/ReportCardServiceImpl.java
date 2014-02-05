@@ -49,33 +49,33 @@ public class ReportCardServiceImpl implements ReportCardService {
 	 */
 	@Override
 	public ReportCard saveReportCard(final ReportCard reportCard) {
-		this.validate(reportCard);
+		validate(reportCard);
 		ReportCard result = this.reportCardDao.persist(reportCard);
-		for (ReportCardExam reportCardRange : reportCard.getReportCardExams()) {
+		for (final ReportCardExam reportCardRange : reportCard.getReportCardExams()) {
 			reportCardRange.setReportCard(result);
 			this.reportCardRangeDao.persist(reportCardRange);
 		}
-		result = this.findReportCardById(result.getId());
+		result = findReportCardById(result.getId());
 		return result;
 	}
 
 	private void validate(final ReportCard reportCard) {
 		int percentage = 0;
-		ArrayList<Long> examIds = new ArrayList<Long>();
+		final ArrayList<Long> examIds = new ArrayList<Long>();
 		// if same exam is assigned for multiple percentages then throw exeption
 
-		for (ReportCardExam reportCardExam : reportCard.getReportCardExams()) {
-			if (examIds.contains(reportCardExam.getExam().getId())) {
-				throw new ApplicationException("Exam " + reportCardExam.getExam().getName() + " is used more than once.");
-			} else {
-				examIds.add(reportCardExam.getExam().getId());
-			}
+		for (final ReportCardExam reportCardExam : reportCard.getReportCardExams()) {
 			if (reportCardExam.getExam() == null) {
 				throw new ApplicationException("Please select Exam.");
 			} else if (reportCardExam.getPercentage() == null) {
 				throw new ApplicationException("Please enter percentage for exam.");
 			} else if (reportCardExam.getPercentage() <= 0) {
 				throw new ApplicationException("Percentage should be greater than 0.");
+			}
+			if (examIds.contains(reportCardExam.getExam().getId())) {
+				throw new ApplicationException("Exam " + reportCardExam.getExam().getName() + " is used more than once.");
+			} else {
+				examIds.add(reportCardExam.getExam().getId());
 			}
 			percentage += reportCardExam.getPercentage();
 		}
@@ -90,10 +90,11 @@ public class ReportCardServiceImpl implements ReportCardService {
 	 */
 	@Override
 	public void removeReportCard(final ReportCard reportCard) {
-		if (this.batchLogService.findBatchLogsForReportCardId(reportCard.getId()) != null) {
+		if ((this.batchLogService.findBatchLogsForReportCardId(reportCard.getId()) != null)
+				&& (this.batchLogService.findBatchLogsForReportCardId(reportCard.getId()).size() > 0)) {
 			throw new ApplicationException("Notifications have been sent. Report card cannot be deleted.");
 		}
-		for (ReportCardExam reportCardRange : reportCard.getReportCardExams()) {
+		for (final ReportCardExam reportCardRange : reportCard.getReportCardExams()) {
 			this.reportCardRangeDao.remove(reportCardRange);
 		}
 		this.reportCardDao.remove(reportCard);
@@ -117,9 +118,9 @@ public class ReportCardServiceImpl implements ReportCardService {
 
 	@Override
 	public Collection<ReportCard> findReportCardsByExams(final Collection<Long> examIDs) throws BusinessException {
-		Collection<ReportCardExam> reportCardExams = this.reportCardRangeDao.findAllReportCardExamsByExams(examIDs);
-		Map<Long, ReportCard> reportCards = new HashMap<Long, ReportCard>();
-		for (ReportCardExam reportCardExam : reportCardExams) {
+		final Collection<ReportCardExam> reportCardExams = this.reportCardRangeDao.findAllReportCardExamsByExams(examIDs);
+		final Map<Long, ReportCard> reportCards = new HashMap<Long, ReportCard>();
+		for (final ReportCardExam reportCardExam : reportCardExams) {
 			reportCards.put(reportCardExam.getReportCard().getId(), reportCardExam.getReportCard());
 		}
 		return reportCards.values();

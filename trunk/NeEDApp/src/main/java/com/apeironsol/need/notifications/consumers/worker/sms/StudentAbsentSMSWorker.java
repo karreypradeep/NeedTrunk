@@ -84,12 +84,12 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 		if (batchLog.getAttendanceDate() == null) {
 			batchLog.setAttendanceDate(DateUtil.getSystemDate());
 		}
-		NotificationMessage notificationMessage = new NotificationMessage();
-		UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
-		Map<String, String> model = new HashMap<String, String>();
+		final NotificationMessage notificationMessage = new NotificationMessage();
+		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
+		final Map<String, String> model = new HashMap<String, String>();
 		model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
 		model.put("date", new SimpleDateFormat("dd/MMM/yyyy").format(batchLog.getAttendanceDate()));
-		StudentSection studentSection = this.studentSectionService.findStudentSectionByStudentAcademicYearIdAndStatus(studentAcademicYear.getId(),
+		final StudentSection studentSection = this.studentSectionService.findStudentSectionByStudentAcademicYearIdAndStatus(studentAcademicYear.getId(),
 				StudentSectionStatusConstant.ACTIVE);
 		Attendance attendance = null;
 		StudentAbsent studentAbsent = null;
@@ -103,7 +103,7 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 			}
 		}
 		String smsText = batchLog.getMessage();
-		if (smsText == null || smsText.trim().isEmpty()) {
+		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 		}
 		notificationMessage.setMessage(smsText);
@@ -111,25 +111,24 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 			notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
 			notificationMessage.setErrorMessage("Attendance not taken.");
 			notificationMessage.setMessage("Attendance not taken.");
+		} else if (studentAcademicYear.getStudent().getAddress().getContactNumber() == null) {
+			notificationMessage.setSentAddress("Not Available");
+			notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
+			notificationMessage.setErrorMessage("Contact number not available");
 		} else if (studentAbsent == null) {
 			notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
 			notificationMessage.setErrorMessage("Student present in class.");
 			notificationMessage.setMessage("Student present in class.");
 		} else if (studentAcademicYear.getStudent().getAddress().getContactNumber() != null) {
-			// smodel.put("reason",
-			// batchLog.getBranch().getBranchTypeConstant().getLabel());
 			notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
-			String smsReturnTest = universalSMSProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
+			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() },
+					smsText);
 			if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 			} else {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.FAILED);
 				notificationMessage.setErrorMessage(smsReturnTest);
 			}
-		} else {
-			notificationMessage.setSentAddress("Not Available");
-			notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
-			notificationMessage.setErrorMessage("Contact number not available");
 		}
 
 		return notificationMessage;
@@ -137,12 +136,12 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 
 	@Override
 	public String getMessage(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) throws ApplicationException {
-		Map<String, String> model = new HashMap<String, String>();
+		final Map<String, String> model = new HashMap<String, String>();
 		model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
 		model.put("instituteType", "College");
 		model.put("date", new SimpleDateFormat("dd/MMM/yyyy").format(batchLog.getAttendanceDate()));
 		String smsText = batchLog.getMessage();
-		if (smsText == null || smsText.trim().isEmpty()) {
+		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 		}
 		return smsText;
