@@ -22,12 +22,12 @@ import javax.jms.Session;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.NeEDJMSObject;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -76,7 +76,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public void sendNotificationAsBatch(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog) {
+	public synchronized void sendNotificationAsBatch(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -85,11 +85,11 @@ public class NotificationProducerUtil implements Serializable {
 			// create a queue session
 			session = queueConn.createSession(true, Session.AUTO_ACKNOWLEDGE);
 			// create a queue sender
-			MessageProducer producer = session.createProducer(this.getDestination());
+			final MessageProducer producer = session.createProducer(this.getDestination());
 			producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 			ObjectMessage message = null;
 			int seqNr = 1;
-			for (StudentAcademicYear studentAcademicYear : studentAcademicYears) {
+			for (final StudentAcademicYear studentAcademicYear : studentAcademicYears) {
 				message = this.createNotificationMessage(studentAcademicYear, batchLog, Long.valueOf(seqNr), session);
 				// send the message
 				producer.send(message);
@@ -101,12 +101,12 @@ public class NotificationProducerUtil implements Serializable {
 			producer.send(message);
 			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.DISTRIBUTED, Long.valueOf(studentAcademicYears.size()));
 			session.commit();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.SENDING_FAILED, Long.valueOf(studentAcademicYears.size()));
 			if (session != null) {
 				try {
 					session.rollback();
-				} catch (JMSException e1) {
+				} catch (final JMSException e1) {
 					Logger.error(e.getCause());
 				}
 			}
@@ -116,7 +116,7 @@ public class NotificationProducerUtil implements Serializable {
 			if (queueConn != null) {
 				try {
 					queueConn.close();
-				} catch (JMSException e) {
+				} catch (final JMSException e) {
 					Logger.error(e.getCause());
 				}
 			}
@@ -129,7 +129,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public void sendNotificationJMS(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) {
+	public synchronized void sendNotificationJMS(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -138,7 +138,7 @@ public class NotificationProducerUtil implements Serializable {
 			// create a queue session
 			session = queueConn.createSession(true, Session.AUTO_ACKNOWLEDGE);
 			// create a queue producer
-			MessageProducer producer = session.createProducer(this.getDestination());
+			final MessageProducer producer = session.createProducer(this.getDestination());
 			producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
 			ObjectMessage message = this.createNotificationMessage(studentAcademicYear, batchLog, Long.valueOf(1), session);
@@ -151,12 +151,12 @@ public class NotificationProducerUtil implements Serializable {
 			producer.send(message);
 			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.DISTRIBUTED, Long.valueOf(1));
 			session.commit();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.SENDING_FAILED, Long.valueOf(1));
 			if (session != null) {
 				try {
 					session.rollback();
-				} catch (JMSException e1) {
+				} catch (final JMSException e1) {
 					Logger.error(e.getCause());
 				}
 			}
@@ -166,7 +166,7 @@ public class NotificationProducerUtil implements Serializable {
 			if (queueConn != null) {
 				try {
 					queueConn.close();
-				} catch (JMSException e) {
+				} catch (final JMSException e) {
 					Logger.error(e.getCause());
 				}
 			}
@@ -182,7 +182,7 @@ public class NotificationProducerUtil implements Serializable {
 	 *            status to which batch log has to be updated.
 	 */
 	private void updateBatchLogToStatus(final BatchLog batchLog, final BatchStatusConstant batchStatusConstant, final Long batchSize) {
-		BatchLog batchLogEntity = this.getBatchLogService().findBatchLogById(batchLog.getId());
+		final BatchLog batchLogEntity = this.getBatchLogService().findBatchLogById(batchLog.getId());
 		batchLogEntity.setBatchStatusConstant(batchStatusConstant);
 		if (batchSize != null) {
 			batchLogEntity.setNrElements(batchSize);
@@ -203,10 +203,10 @@ public class NotificationProducerUtil implements Serializable {
 	 */
 	private ObjectMessage createLastMessage(final BatchLog batchLog, final Session session) throws JMSException {
 		// Send this message as last message to update batch log.
-		NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog.getId());
+		final NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog.getId());
 		jmsObject.setLastMessage(true);
 		jmsObject.setUserName(ViewUtil.getPrincipal());
-		ObjectMessage message = session.createObjectMessage(jmsObject);
+		final ObjectMessage message = session.createObjectMessage(jmsObject);
 		message.setJMSPriority(LOW_PRIORITY);
 		return message;
 	}
@@ -228,13 +228,13 @@ public class NotificationProducerUtil implements Serializable {
 	private ObjectMessage createNotificationMessage(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog, final Long sequenceNr,
 			final Session session) throws JMSException {
 		// Send this message as last message to update batch log.
-		NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog.getId());
+		final NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog.getId());
 		if (studentAcademicYear != null) {
 			jmsObject.setStudentAcademicYear(studentAcademicYear);
 		}
 		jmsObject.setSequenceNr(Long.valueOf(1));
 		jmsObject.setUserName(ViewUtil.getPrincipal());
-		ObjectMessage message = session.createObjectMessage(jmsObject);
+		final ObjectMessage message = session.createObjectMessage(jmsObject);
 		message.setJMSPriority(Message.DEFAULT_PRIORITY);
 		return message;
 	}
@@ -290,7 +290,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public void sendNotificationJMS(final BatchLog batchLog) {
+	public synchronized void sendNotificationJMS(final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -299,7 +299,7 @@ public class NotificationProducerUtil implements Serializable {
 			// create a queue session
 			session = queueConn.createSession(true, Session.AUTO_ACKNOWLEDGE);
 			// create a queue producer
-			MessageProducer producer = session.createProducer(this.getDestination());
+			final MessageProducer producer = session.createProducer(this.getDestination());
 			producer.setDeliveryMode(DeliveryMode.PERSISTENT);
 
 			ObjectMessage message = this.createNotificationMessage(null, batchLog, Long.valueOf(1), session);
@@ -312,12 +312,12 @@ public class NotificationProducerUtil implements Serializable {
 			producer.send(message);
 			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.DISTRIBUTED, Long.valueOf(1));
 			session.commit();
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.SENDING_FAILED, Long.valueOf(1));
 			if (session != null) {
 				try {
 					session.rollback();
-				} catch (JMSException e1) {
+				} catch (final JMSException e1) {
 					Logger.error(e.getCause());
 				}
 			}
@@ -327,7 +327,7 @@ public class NotificationProducerUtil implements Serializable {
 			if (queueConn != null) {
 				try {
 					queueConn.close();
-				} catch (JMSException e) {
+				} catch (final JMSException e) {
 					Logger.error(e.getCause());
 				}
 			}

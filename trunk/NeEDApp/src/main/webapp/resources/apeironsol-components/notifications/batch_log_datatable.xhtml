@@ -54,13 +54,13 @@
 					rendered="#{not cc.attrs.batchLogScheduled.id.equals(batchLog.id)}" />
 			</p:column>
   
-			<p:column headerText="Duration" style="text-align: center;">
+			<p:column headerText="Duration(seconds)" style="text-align: center;">
 				<c:if test="#{empty batchLog.executionTime}">
 					<p:progressBar widgetVar="pbAjax" value="#{cc.attrs.progressBarProgressValue}" labelTemplate="{value}%"
 						styleClass="animated" rendered="#{cc.attrs.batchLogScheduled.id.equals(batchLog.id)}" />
 				</c:if>
-				<h:outputText value="#{batchLog.executionTime}" />
-			</p:column>
+				<h:outputText value="#{batchLog.executionTime/1000}" rendered="#{batchLog.executionTime != null}"/>
+			</p:column>  
 
 			<p:column headerText="Options" styleClass="options-column">
 				<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" update="@form" process="@this"
