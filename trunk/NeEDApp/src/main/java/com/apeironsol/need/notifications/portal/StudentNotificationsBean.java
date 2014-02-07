@@ -173,8 +173,8 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	public void onTabChange() {
 		this.viewActionString = ViewAction.VIEW_BATCH_LOG_MESSAGES;
 		this.loadBatchLogMessagesFromDB = true;
-		loadBranchNotification();
-		getBranchNotificationByNotificationType();
+		this.loadBranchNotification();
+		this.getBranchNotificationByNotificationType();
 	}
 
 	/**
@@ -207,18 +207,19 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 				}
 				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
 						.notificationLevelId(this.studentBean.getStudentAcademicYear().getId()).notificationTypeConstant(this.notificationTypeConstant)
-						.notificationLevelConstant(NotificationLevelConstant.STUDENT).notificationSubTypeConstant(this.notificationSubTypeConstant)
-						.messageToBeSent(this.notificationText).attendanceDate(DateUtil.getSystemDate()).build();
+						.notificationLevelConstant(NotificationLevelConstant.STUDENT_ACADEMIC_YEAR)
+						.notificationSubTypeConstant(this.notificationSubTypeConstant).messageToBeSent(this.notificationText)
+						.attendanceDate(DateUtil.getSystemDate()).build();
 
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.studentBean.getStudentAcademicYear(), this.scheduledBatchLog);
 			} catch (final Exception e) {
 				final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
-				addMessage(message);
+				this.addMessage(message);
 			}
-			setViewBatchLogMessages();
+			this.setViewBatchLogMessages();
 			this.loadBatchLogMessagesFromDB = true;
 			this.batchFinished = false;
-			loadBatchLogMessagesByStudentAcademicYear();
+			this.loadBatchLogMessagesByStudentAcademicYear();
 			this.progressBarIncrementor = 1;
 			this.batchFinished = false;
 		}
@@ -245,9 +246,9 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 */
 	public void loadBatchLogMessagesByStudentAcademicYear() {
 		if (this.loadBatchLogMessagesFromDB) {
-			setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean.getStudentAcademicYear()
+			this.setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean.getStudentAcademicYear()
 					.getId()));
-			Collections.sort((List<BatchLogMessage>) getStudentBatchLogMessages(), new BatchLogMessageComparator(BatchLogMessageComparator.Order.ID));
+			Collections.sort((List<BatchLogMessage>) this.getStudentBatchLogMessages(), new BatchLogMessageComparator(BatchLogMessageComparator.Order.ID));
 			this.loadBatchLogMessagesFromDB = false;
 		}
 	}
@@ -292,7 +293,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 		this.notificationTypeConstant = null;
 		this.notificationSubTypeConstant = null;
 		this.notificationText = null;
-		getBranchNotificationByNotificationType();
+		this.getBranchNotificationByNotificationType();
 		return null;
 	}
 
@@ -367,10 +368,10 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 					|| BatchStatusConstant.DISTRIBUTED.equals(this.scheduledBatchLog.getBatchStatusConstant())) {
 				this.batchFinished = false;
 			} else {
-				setBatchLog(this.scheduledBatchLog);
+				this.setBatchLog(this.scheduledBatchLog);
 				this.scheduledBatchLog = null;
-				setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean.getStudentAcademicYear()
-						.getId()));
+				this.setStudentBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentAcademicYearId(this.studentBean
+						.getStudentAcademicYear().getId()));
 			}
 		}
 	}
@@ -380,7 +381,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 * has finished.
 	 */
 	public void pollListener() {
-		checkBatchStopped();
+		this.checkBatchStopped();
 	}
 
 	/**
@@ -462,7 +463,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	}
 
 	public String handleNotificationTypeChange() {
-		getBranchNotificationByNotificationType();
+		this.getBranchNotificationByNotificationType();
 		return null;
 	}
 
@@ -486,7 +487,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	}
 
 	public void loadBranchNotification() {
-		setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
+		this.setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
 	}
 
 	/**
@@ -526,12 +527,12 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 */
 	public String handleNotificationSubTypeChange() {
 		this.selectedSectionExam = null;
-		if (getSectionExams() != null) {
-			getSectionExams().clear();
+		if (this.getSectionExams() != null) {
+			this.getSectionExams().clear();
 		}
 		if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(this.notificationSubTypeConstant)
 				|| NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(this.notificationSubTypeConstant)) {
-			setSectionExams(this.sectionExamService.findSectionExamsBySectionId(this.studentBean.getStudentSection().getSection().getId()));
+			this.setSectionExams(this.sectionExamService.findSectionExamsBySectionId(this.studentBean.getStudentSection().getSection().getId()));
 			this.renderSectionExamIndicator = true;
 		} else {
 			this.renderSectionExamIndicator = false;

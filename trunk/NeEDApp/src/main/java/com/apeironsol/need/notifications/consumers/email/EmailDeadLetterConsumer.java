@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
 
+import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.need.notifications.consumers.worker.email.EmailWorker;
 import com.apeironsol.need.notifications.consumers.worker.email.EmailWorkerFactory;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
@@ -31,7 +32,6 @@ import com.apeironsol.need.notifications.service.BatchLogMessageService;
 import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
-import com.apeironsol.framework.NeEDJMSObject;
 
 /**
  * Class for sending email notification for student pending fee.
@@ -60,8 +60,8 @@ public class EmailDeadLetterConsumer implements SessionAwareMessageListener<Mess
 		if (message instanceof TextMessage) {
 			System.out.println(((TextMessage) message).getText() + " onMessage arg1 " + session.getAcknowledgeMode());
 		} else if (message instanceof ObjectMessage) {
-			NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
-			BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
+			final NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
+			final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
 			this.processBatchMesssage(jmsObject, batchLog);
 		}
 	}
@@ -76,10 +76,10 @@ public class EmailDeadLetterConsumer implements SessionAwareMessageListener<Mess
 	private void processBatchMesssage(final NeEDJMSObject jmsObject, final BatchLog batchLog) {
 		if (this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject.getStudentAcademicYear().getId()) == null) {
 			NotificationMessage notificationMessage = null;
-			EmailWorker emailWorker = EmailWorkerFactory.getEmailWorker(batchLog.getNotificationSubTypeConstant());
+			final EmailWorker emailWorker = EmailWorkerFactory.getEmailWorker(batchLog.getNotificationSubTypeConstant());
 			try {
 				notificationMessage = emailWorker.sendMail(jmsObject.getStudentAcademicYear(), batchLog);
-			} catch (Throwable exception) {
+			} catch (final Throwable exception) {
 				if (notificationMessage == null) {
 					notificationMessage = this.createNotificationMessage(emailWorker.getMessage(jmsObject.getStudentAcademicYear(), batchLog), exception
 							.getMessage().concat(Arrays.toString(exception.getStackTrace())), BatchLogMessageStatusConstant.FAILED);
@@ -103,10 +103,23 @@ public class EmailDeadLetterConsumer implements SessionAwareMessageListener<Mess
 	 * @param batchLog
 	 */
 	private void postProcessElement(final NeEDJMSObject jmsObject, final BatchLog batchLog, final NotificationMessage notificationMessage) {
-		BatchLogMessage batchLogMessage = new BatchLogMessage();
+		final BatchLogMessage batchLogMessage = new BatchLogMessage();
 		batchLogMessage.setBatchLog(batchLog);
 		batchLogMessage.setSendTo(jmsObject.getStudentAcademicYear().getStudent().getAddress().getEmail());
-		batchLogMessage.setStudentAcademicYear(jmsObject.getStudentAcademicYear());
+		if (jmsObject.getStudentAcademicYear() != null) {
+			batchLogMessage.setStudentAcademicYear(jmsObject.getStudentAcademicYear());
+		}
+		if (jmsObject.getStudent() != null) {
+			batchLogMessage.setStudent(jmsObject.getStudent());
+		}
+		batchLogMessage.setAuditUsername(jmsObject.getUserName());
+		if ((batchLog.getMessage() == null) || batchLog.getMessage().trim().isEmpty()) {
+			batchLogMessage.setMessageSent(notificationMessage.getMessage());
+		}
+		batchLogMessage.setAuditUsername(jmsObject.getUserName());
+		if ((batchLog.getMessage() == null) || batchLog.getMessage().trim().isEmpty()) {
+			batchLogMessage.setMessageSent(notificationMessage.getMessage());
+		}
 		batchLogMessage.setAuditUsername(jmsObject.getUserName());
 		batchLogMessage.setMessageSent(notificationMessage.getMessage());
 		batchLogMessage.setMessageSentTime(DateUtil.getSystemDate());
@@ -117,7 +130,7 @@ public class EmailDeadLetterConsumer implements SessionAwareMessageListener<Mess
 
 	private NotificationMessage createNotificationMessage(final String message, final String errorMessage,
 			final BatchLogMessageStatusConstant batchLogMessageStatusConstant) {
-		NotificationMessage notificationMessage = new NotificationMessage();
+		final NotificationMessage notificationMessage = new NotificationMessage();
 		notificationMessage.setMessage(message);
 		notificationMessage.setErrorMessage(errorMessage);
 		notificationMessage.setBatchLogMessageStatus(batchLogMessageStatusConstant);

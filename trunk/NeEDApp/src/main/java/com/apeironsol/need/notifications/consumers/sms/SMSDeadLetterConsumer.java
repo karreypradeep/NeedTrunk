@@ -63,8 +63,8 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 		if (message instanceof TextMessage) {
 			System.out.println(((TextMessage) message).getText() + " onMessage arg1 " + session.getAcknowledgeMode());
 		} else if (message instanceof ObjectMessage) {
-			NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
-			BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
+			final NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
+			final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
 			BatchLogMessage batchLogMessage = null;
 			if (jmsObject.getStudentAcademicYear() != null) {
 				batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject
@@ -85,11 +85,11 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 	 */
 	private void processBatchMesssage(final NeEDJMSObject jmsObject, final BatchLog batchLog) {
 		NotificationMessage notificationMessage = null;
-		SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
+		final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
 		try {
-			BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(batchLog.getBranch().getId());
+			final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(batchLog.getBranch().getId());
 			notificationMessage = smsWorker.sendSMS(branchRule.getSmsProvider(), jmsObject.getStudentAcademicYear(), batchLog);
-		} catch (Throwable exception) {
+		} catch (final Throwable exception) {
 			notificationMessage = this.createNotificationMessage(null, exception.getMessage(), BatchLogMessageStatusConstant.FAILED);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		}
@@ -103,11 +103,14 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 	 * @param batchLog
 	 */
 	private void postProcessElement(final NeEDJMSObject jmsObject, final BatchLog batchLog, final NotificationMessage notificationMessage) {
-		BatchLogMessage batchLogMessage = new BatchLogMessage();
+		final BatchLogMessage batchLogMessage = new BatchLogMessage();
 		batchLogMessage.setBatchLog(batchLog);
-		if (jmsObject.getStudentAcademicYear() != null && jmsObject.getStudentAcademicYear().getStudent() != null) {
+		if (jmsObject.getStudentAcademicYear() != null) {
 			batchLogMessage.setStudentAcademicYear(jmsObject.getStudentAcademicYear());
 			batchLogMessage.setSendTo(jmsObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
+		}
+		if (jmsObject.getStudent() != null) {
+			batchLogMessage.setStudent(jmsObject.getStudent());
 		}
 		batchLogMessage.setAuditUsername(jmsObject.getUserName());
 		if (notificationMessage.getMessage() != null) {
@@ -124,7 +127,7 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 
 	private NotificationMessage createNotificationMessage(final String message, final String errorMessage,
 			final BatchLogMessageStatusConstant batchLogMessageStatusConstant) {
-		NotificationMessage notificationMessage = new NotificationMessage();
+		final NotificationMessage notificationMessage = new NotificationMessage();
 		if (message != null) {
 			notificationMessage.setMessage(message);
 		}

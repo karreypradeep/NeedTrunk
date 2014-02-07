@@ -10,11 +10,17 @@ import com.apeironsol.need.util.portal.ViewUtil;
 
 /**
  * @author pradeepk
- *
+ * 
  */
 public enum NotificationLevelConstant implements Labeled {
-	
-	ORGANIZATION("organization"),BRANCH("branch"),CLASS("class"),SECTION("section"),STUDENT("student"),ADHOC("adhoc");
+
+	ORGANIZATION("organization"),
+	BRANCH("branch"),
+	CLASS("class"),
+	SECTION("section"),
+	STUDENT("student"),
+	STUDENT_ACADEMIC_YEAR("student_academic_year"),
+	ADHOC("adhoc");
 
 	private String	label;
 
@@ -31,6 +37,5 @@ public enum NotificationLevelConstant implements Labeled {
 	public void setLabel(final String label) {
 		this.label = label;
 	}
-
 
 }

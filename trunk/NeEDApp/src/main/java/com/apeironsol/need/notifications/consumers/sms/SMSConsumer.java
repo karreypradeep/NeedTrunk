@@ -70,24 +70,24 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 		if (message instanceof TextMessage) {
 			System.out.println(((TextMessage) message).getText() + " onMessage arg1 " + session.getAcknowledgeMode());
 		} else if (message instanceof ObjectMessage) {
-			NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
-			BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
+			final NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
+			final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
 			if (this.isCanceled(batchLog)) {
 				this.postProcessElement(jmsObject, batchLog,
 						this.createNotificationMessage("Batch Cancelled", "Batch Cancelled", BatchLogMessageStatusConstant.CANCELLED));
 			} else {
 
 				if (jmsObject.isLastMessage()) {
-					Collection<BatchLogMessage> batchLogMessages = this.batchLogMessageService.findBatchLogMessagesByBatchLogId(batchLog.getId());
+					final Collection<BatchLogMessage> batchLogMessages = this.batchLogMessageService.findBatchLogMessagesByBatchLogId(batchLog.getId());
 					final long totalBatchLogMessages = batchLogMessages != null ? batchLogMessages.size() : 0;
 					if (!BatchStatusConstant.FINISHED.equals(batchLog.getBatchStatusConstant())
-							&& totalBatchLogMessages >= batchLog.getNrElements().longValue()) {
+							&& (totalBatchLogMessages >= batchLog.getNrElements().longValue())) {
 						this.updateBatchLogToFinished(batchLog);
 					} else if (!BatchStatusConstant.FINISHED.equals(batchLog.getBatchStatusConstant())
-							&& DateUtil.dateDiffInHours(batchLog.getExecutionStartDate(), DateUtil.getSystemDate()) > 1) {
+							&& (DateUtil.dateDiffInHours(batchLog.getExecutionStartDate(), DateUtil.getSystemDate()) > 1)) {
 						this.updateBatchLogToFinished(batchLog);
 					} else if (!BatchStatusConstant.FINISHED.equals(batchLog.getBatchStatusConstant())
-							&& totalBatchLogMessages != batchLog.getNrElements().longValue()) {
+							&& (totalBatchLogMessages != batchLog.getNrElements().longValue())) {
 						this.resendLastMessage(batchLog);
 					} else if (batchLog.getNrElements().longValue() > 0) {
 						this.updateBatchLogToFinished(batchLog);
@@ -102,7 +102,7 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 						if (batchLogMessage == null) {
 							this.processBatchMesssage(jmsObject, batchLog);
 						}
-					} catch (Exception e) {
+					} catch (final Exception e) {
 						throw new JMSException(e.getMessage());
 					}
 				}
@@ -118,7 +118,7 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	 *            batch log.
 	 */
 	private void resendLastMessage(final BatchLog batchLog) {
-		NeEDJMSObject newJmsObject = new NeEDJMSObject(batchLog.getId());
+		final NeEDJMSObject newJmsObject = new NeEDJMSObject(batchLog.getId());
 		newJmsObject.setLastMessage(true);
 		this.jmsTemplate.setPriority(HIGH_PRIORITY);
 		this.jmsTemplate.convertAndSend(newJmsObject);
@@ -133,11 +133,11 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	 */
 	private void processBatchMesssage(final NeEDJMSObject jmsObject, final BatchLog batchLog) throws Exception {
 		try {
-			SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
-			BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(batchLog.getBranch().getId());
-			NotificationMessage notificationMessage = smsWorker.sendSMS(branchRule.getSmsProvider(), jmsObject.getStudentAcademicYear(), batchLog);
+			final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
+			final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(batchLog.getBranch().getId());
+			final NotificationMessage notificationMessage = smsWorker.sendSMS(branchRule.getSmsProvider(), jmsObject.getStudentAcademicYear(), batchLog);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
-		} catch (Throwable exception) {
+		} catch (final Throwable exception) {
 			throw new Exception(exception);
 		}
 	}
@@ -150,14 +150,17 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	 * @param batchLog
 	 */
 	private void postProcessElement(final NeEDJMSObject jmsObject, final BatchLog batchLog, final NotificationMessage notificationMessage) {
-		BatchLogMessage batchLogMessage = new BatchLogMessage();
+		final BatchLogMessage batchLogMessage = new BatchLogMessage();
 		batchLogMessage.setBatchLog(batchLog);
 		batchLogMessage.setSendTo(notificationMessage.getSentAddress());
 		if (jmsObject.getStudentAcademicYear() != null) {
 			batchLogMessage.setStudentAcademicYear(jmsObject.getStudentAcademicYear());
 		}
+		if (jmsObject.getStudent() != null) {
+			batchLogMessage.setStudent(jmsObject.getStudent());
+		}
 		batchLogMessage.setAuditUsername(jmsObject.getUserName());
-		if (batchLog.getMessage() == null || batchLog.getMessage().trim().isEmpty()) {
+		if ((batchLog.getMessage() == null) || batchLog.getMessage().trim().isEmpty()) {
 			batchLogMessage.setMessageSent(notificationMessage.getMessage());
 		}
 		batchLogMessage.setErrorMessage(notificationMessage.getErrorMessage());
@@ -196,15 +199,15 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 				EnumSet.of(BatchLogMessageStatusConstant.CANCELLED)));
 
 		batchLog.setBatchStatusConstant(BatchStatusConstant.FINISHED);
-		Date currentTime = DateUtil.getSystemDate();
-		long executionTime = currentTime.getTime() - batchLog.getExecutionStartDate().getTime();
+		final Date currentTime = DateUtil.getSystemDate();
+		final long executionTime = currentTime.getTime() - batchLog.getExecutionStartDate().getTime();
 		batchLog.setExecutionTime(executionTime);
 		this.batchLogService.saveBatchLogInNewTransaction(batchLog);
 	}
 
 	private NotificationMessage createNotificationMessage(final String message, final String errorMessage,
 			final BatchLogMessageStatusConstant batchLogMessageStatusConstant) {
-		NotificationMessage notificationMessage = new NotificationMessage();
+		final NotificationMessage notificationMessage = new NotificationMessage();
 		notificationMessage.setMessage(message);
 		notificationMessage.setErrorMessage(errorMessage);
 		notificationMessage.setBatchLogMessageStatus(batchLogMessageStatusConstant);

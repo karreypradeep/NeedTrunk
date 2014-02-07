@@ -91,7 +91,7 @@ public class BatchLogBuilder {
 	}
 
 	public BatchLog build() {
-		return getBatchLog(this);
+		return this.getBatchLog(this);
 	}
 
 	private BatchLog getBatchLog(final BatchLogBuilder builder) {

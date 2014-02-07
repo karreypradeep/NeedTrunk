@@ -9,6 +9,7 @@ package com.apeironsol.framework;
 import java.io.Serializable;
 
 import com.apeironsol.need.core.model.SMSProvider;
+import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 
 public class NeEDJMSObject implements Serializable {
@@ -22,6 +23,11 @@ public class NeEDJMSObject implements Serializable {
 	 * Student to whom notification has to be sent.
 	 */
 	private StudentAcademicYear	studentAcademicYear;
+
+	/**
+	 * Student to whom notification has to be sent.
+	 */
+	private Student				student;
 
 	/** The batch id. */
 	private final Long			batchId;
@@ -135,6 +141,20 @@ public class NeEDJMSObject implements Serializable {
 	 */
 	public void setSmsProvider(final SMSProvider smsProvider) {
 		this.smsProvider = smsProvider;
+	}
+
+	/**
+	 * @return the student
+	 */
+	public Student getStudent() {
+		return student;
+	}
+
+	/**
+	 * @param student the student to set
+	 */
+	public void setStudent(Student student) {
+		this.student = student;
 	}
 
 }

@@ -31,6 +31,7 @@ import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
+import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAbsent;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.service.AttendanceService;
@@ -599,6 +600,49 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 		}
 		return alreadySendAbsentStudentAcademicYears;
+	}
+
+	@Override
+	public BatchLog sendNotificationForStudentAdmission(final Student student, final BatchLog batchLog) throws ApplicationException {
+		BatchLog result = batchLog;
+		if (result == null) {
+			throw new ApplicationException("BatchLog cannot be null");
+		}
+
+		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		if (result.getId() == null) {
+			result.setNrElements(Long.valueOf(1));
+			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
+			result = notificationProducerUtil.createBatchLog(result);
+		}
+		notificationProducerUtil.sendNotificationJMS(student, result);
+		return result;
+	}
+
+	@Override
+	public BatchLog sendNotificationForStudentAdmission(final Collection<Student> students, final BatchLog batchLog) throws ApplicationException {
+		BatchLog result = batchLog;
+		if (result == null) {
+			throw new ApplicationException("BatchLog cannot be null");
+		}
+		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		if (result.getId() == null) {
+			result.setNrElements(Long.valueOf(students.size()));
+			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
+			result = notificationProducerUtil.createBatchLog(result);
+		}
+		if (students.size() > 0) {
+			notificationProducerUtil.sendNotificationAsBatch(result, students);
+		}
+		return result;
 	}
 
 }

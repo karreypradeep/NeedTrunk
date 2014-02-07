@@ -848,7 +848,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double payingAmount = studentFeeDetailsDO.getPayingAmount();
 
-			if (payingAmount != null && payingAmount != 0) {
+			if ((payingAmount != null) && (payingAmount != 0)) {
 
 				this.validatePayingAmount(studentFeeDetailsDO, payingAmount);
 				totolPayment = totolPayment + payingAmount;
@@ -876,7 +876,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double payingAmount = studentFeeDetailsDO.getPayingAmount();
 
-			if (payingAmount != null && payingAmount != 0) {
+			if ((payingAmount != null) && (payingAmount != 0)) {
 
 				this.validatePayingAmount(studentFeeDetailsDO, payingAmount);
 
@@ -911,10 +911,10 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		try {
 			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(branchId,
 					NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
-			if (branchNotification != null && branchNotification.getSmsIndicator()) {
+			if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
 				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branchId, studentAcademicYear.getId(),
-						NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT, NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null,
-						studentFeeTransactionLocal.getTransactionNr());
+						NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
+						NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
 				this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
 			}
 		} catch (final Exception e) {
@@ -964,16 +964,16 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		final Collection<StudentFinancialAcademicYearDO> allStudentFinancialAcademicYearDO = this
 				.getStudnetFeeFinancialAcademicYearDetailsByAcademicYearIdForDueDate(studentSections, feeDueSearchCriteria.getDueDate());
 		for (final StudentFinancialAcademicYearDO studentFinancialAcademicYearDO : allStudentFinancialAcademicYearDO) {
-			if (feeDueSearchCriteria.getFeeDuePercetage() > 0 && feeDueSearchCriteria.getFeeDuePercetage() < 100) {
-				if (studentFinancialAcademicYearDO.getNetFeeDue() * 100 / studentFinancialAcademicYearDO.getNetFee() >= feeDueSearchCriteria
+			if ((feeDueSearchCriteria.getFeeDuePercetage() > 0) && (feeDueSearchCriteria.getFeeDuePercetage() < 100)) {
+				if (((studentFinancialAcademicYearDO.getNetFeeDue() * 100) / studentFinancialAcademicYearDO.getNetFee()) >= feeDueSearchCriteria
 						.getFeeDuePercetage()) {
 					studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
 				}
 
-			} else if (feeDueSearchCriteria.getMinimumDueAmount() > 0
-					&& studentFinancialAcademicYearDO.getNetFeeDue() >= feeDueSearchCriteria.getMinimumDueAmount()) {
+			} else if ((feeDueSearchCriteria.getMinimumDueAmount() > 0)
+					&& (studentFinancialAcademicYearDO.getNetFeeDue() >= feeDueSearchCriteria.getMinimumDueAmount())) {
 				studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
-			} else if (feeDueSearchCriteria.getMinimumDueAmount() == 0 && studentFinancialAcademicYearDO.getNetFeeDue() > 0) {
+			} else if ((feeDueSearchCriteria.getMinimumDueAmount() == 0) && (studentFinancialAcademicYearDO.getNetFeeDue() > 0)) {
 				studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
 			}
 		}
@@ -989,7 +989,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		Double result = 0.0;
 		final Collection<StudentFinancialDO> studentFinancialDOs = this.computeStudentFinancialDetaislByAcademicYearAndDueDate(student.getId(),
 				academicYear.getId(), dueDate);
-		if (studentFinancialDOs != null && !studentFinancialDOs.isEmpty()) {
+		if ((studentFinancialDOs != null) && !studentFinancialDOs.isEmpty()) {
 			for (final StudentFinancialDO studentFinancialDO : studentFinancialDOs) {
 				result += studentFinancialDO.getNetFeeDue();
 			}
@@ -1083,10 +1083,10 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 			studentAcademicYearIds.put(studentSection.getStudentAcademicYear().getId(), studentSection);
 		}
 		Collection<StudentAcademicYearFeeSummary> studentAcademicYearFeeSummaryByStuAcYearIds = new ArrayList<StudentAcademicYearFeeSummary>();
-		if (studentAcademicYearIds.keySet() != null && studentAcademicYearIds.keySet().size() > 0) {
+		if ((studentAcademicYearIds.keySet() != null) && (studentAcademicYearIds.keySet().size() > 0)) {
 			studentAcademicYearFeeSummaryByStuAcYearIds = this.studentAcademicYearFeeSummaryService
 					.findStudentAcademicYearFeeSummaryByStudentAcademicYearIds(studentAcademicYearIds.keySet());
-			if (studentAcademicYearFeeSummaryByStuAcYearIds != null && studentAcademicYearFeeSummaryByStuAcYearIds.size() != studentAcademicYearIds.size()) {
+			if ((studentAcademicYearFeeSummaryByStuAcYearIds != null) && (studentAcademicYearFeeSummaryByStuAcYearIds.size() != studentAcademicYearIds.size())) {
 				final Map<Long, StudentAcademicYearFeeSummary> retrievedStudentAcademicYearFeeSummary = new HashMap<Long, StudentAcademicYearFeeSummary>();
 				for (final StudentAcademicYearFeeSummary studentAcademicYearFeeSummary : studentAcademicYearFeeSummaryByStuAcYearIds) {
 					retrievedStudentAcademicYearFeeSummary.put(studentAcademicYearFeeSummary.getStudentAcademicYear().getId(), studentAcademicYearFeeSummary);
@@ -1182,7 +1182,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double deductAmount = studentFeeDetailsDO.getDeductingAmount();
 
-			if (deductAmount != null && deductAmount != 0) {
+			if ((deductAmount != null) && (deductAmount != 0)) {
 
 				this.validateDeductionAmount(studentFeeDetailsDO, deductAmount);
 				totolDeduction = totolDeduction + deductAmount;
@@ -1207,7 +1207,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double deductingAmount = studentFeeDetailsDO.getDeductingAmount();
 
-			if (deductingAmount != null && deductingAmount != 0) {
+			if ((deductingAmount != null) && (deductingAmount != 0)) {
 
 				this.validateDeductionAmount(studentFeeDetailsDO, deductingAmount);
 
@@ -1267,7 +1267,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double refundAmount = studentFeeDetailsDO.getRefundAmount();
 
-			if (refundAmount != null && refundAmount != 0) {
+			if ((refundAmount != null) && (refundAmount != 0)) {
 
 				this.validateRefundAmount(studentFeeDetailsDO, refundAmount);
 				totolRefund = totolRefund + refundAmount;
@@ -1292,7 +1292,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double refundAmount = studentFeeDetailsDO.getRefundAmount();
 
-			if (refundAmount != null && refundAmount != 0) {
+			if ((refundAmount != null) && (refundAmount != 0)) {
 
 				this.validateRefundAmount(studentFeeDetailsDO, refundAmount);
 
@@ -1435,9 +1435,9 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 			studentFeeTransactionDetailsDOs.add(studentFeePaymentDO);
 		}
 
-		StudentAcademicYear studentAcademicYear = studentFeeTransaction.getStudentAcademicYear();
+		final StudentAcademicYear studentAcademicYear = studentFeeTransaction.getStudentAcademicYear();
 
-		StudentSection studentSection = this.studentSectionDao.findLatestStudentSectionByStudentAcademicYearId(studentAcademicYear.getId());
+		final StudentSection studentSection = this.studentSectionDao.findLatestStudentSectionByStudentAcademicYearId(studentAcademicYear.getId());
 
 		final StudentFeeTransactionDO studentFeeTransactionDO = new StudentFeeTransactionDO();
 

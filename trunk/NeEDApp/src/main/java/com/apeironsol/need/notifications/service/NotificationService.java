@@ -12,10 +12,15 @@ import java.util.Collection;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
+import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.model.BatchLog;
 
 public interface NotificationService {
+
+	BatchLog sendNotificationForStudentAdmission(Student student, BatchLog batchLog) throws ApplicationException;
+
+	BatchLog sendNotificationForStudentAdmission(Collection<Student> students, BatchLog batchLog) throws ApplicationException;
 
 	BatchLog sendNotificationForStudent(StudentAcademicYear studentAcademicYear, BatchLog batchLog) throws ApplicationException;
 

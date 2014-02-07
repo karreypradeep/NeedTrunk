@@ -21,9 +21,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.apeironsol.framework.BaseEntity;
+import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
-import com.apeironsol.framework.BaseEntity;
 
 @Entity
 @Table(name = "BATCH_LOG_MESSAGE")
@@ -44,6 +45,10 @@ public class BatchLogMessage extends BaseEntity implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "STUDENT_ACADEMIC_YEAR_ID")
 	private StudentAcademicYear				studentAcademicYear;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "STUDENT_ID")
+	private Student							student;
 
 	@Lob
 	@Column(name = "MESSAGE_SENT")
@@ -167,6 +172,21 @@ public class BatchLogMessage extends BaseEntity implements Serializable {
 	 */
 	public void setSendTo(final String sendTo) {
 		this.sendTo = sendTo;
+	}
+
+	/**
+	 * @return the student
+	 */
+	public Student getStudent() {
+		return this.student;
+	}
+
+	/**
+	 * @param student
+	 *            the student to set
+	 */
+	public void setStudent(final Student student) {
+		this.student = student;
 	}
 
 }
