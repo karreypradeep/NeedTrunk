@@ -75,7 +75,8 @@
 							Exam attendance
 						</f:facet>
 			<p:selectOneMenu id="emp_type" style="width:152px;" required="true"
-				value="#{studentExamSubject.studentExamSubjectStatus}">
+				value="#{studentExamSubject.studentExamSubjectStatus}"
+				disabled="#{studentExamSubject.sectionExamSubject.scheduledDate.after(sessionBean.currentDate)}">
 				<f:selectItems value="#{enumConstantsBean.studentExamSubjectStatus}" var="stuExamSubStatus"
 					itemLabel="#{stuExamSubStatus.label}" itemValue="#{stuExamSubStatus}" />
 			</p:selectOneMenu>
@@ -85,7 +86,8 @@
 			<f:facet name="header">
 							Scored marks
 						</f:facet>
-			<p:inputText value="#{studentExamSubject.scoredMarks}" style="border:0px;">
+			<p:inputText value="#{studentExamSubject.scoredMarks}" style="border:0px;"
+				disabled="#{studentExamSubject.sectionExamSubject.scheduledDate.after(sessionBean.currentDate)}">
 				<f:convertNumber pattern="0.00" />
 			</p:inputText>
 		</p:column>

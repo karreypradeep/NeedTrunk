@@ -109,7 +109,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendNotificationForStudent(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) throws ApplicationException {
+	public BatchLog sendNotificationForStudent(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
@@ -130,8 +130,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendNotificationForStudent(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog)
-			throws ApplicationException {
+	public BatchLog sendNotificationForStudent(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
@@ -153,7 +152,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendNotificationForStudent(final Section section, final BatchLog batchLog) throws ApplicationException {
+	public BatchLog sendNotificationForStudent(final Section section, final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
@@ -187,7 +186,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendNotificationForStudent(final Long academicYearId, final Klass klass, final BatchLog batchLog) throws ApplicationException {
+	public BatchLog sendNotificationForStudent(final Long academicYearId, final Klass klass, final BatchLog batchLog) throws ApplicationException {
 
 		BatchLog result = batchLog;
 		if (result == null) {
@@ -221,7 +220,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendNotificationForStudent(final Long academicYearId, final BatchLog batchLog) throws ApplicationException {
+	public BatchLog sendNotificationForStudent(final Long academicYearId, final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
@@ -260,7 +259,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendNotification(final BatchLog batchLog) throws ApplicationException {
+	public BatchLog sendNotification(final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
@@ -274,7 +273,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendNotificationForStudent(final BatchLog batchLog, final Collection<Section> sections) throws ApplicationException {
+	public BatchLog sendNotificationForStudent(final BatchLog batchLog, final Collection<Section> sections) throws ApplicationException {
 		BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
@@ -349,7 +348,7 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendReportCardNotificationForStudent(final BatchLog batchLog) throws ApplicationException {
+	public BatchLog sendReportCardNotificationForStudent(final BatchLog batchLog) throws ApplicationException {
 		BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");

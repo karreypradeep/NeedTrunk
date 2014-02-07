@@ -77,7 +77,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public synchronized void sendNotificationAsBatch(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog) {
+	public void sendNotificationAsBatch(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -130,7 +130,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public synchronized void sendNotificationAsBatch(final BatchLog batchLog, final Collection<Student> students) {
+	public void sendNotificationAsBatch(final BatchLog batchLog, final Collection<Student> students) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -183,7 +183,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public synchronized void sendNotificationJMS(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) {
+	public void sendNotificationJMS(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -233,7 +233,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public synchronized void sendNotificationJMS(final Student student, final BatchLog batchLog) {
+	public void sendNotificationJMS(final Student student, final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -397,7 +397,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public synchronized void sendNotificationJMS(final BatchLog batchLog) {
+	public void sendNotificationJMS(final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
