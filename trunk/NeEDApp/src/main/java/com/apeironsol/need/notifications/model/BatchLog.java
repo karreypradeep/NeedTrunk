@@ -27,6 +27,7 @@ import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.SectionExam;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Branch;
+import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
@@ -164,6 +165,13 @@ public class BatchLog extends BaseEntity implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "NOTI_SEND_ACADEMIC_YEAR_ID")
 	private AcademicYear				notificationSendForAcademicYear;
+
+	@ManyToOne
+	@JoinColumn(name = "SMS_PROVIDER_ID")
+	private SMSProvider					smsProvider;
+
+	@Column(name = "NO_OF_SMS_CONSUMED")
+	private Integer						numberOfSMSConsumedByBatchLog;
 
 	/**
 	 * @return the exam
@@ -493,6 +501,36 @@ public class BatchLog extends BaseEntity implements Serializable {
 	 */
 	public void setNotificationSendForAcademicYear(final AcademicYear notificationSendForAcademicYear) {
 		this.notificationSendForAcademicYear = notificationSendForAcademicYear;
+	}
+
+	/**
+	 * @return the smsProvider
+	 */
+	public SMSProvider getSmsProvider() {
+		return this.smsProvider;
+	}
+
+	/**
+	 * @param smsProvider
+	 *            the smsProvider to set
+	 */
+	public void setSmsProvider(final SMSProvider smsProvider) {
+		this.smsProvider = smsProvider;
+	}
+
+	/**
+	 * @return the numberOfSMSConsumedByBatchLog
+	 */
+	public Integer getNumberOfSMSConsumedByBatchLog() {
+		return this.numberOfSMSConsumedByBatchLog;
+	}
+
+	/**
+	 * @param numberOfSMSConsumedByBatchLog
+	 *            the numberOfSMSConsumedByBatchLog to set
+	 */
+	public void setNumberOfSMSConsumedByBatchLog(final Integer numberOfSMSConsumedByBatchLog) {
+		this.numberOfSMSConsumedByBatchLog = numberOfSMSConsumedByBatchLog;
 	}
 
 }

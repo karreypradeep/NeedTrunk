@@ -24,11 +24,13 @@ import com.apeironsol.need.core.dao.StudentAcademicYearDao;
 import com.apeironsol.need.core.dao.StudentDao;
 import com.apeironsol.need.core.dao.StudentSectionDao;
 import com.apeironsol.need.core.model.AcademicYear;
+import com.apeironsol.need.core.model.BranchRule;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.model.StudentAcademicYearFeeSummary;
 import com.apeironsol.need.core.model.StudentSection;
 import com.apeironsol.need.core.portal.messages.BusinessMessages;
+import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.core.service.BranchService;
 import com.apeironsol.need.core.service.KlassService;
 import com.apeironsol.need.core.service.SequenceGeneratorService;
@@ -133,6 +135,9 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 	@Resource
 	BranchService							branchService;
+
+	@Resource
+	BranchRuleService						branchRuleService;
 
 	@Resource
 	PickUpPointFeeDao						pickUpPointFeeDao;
@@ -731,8 +736,16 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	private BatchLog createBatchLog(final Long batchSize, final Long branchId, final Long notificationLevelId,
 			final NotificationTypeConstant notificationTypeConstant, final NotificationLevelConstant notificationLevelConstant,
 			final NotificationSubTypeConstant notificationSubTypeConstant, final String messageToBeSent, final String studentFeeTransactionNr) {
+		final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(branchId);
 		BatchLog batchLog = new BatchLog();
-		batchLog.setBatchStatusConstant(batchSize > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+		if ((branchRule != null) && (branchRule.getSmsProvider() != null)) {
+			batchLog.setSmsProvider(branchRule.getSmsProvider());
+			batchLog.setBatchStatusConstant(batchSize > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+			batchLog.setMessage(messageToBeSent);
+		} else {
+			batchLog.setMessage("SMS Provider is not selected for the branch.");
+			batchLog.setBatchStatusConstant(BatchStatusConstant.CANCELLED);
+		}
 		batchLog.setBranch(this.branchService.findBranchById(branchId));
 		batchLog.setCompletedIndicator(false);
 		batchLog.setExecutionStartDate(DateUtil.getSystemDate());
@@ -741,7 +754,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		batchLog.setNotificationTypeConstant(notificationTypeConstant);
 		batchLog.setNrElements(batchSize);
 		batchLog.setNotificationLevelId(notificationLevelId);
-		batchLog.setMessage(messageToBeSent);
+
 		batchLog.setStudentFeeTransactionNr(studentFeeTransactionNr);
 		batchLog = this.batchLogService.saveBatchLogInNewTransaction(batchLog);
 		return batchLog;
@@ -915,7 +928,10 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branchId, studentAcademicYear.getId(),
 						NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
 						NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
-				this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+				if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
+						|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
+					this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+				}
 			}
 		} catch (final Exception e) {
 			// TODO Auto-generated catch block

@@ -23,8 +23,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.apeironsol.framework.NeEDJMSObject;
+import com.apeironsol.need.core.model.BranchRule;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.service.BatchLogService;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
@@ -53,6 +55,8 @@ public class NotificationProducerUtil implements Serializable {
 
 	private BatchLogService		batchLogService;
 
+	private BranchRuleService	branchRuleService;
+
 	/** The message priority. */
 	private static final short	LOW_PRIORITY		= 3;
 
@@ -67,6 +71,16 @@ public class NotificationProducerUtil implements Serializable {
 	 */
 	public BatchLog createBatchLog(final BatchLog batchLog) {
 		BatchLog result = batchLog;
+
+		if (result.getSmsProvider() == null) {
+			final BranchRule branchRule = this.getBranchRuleService().findBranchRuleByBranchId(result.getBranch().getId());
+			if (branchRule != null) {
+				result.setSmsProvider(branchRule.getSmsProvider());
+			} else {
+				result.setMessage("SMS Provider is not selected for the branch.");
+				result.setBatchStatusConstant(BatchStatusConstant.CANCELLED);
+			}
+		}
 		result = this.getBatchLogService().saveBatchLogInNewTransaction(batchLog);
 		return result;
 	}
@@ -77,7 +91,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public void sendNotificationAsBatch(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog) {
+	public synchronized void sendNotificationAsBatch(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -130,7 +144,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public void sendNotificationAsBatch(final BatchLog batchLog, final Collection<Student> students) {
+	public synchronized void sendNotificationAsBatch(final BatchLog batchLog, final Collection<Student> students) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -183,7 +197,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public void sendNotificationJMS(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) {
+	public synchronized void sendNotificationJMS(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -233,7 +247,7 @@ public class NotificationProducerUtil implements Serializable {
 	 * @param branchId
 	 * @param batchLog
 	 */
-	public void sendNotificationJMS(final Student student, final BatchLog batchLog) {
+	public synchronized void sendNotificationJMS(final Student student, final BatchLog batchLog) {
 		Connection queueConn = null;
 		Session session = null;
 		try {
@@ -339,6 +353,7 @@ public class NotificationProducerUtil implements Serializable {
 		if (student != null) {
 			jmsObject.setStudent(student);
 		}
+		jmsObject.setSmsProvider(batchLog.getSmsProvider());
 		jmsObject.setSequenceNr(Long.valueOf(1));
 		jmsObject.setUserName(ViewUtil.getPrincipal());
 		final ObjectMessage message = session.createObjectMessage(jmsObject);
@@ -439,6 +454,21 @@ public class NotificationProducerUtil implements Serializable {
 				}
 			}
 		}
+	}
+
+	/**
+	 * @return the branchRuleService
+	 */
+	public BranchRuleService getBranchRuleService() {
+		return this.branchRuleService;
+	}
+
+	/**
+	 * @param branchRuleService
+	 *            the branchRuleService to set
+	 */
+	public void setBranchRuleService(final BranchRuleService branchRuleService) {
+		this.branchRuleService = branchRuleService;
 	}
 
 }

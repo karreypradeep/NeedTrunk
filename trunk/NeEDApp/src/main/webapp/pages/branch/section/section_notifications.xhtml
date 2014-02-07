@@ -40,6 +40,7 @@
 					<p:commandButton id="view_send_notification" value="New notification" icon="ui-icon-document"
 						action="#{sectionNotificationsBean.setViewSendNotification()}" update="@form"
 						disabled="#{!grantedAuthorityBean.userAllowedToSendNotificationsSection || !sectionNotificationsBean.batchFinished}">
+						<f:setPropertyActionListener target="#{sectionNotificationsBean.batchFinished}" value="true" />
 					</p:commandButton>
 				</p:toolbarGroup>
 			</p:toolbar>

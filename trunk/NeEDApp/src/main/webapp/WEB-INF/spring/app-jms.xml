@@ -74,7 +74,7 @@
 	</bean>
 
 	<jms:listener-container connection-factory="jmsConnectionFactory" destination-resolver="serverDestinationResolver"
-		concurrency="5-10" acknowledge="transacted" >
+		concurrency="10-20" acknowledge="transacted" >
 		<jms:listener destination="smsDestination" ref="smsConsumerMDP" method="onMessage" />
 	</jms:listener-container> 
 	

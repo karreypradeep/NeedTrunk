@@ -97,6 +97,9 @@ public class SMSProvider extends BaseEntity implements Serializable {
 	@Column(name = "USE_ADD2_IND")
 	private boolean				useAdditionalParameter2;
 
+	@Column(name = "MAX_NO_OF_CHARS_PER_SMS")
+	private Integer				maximumNoOfCharactersPerSMS;
+
 	public String getSmsProviderName() {
 		return this.smsProviderName;
 	}
@@ -312,6 +315,21 @@ public class SMSProvider extends BaseEntity implements Serializable {
 	 */
 	public void setSuccessString(final String successString) {
 		this.successString = successString;
+	}
+
+	/**
+	 * @return the maximumNoOfCharactersPerSMS
+	 */
+	public Integer getMaximumNoOfCharactersPerSMS() {
+		return this.maximumNoOfCharactersPerSMS;
+	}
+
+	/**
+	 * @param maximumNoOfCharactersPerSMS
+	 *            the maximumNoOfCharactersPerSMS to set
+	 */
+	public void setMaximumNoOfCharactersPerSMS(final Integer maximumNoOfCharactersPerSMS) {
+		this.maximumNoOfCharactersPerSMS = maximumNoOfCharactersPerSMS;
 	}
 
 }

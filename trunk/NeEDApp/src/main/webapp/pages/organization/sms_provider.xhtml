@@ -102,6 +102,13 @@
 			</p:inputText>
 			<p:message id="success_string_msg" for="success_string" />
 
+			<p:outputLabel id="max_chars_for_sms_label" value="Maximum characters for SMS" for="max_chars_for_sms" />
+			<p:inputText id="max_chars_for_sms" value="#{smsProviderBean.smsProvider.maximumNoOfCharactersPerSMS}" required="true">
+				<p:ajax update="@this" process="@this"></p:ajax>
+				<f:convertNumber pattern="###"></f:convertNumber>
+			</p:inputText>
+			<p:message id="max_chars_for_sms_msg" for="max_chars_for_sms" />
+
 		</h:panelGrid>
 
 		<h:panelGrid columns="9" id="grid2" cellpadding="4" style="border:0px;margin-bottom:10px;">

@@ -23,7 +23,7 @@
 			</p:column>
 
 			<p:column headerText="Status" sortBy="#{batchLog.batchStatusConstant}" filterBy="#{batchLog.batchStatusConstant}"
-						filterMatchMode="contains">
+				filterMatchMode="contains">
 				<h:outputText value="#{batchLog.batchStatusConstant}" />
 			</p:column>
 
@@ -33,14 +33,22 @@
 				</h:outputText>
 			</p:column>
 
-			<p:column headerText="Type" sortBy="#{batchLog.notificationTypeConstant.label}" filterBy="#{batchLog.notificationTypeConstant.label}"
-						filterMatchMode="contains">
+			<p:column headerText="Type" sortBy="#{batchLog.notificationTypeConstant.label}"
+				filterBy="#{batchLog.notificationTypeConstant.label}" filterMatchMode="contains">
 				<h:outputText value="#{batchLog.notificationTypeConstant.label}" />
 			</p:column>
 
-			<p:column headerText="Sub type" sortBy="#{batchLog.notificationSubTypeConstant.label}" filterBy="#{batchLog.notificationSubTypeConstant.label}"
-						filterMatchMode="contains">
+			<p:column headerText="Sub type" sortBy="#{batchLog.notificationSubTypeConstant.label}"
+				filterBy="#{batchLog.notificationSubTypeConstant.label}" filterMatchMode="contains">
 				<h:outputText value="#{batchLog.notificationSubTypeConstant.label}" />
+			</p:column>
+
+			<p:column headerText="Message" styleClass="options-column">
+				<p:commandLink id="viewMesage" styleClass="ui-icon ui-icon-search" update="@form" process="@this"
+					rendered="#{batchLog.message != null}" oncomplete="stackTraceDlg.show()" title="View message"
+					style="margin:0px 0px 0px;float:left;">
+					<f:setPropertyActionListener target="#{cc.attrs.messageSent}" value="#{batchLog.message}"></f:setPropertyActionListener>
+				</p:commandLink>
 			</p:column>
 
 			<p:column headerText="Total elements">
@@ -53,14 +61,21 @@
 				<h:outputText value="#{batchLog.nrElementsProcessed}"
 					rendered="#{not cc.attrs.batchLogScheduled.id.equals(batchLog.id)}" />
 			</p:column>
-  
+
+			<p:column headerText="SMS Consumed">
+				<h:outputText value="#{batchLog.numberOfSMSConsumedByBatchLog}"
+					rendered="#{batchLog.numberOfSMSConsumedByBatchLog!=null}" />
+			</p:column>
+
 			<p:column headerText="Duration(seconds)" style="text-align: center;">
 				<c:if test="#{empty batchLog.executionTime}">
 					<p:progressBar widgetVar="pbAjax" value="#{cc.attrs.progressBarProgressValue}" labelTemplate="{value}%"
 						styleClass="animated" rendered="#{cc.attrs.batchLogScheduled.id.equals(batchLog.id)}" />
 				</c:if>
-				<h:outputText value="#{batchLog.executionTime/1000}" rendered="#{batchLog.executionTime != null}"/>
-			</p:column>  
+				<h:outputText value="#{batchLog.executionTime/1000}" rendered="#{batchLog.executionTime != null}">
+					<f:convertNumber pattern="####" />
+				</h:outputText>
+			</p:column>
 
 			<p:column headerText="Options" styleClass="options-column">
 				<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" update="@form" process="@this"
@@ -70,6 +85,13 @@
 				</p:commandLink>
 			</p:column>
 		</p:dataTable>
+		<p:dialog header="Message" widgetVar="stackTraceDlg" modal="true">
+			<h:outputLabel id="stackTraceLabel" value="#{cc.attrs.messageSent}" escape="false" />
+			<f:facet name="footer">
+				<p:commandButton value="Ok" oncomplete="stackTraceDlg.hide();" update="@form" process="@this" />
+			</f:facet>
+		</p:dialog>
+
 	</composite:implementation>
 
 </ui:composition>

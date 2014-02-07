@@ -120,14 +120,22 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	}
 
 	/**
+	 * @param batchFinished
+	 *            the batchFinished to set
+	 */
+	public void setBatchFinished(final boolean batchFinished) {
+		this.batchFinished = batchFinished;
+	}
+
+	/**
 	 * On tab change event.
 	 */
 	@Override
 	public void onTabChange() {
-		setViewActionString(ViewAction.VIEW_BATCH_LOGS);
+		this.setViewActionString(ViewAction.VIEW_BATCH_LOGS);
 		this.loadBatchLogsFromDB = true;
-		loadBranchNotification();
-		getBranchNotificationByNotificationType();
+		this.loadBranchNotification();
+		this.getBranchNotificationByNotificationType();
 	}
 
 	/**
@@ -146,31 +154,36 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	 * @return
 	 */
 	public String sendNotification() {
-		if (getNotificationTypeConstant() == null) {
+		if (this.getNotificationTypeConstant() == null) {
 			ViewUtil.addMessage("Please select notification type.", FacesMessage.SEVERITY_ERROR);
 			return null;
-		} else if (getNotificationSubTypeConstant() == null) {
+		} else if (this.getNotificationSubTypeConstant() == null) {
 			ViewUtil.addMessage("Please select notifications sub type.", FacesMessage.SEVERITY_ERROR);
 			return null;
 		} else {
 			try {
-				if (getNotificationSubTypeConstant().isMessageRequired() && ((getNotificationText() == null) || getNotificationText().trim().isEmpty())) {
+				if (this.getNotificationSubTypeConstant().isMessageRequired()
+						&& ((this.getNotificationText() == null) || this.getNotificationText().trim().isEmpty())) {
 					ViewUtil.addMessage("Message required for this notification type.", FacesMessage.SEVERITY_ERROR);
 					return null;
 				}
 				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
-						.notificationLevelId(this.sessionBean.getCurrentBranch().getId()).notificationTypeConstant(getNotificationTypeConstant())
-						.notificationLevelConstant(NotificationLevelConstant.BRANCH).notificationSubTypeConstant(getNotificationSubTypeConstant())
-						.messageToBeSent(getNotificationText()).exam(getSelectedExamForNotification()).attendanceDate(DateUtil.getSystemDate()).build();
+						.notificationLevelId(this.sessionBean.getCurrentBranch().getId()).notificationTypeConstant(this.getNotificationTypeConstant())
+						.notificationLevelConstant(NotificationLevelConstant.BRANCH).notificationSubTypeConstant(this.getNotificationSubTypeConstant())
+						.messageToBeSent(this.getNotificationText()).exam(this.getSelectedExamForNotification()).attendanceDate(DateUtil.getSystemDate())
+						.smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider()).build();
 
-				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(getAcademicYearForNotification().getId(), this.scheduledBatchLog);
+				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.getAcademicYearForNotification().getId(),
+						this.scheduledBatchLog);
+
 			} catch (final Exception e) {
 				final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
-				addMessage(message);
+				this.addMessage(message);
 			}
-			setViewBatchLogs();
+			ViewUtil.addMessage("Notifications are sent for processing.", FacesMessage.SEVERITY_INFO);
+			this.setViewBatchLogs();
 			this.loadBatchLogsFromDB = true;
-			loadBatchLogsByKlassLevelAndKlassId();
+			this.loadBatchLogsByKlassLevelAndKlassId();
 			this.batchFinished = false;
 			this.elementsProcessed = 0;
 		}
@@ -182,9 +195,9 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	 */
 	public void loadBatchLogsByKlassLevelAndKlassId() {
 		if (this.loadBatchLogsFromDB) {
-			setKlassBatchLogs(this.batchLogService.findBatchLogsByNotificationLevelAndNotificationLevelId(this.sessionBean.getCurrentBranch().getId(),
+			this.setKlassBatchLogs(this.batchLogService.findBatchLogsByNotificationLevelAndNotificationLevelId(this.sessionBean.getCurrentBranch().getId(),
 					NotificationLevelConstant.BRANCH, this.sessionBean.getCurrentBranch().getId()));
-			Collections.sort((List<BatchLog>) getKlassBatchLogs(), new BatchLogComparator(BatchLogComparator.Order.ID));
+			Collections.sort((List<BatchLog>) this.getKlassBatchLogs(), new BatchLogComparator(BatchLogComparator.Order.ID));
 			this.loadBatchLogsFromDB = false;
 		}
 	}
@@ -194,7 +207,7 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	 */
 	public void loadBatchLogMessagesByBatchLog() {
 		if (this.loadBatchLogMessagesFromDB) {
-			setKlassBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByBatchLogId(getBatchLog().getId()));
+			this.setKlassBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByBatchLogId(this.getBatchLog().getId()));
 			this.loadBatchLogMessagesFromDB = false;
 		}
 	}
@@ -230,13 +243,13 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	}
 
 	public String setViewBatchLogs() {
-		setViewActionString(ViewAction.VIEW_BATCH_LOGS);
+		this.setViewActionString(ViewAction.VIEW_BATCH_LOGS);
 		return null;
 	}
 
 	public String setViewBatchLogMessages() {
-		setViewActionString(ViewAction.VIEW_BATCH_LOG_MESSAGES);
-		clearBatchLogMesagesCollection();
+		this.setViewActionString(ViewAction.VIEW_BATCH_LOG_MESSAGES);
+		this.clearBatchLogMesagesCollection();
 		return null;
 	}
 
@@ -335,7 +348,7 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 				this.batchLog = this.scheduledBatchLog;
 				this.scheduledBatchLog = null;
 				this.loadBatchLogsFromDB = true;
-				loadBatchLogsByKlassLevelAndKlassId();
+				this.loadBatchLogsByKlassLevelAndKlassId();
 			}
 		}
 	}
@@ -345,7 +358,7 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	 * has finished.
 	 */
 	public void pollListener() {
-		checkBatchStopped();
+		this.checkBatchStopped();
 	}
 
 	/**
@@ -391,7 +404,7 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	 * @return
 	 */
 	public int getBatchPollInterval() {
-		return 30;
+		return 45;
 	}
 
 	/**
@@ -426,28 +439,30 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 
 	@Override
 	public void loadExamsForNotifications() {
-		setSelectedExamForNotification(null);
-		if (getExamsForNotification() != null) {
-			getExamsForNotification().clear();
+		this.setSelectedExamForNotification(null);
+		if (this.getExamsForNotification() != null) {
+			this.getExamsForNotification().clear();
 		}
-		if (getAcademicYearForNotification() != null) {
-			final Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsByAcademicYearId(getAcademicYearForNotification().getId());
+		if (this.getAcademicYearForNotification() != null) {
+			final Collection<SectionExam> sectionExams = this.sectionExamService
+					.findSectionExamsByAcademicYearId(this.getAcademicYearForNotification().getId());
 			final Map<Long, Exam> examsMap = new HashMap<Long, Exam>();
 			for (final SectionExam sectionExam : sectionExams) {
 				if (examsMap.get(sectionExam.getExam().getId()) == null) {
-					if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(getNotificationSubTypeConstant())
-							|| NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION.equals(getNotificationSubTypeConstant())) {
+					if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(this.getNotificationSubTypeConstant())
+							|| NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION.equals(this.getNotificationSubTypeConstant())) {
 						if (sectionExam.getEndDate().before(DateUtil.getSystemDate())) {
 							examsMap.put(sectionExam.getExam().getId(), sectionExam.getExam());
 						}
-					} else if (NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(getNotificationSubTypeConstant())) {
+					} else if (NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(this.getNotificationSubTypeConstant())) {
 						if (!sectionExam.getStartDate().before(DateUtil.getSystemDate())) {
 							examsMap.put(sectionExam.getExam().getId(), sectionExam.getExam());
 						}
 					}
 				}
 			}
-			setExamsForNotification(examsMap.values());
+			this.setExamsForNotification(examsMap.values());
 		}
 	}
+
 }

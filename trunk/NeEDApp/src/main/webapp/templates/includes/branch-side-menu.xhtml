@@ -254,7 +254,7 @@
 
 		<p:tab title="#{msg.notifications}" id="left_notifications_tab">
 			<h:panelGrid columns="1" cellpadding="2">
-				<p:commandLink value="#{msg.students}" update="@form" process="branch_side_menu">
+				<p:commandLink value="#{msg.students}" update="@form" process="branch_side_menu" action="#{branchStudentsNotificationsBean.setViewBatchLogs}">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
 						value="BRANCH_STUDENTS_NOTIFICATIONS">
 						<f:converter converterId="viewContentConverter" />

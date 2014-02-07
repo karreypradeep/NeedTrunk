@@ -8,7 +8,6 @@ package com.apeironsol.need.notifications.consumers.sms;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.EnumSet;
 
 import javax.annotation.Resource;
 import javax.jms.JMSException;
@@ -23,7 +22,6 @@ import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
 
 import com.apeironsol.framework.NeEDJMSObject;
-import com.apeironsol.need.core.model.BranchRule;
 import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorker;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorkerFactory;
@@ -94,14 +92,7 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 					}
 				} else {
 					try {
-						BatchLogMessage batchLogMessage = null;
-						if (jmsObject.getStudentAcademicYear() != null) {
-							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject
-									.getStudentAcademicYear().getId());
-						}
-						if (batchLogMessage == null) {
-							this.processBatchMesssage(jmsObject, batchLog);
-						}
+						this.processBatchMesssage(jmsObject, batchLog);
 					} catch (final Exception e) {
 						throw new JMSException(e.getMessage());
 					}
@@ -134,8 +125,8 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	private void processBatchMesssage(final NeEDJMSObject jmsObject, final BatchLog batchLog) throws Exception {
 		try {
 			final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
-			final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(batchLog.getBranch().getId());
-			final NotificationMessage notificationMessage = smsWorker.sendSMS(branchRule.getSmsProvider(), jmsObject.getStudentAcademicYear(), batchLog);
+			final NotificationMessage notificationMessage = smsWorker.sendSMS(
+					jmsObject.getSmsProvider() != null ? jmsObject.getSmsProvider() : batchLog.getSmsProvider(), jmsObject.getStudentAcademicYear(), batchLog);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		} catch (final Throwable exception) {
 			throw new Exception(exception);
@@ -189,14 +180,26 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	 */
 	private void updateBatchLogToFinished(final BatchLog batchLog) {
 
-		batchLog.setNrElementsProcessedSuccess(this.batchLogMessageService.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(batchLog.getId(),
-				EnumSet.of(BatchLogMessageStatusConstant.SUCCESS)));
-
-		batchLog.setNrElementsProcessedWithError(this.batchLogMessageService.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(batchLog.getId(),
-				EnumSet.of(BatchLogMessageStatusConstant.FAILED)));
-
-		batchLog.setNrElementsProcessedWithCanceled(this.batchLogMessageService.findNumberOfBatchLogMessagesByBatchLogIdAndStatus(batchLog.getId(),
-				EnumSet.of(BatchLogMessageStatusConstant.CANCELLED)));
+		final Collection<BatchLogMessage> batchLogMessages = this.batchLogMessageService.findBatchLogMessagesByBatchLogId(batchLog.getId());
+		final int maxCharsForSMS = batchLog.getSmsProvider() != null ? batchLog.getSmsProvider().getMaximumNoOfCharactersPerSMS() != null ? batchLog
+				.getSmsProvider().getMaximumNoOfCharactersPerSMS() : 140 : 140;
+		int noOfSuccess = 0, noOfFailure = 0, noOfCancelled = 0;
+		int totalNoOfSMSConsumedByBatch = 0;
+		for (final BatchLogMessage batchLogMessage : batchLogMessages) {
+			if (BatchLogMessageStatusConstant.SUCCESS.equals(batchLogMessage.getBatchLogMessageStatusConstant())) {
+				noOfSuccess++;
+				totalNoOfSMSConsumedByBatch += Math.ceil((double) (batchLogMessage.getMessageSent() != null ? batchLogMessage.getMessageSent().length() : 0)
+						/ maxCharsForSMS);
+			} else if (BatchLogMessageStatusConstant.FAILED.equals(batchLogMessage.getBatchLogMessageStatusConstant())) {
+				noOfFailure++;
+			} else {
+				noOfCancelled++;
+			}
+		}
+		batchLog.setNrElementsProcessedSuccess(Long.valueOf(noOfSuccess));
+		batchLog.setNrElementsProcessedWithError(Long.valueOf(noOfFailure));
+		batchLog.setNrElementsProcessedWithCanceled(Long.valueOf(noOfCancelled));
+		batchLog.setNumberOfSMSConsumedByBatchLog(totalNoOfSMSConsumedByBatch);
 
 		batchLog.setBatchStatusConstant(BatchStatusConstant.FINISHED);
 		final Date currentTime = DateUtil.getSystemDate();

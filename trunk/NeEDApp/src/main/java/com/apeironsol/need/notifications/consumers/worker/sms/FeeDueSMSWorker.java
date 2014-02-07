@@ -68,22 +68,23 @@ public class FeeDueSMSWorker implements SMSWorker {
 	@Override
 	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
 			throws ClientProtocolException, URISyntaxException, IOException {
-		NotificationMessage notificationMessage = new NotificationMessage();
-		UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
-		Double feeDue = this.studentFinancialService.getStudentFeeDue(studentAcademicYear.getStudent(), studentAcademicYear.getAcademicYear(),
+		final NotificationMessage notificationMessage = new NotificationMessage();
+		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
+		final Double feeDue = this.studentFinancialService.getStudentFeeDue(studentAcademicYear.getStudent(), studentAcademicYear.getAcademicYear(),
 				DateUtil.getSystemDate());
-		Map<String, String> model = new HashMap<String, String>();
+		final Map<String, String> model = new HashMap<String, String>();
 		model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
 		model.put("feeDue", feeDue.toString());
 		String smsText = batchLog.getMessage();
-		if (smsText == null || smsText.trim().isEmpty()) {
+		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 		}
 		notificationMessage.setMessage(smsText);
 		if (studentAcademicYear.getStudent().getAddress().getContactNumber() != null) {
 			if (feeDue > 0) {
 				notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
-				String smsReturnTest = universalSMSProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
+				final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() },
+						smsText);
 				if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 					notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 				} else {
@@ -106,13 +107,13 @@ public class FeeDueSMSWorker implements SMSWorker {
 
 	@Override
 	public String getMessage(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) throws ApplicationException {
-		Double feeDue = this.studentFinancialService.getStudentFeeDue(studentAcademicYear.getStudent(), studentAcademicYear.getAcademicYear(),
+		final Double feeDue = this.studentFinancialService.getStudentFeeDue(studentAcademicYear.getStudent(), studentAcademicYear.getAcademicYear(),
 				DateUtil.getSystemDate());
-		Map<String, String> model = new HashMap<String, String>();
+		final Map<String, String> model = new HashMap<String, String>();
 		model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
 		model.put("feeDue", feeDue.toString());
 		String smsText = batchLog.getMessage();
-		if (smsText == null || smsText.trim().isEmpty()) {
+		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 		}
 		return smsText;

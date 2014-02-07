@@ -25,6 +25,7 @@ import com.apeironsol.need.core.model.AdmissionReservationFee;
 import com.apeironsol.need.core.model.AdmissionSubmittedDocuments;
 import com.apeironsol.need.core.model.Batch;
 import com.apeironsol.need.core.model.Branch;
+import com.apeironsol.need.core.model.BranchRule;
 import com.apeironsol.need.core.model.BuildingBlock;
 import com.apeironsol.need.core.model.EducationHistory;
 import com.apeironsol.need.core.model.Klass;
@@ -82,6 +83,9 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 	@Resource
 	StudentService							studentService;
+
+	@Resource
+	BranchRuleService						branchRuleService;
 
 	@Resource
 	BranchService							branchService;
@@ -208,7 +212,10 @@ public class AdmissionServiceImpl implements AdmissionService {
 				if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
 					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branch.getId(), student.getId(), NotificationTypeConstant.SMS_NOTIFICATION,
 							NotificationLevelConstant.STUDENT, NotificationSubTypeConstant.NEW_ADMISSION_SUBMITTED_NOTIFICATION, null, null);
-					this.notificationService.sendNotificationForStudentAdmission(student, batchLog);
+					if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
+							|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
+						this.notificationService.sendNotificationForStudentAdmission(student, batchLog);
+					}
 				}
 			} catch (final Exception e) {
 				e.printStackTrace();
@@ -467,7 +474,10 @@ public class AdmissionServiceImpl implements AdmissionService {
 				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
 						studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
 						NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION, null, null);
-				this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+				if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
+						|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
+					this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+				}
 			}
 		} catch (final Exception e) {
 			e.printStackTrace();
@@ -573,7 +583,10 @@ public class AdmissionServiceImpl implements AdmissionService {
 						final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
 								studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
 								NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
-						this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+						if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
+								|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
+							this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+						}
 					}
 				}
 			} catch (final Exception e) {
@@ -640,7 +653,10 @@ public class AdmissionServiceImpl implements AdmissionService {
 						final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
 								studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
 								NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
-						this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+						if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
+								|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
+							this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+						}
 					}
 				} catch (final Exception e) {
 					e.printStackTrace();
@@ -803,7 +819,10 @@ public class AdmissionServiceImpl implements AdmissionService {
 					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
 							studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
 							NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
-					this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+					if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
+							|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
+						this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
+					}
 				}
 			}
 		} catch (final Exception e) {
@@ -1100,7 +1119,15 @@ public class AdmissionServiceImpl implements AdmissionService {
 			final NotificationTypeConstant notificationTypeConstant, final NotificationLevelConstant notificationLevelConstant,
 			final NotificationSubTypeConstant notificationSubTypeConstant, final String messageToBeSent, final String studentFeeTransactionNr) {
 		BatchLog batchLog = new BatchLog();
-		batchLog.setBatchStatusConstant(batchSize > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+		final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(branchId);
+		if ((branchRule != null) && (branchRule.getSmsProvider() != null)) {
+			batchLog.setSmsProvider(branchRule.getSmsProvider());
+			batchLog.setBatchStatusConstant(batchSize > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+			batchLog.setMessage(messageToBeSent);
+		} else {
+			batchLog.setMessage("SMS Provider is not selected for the branch.");
+			batchLog.setBatchStatusConstant(BatchStatusConstant.CANCELLED);
+		}
 		batchLog.setBranch(this.branchService.findBranchById(branchId));
 		batchLog.setCompletedIndicator(false);
 		batchLog.setExecutionStartDate(DateUtil.getSystemDate());
