@@ -339,7 +339,7 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	 */
 	public void checkBatchStopped() {
 		this.batchFinished = true;
-		if (this.scheduledBatchLog != null) {
+		if ((this.scheduledBatchLog != null) && (this.scheduledBatchLog.getId()) != null) {
 			this.scheduledBatchLog = this.batchLogService.findBatchLogById(this.scheduledBatchLog.getId());
 			if (BatchStatusConstant.CREATED.equals(this.scheduledBatchLog.getBatchStatusConstant())
 					|| BatchStatusConstant.DISTRIBUTED.equals(this.scheduledBatchLog.getBatchStatusConstant())) {

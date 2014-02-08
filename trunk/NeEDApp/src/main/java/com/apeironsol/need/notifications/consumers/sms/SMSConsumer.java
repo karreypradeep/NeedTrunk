@@ -92,7 +92,17 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 					}
 				} else {
 					try {
-						this.processBatchMesssage(jmsObject, batchLog);
+						BatchLogMessage batchLogMessage = null;
+						if (jmsObject.getStudentAcademicYear() != null) {
+							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject
+									.getStudentAcademicYear().getId());
+						} else if (jmsObject.getStudent() != null) {
+							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentId(batchLog.getId(), jmsObject.getStudent()
+									.getId());
+						}
+						if (batchLogMessage == null) {
+							this.processBatchMesssage(jmsObject, batchLog);
+						}
 					} catch (final Exception e) {
 						throw new JMSException(e.getMessage());
 					}

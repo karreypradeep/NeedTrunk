@@ -21,7 +21,6 @@ import org.springframework.jms.listener.SessionAwareMessageListener;
 import org.springframework.stereotype.Component;
 
 import com.apeironsol.framework.NeEDJMSObject;
-import com.apeironsol.need.core.model.BranchRule;
 import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorker;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorkerFactory;
@@ -44,7 +43,7 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 	/**
 	 * Logger for logging.
 	 */
-	private static final Log		Logger	= LogFactory.getLog(SMSDeadLetterConsumer.class);
+	private static final Log		logger	= LogFactory.getLog(SMSDeadLetterConsumer.class);
 
 	@Resource
 	private BatchLogMessageService	batchLogMessageService;
@@ -69,6 +68,8 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 			if (jmsObject.getStudentAcademicYear() != null) {
 				batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject
 						.getStudentAcademicYear().getId());
+			} else if (jmsObject.getStudent() != null) {
+				batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentId(batchLog.getId(), jmsObject.getStudent().getId());
 			}
 			if (batchLogMessage == null) {
 				this.processBatchMesssage(jmsObject, batchLog);
@@ -87,9 +88,11 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 		NotificationMessage notificationMessage = null;
 		final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
 		try {
-			final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(batchLog.getBranch().getId());
-			notificationMessage = smsWorker.sendSMS(branchRule.getSmsProvider(), jmsObject.getStudentAcademicYear(), batchLog);
+			notificationMessage = smsWorker.sendSMS(batchLog.getSmsProvider() != null ? batchLog.getSmsProvider() : jmsObject.getSmsProvider(),
+					jmsObject.getStudentAcademicYear(), batchLog);
+			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		} catch (final Throwable exception) {
+			logger.error(exception);
 			notificationMessage = this.createNotificationMessage(null, exception.getMessage(), BatchLogMessageStatusConstant.FAILED);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		}
