@@ -457,7 +457,7 @@ public class StudentBean extends AbstractStudentBean {
 		} else {
 			this.studentSearchCriteria.setBranch(this.sessionBean.getCurrentBranch());
 			this.setStudentSectionsBySearchCriteria(this.studentService.findStudentSectionsBySearchCriteria(this.studentSearchCriteria));
-			if (this.getStudentSectionsBySearchCriteria() == null || this.getStudentSectionsBySearchCriteria().isEmpty()) {
+			if ((this.getStudentSectionsBySearchCriteria() == null) || this.getStudentSectionsBySearchCriteria().isEmpty()) {
 				ViewUtil.addMessage("No students found for entered search criteria..", FacesMessage.SEVERITY_INFO);
 			}
 		}
@@ -527,7 +527,12 @@ public class StudentBean extends AbstractStudentBean {
 
 	public void studentAcademicYearChangeListner() {
 		this.setStudentSection(this.studentSectionService.findLatestStudentSectionByStudentAcademicYearId(this.getStudentAcademicYear().getId()));
-		this.preStudentLoad();
+		this.getStudentTabModel().setActiveTab(this.getStudentTabModel().getPersonalTab());
+		this.setViewAction(true);
+		this.setLoadRelationsFlag(true);
+		this.setLoadProfilePictureFlag(true);
+		this.setLoadAcademicYearsFlag(true);
+		this.setStudent(this.getStudentAcademicYear().getStudent());
 	}
 
 	/**

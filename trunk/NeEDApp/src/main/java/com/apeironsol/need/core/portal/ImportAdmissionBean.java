@@ -25,13 +25,13 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Batch;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.service.ImportAdmissionService;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -81,7 +81,7 @@ public class ImportAdmissionBean extends AbstractPortalBean {
 
 	public void importAdmissions(final FileUploadEvent event) {
 		try {
-			if (this.appliedForBatch == null && this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator()) {
+			if ((this.appliedForBatch == null) && this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator()) {
 				ViewUtil.addMessage("Please select batch.", FacesMessage.SEVERITY_ERROR);
 				return;
 			}
@@ -95,7 +95,7 @@ public class ImportAdmissionBean extends AbstractPortalBean {
 				return;
 			}
 
-			if (event.getFile() == null || event.getFile().getFileName() == null || event.getFile().getFileName().trim().length() == 0) {
+			if ((event.getFile() == null) || (event.getFile().getFileName() == null) || (event.getFile().getFileName().trim().length() == 0)) {
 				ViewUtil.addMessage("Please select file to upload.", FacesMessage.SEVERITY_ERROR);
 				return;
 			}
@@ -245,8 +245,9 @@ public class ImportAdmissionBean extends AbstractPortalBean {
 	public void loadAcademicYearsForAdmission() {
 		try {
 			if (!this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator()) {
-				this.loadAcademicYearsForAdmissionsOpened();
-				this.academicYearsForBatch = this.getAcademicYearsWithAdmissionOpen();
+				this.setLoadActiveAcademicYearsFlag(true);
+				this.loadActiveAcademicYearsForCurrentBranch();
+				this.academicYearsForBatch = this.getActiveAcademicYears();
 			}
 		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);

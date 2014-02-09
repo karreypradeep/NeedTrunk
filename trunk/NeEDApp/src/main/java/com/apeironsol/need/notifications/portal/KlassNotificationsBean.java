@@ -172,18 +172,19 @@ public class KlassNotificationsBean extends AbstractNotificationBean {
 						.messageToBeSent(this.getNotificationText()).exam(this.getSelectedExamForNotification()).attendanceDate(DateUtil.getSystemDate())
 						.smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider()).build();
 
+				ViewUtil.addMessage("Notifications are sent for processing.", FacesMessage.SEVERITY_INFO);
+				this.setViewBatchLogs();
+				this.loadBatchLogsFromDB = true;
+				this.batchFinished = false;
+				this.elementsProcessed = 0;
+
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.getAcademicYearForNotification().getId(),
 						this.klassBean.getKlass(), this.scheduledBatchLog);
 			} catch (final Exception e) {
 				final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
 				this.addMessage(message);
 			}
-			ViewUtil.addMessage("Notifications are sent for processing.", FacesMessage.SEVERITY_INFO);
-			this.setViewBatchLogs();
-			this.loadBatchLogsFromDB = true;
 			this.loadBatchLogsByKlassLevelAndKlassId();
-			this.batchFinished = false;
-			this.elementsProcessed = 0;
 		}
 		return null;
 	}
@@ -348,6 +349,10 @@ public class KlassNotificationsBean extends AbstractNotificationBean {
 				this.loadBatchLogsFromDB = true;
 				this.loadBatchLogsByKlassLevelAndKlassId();
 			}
+		} else if ((this.scheduledBatchLog != null)
+				&& ((this.scheduledBatchLog.getId() == null) && (BatchStatusConstant.CREATED.equals(this.scheduledBatchLog.getBatchStatusConstant()) || BatchStatusConstant.DISTRIBUTED
+						.equals(this.scheduledBatchLog.getBatchStatusConstant())))) {
+			this.batchFinished = false;
 		}
 	}
 

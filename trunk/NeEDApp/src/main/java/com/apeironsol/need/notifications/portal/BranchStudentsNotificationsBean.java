@@ -173,6 +173,12 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 						.messageToBeSent(this.getNotificationText()).exam(this.getSelectedExamForNotification()).attendanceDate(DateUtil.getSystemDate())
 						.smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider()).build();
 
+				ViewUtil.addMessage("Notifications are sent for processing.", FacesMessage.SEVERITY_INFO);
+				this.setViewBatchLogs();
+				this.loadBatchLogsFromDB = true;
+				this.batchFinished = false;
+				this.elementsProcessed = 0;
+
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.getAcademicYearForNotification().getId(),
 						this.scheduledBatchLog);
 
@@ -180,12 +186,7 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 				final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
 				this.addMessage(message);
 			}
-			ViewUtil.addMessage("Notifications are sent for processing.", FacesMessage.SEVERITY_INFO);
-			this.setViewBatchLogs();
-			this.loadBatchLogsFromDB = true;
 			this.loadBatchLogsByKlassLevelAndKlassId();
-			this.batchFinished = false;
-			this.elementsProcessed = 0;
 		}
 		return null;
 	}
@@ -339,7 +340,7 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	 */
 	public void checkBatchStopped() {
 		this.batchFinished = true;
-		if ((this.scheduledBatchLog != null) && (this.scheduledBatchLog.getId()) != null) {
+		if ((this.scheduledBatchLog != null) && ((this.scheduledBatchLog.getId()) != null)) {
 			this.scheduledBatchLog = this.batchLogService.findBatchLogById(this.scheduledBatchLog.getId());
 			if (BatchStatusConstant.CREATED.equals(this.scheduledBatchLog.getBatchStatusConstant())
 					|| BatchStatusConstant.DISTRIBUTED.equals(this.scheduledBatchLog.getBatchStatusConstant())) {
@@ -350,6 +351,10 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 				this.loadBatchLogsFromDB = true;
 				this.loadBatchLogsByKlassLevelAndKlassId();
 			}
+		} else if ((this.scheduledBatchLog != null)
+				&& ((this.scheduledBatchLog.getId() == null) && (BatchStatusConstant.CREATED.equals(this.scheduledBatchLog.getBatchStatusConstant()) || BatchStatusConstant.DISTRIBUTED
+						.equals(this.scheduledBatchLog.getBatchStatusConstant())))) {
+			this.batchFinished = false;
 		}
 	}
 

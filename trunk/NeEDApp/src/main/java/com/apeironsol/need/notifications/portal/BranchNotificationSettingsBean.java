@@ -67,17 +67,17 @@ public class BranchNotificationSettingsBean extends AbstractBranchBean {
 
 	public void loadBranchNotifications() {
 		if (this.loadBranchNotificationFlag) {
-			setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.branchBean.getBranch().getId()));
+			this.setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.branchBean.getBranch().getId()));
 			final Map<NotificationSubTypeConstant, BranchNotification> map = new HashMap<NotificationSubTypeConstant, BranchNotification>();
-			for (final BranchNotification branchNotification : getBranchNotifications()) {
+			for (final BranchNotification branchNotification : this.getBranchNotifications()) {
 				map.put(branchNotification.getNotificationSubType(), branchNotification);
 			}
 			for (final NotificationSubTypeConstant notificationSubTypeConstant : NotificationSubTypeConstant.getBrachNotifications()) {
 				if (map.get(notificationSubTypeConstant) == null) {
 					final BranchNotification branchNotification = new BranchNotification();
-					branchNotification.setBranch(this.sessionBean.getCurrentBranch());
+					branchNotification.setBranch(this.branchBean.getBranch());
 					branchNotification.setNotificationSubType(notificationSubTypeConstant);
-					addBranchNotification(branchNotification);
+					this.addBranchNotification(branchNotification);
 				}
 			}
 			this.loadBranchNotificationFlag = false;
@@ -96,7 +96,10 @@ public class BranchNotificationSettingsBean extends AbstractBranchBean {
 	 */
 	public String saveBranchNotifications() {
 		try {
-			setBranchNotifications(this.branchNotificationService.saveBranchNotifications(getBranchNotifications()));
+			for (final BranchNotification branchNotification : this.getBranchNotifications()) {
+				branchNotification.setBranch(this.branchBean.getBranch());
+			}
+			this.setBranchNotifications(this.branchNotificationService.saveBranchNotifications(this.getBranchNotifications()));
 		} catch (final ApplicationException exception) {
 			ViewExceptionHandler.handle(exception);
 		}

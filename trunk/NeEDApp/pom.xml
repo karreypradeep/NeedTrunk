@@ -699,6 +699,13 @@
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.18</version>
 		</dependency>
+
+		<dependency>
+			<groupId>net.sourceforge.fiftyone-java</groupId>
+			<artifactId>51Degrees.mobi.detection.core</artifactId>
+			<version>2.2.8.9</version>
+		</dependency>
+
 	</dependencies>
 	<url>http://need.apeironsol.com</url>
 	<organization>
