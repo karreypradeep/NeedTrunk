@@ -1,15 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:c="http://java.sun.com/jsp/jstl/core"
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:p="http://primefaces.org/ui">
 <ui:composition template="/templates/main-login.xhtml">
 	<f:metadata>
 		<f:event type="preRenderView" listener="#{loginBean.loadBranchs}" />
-		<f:event type="preRenderView"
-			listener="#{loginBean.putHomeURLInSeccion}" />
+		<f:event type="preRenderView" listener="#{loginBean.putHomeURLInSeccion}" />
 	</f:metadata>
 	<ui:define name="body">
 		<center>
@@ -21,12 +17,9 @@
 						<p:commandLink action="organization_index">
 							<p:graphicImage url="/images/org1.jpg" width="192" height="175" />
 
-							<f:setPropertyActionListener target="#{accessBean.currentAccess}"
-								value="organization" />
-							<f:setPropertyActionListener
-								target="#{leftMenuBean.activeTabIndex}" value="0" />
-							<f:setPropertyActionListener
-								target="#{viewContentHandlerBean.currentViewContent}"
+							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="organization" />
+							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
 								value="ORGANIZATION_ORGANIZATION">
 								<f:converter converterId="viewContentConverter" />
 							</f:setPropertyActionListener>
@@ -37,21 +30,14 @@
 
 					<p:panelGrid columns="1">
 						<p:commandLink action="branch_index">
-							<p:graphicImage url="/images/branch1.jpg" width="192"
-								height="175" />
-							<f:setPropertyActionListener
-								target="#{viewContentHandlerBean.currentViewContent}"
-								value="BRANCH_STUDENTS">
+							<p:graphicImage url="/images/branch1.jpg" width="192" height="175" />
+							<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_STUDENTS">
 								<f:converter converterId="viewContentConverter" />
 							</f:setPropertyActionListener>
-							<f:setPropertyActionListener target="#{accessBean.currentAccess}"
-								value="branch" />
-							<f:setPropertyActionListener
-								target="#{leftMenuBean.activeTabIndex}" value="0" />
-							<f:setPropertyActionListener
-								target="#{studentBean.loadBranchStudentsFlag}" value="true" />
-							<f:setPropertyActionListener target="#{studentBean.viewAction}"
-								value="false" />
+							<f:setPropertyActionListener target="#{accessBean.currentAccess}" value="branch" />
+							<f:setPropertyActionListener target="#{leftMenuBean.activeTabIndex}" value="0" />
+							<f:setPropertyActionListener target="#{studentBean.loadBranchStudentsFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentBean.viewAction}" value="false" />
 						</p:commandLink>
 					</p:panelGrid>
 
