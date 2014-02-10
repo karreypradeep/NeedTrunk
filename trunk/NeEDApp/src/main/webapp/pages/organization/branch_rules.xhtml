@@ -35,6 +35,10 @@
 		</p:selectOneMenu>
 		<p:message id="smsprovider_msg" for="smsprovider" />
 
+		<p:outputLabel id="absent_reason_required_label" for="absent_reason_required" value="Absent reason required" />
+		<p:selectBooleanCheckbox id="absent_reason_required" value="#{branchRuleBean.branchRule.absentReasonRequiredIndicator}" />
+		<p:message id="absent_reason_required_msg" for="absent_reason_required" />
+
 		<p:outputLabel id="auto_increment_admission_number_label" for="auto_increment_admission_number"
 			value="#{msg.autoIncrementAdmissionNumber}" rendered="false" />
 		<p:selectBooleanCheckbox id="auto_increment_admission_number"

@@ -183,16 +183,16 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 */
 	public void buildSectionAttendanceColumns() {
 		this.getAttendanceColumns().clear();
-		ColumnModel column = new ColumnModel("Name", null, true);
+		final ColumnModel column = new ColumnModel("Name", null, true);
 		this.getAttendanceColumns().add(column);
-		Calendar calendar = (Calendar) this.attendanceMonth.clone();
+		final Calendar calendar = (Calendar) this.attendanceMonth.clone();
 		// calendar.setTime(forMonth);
-		int firstDateOfWeek = DateUtil.getFirstDateOfWeekOfMonth(calendar, this.currentWeekForAttendanceMonth, Calendar.MONDAY);
-		int lastDateOfWeek = DateUtil.getLastDateOfWeekOfMonth(calendar, this.currentWeekForAttendanceMonth, Calendar.MONDAY);
+		final int firstDateOfWeek = DateUtil.getFirstDateOfWeekOfMonth(calendar, this.currentWeekForAttendanceMonth, Calendar.MONDAY);
+		final int lastDateOfWeek = DateUtil.getLastDateOfWeekOfMonth(calendar, this.currentWeekForAttendanceMonth, Calendar.MONDAY);
 
 		for (int i = firstDateOfWeek; i <= lastDateOfWeek; i++) {
 			calendar.set(Calendar.DATE, i);
-			ColumnModel columnNew = new ColumnModel(this.strWeekDays[calendar.get(Calendar.DAY_OF_WEEK) - 1], "" + i, false);
+			final ColumnModel columnNew = new ColumnModel(this.strWeekDays[calendar.get(Calendar.DAY_OF_WEEK) - 1], "" + i, false);
 			this.getAttendanceColumns().add(columnNew);
 		}
 
@@ -222,10 +222,10 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * @return true if previous month button is enabled.
 	 */
 	public boolean isPreviousMonthForAttendanceVisible() {
-		Calendar startDateFirstOfMonth = Calendar.getInstance();
+		final Calendar startDateFirstOfMonth = Calendar.getInstance();
 		startDateFirstOfMonth.setTime(this.sectionBean.getSection().getAcademicYear().getClassStartDate());
-		return !(this.attendanceMonth.get(Calendar.MONTH) != startDateFirstOfMonth.get(Calendar.MONTH) || this.attendanceMonth.get(Calendar.MONTH) == startDateFirstOfMonth
-				.get(Calendar.MONTH) && this.attendanceMonth.get(Calendar.YEAR) != startDateFirstOfMonth.get(Calendar.YEAR));
+		return !((this.attendanceMonth.get(Calendar.MONTH) != startDateFirstOfMonth.get(Calendar.MONTH)) || ((this.attendanceMonth.get(Calendar.MONTH) == startDateFirstOfMonth
+				.get(Calendar.MONTH)) && (this.attendanceMonth.get(Calendar.YEAR) != startDateFirstOfMonth.get(Calendar.YEAR))));
 	}
 
 	/**
@@ -234,10 +234,10 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * @return true if next month button is enabled.
 	 */
 	public boolean isNextMonthForAttendanceVisible() {
-		Calendar endDateFirstOfMonth = Calendar.getInstance();
+		final Calendar endDateFirstOfMonth = Calendar.getInstance();
 		endDateFirstOfMonth.setTime(this.sectionBean.getSection().getAcademicYear().getEndDate());
-		return !(this.attendanceMonth.get(Calendar.MONTH) != endDateFirstOfMonth.get(Calendar.MONTH) || this.attendanceMonth.get(Calendar.MONTH) == endDateFirstOfMonth
-				.get(Calendar.MONTH) && this.attendanceMonth.get(Calendar.YEAR) != endDateFirstOfMonth.get(Calendar.YEAR));
+		return !((this.attendanceMonth.get(Calendar.MONTH) != endDateFirstOfMonth.get(Calendar.MONTH)) || ((this.attendanceMonth.get(Calendar.MONTH) == endDateFirstOfMonth
+				.get(Calendar.MONTH)) && (this.attendanceMonth.get(Calendar.YEAR) != endDateFirstOfMonth.get(Calendar.YEAR))));
 	}
 
 	/**
@@ -265,7 +265,7 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * and builds section attendance columns.
 	 */
 	private void calculateNoOfWeeksForAttendanceMonth() {
-		Calendar calendar = (Calendar) this.attendanceMonth.clone();
+		final Calendar calendar = (Calendar) this.attendanceMonth.clone();
 		this.noOfWeeksForAttendanceMonth = DateUtil.calculateNumberOfWeeksInMonth(calendar, Calendar.MONDAY);
 		this.setCurrentWeekForAttendanceMonth(1);
 		this.buildSectionAttendanceColumns();
@@ -320,9 +320,11 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	}
 
 	public void loadStudentAttendanceDetailsForSection() {
-		this.studentAttendanceMonthlyDOs = this.studentAttendanceService.getSectionAttendanceDetailsByScetionIdAndFromDateAndToDate(this.sectionBean
-				.getSection().getId(), DateUtil.returnFirstDateOfMonth(this.attendanceMonth.getTime()), DateUtil.returnLastDateOfMonth(this.attendanceMonth
-				.getTime()));
+		if (this.loadSectionStudentsAttendance) {
+			this.studentAttendanceMonthlyDOs = this.studentAttendanceService.getSectionAttendanceDetailsByScetionIdAndFromDateAndToDate(this.sectionBean
+					.getSection().getId(), DateUtil.returnFirstDateOfMonth(this.attendanceMonth.getTime()), DateUtil.returnLastDateOfMonth(this.attendanceMonth
+					.getTime()));
+		}
 	}
 
 	/**
@@ -336,12 +338,12 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 */
 	public boolean isStudentPresentOnDate(final StudentAcademicYear studentAcademicYear, final String date) {
 		boolean result = true;
-		int attDate = Integer.valueOf(date.trim()).intValue();
-		Calendar attendanceDate = DateUtil.returnFirstDateOfMonth(this.attendanceMonth);
+		final int attDate = Integer.valueOf(date.trim()).intValue();
+		final Calendar attendanceDate = DateUtil.returnFirstDateOfMonth(this.attendanceMonth);
 		attendanceDate.add(Calendar.DATE, attDate - 1);
 		DateUtil.clearTimeInfo(attendanceDate);
 		if (this.studentAttendanceMonthlyDOs.get(studentAcademicYear.getId()) != null) {
-			StudentAttendanceMonthlyDO studentAttendanceMonthlyDO = this.studentAttendanceMonthlyDOs.get(studentAcademicYear.getId());
+			final StudentAttendanceMonthlyDO studentAttendanceMonthlyDO = this.studentAttendanceMonthlyDOs.get(studentAcademicYear.getId());
 			if (studentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(attendanceDate.getTime()) != null) {
 				result = false;
 			}
@@ -366,19 +368,25 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 
 	@Override
 	public void onTabChange() {
+		this.loadSectionAttendanceSummaryDetails();
+	}
 
-		this.attendanceMonth = Calendar.getInstance();
-		if (this.sessionBean.getCurrentAcademicYear() != null
-				&& this.sectionBean.getSection().getAcademicYear().getId().equals(this.sessionBean.getCurrentAcademicYear().getId())) {
-			this.attendanceMonth.setTime(DateUtil.getSystemDate());
-		} else {
-			this.attendanceMonth.setTime(this.sectionBean.getSection().getAcademicYear().getClassStartDate());
+	public void loadSectionAttendanceSummaryDetails() {
+		if (this.attendanceMonth == null) {
+			this.attendanceMonth = Calendar.getInstance();
+			if ((this.sessionBean.getCurrentAcademicYear() != null)
+					&& this.sectionBean.getSection().getAcademicYear().getId().equals(this.sessionBean.getCurrentAcademicYear().getId())) {
+				this.attendanceMonth.setTime(DateUtil.getSystemDate());
+			} else {
+				this.attendanceMonth.setTime(this.sectionBean.getSection().getAcademicYear().getClassStartDate());
+			}
 		}
-		int todayDate = this.getAttendanceMonth().get(Calendar.DATE);
+		final int todayDate = this.getAttendanceMonth().get(Calendar.DATE);
 		this.calculateNoOfWeeksForAttendanceMonth();
-		while (this.currentWeekForAttendanceMonth * 7 < todayDate) {
+		while ((this.currentWeekForAttendanceMonth * 7) < todayDate) {
 			this.currentWeekForAttendanceMonth++;
 		}
+		this.loadSectionStudentsAttendance = true;
 		this.loadStudentAttendanceDetailsForSection();
 		this.buildSectionAttendanceColumns();
 		this.academicYearHolidays = this.academicYearHolidayService.findAcademicYearHolidaysByAcademicYearId(this.sectionBean.getSection().getAcademicYear()
@@ -397,8 +405,8 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * @return style class for attendance present and absent command link.
 	 */
 	public String getStyleClassForStudent(final StudentAcademicYear studentAcademicYear, final String date) {
-		int attDate = Integer.valueOf(date.trim()).intValue();
-		Calendar suppliedDate = Calendar.getInstance();
+		final int attDate = Integer.valueOf(date.trim()).intValue();
+		final Calendar suppliedDate = Calendar.getInstance();
 		suppliedDate.setTime(this.getAttendanceMonth().getTime());
 		suppliedDate.set(Calendar.DATE, attDate);
 		DateUtil.clearTimeInfo(suppliedDate);
@@ -414,8 +422,8 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * @return true if date supplied is week end.
 	 */
 	public boolean isWeekEnd(final String date) {
-		int attDate = Integer.valueOf(date.trim()).intValue();
-		Calendar suppliedDate = Calendar.getInstance();
+		final int attDate = Integer.valueOf(date.trim()).intValue();
+		final Calendar suppliedDate = Calendar.getInstance();
 		suppliedDate.setTime(this.getAttendanceMonth().getTime());
 		suppliedDate.set(Calendar.DATE, attDate);
 		DateUtil.clearTimeInfo(suppliedDate);
@@ -430,8 +438,8 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * @return true if date supplied is week end.
 	 */
 	public boolean isSuppliedDateAfterCurrentDate(final String date) {
-		int attDate = Integer.valueOf(date.trim()).intValue();
-		Calendar suppliedDate = Calendar.getInstance();
+		final int attDate = Integer.valueOf(date.trim()).intValue();
+		final Calendar suppliedDate = Calendar.getInstance();
 		suppliedDate.setTime(this.getAttendanceMonth().getTime());
 		suppliedDate.set(Calendar.DATE, attDate);
 		DateUtil.clearTimeInfo(suppliedDate);
@@ -461,8 +469,8 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * @return
 	 */
 	public boolean isHoliday(final String date) {
-		int attDate = Integer.valueOf(date.trim()).intValue();
-		Calendar suppliedDate = Calendar.getInstance();
+		final int attDate = Integer.valueOf(date.trim()).intValue();
+		final Calendar suppliedDate = Calendar.getInstance();
 		suppliedDate.setTime(this.getAttendanceMonth().getTime());
 		suppliedDate.set(Calendar.DATE, attDate);
 		DateUtil.clearTimeInfo(suppliedDate);
@@ -478,15 +486,15 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 */
 	private boolean isHoliday(final Calendar suppliedDate) {
 		boolean result = false;
-		for (AcademicYearHoliday academicYearHoliday : this.academicYearHolidays) {
-			Calendar academicYearHolidayStartDate = Calendar.getInstance();
+		for (final AcademicYearHoliday academicYearHoliday : this.academicYearHolidays) {
+			final Calendar academicYearHolidayStartDate = Calendar.getInstance();
 			academicYearHolidayStartDate.setTime(academicYearHoliday.getStartDate());
 			DateUtil.clearTimeInfo(academicYearHolidayStartDate);
-			Calendar academicYearHolidayEndDate = Calendar.getInstance();
+			final Calendar academicYearHolidayEndDate = Calendar.getInstance();
 			academicYearHolidayEndDate.setTime(academicYearHoliday.getEndDate());
 			DateUtil.clearTimeInfo(academicYearHolidayEndDate);
 			if (suppliedDate.equals(academicYearHolidayStartDate) || suppliedDate.equals(academicYearHolidayEndDate)
-					|| suppliedDate.after(academicYearHolidayStartDate) && suppliedDate.before(academicYearHolidayEndDate)) {
+					|| (suppliedDate.after(academicYearHolidayStartDate) && suppliedDate.before(academicYearHolidayEndDate))) {
 				this.academicYearHoliday = academicYearHoliday;
 				result = true;
 			}
@@ -504,8 +512,8 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * @return style class for attendance present and absent command link.
 	 */
 	public String getStyleClassForAttendanceColumn(final String date) {
-		int dayOfMonth = Integer.valueOf(date.trim()).intValue();
-		Calendar suppliedDate = Calendar.getInstance();
+		final int dayOfMonth = Integer.valueOf(date.trim()).intValue();
+		final Calendar suppliedDate = Calendar.getInstance();
 		suppliedDate.setTime(this.getAttendanceMonth().getTime());
 		suppliedDate.set(Calendar.DATE, dayOfMonth);
 		DateUtil.clearTimeInfo(suppliedDate);
@@ -532,8 +540,8 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 */
 	public String getToolTipForAttendance(final Student student, final ColumnModel column) {
 		String toolTip = "";
-		int dayOfMonth = Integer.valueOf(column.getDateOfMonthHeader().trim()).intValue();
-		Calendar suppliedDate = Calendar.getInstance();
+		final int dayOfMonth = Integer.valueOf(column.getDateOfMonthHeader().trim()).intValue();
+		final Calendar suppliedDate = Calendar.getInstance();
 		suppliedDate.setTime(this.getAttendanceMonth().getTime());
 		suppliedDate.set(Calendar.DATE, dayOfMonth);
 		DateUtil.clearTimeInfo(suppliedDate);
@@ -579,9 +587,9 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 
 	public String getCurrentStudentSubjectsPresent() {
 		String result = this.getCurrentStudentAllSubjects();
-		StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
+		final StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
 		if (currentStudentAttendanceMonthlyDO != null) {
-			StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
+			final StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
 					this.getCurrentAttendanceDate().getTime());
 			if (studentAttendanceDO != null) {
 				if (studentAttendanceDO.getStudentAbsentForDailyAttendance() != null) {
@@ -597,9 +605,9 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 
 	public String getCurrentStudentSubjectsAbsent() {
 		String result = "NA";
-		StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
+		final StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
 		if (currentStudentAttendanceMonthlyDO != null) {
-			StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
+			final StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
 					this.getCurrentAttendanceDate().getTime());
 			if (studentAttendanceDO != null) {
 				if (studentAttendanceDO.getStudentAbsentForDailyAttendance() != null) {
@@ -615,9 +623,10 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	public boolean getCurrentStudentAttendanceTakenSubjectWise() {
 		boolean result = false;
 		if (this.currentStudentAcademicYear != null) {
-			StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
+			final StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(
+					this.currentStudentAcademicYear.getId());
 			if (currentStudentAttendanceMonthlyDO != null) {
-				StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
+				final StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
 						this.getCurrentAttendanceDate().getTime());
 				if (studentAttendanceDO != null) {
 					if (studentAttendanceDO.getStudentAbsentsBySubjectId().size() > 0) {
@@ -632,9 +641,10 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	public String getCurrentStudentAttendanceStatus() {
 		String result = "Present";
 		if (this.currentStudentAcademicYear != null) {
-			StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
+			final StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(
+					this.currentStudentAcademicYear.getId());
 			if (currentStudentAttendanceMonthlyDO != null) {
-				StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
+				final StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
 						this.getCurrentAttendanceDate().getTime());
 				if (studentAttendanceDO != null) {
 					result = "Absent";
@@ -646,15 +656,16 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 
 	public String getCurrentStudentReasonForAbsent() {
 		String result = "NA";
-		StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
+		final StudentAttendanceMonthlyDO currentStudentAttendanceMonthlyDO = this.getStudentAttendanceMonthlyDOs().get(this.currentStudentAcademicYear.getId());
 		if (currentStudentAttendanceMonthlyDO != null) {
-			StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
+			final StudentAttendanceDO studentAttendanceDO = currentStudentAttendanceMonthlyDO.getStudentAttendanceDOsByDate().get(
 					this.getCurrentAttendanceDate().getTime());
 			if (studentAttendanceDO != null) {
 				if (studentAttendanceDO.getStudentAbsentForDailyAttendance() != null) {
 					result = studentAttendanceDO.getStudentAbsentForDailyAttendance().getAbsentReason();
 				} else {
-					if (studentAttendanceDO.getStudentAbsentsBySubjectId() != null && studentAttendanceDO.getStudentAbsentsBySubjectId().values().size() > 0) {
+					if ((studentAttendanceDO.getStudentAbsentsBySubjectId() != null)
+							&& (studentAttendanceDO.getStudentAbsentsBySubjectId().values().size() > 0)) {
 						result = studentAttendanceDO.getStudentAbsentsBySubjectId().values().iterator().next().getAbsentReason();
 					}
 				}
@@ -665,14 +676,14 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 
 	public String getCurrentStudentAllSubjects() {
 		String result = "NA";
-		if (this.sectionSubjects == null || this.sectionSubjects.isEmpty()) {
+		if ((this.sectionSubjects == null) || this.sectionSubjects.isEmpty()) {
 			this.sectionSubjects = this.sectionAttendanceBean.getSectionSubjects();
 		}
-		if (this.sectionSubjects != null && !this.sectionSubjects.isEmpty()) {
-			int noOfSubjects = this.sectionSubjects.size();
+		if ((this.sectionSubjects != null) && !this.sectionSubjects.isEmpty()) {
+			final int noOfSubjects = this.sectionSubjects.size();
 			int counter = 0;
 			result = "";
-			for (SectionSubject sectionSubject : this.sectionSubjects) {
+			for (final SectionSubject sectionSubject : this.sectionSubjects) {
 				counter++;
 				result += sectionSubject.getSubject().getName();
 				if (counter < noOfSubjects) {
@@ -687,7 +698,7 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	 * @return the currentAttendanceDate
 	 */
 	public Calendar getCurrentAttendanceDate() {
-		int dayOfMonth = Integer.valueOf(this.currentAttendanceDateColumn.trim()).intValue();
+		final int dayOfMonth = Integer.valueOf(this.currentAttendanceDateColumn.trim()).intValue();
 		this.currentAttendanceDate = Calendar.getInstance();
 		this.currentAttendanceDate.setTime(this.getAttendanceMonth().getTime());
 		this.currentAttendanceDate.set(Calendar.DATE, dayOfMonth);
@@ -732,4 +743,5 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 	public void setSectionSubjects(final Collection<SectionSubject> sectionSubjects) {
 		this.sectionSubjects = sectionSubjects;
 	}
+
 }

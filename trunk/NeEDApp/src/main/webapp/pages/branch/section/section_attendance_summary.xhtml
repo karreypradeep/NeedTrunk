@@ -19,6 +19,7 @@
 	<f:metadata>
 		<f:event type="preRenderView" listener="#{sectionAttendanceBean.loadStudentsForSection}" />
 		<f:event type="preRenderView" listener="#{sectionAttendanceBean.loadSectionSubjects}" />
+		<f:event type="preRenderView" listener="#{sectionAttendanceSummaryBean.loadStudentAttendanceDetailsForSection}" />
 	</f:metadata>
 
 	<p:dataTable id="attendanceTable" var="studentSection" value="#{sectionAttendanceBean.studentSections}">
@@ -86,8 +87,7 @@
 										title="#{sectionAttendanceSummaryBean.getToolTipForAttendance(studentSection.studentAcademicYear.student,column)}"></p:inputText>
 								</c:when>
 								<c:when test="#{sectionAttendanceSummaryBean.isSuppliedDateAfterCurrentDate(column.dateOfMonthHeader)}">
-									<p:inputText disabled="true"
-										style="border: 0px;width:15px;"></p:inputText>
+									<p:inputText disabled="true" style="border: 0px;width:15px;"></p:inputText>
 								</c:when>
 s								<c:otherwise>
 									<p:commandLink
@@ -130,11 +130,11 @@ s								<c:otherwise>
 			<h:outputText value="#{sectionAttendanceSummaryBean.currentAttendanceDate.time}">
 				<f:convertDateTime pattern="dd/MM/yyyy" />
 			</h:outputText>
-			
+
 			<h:outputLabel id="attendanceStatus" value="Attendance status" />
 			<h:outputText value="#{sectionAttendanceSummaryBean.currentStudentAttendanceStatus}">
 			</h:outputText>
-			
+
 			<c:if test="#{sectionAttendanceSummaryBean.currentStudentAttendanceTakenSubjectWise}">
 				<h:outputLabel id="noOfSubjectsDlg" value="All subjects" />
 				<h:outputText value="#{sectionAttendanceSummaryBean.currentStudentAllSubjects}">
@@ -148,10 +148,11 @@ s								<c:otherwise>
 				<h:outputText value="#{sectionAttendanceSummaryBean.currentStudentSubjectsAbsent}">
 				</h:outputText>
 			</c:if>
-			<h:outputLabel id="subjectsAbsentReason" value="Reason" />
-			<h:outputText value="#{sectionAttendanceSummaryBean.currentStudentReasonForAbsent}">
-			</h:outputText>
-
+			<c:if test="#{sessionBean.currentBranchRule.absentReasonRequiredIndicator}">
+				<h:outputLabel id="subjectsAbsentReason" value="Reason" />
+				<h:outputText value="#{sectionAttendanceSummaryBean.currentStudentReasonForAbsent}">
+				</h:outputText>
+			</c:if>
 
 			<f:facet name="footer">
 				<p:commandButton value="Cancel" oncomplete="dlg.hide();" update=":form" process="@this" />

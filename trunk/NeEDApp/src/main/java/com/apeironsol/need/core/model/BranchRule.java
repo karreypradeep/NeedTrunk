@@ -61,6 +61,9 @@ public class BranchRule extends BaseEntity implements Serializable {
 	@Column(name = "BATCH_REQUIRED_IND", nullable = false)
 	private boolean					batchRequiredIndicator;
 
+	@Column(name = "ABSENT_REASON_REQ_IND")
+	private boolean					absentReasonRequiredIndicator;
+
 	/**
 	 * Returns branch.
 	 * 
@@ -184,6 +187,21 @@ public class BranchRule extends BaseEntity implements Serializable {
 	 */
 	public void setSmsProvider(final SMSProvider smsProvider) {
 		this.smsProvider = smsProvider;
+	}
+
+	/**
+	 * @return the absentReasonRequiredIndicator
+	 */
+	public boolean isAbsentReasonRequiredIndicator() {
+		return this.absentReasonRequiredIndicator;
+	}
+
+	/**
+	 * @param absentReasonRequiredIndicator
+	 *            the absentReasonRequiredIndicator to set
+	 */
+	public void setAbsentReasonRequiredIndicator(final boolean absentReasonRequiredIndicator) {
+		this.absentReasonRequiredIndicator = absentReasonRequiredIndicator;
 	}
 
 }

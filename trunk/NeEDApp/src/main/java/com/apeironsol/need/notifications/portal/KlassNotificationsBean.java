@@ -374,6 +374,14 @@ public class KlassNotificationsBean extends AbstractNotificationBean {
 	}
 
 	/**
+	 * @param batchFinished
+	 *            the batchFinished to set
+	 */
+	public void setBatchFinished(final boolean batchFinished) {
+		this.batchFinished = batchFinished;
+	}
+
+	/**
 	 * Returns progress bar value indicating percentage of batch finished.
 	 * 
 	 * @return

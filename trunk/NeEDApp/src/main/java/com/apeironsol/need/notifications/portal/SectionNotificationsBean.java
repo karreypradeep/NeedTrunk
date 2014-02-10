@@ -471,4 +471,13 @@ public class SectionNotificationsBean extends AbstractNotificationBean {
 		}
 		this.setExamsForNotification(examsMap.values());
 	}
+
+	/**
+	 * @param batchFinished
+	 *            the batchFinished to set
+	 */
+	public void setBatchFinished(final boolean batchFinished) {
+		this.batchFinished = batchFinished;
+	}
+
 }

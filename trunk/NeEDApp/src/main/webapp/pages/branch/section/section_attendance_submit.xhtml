@@ -8,58 +8,78 @@
 		<f:event type="preRenderView" listener="#{sectionAttendanceBean.loadStudentsForSection}" />
 		<f:event type="preRenderView" listener="#{sectionAttendanceBean.loadSectionSubjects}" />
 	</f:metadata>
-		<h:panelGrid columns="3" cellpadding="5" cellspacing="5">
+	<h:panelGrid columns="3" cellpadding="5" cellspacing="5">
 
-			<h:outputLabel for="section_subject" value="Subject:" rendered="#{sectionAttendanceBean.attendanceSubjectWise}"/>
-			<p:selectOneMenu id="section_subject" value="#{sectionAttendanceBean.attendanceSubject}"
-				converter="sectionSubjectConverter" requiredMessage="Please select subject" required="true" rendered="#{sectionAttendanceBean.attendanceSubjectWise}">
-				<f:selectItem itemLabel="Select subject" itemValue="" />
-				<f:selectItems value="#{sectionAttendanceBean.sectionSubjects}" var="sectionSubject"
-					itemLabel="#{sectionSubject.subject.name}" />
-				<p:ajax process="@this" update="@form" listener="#{sectionAttendanceBean.clearSectionStudentAbsentDetailsByDate}"></p:ajax>
-			</p:selectOneMenu>
-			<p:message id="subject_msg" for="section_subject" rendered="#{sectionAttendanceBean.attendanceSubjectWise}"/>
+		<h:outputLabel for="section_subject" value="Subject:" rendered="#{sectionAttendanceBean.attendanceSubjectWise}" />
+		<p:selectOneMenu id="section_subject" value="#{sectionAttendanceBean.attendanceSubject}"
+			converter="sectionSubjectConverter" requiredMessage="Please select subject" required="true"
+			rendered="#{sectionAttendanceBean.attendanceSubjectWise}">
+			<f:selectItem itemLabel="Select subject" itemValue="" />
+			<f:selectItems value="#{sectionAttendanceBean.sectionSubjects}" var="sectionSubject"
+				itemLabel="#{sectionSubject.subject.name}" />
+			<p:ajax process="@this" update="@form" listener="#{sectionAttendanceBean.clearSectionStudentAbsentDetailsByDate}"></p:ajax>
+		</p:selectOneMenu>
+		<p:message id="subject_msg" for="section_subject" rendered="#{sectionAttendanceBean.attendanceSubjectWise}" />
 
-			<h:outputLabel value="Attendance date" for="attendance_date" />
-			<p:calendar id="attendance_date" value="#{sectionAttendanceBean.attendanceDate}" navigator="true"   showOn="button"
-				 pattern="dd/MM/yyyy" mindate="#{sectionBean.section.academicYear.classStartDate}"
-				maxdate="#{sectionAttendanceBean.maxDateForTakeAttendance}" required="true">
-				<p:ajax  process="@this" update="@form" event="dateSelect" listener="#{sectionAttendanceBean.clearSectionStudentAbsentDetailsByDate}"></p:ajax>
-			</p:calendar>
-			<p:message id="branch_registration_date_msg" for="attendance_date" />
-			<p:commandButton id="takeAttendanceSubmit" value="Get attendance details" process="@form" update="@form"
-				style="float:left;" actionListener="#{sectionAttendanceBean.getAttendanceDetails}" />
+		<h:outputLabel value="Attendance date" for="attendance_date" />
+		<p:calendar id="attendance_date" value="#{sectionAttendanceBean.attendanceDate}" navigator="true" showOn="button"
+			pattern="dd/MM/yyyy" mindate="#{sectionBean.section.academicYear.classStartDate}"
+			maxdate="#{sectionAttendanceBean.maxDateForTakeAttendance}" required="true">
+			<p:ajax process="@this" update="@form" event="dateSelect"
+				listener="#{sectionAttendanceBean.clearSectionStudentAbsentDetailsByDate}"></p:ajax>
+		</p:calendar>
+		<p:message id="branch_registration_date_msg" for="attendance_date" />
+		<p:commandButton id="takeAttendanceSubmit" value="Get attendance details" process="@form" update="@form"
+			style="float:left;" actionListener="#{sectionAttendanceBean.getAttendanceDetails}" />
 
-		</h:panelGrid>
-		<p:panel style="width:100%;border:0px" rendered="#{not sectionAttendanceBean.hideAttendanceTable}">
-			<p:dataTable id="attendanceSubmitTable" var="studentSection" value="#{sectionAttendanceBean.studentSections}">
+	</h:panelGrid>
+	<p:panel style="width:100%;border:0px" rendered="#{not sectionAttendanceBean.hideAttendanceTable}">
+		<p:dataTable id="attendanceSubmitTable" var="studentSection" value="#{sectionAttendanceBean.studentSections}">
 
-				<p:column headerText="Student name" filterBy="#{studentSection.studentAcademicYear.student.displayName}"
-					sortBy="#{studentSection.studentAcademicYear.student.displayName}">
+			<p:column headerText="Student name" filterBy="#{studentSection.studentAcademicYear.student.displayName}"
+				sortBy="#{studentSection.studentAcademicYear.student.displayName}">
 						 #{studentSection.studentAcademicYear.student.displayName}
 				</p:column>
-				<p:column headerText="Admission number" filterBy="#{studentSection.studentAcademicYear.student.admissionNr}"
-					sortBy="#{studentSection.studentAcademicYear.student.admissionNr}">
+			<p:column headerText="Admission number" filterBy="#{studentSection.studentAcademicYear.student.admissionNr}"
+				sortBy="#{studentSection.studentAcademicYear.student.admissionNr}">
 						#{studentSection.studentAcademicYear.student.admissionNr}
 				</p:column>
-				<p:column headerText="Subject" filterBy="#{sectionAttendanceBean.attendanceSubject.subject.name}"
-					sortBy="#{sectionAttendanceBean.attendanceSubject.subject.name}" rendered="#{sectionAttendanceBean.attendanceSubjectWise}">
+			<p:column headerText="Subject" filterBy="#{sectionAttendanceBean.attendanceSubject.subject.name}"
+				sortBy="#{sectionAttendanceBean.attendanceSubject.subject.name}"
+				rendered="#{sectionAttendanceBean.attendanceSubjectWise}">
 						#{sectionAttendanceBean.attendanceSubject.subject.name}
 				</p:column>
-				<p:column headerText="Status">
-					<p:commandLink styleClass="#{sectionAttendanceBean.getStyleClassForStudent(studentSection.studentAcademicYear.id)}"
-						process="@this" oncomplete="dlg.show()" update="@form"
-						rendered="#{sectionAttendanceBean.attendanceDate!=null}"
-						style="#{sectionAttendanceBean.isStudentPresentForSubjectOrDate(studentSection.studentAcademicYear.id) ? 'background-color: #10AF10;' : 'background-color: #DA4545;'}">
-						<f:setPropertyActionListener target="#{sectionAttendanceBean.currentAttendanceStudentAcademicYear}"
-							value="#{studentSection.studentAcademicYear}" />
-					</p:commandLink>
-				</p:column>
-			</p:dataTable>
-			<p:commandButton id="submitAttendance" value="Submit attendance" process="@form" update="@form" style="float:left;"
-				action="#{sectionAttendanceBean.submitAttendance}" />
-			<p:spacer height="20"></p:spacer>
-		</p:panel>
+			<p:column headerText="Status">
+				<c:choose>
+					<c:when test="#{sessionBean.currentBranchRule.absentReasonRequiredIndicator}">
+						<p:commandLink
+							styleClass="#{sectionAttendanceBean.getStyleClassForStudent(studentSection.studentAcademicYear.id)}"
+							process="@this" oncomplete="dlg.show()" update="@form" rendered="#{sectionAttendanceBean.attendanceDate!=null}"
+							style="#{sectionAttendanceBean.isStudentPresentForSubjectOrDate(studentSection.studentAcademicYear.id) ? 'background-color: #10AF10;' : 'background-color: #DA4545;'}">
+							<f:setPropertyActionListener target="#{sectionAttendanceBean.currentAttendanceStudentAcademicYear}"
+								value="#{studentSection.studentAcademicYear}" />
+						</p:commandLink>
+					</c:when>
+					<c:otherwise>
+						<p:commandLink
+							styleClass="#{sectionAttendanceBean.getStyleClassForStudent(studentSection.studentAcademicYear.id)}"
+							disabled="#{!grantedAuthorityBean.userAllowedToCreateAttendance}" process="@this"
+							action="#{sectionAttendanceBean.updateStudentAttendanceForSubject}" update="@form"
+							rendered="#{sectionAttendanceBean.attendanceDate!=null}"
+							style="#{sectionAttendanceBean.isStudentPresentForSubjectOrDate(studentSection.studentAcademicYear.id) ? 'background-color: #10AF10;' : 'background-color: #DA4545;'}">
+							<f:setPropertyActionListener target="#{sectionAttendanceBean.currentAttendanceStudentAcademicYear}"
+								value="#{studentSection.studentAcademicYear}" />
+						</p:commandLink>
+					</c:otherwise>
+				</c:choose>
+			</p:column>
+		</p:dataTable>
+		<p:commandButton id="submitAttendance" value="Submit attendance" process="@form" update="@form" style="float:left;"
+			action="#{sectionAttendanceBean.submitAttendance}">
+			<f:setPropertyActionListener target="#{sectionAttendanceSummaryBean.loadSectionStudentsAttendance}" value="true" />
+		</p:commandButton>  
+		<p:spacer height="20"></p:spacer>
+	</p:panel>
 
 
 	<p:dialog header="#{sectionAttendanceBean.currentAttendanceStudentAcademicYear.student.displayName}" widgetVar="dlg"
@@ -81,8 +101,9 @@
 				value="#{sectionAttendanceBean.currentAttendanceStudentAcademicYear.student.displayName}">
 			</h:outputLabel>
 
-			<h:outputLabel id="absentSubject" value="subject" rendered="#{sectionAttendanceBean.attendanceSubjectWise}"/>
-			<h:outputLabel id="currentSubject" value="#{sectionAttendanceBean.attendanceSubject.subject.name}" rendered="#{sectionAttendanceBean.attendanceSubjectWise}"/>
+			<h:outputLabel id="absentSubject" value="subject" rendered="#{sectionAttendanceBean.attendanceSubjectWise}" />
+			<h:outputLabel id="currentSubject" value="#{sectionAttendanceBean.attendanceSubject.subject.name}"
+				rendered="#{sectionAttendanceBean.attendanceSubjectWise}" />
 
 			<h:outputLabel id="absentReason" value="Reason for Absent" />
 			<p:inputTextarea id="absentReasonTestArea" cols="70" value="#{sectionAttendanceBean.currentReasonForCurrentStudent}"
@@ -101,17 +122,17 @@
 		</h:panelGrid>
 	</p:dialog>
 
-	<script type="text/javascript">  
-	function handleComplete(xhr, status, args) {
-        if(!args.validationFailed) {
-        	dlg.hide();
-        }
-     }
+	<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if (!args.validationFailed) {
+				dlg.hide();
+			}
+		}
 
-    function showToolTip(e) {
+		function showToolTip(e) {
 
-    		alert(e.id);
+			alert(e.id);
 
-    }
-    </script>
+		}
+	</script>
 </ui:composition>
