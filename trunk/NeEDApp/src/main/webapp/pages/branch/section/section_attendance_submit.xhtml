@@ -31,6 +31,11 @@
 		<p:message id="branch_registration_date_msg" for="attendance_date" />
 		<p:commandButton id="takeAttendanceSubmit" value="Get attendance details" process="@form" update="@form"
 			style="float:left;" actionListener="#{sectionAttendanceBean.getAttendanceDetails}" />
+			
+		<p:commandButton id="submitAttendance1" value="Submit attendance" process="@form" update="@form" style="float:left;"
+			action="#{sectionAttendanceBean.submitAttendance}">
+			<f:setPropertyActionListener target="#{sectionAttendanceSummaryBean.loadSectionStudentsAttendance}" value="true" />
+		</p:commandButton>  
 
 	</h:panelGrid>
 	<p:panel style="width:100%;border:0px" rendered="#{not sectionAttendanceBean.hideAttendanceTable}">
@@ -52,7 +57,7 @@
 			<p:column headerText="Status">
 				<c:choose>
 					<c:when test="#{sessionBean.currentBranchRule.absentReasonRequiredIndicator}">
-						<p:commandLink
+						<p:commandLink 
 							styleClass="#{sectionAttendanceBean.getStyleClassForStudent(studentSection.studentAcademicYear.id)}"
 							process="@this" oncomplete="dlg.show()" update="@form" rendered="#{sectionAttendanceBean.attendanceDate!=null}"
 							style="#{sectionAttendanceBean.isStudentPresentForSubjectOrDate(studentSection.studentAcademicYear.id) ? 'background-color: #10AF10;' : 'background-color: #DA4545;'}">
@@ -119,8 +124,12 @@
 					disabled="#{!grantedAuthorityBean.userAllowedToRemoveAttendance}" rendered="#{sectionAttendanceBean.rendereDelete}" />
 			</f:facet>
 
-		</h:panelGrid>
-	</p:dialog>
+		</h:panelGrid>    
+	</p:dialog>  
+	<p:blockUI block="form" trigger="takeAttendanceSubmit submitAttendance submitAttendance1">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
 
 	<script type="text/javascript">
 		function handleComplete(xhr, status, args) {

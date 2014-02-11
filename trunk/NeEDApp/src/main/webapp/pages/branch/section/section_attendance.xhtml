@@ -34,5 +34,9 @@
 			</p:panel>
 		</c:when>
 	</c:choose>
+	<p:blockUI block="form" trigger="attendanceSummary takeAttendance attendanceReport">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
 
 </ui:composition>
