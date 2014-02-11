@@ -324,6 +324,7 @@ public class SectionAttendanceSummaryBean extends AbstractTabbedBean implements 
 			this.studentAttendanceMonthlyDOs = this.studentAttendanceService.getSectionAttendanceDetailsByScetionIdAndFromDateAndToDate(this.sectionBean
 					.getSection().getId(), DateUtil.returnFirstDateOfMonth(this.attendanceMonth.getTime()), DateUtil.returnLastDateOfMonth(this.attendanceMonth
 					.getTime()));
+			this.loadSectionStudentsAttendance = false;
 		}
 	}
 
