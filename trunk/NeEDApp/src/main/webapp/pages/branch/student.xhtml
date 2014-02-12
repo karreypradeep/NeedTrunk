@@ -39,33 +39,36 @@
 				<f:event type="preRenderView" listener="#{studentBean.loadSubmittedDocumentsMedicalDetails()}" />
 			</f:metadata>
 			<p:tabMenu activeIndex="#{studentBean.studentTabModel.activeTabIndex}">
-				<p:menuitem value="Personal" icon="ui-icon-home" process="@this" update="@form">
+				<p:menuitem id="personal_menu_tab" value="Personal" icon="ui-icon-home" process="@this" update="@form">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.personalTab}" />
 					<f:setPropertyActionListener target="#{studentBean.loadProfilePictureFlag}" value="true" />
 				</p:menuitem>
 
-				<p:menuitem value="Financials" icon="ui-icon-gear" action="#{studentFinancialBean.onTabChange}" process="@this"
-					update="@form" rendered="#{studentBean.studentTabModel.paymentsTab.rendered}">
+				<p:menuitem id="financials_menu_tab" value="Financials" icon="ui-icon-gear"
+					action="#{studentFinancialBean.onTabChange}" process="@this" update="@form"
+					rendered="#{studentBean.studentTabModel.paymentsTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.paymentsTab}" />
 
 					<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="selectFeeType" />
 				</p:menuitem>
 
-				<p:menuitem value="Additional Fee" icon="ui-icon-tag" action="#{studentLevelFeeBean.onTabChange()}" process="@this"
-					update="@form" rendered="#{studentBean.studentTabModel.studentAdditionalFeeTab.rendered}">
+				<p:menuitem id="add_fee_menu_tab" value="Additional Fee" icon="ui-icon-tag"
+					action="#{studentLevelFeeBean.onTabChange()}" process="@this" update="@form"
+					rendered="#{studentBean.studentTabModel.studentAdditionalFeeTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.studentAdditionalFeeTab}" />
 				</p:menuitem>
 
-				<p:menuitem value="Pocket money" icon="ui-icon-suitcase" action="#{studentPocketMoneyBean.onTabChange()}"
-					process="@this" update="@form" rendered="#{studentBean.studentTabModel.studentPocketMoneyTab.rendered}">
+				<p:menuitem id="pocket_money_menu_tab" value="Pocket money" icon="ui-icon-suitcase"
+					action="#{studentPocketMoneyBean.onTabChange()}" process="@this" update="@form"
+					rendered="#{studentBean.studentTabModel.studentPocketMoneyTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.studentPocketMoneyTab}" />
 				</p:menuitem>
 
-				<p:menuitem value="Exam results" icon="ui-icon-note" process="@this" update="@form"
+				<p:menuitem id="exam_results_menu_tab" value="Exam results" icon="ui-icon-note" process="@this" update="@form"
 					action="#{studentAcademicBean.viewStudentExamWiseResults()}"
 					rendered="#{studentBean.studentTabModel.academicsTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
@@ -73,7 +76,7 @@
 					<f:setPropertyActionListener target="#{studentBean.loadExamsFlag}" value="true" />
 				</p:menuitem>
 
-				<p:menuitem value="Report card" icon="ui-icon-note" process="@this" update="@form"
+				<p:menuitem id="report_card_menu_tab" value="Report card" icon="ui-icon-note" process="@this" update="@form"
 					action="#{studentReportCardBean.fetchReportCardsForAcademicYear()}"
 					rendered="#{studentBean.studentTabModel.reportCardTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
@@ -81,32 +84,35 @@
 					<f:setPropertyActionListener target="#{studentBean.loadExamsFlag}" value="true" />
 				</p:menuitem>
 
-				<p:menuitem value="Attendance" icon="ui-icon-document-b" process="@this" update="@form"
+				<p:menuitem id="attendance_menu_tab" value="Attendance" icon="ui-icon-document-b" process="@this" update="@form"
 					action="#{studentAttendanceBean.onTabChange()}" rendered="#{studentBean.studentTabModel.attendanceTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.attendanceTab}" />
 				</p:menuitem>
 
-				<p:menuitem value="Hostel room" icon="ui-icon-mail-closed" action="#{studentNotificationsBean.onTabChange()}"
-					process="@this" update="@form" rendered="#{studentBean.studentTabModel.hostelRoomTab.rendered}">
+				<p:menuitem id="hostel_room_menu_tab" value="Hostel room" icon="ui-icon-mail-closed"
+					action="#{studentNotificationsBean.onTabChange()}" process="@this" update="@form"
+					rendered="#{studentBean.studentTabModel.hostelRoomTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.hostelRoomTab}" />
 				</p:menuitem>
 
-				<p:menuitem value="Transportation" icon="ui-icon-shuffle" action="#{studentTransportationBean.onTabChange()}"
-					process="@this" update="@form" rendered="#{studentBean.studentTabModel.transportationTab.rendered}">
+				<p:menuitem id="transportation_menu_tab" value="Transportation" icon="ui-icon-shuffle"
+					action="#{studentTransportationBean.onTabChange()}" process="@this" update="@form"
+					rendered="#{studentBean.studentTabModel.transportationTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.transportationTab}" />
 				</p:menuitem>
 
-				<p:menuitem value="Notifications" icon="ui-icon-mail-closed" action="#{studentNotificationsBean.onTabChange()}"
-					process="@this" update="@form" rendered="#{studentBean.studentTabModel.notificationTab.rendered}">
+				<p:menuitem id="notifications_menu_tab" value="Notifications" icon="ui-icon-mail-closed"
+					action="#{studentNotificationsBean.onTabChange()}" process="@this" update="@form"
+					rendered="#{studentBean.studentTabModel.notificationTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.notificationTab}" />
 				</p:menuitem>
 
-				<p:menuitem value="Status History" icon="ui-icon-comment" process="@this" update="@form"
-					rendered="#{studentBean.studentTabModel.statusHistoryTab.rendered}">
+				<p:menuitem id="status_history_menu_tab" value="Status History" icon="ui-icon-comment" process="@this"
+					update="@form" rendered="#{studentBean.studentTabModel.statusHistoryTab.rendered}">
 					<f:setPropertyActionListener target="#{studentBean.studentTabModel.activeTab}"
 						value="#{studentBean.studentTabModel.statusHistoryTab}" />
 					<f:setPropertyActionListener target="#{studentBean.loadStudentStatusHistoryFlag}" value="true" />
@@ -188,7 +194,7 @@
 					<ui:include src="/pages/modules/academics/student_academics.xhtml" />
 				</c:if>
 
-				<c:if test="#{studentBean.studentTabModel.reportCardTabActive}">  
+				<c:if test="#{studentBean.studentTabModel.reportCardTabActive}">
 					<ui:include src="/pages/modules/academics/student_report_card.xhtml" />
 				</c:if>
 
@@ -218,5 +224,10 @@
 
 		</c:otherwise>
 	</c:choose>
+	<p:blockUI block="form"
+		trigger="transportation_menu_tab notifications_menu_tab  status_history_menu_tab personal_menu_tab financials_menu_tab add_fee_menu_tab pocket_money_menu_tab exam_results_menu_tab report_card_menu_tab attendance_menu_tab hostel_room_menu_tab">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
 
 </ui:composition>

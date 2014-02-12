@@ -110,11 +110,11 @@ public class ReportCardDO implements Serializable {
 	 */
 	public String getGradeForReportCard() {
 		// asd
-		if (StudentSubjectExamResultConstant.NOT_APPLICABLE.equals(getStudentReportCardResult())) {
+		if (StudentSubjectExamResultConstant.NOT_APPLICABLE.equals(this.getStudentReportCardResult())) {
 			this.gradeForReportCard = StudentSubjectExamResultConstant.NOT_APPLICABLE.getLabel();
 		} else {
 			if (this.scoredPercentageForReportCard <= 0) {
-				computeReportCard();
+				this.computeReportCard();
 			}
 			if ((this.reportCard != null) && (this.reportCard.getGradeSystem() != null)) {
 				final GradeSystem gradeSystem = this.reportCard.getGradeSystem();
@@ -137,17 +137,19 @@ public class ReportCardDO implements Serializable {
 	 */
 	public String getGradeForReportCardSubject(final Subject subject) {
 		if (!this.reportCardCalculated && (this.scoredPercentageForReportCard <= 0)) {
-			computeReportCard();
+			this.computeReportCard();
 		}
 		String subjectGrade = "N/A";
 		if ((this.scoresBySubject != null) && (this.scoresBySubject.get(subject) != null)) {
 			final int subjectPercentage = this.scoresBySubject.get(subject).intValue();
 			final GradeSystem gradeSystem = this.reportCard.getGradeSystem();
-			final Collection<GradeSystemRange> gradeSystemRanges = gradeSystem.getGradeSystemRange();
-			for (final GradeSystemRange gradeSystemRange : gradeSystemRanges) {
-				if ((subjectPercentage >= gradeSystemRange.getMinimumRange()) && (subjectPercentage <= gradeSystemRange.getMaximumRange())) {
-					subjectGrade = gradeSystemRange.getDistinction();
-					break;
+			if (gradeSystem != null) {
+				final Collection<GradeSystemRange> gradeSystemRanges = gradeSystem.getGradeSystemRange();
+				for (final GradeSystemRange gradeSystemRange : gradeSystemRanges) {
+					if ((subjectPercentage >= gradeSystemRange.getMinimumRange()) && (subjectPercentage <= gradeSystemRange.getMaximumRange())) {
+						subjectGrade = gradeSystemRange.getDistinction();
+						break;
+					}
 				}
 			}
 		}
@@ -184,8 +186,8 @@ public class ReportCardDO implements Serializable {
 	 */
 	public Collection<StudentAcademicExamDO> getStudentAcademicExamDOs() {
 		final Collection<StudentAcademicExamDO> studentAcademicExamDOs = new ArrayList<StudentAcademicExamDO>();
-		if (getExamByStudentAcademicExamDOMap() != null) {
-			studentAcademicExamDOs.addAll(getExamByStudentAcademicExamDOMap().values());
+		if (this.getExamByStudentAcademicExamDOMap() != null) {
+			studentAcademicExamDOs.addAll(this.getExamByStudentAcademicExamDOMap().values());
 		}
 
 		return studentAcademicExamDOs;

@@ -46,7 +46,6 @@
 						<f:selectItem itemLabel="Select academic year" itemValue="" />
 						<f:selectItems value="#{sectionBean.allAcademicYearsForCurrentBranch}" var="academicYear"
 							itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
-						<p:ajax process="@this" />
 					</p:selectOneMenu>
 
 					<p:outputLabel id="class_label" value="#{msg.class_students}" for="class" />

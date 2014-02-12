@@ -147,9 +147,9 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 
 				this.setLoadStudentsForSectionFlag(false);
 			}
-		} catch (ApplicationException e) {
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			ViewExceptionHandler.handle(e);
 		}
 
@@ -161,9 +161,9 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 				this.setSectionSubjects(this.sectionSubjectService.findSectionSubjectsByScetionId(this.sectionBean.getSection().getId()));
 				this.loadSectionSubjectsFlag = false;
 			}
-		} catch (ApplicationException e) {
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
-		} catch (Throwable e) {
+		} catch (final Throwable e) {
 			ViewExceptionHandler.handle(e);
 		}
 
@@ -243,11 +243,11 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 	public boolean isStudentPresentForSubjectOrDate(final Long studentAcademicYearId) {
 		boolean studentPresent = true;
 		if (this.isAttendanceSubjectWise()) {
-			if (this.studentAttendanceDOs.get(studentAcademicYearId) != null && this.attendanceSubject != null) {
+			if ((this.studentAttendanceDOs.get(studentAcademicYearId) != null) && (this.attendanceSubject != null)) {
 				studentPresent = this.studentAttendanceDOs.get(studentAcademicYearId).getStudentAbsentBySectionSubjectId(this.attendanceSubject.getId()) == null;
 			}
 		} else {
-			if (this.studentAttendanceDOs.get(studentAcademicYearId) != null && this.attendanceDate != null) {
+			if ((this.studentAttendanceDOs.get(studentAcademicYearId) != null) && (this.attendanceDate != null)) {
 				studentPresent = this.studentAttendanceDOs.get(studentAcademicYearId).getStudentAbsentForDailyAttendance() == null;
 			}
 		}
@@ -264,7 +264,7 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 	 * @return style class for attendance present and absent command link.
 	 */
 	public String getStyleClassForStudent(final Long studentAcademicYearId) {
-		Calendar calendarAttendaneDate = Calendar.getInstance();
+		final Calendar calendarAttendaneDate = Calendar.getInstance();
 		calendarAttendaneDate.setTime(this.attendanceDate);
 		DateUtil.clearTimeInfo(calendarAttendaneDate);
 		return this.isWeekEnd(calendarAttendaneDate) || this.isHoliday(calendarAttendaneDate) ? "ui-icon ui-icon-white  ui-icon-note" : this
@@ -314,15 +314,15 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 			this.sessionBean.loadAcademicYearHolidays(this.sectionBean.getSection().getAcademicYear());
 		}
 		if (this.sessionBean.getAcademicYearHolidays() != null) {
-			for (AcademicYearHoliday academicYearHoliday : this.sessionBean.getAcademicYearHolidays()) {
-				Calendar academicYearHolidayStartDate = Calendar.getInstance();
+			for (final AcademicYearHoliday academicYearHoliday : this.sessionBean.getAcademicYearHolidays()) {
+				final Calendar academicYearHolidayStartDate = Calendar.getInstance();
 				academicYearHolidayStartDate.setTime(academicYearHoliday.getStartDate());
 				DateUtil.clearTimeInfo(academicYearHolidayStartDate);
-				Calendar academicYearHolidayEndDate = Calendar.getInstance();
+				final Calendar academicYearHolidayEndDate = Calendar.getInstance();
 				academicYearHolidayEndDate.setTime(academicYearHoliday.getEndDate());
 				DateUtil.clearTimeInfo(academicYearHolidayEndDate);
 				if (suppliedDate.equals(academicYearHolidayStartDate) || suppliedDate.equals(academicYearHolidayEndDate)
-						|| suppliedDate.after(academicYearHolidayStartDate) && suppliedDate.before(academicYearHolidayEndDate)) {
+						|| (suppliedDate.after(academicYearHolidayStartDate) && suppliedDate.before(academicYearHolidayEndDate))) {
 					// this.academicYearHoliday = academicYearHoliday;
 					result = true;
 				}
@@ -387,7 +387,7 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 	}
 
 	public void getAttendanceDetails() {
-		Calendar calendarAttendaneDate = Calendar.getInstance();
+		final Calendar calendarAttendaneDate = Calendar.getInstance();
 		calendarAttendaneDate.setTime(this.attendanceDate);
 		DateUtil.clearTimeInfo(calendarAttendaneDate);
 
@@ -417,20 +417,23 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 	}
 
 	public void updateStudentAttendanceForSubject() {
-		StudentAbsent studentAbsent = new StudentAbsent();
-		studentAbsent.setAbsentReason(this.currentReasonForCurrentStudent);
-		studentAbsent.setAttendance(this.currentattendance);
-		studentAbsent.setStudentAcademicYear(this.currentAttendanceStudentAcademicYear);
-		if (this.studentAttendanceDOs.get(this.currentAttendanceStudentAcademicYear.getId()) == null) {
-			StudentAttendanceDO studentAttendanceDO = new StudentAttendanceDO();
-			studentAttendanceDO.setAttendanceDate(this.attendanceDate);
-			studentAttendanceDO.setStudentAcademicYear(this.currentAttendanceStudentAcademicYear);
-			studentAttendanceDO.addStudentAbsent(studentAbsent);
-			this.studentAttendanceDOs.put(this.currentAttendanceStudentAcademicYear.getId(), studentAttendanceDO);
+		if (this.isStudentPresentForSubjectOrDate(this.currentAttendanceStudentAcademicYear.getId())) {
+			final StudentAbsent studentAbsent = new StudentAbsent();
+			studentAbsent.setAbsentReason(this.currentReasonForCurrentStudent);
+			studentAbsent.setAttendance(this.currentattendance);
+			studentAbsent.setStudentAcademicYear(this.currentAttendanceStudentAcademicYear);
+			if (this.studentAttendanceDOs.get(this.currentAttendanceStudentAcademicYear.getId()) == null) {
+				final StudentAttendanceDO studentAttendanceDO = new StudentAttendanceDO();
+				studentAttendanceDO.setAttendanceDate(this.attendanceDate);
+				studentAttendanceDO.setStudentAcademicYear(this.currentAttendanceStudentAcademicYear);
+				studentAttendanceDO.addStudentAbsent(studentAbsent);
+				this.studentAttendanceDOs.put(this.currentAttendanceStudentAcademicYear.getId(), studentAttendanceDO);
+			} else {
+				this.studentAttendanceDOs.get(this.currentAttendanceStudentAcademicYear.getId()).addStudentAbsent(studentAbsent);
+			}
 		} else {
-			this.studentAttendanceDOs.get(this.currentAttendanceStudentAcademicYear.getId()).addStudentAbsent(studentAbsent);
+			this.deleteStudentAttendanceForSubjectOrDaily();
 		}
-
 	}
 
 	/**
@@ -489,7 +492,7 @@ public class SectionAttendanceBean extends AbstractTabbedBean implements Seriali
 	}
 
 	public void deleteStudentAttendanceForSubjectOrDaily() {
-		StudentAttendanceDO studentAttendanceDO = this.studentAttendanceDOs.get(this.currentAttendanceStudentAcademicYear.getId());
+		final StudentAttendanceDO studentAttendanceDO = this.studentAttendanceDOs.get(this.currentAttendanceStudentAcademicYear.getId());
 		if (studentAttendanceDO != null) {
 			StudentAbsent studentAbsent = null;
 			if (this.isAttendanceSubjectWise()) {

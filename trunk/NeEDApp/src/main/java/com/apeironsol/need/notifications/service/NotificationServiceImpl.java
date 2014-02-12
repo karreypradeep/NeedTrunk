@@ -220,7 +220,6 @@ public class NotificationServiceImpl implements NotificationService {
 			result = this.sendExamResultNotification(sections, batchLog);
 		} else {
 			final Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
-			final Map<Long, StudentAcademicYear> studentAcademicYearsMap = new HashMap<Long, StudentAcademicYear>();
 			if (result.getId() == null) {
 				result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 				result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
@@ -261,11 +260,9 @@ public class NotificationServiceImpl implements NotificationService {
 			result = this.sendExamResultNotification(sections, batchLog);
 		} else {
 			final Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
-			final Collection<StudentAcademicYear> studentAcademicYearsForNotification = this
-					.returnUniqueStudentAcademicYearsForSendingNotifications(studentAcademicYears);
 
 			if (result.getId() == null) {
-				result.setNrElements(Long.valueOf(studentAcademicYearsForNotification.size()));
+				result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 				result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 				result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
 				if (result.getNrElements() == 0) {
@@ -273,8 +270,8 @@ public class NotificationServiceImpl implements NotificationService {
 				}
 				result = notificationProducerUtil.createBatchLog(result);
 			}
-			if (studentAcademicYearsForNotification.size() > 0) {
-				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearsForNotification, result);
+			if (studentAcademicYears.size() > 0) {
+				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
 			}
 		}
 		return result;
@@ -306,10 +303,8 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		final Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
-		final Collection<StudentAcademicYear> studentAcademicYearsForNotification = this
-				.returnUniqueStudentAcademicYearsForSendingNotifications(studentAcademicYears);
 		if (result.getId() == null) {
-			result.setNrElements(Long.valueOf(studentAcademicYearsForNotification.size()));
+			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
 			if (result.getNrElements() == 0) {
@@ -317,8 +312,8 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 			result = notificationProducerUtil.createBatchLog(result);
 		}
-		if (studentAcademicYearsForNotification.size() > 0) {
-			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearsForNotification, result);
+		if (studentAcademicYears.size() > 0) {
+			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
 		}
 		return result;
 	}
@@ -372,7 +367,10 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 			studentAcademicYears = this.studentService.findStudentAcademicYearsWithActiveStatusBySectionIds(sectionIDs);
 		}
-		return studentAcademicYears;
+		final Collection<StudentAcademicYear> studentAcademicYearsForNotification = this
+				.returnUniqueStudentAcademicYearsForSendingNotifications(studentAcademicYears);
+
+		return studentAcademicYearsForNotification;
 	}
 
 	@Override
