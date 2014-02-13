@@ -19,18 +19,6 @@
 		</navigation-case>
 
 		<navigation-case>
-			<from-outcome>mobile_login</from-outcome>
-			<to-view-id>/mobile_login.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-
-		<navigation-case>
-			<from-outcome>default_login</from-outcome>
-			<to-view-id>/default_login.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>
-
-		<navigation-case>
 			<from-outcome>home</from-outcome>
 			<to-view-id>/home.xhtml</to-view-id>
 			<redirect />
@@ -46,11 +34,6 @@
 		<navigation-case>
 			<from-outcome>organization_index</from-outcome>
 			<to-view-id>/pages/organization/index.xhtml</to-view-id>
-			<redirect />
-		</navigation-case>  
-		<navigation-case>
-			<from-outcome>branch_mobile_index</from-outcome>
-			<to-view-id>/pages/branch/mobile/index.xhtml</to-view-id>
 			<redirect />
 		</navigation-case>
 		<navigation-case>

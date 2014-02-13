@@ -4,9 +4,10 @@
  * Copyright 2012, apeironsol (pradeep@apeironsol.com)
  * 
  */
-#page {
-	width: 1000px;
+ 
+ #page {
 	margin: 0 auto;
+	width: 1000px;
 }
 
 #header {
@@ -64,7 +65,7 @@
 }
 
 #footer {
-	min-width: 996px;
+	min-width: 996px;	
 }
 
 #welcome-text {
@@ -72,8 +73,7 @@
 }
 
 #welcome-text h1 {
-	font-family: 'FS Joey Web Regular', Helvetica, Arial, Verdana,
-		sans-serif;
+	font-family: 'FS Joey Web Regular', Helvetica, Arial, Verdana, sans-serif;
 	font-size: 17px;
 	color: #154FB6;
 	padding: 1px;

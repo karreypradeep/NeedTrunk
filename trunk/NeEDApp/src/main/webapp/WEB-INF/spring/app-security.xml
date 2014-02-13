@@ -34,11 +34,8 @@
 		<!-- Module Resources-->
 		<sec:intercept-url pattern="/pages/modules/**" access="ROLE_APEIRONSOL" />
 		<sec:intercept-url pattern="/faces/pages/modules/**" access="ROLE_APEIRONSOL" />
-
+		
 		<!-- All Resources-->
-		<sec:intercept-url pattern="/pages/**" access="ROLE_APEIRONSOL" />
-		<sec:intercept-url pattern="/faces/pages/**" access="ROLE_APEIRONSOL" />
-
 		<sec:intercept-url pattern="/pages/**" access="ROLE_APEIRONSOL" />
 		<sec:intercept-url pattern="/faces/pages/**" access="ROLE_APEIRONSOL" />
 		
