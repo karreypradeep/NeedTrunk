@@ -25,6 +25,15 @@ public interface RelationService {
 	Collection<Relation> findRelationByStudentId(Long studentId);
 
 	/**
+	 * Find relation by student id.
+	 * 
+	 * @param studentId
+	 *            student id.
+	 * @return
+	 */
+	Collection<Relation> findRelationsByStudentIds(Collection<Long> studentIds);
+
+	/**
 	 * Save relation.
 	 * 
 	 * @param relation

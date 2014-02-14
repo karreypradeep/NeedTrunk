@@ -22,9 +22,9 @@
 			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
 
-			<p:column headerText="Student" sortBy="#{batchLogMessage.studentAcademicYear.student.displayName}"
-				filterBy="#{batchLogMessage.studentAcademicYear.student.displayName}" filterMatchMode="contains">
-				<h:outputText value="#{batchLogMessage.studentAcademicYear.student.displayName}" />
+			<p:column headerText="Student" sortBy="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}"
+				filterBy="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}" filterMatchMode="contains">
+				<h:outputText value="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}" />
 			</p:column>
 
 			<p:column headerText="Batch Id" sortBy="#{batchLogMessage.batchLog.id}" filterBy="#{batchLogMessage.batchLog.id}"

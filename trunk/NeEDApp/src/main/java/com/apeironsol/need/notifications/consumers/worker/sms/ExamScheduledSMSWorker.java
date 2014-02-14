@@ -27,6 +27,7 @@ import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.StudentExamSubject;
 import com.apeironsol.need.academics.service.StudentExamSubjectService;
 import com.apeironsol.need.core.model.SMSProvider;
+import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
@@ -70,8 +71,8 @@ public class ExamScheduledSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
-			throws ClientProtocolException, URISyntaxException, IOException {
+	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final Student student,
+			final BatchLog batchLog) throws ClientProtocolException, URISyntaxException, IOException {
 		final NotificationMessage notificationMessage = new NotificationMessage();
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 		String smsText = batchLog.getMessage();
@@ -129,7 +130,7 @@ public class ExamScheduledSMSWorker implements SMSWorker {
 	}
 
 	@Override
-	public String getMessage(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) throws ApplicationException {
+	public String getMessage(final StudentAcademicYear studentAcademicYear, final Student student, final BatchLog batchLog) throws ApplicationException {
 		String smsText = batchLog.getMessage();
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			final Map<String, String> model = new HashMap<String, String>();

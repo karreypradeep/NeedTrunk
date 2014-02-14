@@ -120,7 +120,7 @@ public class BatchLogMessageDaoImpl extends BaseDaoImpl<BatchLogMessage> impleme
 	public Collection<BatchLogMessage> findBatchLogMessagesByStudentId(final Long studentId) throws BusinessException {
 		final TypedQuery<BatchLogMessage> query = this.getEntityManager().createQuery(
 				"select blm from BatchLogMessage blm where blm.student.id = :studentId order by blm.messageSentTime DESC", BatchLogMessage.class);
-		query.setParameter("studentrId", studentId);
+		query.setParameter("studentId", studentId);
 		return query.getResultList();
 
 	}

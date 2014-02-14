@@ -107,7 +107,7 @@
 
 				</p:dataTable>
 			</p:panel>
-			<p:confirmDialog id="confirmDialog" message="Are you want to delete the section?" header="Confirmation"
+			<p:confirmDialog id="confirmDialog" message="Delete the section?" header="Confirmation"
 				severity="alert" widgetVar="confirmation">
 				<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
 					action="#{sectionBean.removeSection}" />

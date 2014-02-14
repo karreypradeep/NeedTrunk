@@ -383,6 +383,7 @@
 					<f:setPropertyActionListener target="#{sectionBean.viewOrNewAction}" value="false" />
 					<f:setPropertyActionListener target="#{sectionBean.sectionTabModel.activeTab}"
 						value="#{sectionBean.sectionTabModel.sectionTab}" />
+					<f:setPropertyActionListener target="#{sectionBean.loadAllAcademicYearsFlag}" value="true" />
 				</p:commandLink>
 
 				<p:commandLink value="#{msg.hostel_rooms}" process="branch_side_menu" update="@form"

@@ -29,6 +29,7 @@ import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.ReportCardExam;
 import com.apeironsol.need.academics.service.StudentAcademicService;
 import com.apeironsol.need.core.model.SMSProvider;
+import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
@@ -69,16 +70,16 @@ public class ReportCardSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
-			throws ClientProtocolException, URISyntaxException, IOException {
+	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final Student student,
+			final BatchLog batchLog) throws ClientProtocolException, URISyntaxException, IOException {
 		final NotificationMessage notificationMessage = new NotificationMessage();
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 		final ReportCard reportCard = batchLog.getReportCard();
 		if (reportCard != null) {
-			final ReportCardDO reportCardDO = getReportCardDO(studentAcademicYear, batchLog);
+			final ReportCardDO reportCardDO = this.getReportCardDO(studentAcademicYear, batchLog);
 			reportCardDO.computeReportCard();
 			if (!StudentSubjectExamResultConstant.NOT_APPLICABLE.equals(reportCardDO.getStudentReportCardResult())) {
-				final String smsText = getNotificationMessage(reportCardDO, studentAcademicYear, batchLog);
+				final String smsText = this.getNotificationMessage(reportCardDO, studentAcademicYear, batchLog);
 				notificationMessage.setMessage(smsText);
 				if (studentAcademicYear.getStudent().getAddress().getContactNumber() != null) {
 					notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
@@ -169,9 +170,9 @@ public class ReportCardSMSWorker implements SMSWorker {
 	}
 
 	@Override
-	public String getMessage(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) throws ApplicationException {
-		final ReportCardDO reportCardDO = getReportCardDO(studentAcademicYear, batchLog);
-		return getNotificationMessage(reportCardDO, studentAcademicYear, batchLog);
+	public String getMessage(final StudentAcademicYear studentAcademicYear, final Student student, final BatchLog batchLog) throws ApplicationException {
+		final ReportCardDO reportCardDO = this.getReportCardDO(studentAcademicYear, batchLog);
+		return this.getNotificationMessage(reportCardDO, studentAcademicYear, batchLog);
 	}
 
 }

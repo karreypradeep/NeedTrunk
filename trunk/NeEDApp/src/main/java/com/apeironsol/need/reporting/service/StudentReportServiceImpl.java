@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -93,6 +95,27 @@ public class StudentReportServiceImpl implements StudentReportService {
 		final BranchRO branchRO = new BranchRO();
 		branchRO.setBranch(branch);
 		final Map<Long, KlassRO> mapKlassROs = new HashMap<Long, KlassRO>();
+		final Set<Long> studentIDs = new HashSet<Long>();
+		for (final SectionFinancialDO sectionFinancialDO : sectionFinancialDOs) {
+			if ((sectionFinancialDO.getStudentFinancialAcademicYearDOs() != null) && !sectionFinancialDO.getStudentFinancialAcademicYearDOs().isEmpty()) {
+				for (final StudentFinancialAcademicYearDO studentFinancialAcademicYearDO : sectionFinancialDO.getStudentFinancialAcademicYearDOs()) {
+					studentIDs.add(studentFinancialAcademicYearDO.getStudentSection().getStudentAcademicYear().getStudent().getId());
+				}
+			}
+		}
+		final Collection<Relation> relations = this.relationService.findRelationsByStudentIds(studentIDs);
+		final Map<Long, Collection<Relation>> studentRelations = new HashMap<Long, Collection<Relation>>();
+		for (final Relation relation : relations) {
+			for (final Student student : relation.getStudents()) {
+				if (studentRelations.get(student.getId()) == null) {
+					final Collection<Relation> stuRelations = new ArrayList<Relation>();
+					stuRelations.add(relation);
+					studentRelations.put(student.getId(), stuRelations);
+				} else {
+					studentRelations.get(student.getId()).add(relation);
+				}
+			}
+		}
 		for (final SectionFinancialDO sectionFinancialDO : sectionFinancialDOs) {
 			KlassRO klassRO = null;
 			if (mapKlassROs.get(sectionFinancialDO.getSection().getKlass().getId()) == null) {
@@ -107,7 +130,8 @@ public class StudentReportServiceImpl implements StudentReportService {
 			}
 			final SectionRO sectionRO = new SectionRO();
 			sectionRO.setSection(sectionFinancialDO.getSection());
-			if (sectionFinancialDO.getStudentFinancialAcademicYearDOs() != null && !sectionFinancialDO.getStudentFinancialAcademicYearDOs().isEmpty()) {
+			if ((sectionFinancialDO.getStudentFinancialAcademicYearDOs() != null) && !sectionFinancialDO.getStudentFinancialAcademicYearDOs().isEmpty()) {
+
 				for (final StudentFinancialAcademicYearDO studentFinancialAcademicYearDO : sectionFinancialDO.getStudentFinancialAcademicYearDOs()) {
 					final StudentRO studentRO = new StudentRO();
 
@@ -120,7 +144,8 @@ public class StudentReportServiceImpl implements StudentReportService {
 
 					studentRO.setResidenceType(residenceTypeConstants.get(studentRO.getStudentAcademicYear().getStudent().getResidence()));
 
-					this.setParentOrGuardianName(studentRO.getStudentAcademicYear().getStudent(), studentRO);
+					this.setParentOrGuardianName(studentRO.getStudentAcademicYear().getStudent(),
+							studentRelations.get(studentRO.getStudentAcademicYear().getStudent().getId()), studentRO);
 
 					sectionRO.addStudentRO(studentRO);
 				}
@@ -134,7 +159,7 @@ public class StudentReportServiceImpl implements StudentReportService {
 
 		if (branchRO.getKlassROList() != null) {
 			for (final KlassRO klassRO : branchRO.getKlassROList()) {
-				if (klassRO.getClassFinancialDO() != null && klassRO.getClassFinancialDO().getSectionFinancialDOs() != null) {
+				if ((klassRO.getClassFinancialDO() != null) && (klassRO.getClassFinancialDO().getSectionFinancialDOs() != null)) {
 					klassRO.getClassFinancialDO().calculateClassFee();
 					klassRO.getClassFinancialDO().setSectionFinancialDOs(null);
 				}
@@ -166,6 +191,7 @@ public class StudentReportServiceImpl implements StudentReportService {
 		branchRO.setBranch(branch);
 		final Map<Long, KlassRO> mapKlassROs = new HashMap<Long, KlassRO>();
 		final Map<Long, SectionRO> mapSectionROs = new HashMap<Long, SectionRO>();
+
 		for (final StudentSection studentSection : studentSections) {
 			KlassRO klassRO = null;
 			SectionRO sectionRO = null;
@@ -218,6 +244,23 @@ public class StudentReportServiceImpl implements StudentReportService {
 		branchRO.setBranch(branch);
 		final Map<Long, KlassRO> mapKlassROs = new HashMap<Long, KlassRO>();
 		final Map<Long, SectionRO> mapSectionROs = new HashMap<Long, SectionRO>();
+		final Map<Long, Collection<Relation>> studentRelations = new HashMap<Long, Collection<Relation>>();
+		final Set<Long> studentIDs = new HashSet<Long>();
+		for (final StudentSection studentSection : studentSections) {
+			studentIDs.add(studentSection.getStudentAcademicYear().getStudent().getId());
+		}
+		final Collection<Relation> relations = this.relationService.findRelationsByStudentIds(studentIDs);
+		for (final Relation relation : relations) {
+			for (final Student student : relation.getStudents()) {
+				if (studentRelations.get(student.getId()) == null) {
+					final Collection<Relation> stuRelations = new ArrayList<Relation>();
+					stuRelations.add(relation);
+					studentRelations.put(student.getId(), stuRelations);
+				} else {
+					studentRelations.get(student.getId()).add(relation);
+				}
+			}
+		}
 		for (final StudentSection studentSection : studentSections) {
 			KlassRO klassRO = null;
 			SectionRO sectionRO = null;
@@ -241,7 +284,8 @@ public class StudentReportServiceImpl implements StudentReportService {
 			studentRO.setStudentAcademicYear(studentSection.getStudentAcademicYear());
 			studentRO.setGender(genderConstants.get(studentSection.getStudentAcademicYear().getStudent().getGender()));
 			studentRO.setResidenceType(residenceTypeConstants.get(studentSection.getStudentAcademicYear().getStudent().getResidence()));
-			this.setParentOrGuardianName(studentSection.getStudentAcademicYear().getStudent(), studentRO);
+			this.setParentOrGuardianName(studentSection.getStudentAcademicYear().getStudent(),
+					studentRelations.get(studentSection.getStudentAcademicYear().getStudent().getId()), studentRO);
 			sectionRO.addStudentRO(studentRO);
 		}
 
@@ -259,10 +303,13 @@ public class StudentReportServiceImpl implements StudentReportService {
 	 * @param studentRO
 	 *            student report object.
 	 */
-	private void setParentOrGuardianName(final Student student, final StudentRO studentRO) {
-		final Collection<Relation> studentRelations = this.relationService.findRelationByStudentId(student.getId());
+	private void setParentOrGuardianName(final Student student, final Collection<Relation> studentRelations, final StudentRO studentRO) {
+		Collection<Relation> relations = studentRelations;
+		if ((relations == null) || (relations.size() == 0)) {
+			relations = this.relationService.findRelationByStudentId(student.getId());
+		}
 		String fatherName = null, motherName = null, guardianName = null;
-		for (final Relation relation : studentRelations) {
+		for (final Relation relation : relations) {
 			if (RelationTypeConstant.FATHER.equals(relation.getRelationType())) {
 				fatherName = relation.getDisplayName();
 			} else if (RelationTypeConstant.MOTHER.equals(relation.getRelationType())) {

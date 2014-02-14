@@ -120,6 +120,7 @@
 								<f:converter converterId="admissionStatusConverter" />
 							</f:setPropertyActionListener>
 							<f:setPropertyActionListener target="#{admissionBean.admissionStateSetToRollback}" value="false" />
+							<f:setPropertyActionListener target="#{admissionNotificationsBean.loadBatchLogMessagesFromDB}" value="true" />  
 						</p:commandLink>
 					</p:column>
 

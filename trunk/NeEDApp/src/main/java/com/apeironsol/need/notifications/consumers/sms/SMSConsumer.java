@@ -136,7 +136,8 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 		try {
 			final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
 			final NotificationMessage notificationMessage = smsWorker.sendSMS(
-					jmsObject.getSmsProvider() != null ? jmsObject.getSmsProvider() : batchLog.getSmsProvider(), jmsObject.getStudentAcademicYear(), batchLog);
+					jmsObject.getSmsProvider() != null ? jmsObject.getSmsProvider() : batchLog.getSmsProvider(), jmsObject.getStudentAcademicYear(),
+					jmsObject.getStudentAcademicYear() == null ? jmsObject.getStudent() : jmsObject.getStudentAcademicYear().getStudent(), batchLog);
 			this.postProcessElement(jmsObject, batchLog, notificationMessage);
 		} catch (final Throwable exception) {
 			throw new Exception(exception);

@@ -79,11 +79,12 @@ public abstract class AbstractNotificationBean extends AbstractPortalBean {
 	 * @return
 	 */
 	public String handleNotificationSubTypeChange() {
+		this.notificationText = null;
 		if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(this.notificationSubTypeConstant)
 				|| NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION.equals(this.notificationSubTypeConstant)
 				|| NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(this.notificationSubTypeConstant)) {
 			this.disaplyExamDropdownForNotification = true;
-			loadExamsForNotifications();
+			this.loadExamsForNotifications();
 		} else {
 			this.disaplyExamDropdownForNotification = false;
 		}
@@ -153,7 +154,7 @@ public abstract class AbstractNotificationBean extends AbstractPortalBean {
 	}
 
 	public void loadBranchNotification() {
-		setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
+		this.setBranchNotifications(this.branchNotificationService.findBranchNotificationsByBranchId(this.sessionBean.getCurrentBranch().getId()));
 	}
 
 	/**
@@ -206,9 +207,9 @@ public abstract class AbstractNotificationBean extends AbstractPortalBean {
 	}
 
 	public String handleNotificationTypeChange() {
-		getBranchNotificationByNotificationType();
+		this.getBranchNotificationByNotificationType();
 		this.notificationSubTypeConstant = null;
-		handleNotificationSubTypeChange();
+		this.handleNotificationSubTypeChange();
 		return null;
 	}
 
@@ -246,7 +247,7 @@ public abstract class AbstractNotificationBean extends AbstractPortalBean {
 
 	public String handleAcademicYearChange() {
 		this.notificationTypeConstant = null;
-		handleNotificationTypeChange();
+		this.handleNotificationTypeChange();
 		return null;
 	}
 
@@ -270,13 +271,13 @@ public abstract class AbstractNotificationBean extends AbstractPortalBean {
 	}
 
 	public String setViewSendNotification() {
-		setAcademicYearForNotification(null);
-		setNotificationTypeConstant(null);
-		setNotificationSubTypeConstant(null);
-		setNotificationText(null);
-		setSelectedExamForNotification(null);
-		setDisaplyExamDropdownForNotification(false);
-		setViewActionString(ViewAction.VIEW_SEND_NOTIFICATION);
+		this.setAcademicYearForNotification(null);
+		this.setNotificationTypeConstant(null);
+		this.setNotificationSubTypeConstant(null);
+		this.setNotificationText(null);
+		this.setSelectedExamForNotification(null);
+		this.setDisaplyExamDropdownForNotification(false);
+		this.setViewActionString(ViewAction.VIEW_SEND_NOTIFICATION);
 		return null;
 	}
 

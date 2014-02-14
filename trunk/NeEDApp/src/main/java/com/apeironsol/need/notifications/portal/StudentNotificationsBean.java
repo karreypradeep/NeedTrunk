@@ -527,6 +527,7 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 	 */
 	public String handleNotificationSubTypeChange() {
 		this.selectedSectionExam = null;
+		this.notificationText = null;
 		if (this.getSectionExams() != null) {
 			this.getSectionExams().clear();
 		}

@@ -114,17 +114,6 @@ public interface BatchLogMessageService {
 	Collection<BatchLogMessage> findBatchLogMessagesByStudentAcademicYearId(final Long studentAcademicYearId) throws BusinessException;
 
 	/**
-	 * Find all batch log messages for student academic year.
-	 * 
-	 * @param studentId
-	 *            studentId.
-	 * @return collection of all batch log messages for student academic year.
-	 * @throws BusinessException
-	 *             In case of exception.
-	 */
-	Collection<BatchLogMessage> findBatchLogMessagesByStudentId(final Long studentId) throws BusinessException;
-
-	/**
 	 * Find batch log message for batch log id and student academic year id.
 	 * 
 	 * @param branchLogId
@@ -136,6 +125,17 @@ public interface BatchLogMessageService {
 	 *             In case of exception.
 	 */
 	BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(final Long batchLogId, final Long studentAcademicYearId) throws BusinessException;
+
+	/**
+	 * Find all batch log messages for student academic year.
+	 * 
+	 * @param studentId
+	 *            studentId.
+	 * @return collection of all batch log messages for student academic year.
+	 * @throws BusinessException
+	 *             In case of exception.
+	 */
+	Collection<BatchLogMessage> findBatchLogMessagesByStudentId(final Long studentId) throws BusinessException;
 
 	/**
 	 * Find batch log message for batch log id and student academic year id.

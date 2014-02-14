@@ -214,7 +214,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 							NotificationLevelConstant.STUDENT, NotificationSubTypeConstant.NEW_ADMISSION_SUBMITTED_NOTIFICATION, null, null);
 					if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
 							|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
-						this.notificationService.sendNotificationForStudentAdmission(student, batchLog);
+						this.notificationService.sendNotificationForStudentAdmission(result, batchLog);
 					}
 				}
 			} catch (final Exception e) {

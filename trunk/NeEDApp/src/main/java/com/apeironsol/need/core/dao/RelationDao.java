@@ -2,8 +2,8 @@ package com.apeironsol.need.core.dao;
 
 import java.util.Collection;
 
-import com.apeironsol.need.core.model.Relation;
 import com.apeironsol.framework.BaseDao;
+import com.apeironsol.need.core.model.Relation;
 
 public interface RelationDao extends BaseDao<Relation> {
 
@@ -22,5 +22,14 @@ public interface RelationDao extends BaseDao<Relation> {
 	 * @return
 	 */
 	Relation findRelationByUsername(String username);
+
+	/**
+	 * Find relation by student id.
+	 * 
+	 * @param studentId
+	 *            student id.
+	 * @return
+	 */
+	Collection<Relation> findRelationsByStudentIds(Collection<Long> studentIds);
 
 }

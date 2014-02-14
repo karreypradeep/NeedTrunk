@@ -78,7 +78,7 @@ public class RelationServiceImpl implements RelationService {
 		this.studentRelationDao.removeStudentRelationByStudentIdAndRelationId(student.getId(), relation.getId());
 
 		final Collection<StudentRelation> studentRelations = this.studentRelationDao.findStudentRelationsByRelationId(relation.getId());
-		if (studentRelations == null || studentRelations.isEmpty()) {
+		if ((studentRelations == null) || studentRelations.isEmpty()) {
 			this.relationDao.remove(relation);
 		}
 	}
@@ -91,13 +91,13 @@ public class RelationServiceImpl implements RelationService {
 
 		final Collection<Relation> relations = this.relationDao.findRelationsByStudentId(student.getId());
 
-		if (relations != null && relations.isEmpty()) {
+		if ((relations != null) && relations.isEmpty()) {
 
 			for (final Relation relation : relations) {
 				this.studentRelationDao.removeStudentRelationByStudentIdAndRelationId(student.getId(), relation.getId());
 
 				final Collection<StudentRelation> studentRelations = this.studentRelationDao.findStudentRelationsByRelationId(relation.getId());
-				if (studentRelations == null || studentRelations.isEmpty()) {
+				if ((studentRelations == null) || studentRelations.isEmpty()) {
 					this.relationDao.remove(relation);
 				}
 			}
@@ -123,5 +123,10 @@ public class RelationServiceImpl implements RelationService {
 			relation.setAddress(this.findRelationAddressByRelationId(relation.getId()));
 		}
 		return relations;
+	}
+
+	@Override
+	public Collection<Relation> findRelationsByStudentIds(final Collection<Long> studentIds) {
+		return this.relationDao.findRelationsByStudentIds(studentIds);
 	}
 }

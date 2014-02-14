@@ -92,14 +92,12 @@ public class BatchLogMessageServiceImpl implements BatchLogMessageService {
 
 	@Override
 	public Collection<BatchLogMessage> findBatchLogMessagesByStudentId(final Long studentId) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.batchLogMessageDao.findBatchLogMessagesByStudentId(studentId);
 	}
 
 	@Override
 	public BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentId(final Long batchLogId, final Long studentId) throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.batchLogMessageDao.findBatchLogMessageByBatchLogIdAndStudentId(batchLogId, studentId);
 	}
 
 }

@@ -24,6 +24,7 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.Attendance;
 import com.apeironsol.need.core.model.SMSProvider;
+import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAbsent;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.core.model.StudentSection;
@@ -79,8 +80,8 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final BatchLog batchLog)
-			throws ClientProtocolException, URISyntaxException, IOException {
+	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final Student student,
+			final BatchLog batchLog) throws ClientProtocolException, URISyntaxException, IOException {
 		if (batchLog.getAttendanceDate() == null) {
 			batchLog.setAttendanceDate(DateUtil.getSystemDate());
 		}
@@ -135,7 +136,7 @@ public class StudentAbsentSMSWorker implements SMSWorker {
 	}
 
 	@Override
-	public String getMessage(final StudentAcademicYear studentAcademicYear, final BatchLog batchLog) throws ApplicationException {
+	public String getMessage(final StudentAcademicYear studentAcademicYear, final Student student, final BatchLog batchLog) throws ApplicationException {
 		final Map<String, String> model = new HashMap<String, String>();
 		model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
 		model.put("instituteType", "College");
