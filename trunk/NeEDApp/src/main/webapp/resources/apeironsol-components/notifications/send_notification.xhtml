@@ -92,8 +92,8 @@
 				<p:confirmDialog id="confirmDialog"
 					message="Are you sure, Want to send #{cc.attrs.notificationSubType.label} notification?" header="Confirmation"
 					severity="alert" widgetVar="confirmation">
-					<p:commandButton id="confirm" value="Yes" update="@form" process="@this" onclick="confirmation.hide()"
-						action="#{cc.attrs.sendNotificationActionMethod}" />  
+					<p:commandButton id="confirm" value="Yes" update="@form" process="@this" oncomplete="confirmation.hide()"
+						onclick="jQuery(this).addClass('ui-state-disabled')" action="#{cc.attrs.sendNotificationActionMethod}" />
 					<p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />
 				</p:confirmDialog>
 			</h:panelGrid>
