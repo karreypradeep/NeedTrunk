@@ -34,13 +34,19 @@
 				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
 				<h:panelGrid columns="3" id="grid" cellpadding="4" style="border:0px;margin-bottom:10px;">
 					<p:outputLabel id="start_date_label" value="Start date" for="start_date" />
-					<p:calendar id="start_date" value="#{financialYearBean.financialYear.startDate}" navigator="true" showOn="button"
-						  pattern="dd/MM/yyyy" size="10" maxlength="10" />
+					<p:panelGrid columns="2" style="border:0px;">
+						<p:calendar id="start_date" value="#{financialYearBean.financialYear.startDate}" navigator="true" showOn="button"
+							pattern="dd/MM/yyyy" size="10" maxlength="10" />
+						<p:watermark for="start_date" value="dd/MM/yyyy" />
+					</p:panelGrid>
 					<p:message id="start_date_msg" for="start_date" />
 
 					<p:outputLabel id="end_date_label" value="End date" for="end_date" />
-					<p:calendar id="end_date" value="#{financialYearBean.financialYear.endDate}" navigator="true" showOn="button"
-						  pattern="dd/MM/yyyy" size="10" maxlength="10" />
+					<p:panelGrid columns="2" style="border:0px;">
+						<p:calendar id="end_date" value="#{financialYearBean.financialYear.endDate}" navigator="true" showOn="button"
+							pattern="dd/MM/yyyy" size="10" maxlength="10" />
+						<p:watermark for="end_date" value="dd/MM/yyyy" />
+					</p:panelGrid>
 					<p:message id="end_date_msg" for="end_date" />
 
 				</h:panelGrid>
@@ -50,7 +56,7 @@
 				</p:commandButton>
 
 				<p:commandButton id="reset" value="Reset" update="@form" process="@this"
-					action="#{financialYearBean.resetFinancialYear}"/>
+					action="#{financialYearBean.resetFinancialYear}" />
 
 				<p:commandButton id="cancel" value="Cancel" update="@form" process="@this">
 					<f:setPropertyActionListener target="#{financialYearBean.viewOrNewAction}" value="false" />

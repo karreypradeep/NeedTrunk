@@ -21,10 +21,13 @@
 			<p:message id="employee_msg" for="employee" />
 
 			<p:outputLabel id="account_opening_date_label" value="Account opening date" for="account_opening_date" />
-			<p:calendar id="account_opening_date"
-				value="#{branchCreditAccountBean.currentBranchCreditAccount.accountOpeningDate}" navigator="true"
-				pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
-				disabled="#{not branchCreditAccountBean.editBrachCreditAccountDetailsInd}" showOn="button" />
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:calendar id="account_opening_date"
+					value="#{branchCreditAccountBean.currentBranchCreditAccount.accountOpeningDate}" navigator="true"
+					pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
+					disabled="#{not branchCreditAccountBean.editBrachCreditAccountDetailsInd}" showOn="button" />
+				<p:watermark for="account_opening_date" value="dd/MM/yyyy" />
+			</p:panelGrid>
 			<p:message id="account_opening_date_msg" for="account_opening_date" />
 
 			<p:outputLabel id="account_current_balance_label" value="Current balance" for="account_current_balance" />

@@ -42,14 +42,20 @@
 						</p:inputText>
 
 						<p:outputLabel id="date_of_birth_label" value="Date of birth" for="date_of_birth" />
-						<p:calendar id="date_of_birth" value="#{employeeSalaryBean.employeeSalarySearchCriteria.dateOfBirth}"
-							navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							maxdate="#{sessionBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="date_of_birth" value="#{employeeSalaryBean.employeeSalarySearchCriteria.dateOfBirth}"
+								navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								maxdate="#{sessionBean.currentDate}" />
+							<p:watermark for="date_of_birth" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-						<p:calendar id="from_date" value="#{employeeSalaryBean.employeeSalarySearchCriteria.dateOfBirth}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							maxdate="#{sessionBean.currentDate}" mindate="#{sessionBean.currentBranch.startDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="from_date" value="#{employeeSalaryBean.employeeSalarySearchCriteria.dateOfBirth}"
+								navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								maxdate="#{sessionBean.currentDate}" mindate="#{sessionBean.currentBranch.startDate}" />
+							<p:watermark for="from_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 					</h:panelGrid>
 
@@ -83,9 +89,12 @@
 						</p:selectOneMenu>
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-						<p:calendar id="to_date" value="#{employeeSalaryBean.employeeSalarySearchCriteria.dateOfBirth}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{sessionBean.currentBranch.startDate}" maxdate="#{sessionBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="to_date" value="#{employeeSalaryBean.employeeSalarySearchCriteria.dateOfBirth}" navigator="true"
+								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" mindate="#{sessionBean.currentBranch.startDate}"
+								maxdate="#{sessionBean.currentDate}" />
+							<p:watermark for="to_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 					</h:panelGrid>
 				</h:panelGrid>
 
@@ -149,8 +158,8 @@
 					</p:column>
 				</p:dataTable>
 			</p:panel>
-			<p:confirmDialog id="confirmDialog" message="Are you want to delete the employee salary?" header="#{msg.confirmation}"
-				severity="alert" widgetVar="confirmation">
+			<p:confirmDialog id="confirmDialog" message="Are you want to delete the employee salary?"
+				header="#{msg.confirmation}" severity="alert" widgetVar="confirmation">
 				<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
 					action="#{employeeSalaryBean.deleteEmployeeSalary()}" />
 				<p:commandButton id="decline" value="Not Yet" onclick="confirmation.hide()" type="button" />

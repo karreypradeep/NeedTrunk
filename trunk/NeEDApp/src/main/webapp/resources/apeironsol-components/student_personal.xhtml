@@ -65,7 +65,7 @@
 					</p:selectOneMenu>
 					<p:message id="add_batch_msg" for="add_batch" />
 				</c:if>
-				
+
 				<p:outputLabel id="add_academic_year_label" value="Academic year" for="add_academic_year" />
 				<p:selectOneMenu id="add_academic_year" value="#{cc.attrs.academicYear}" required="true"
 					disabled="#{cc.attrs.disableAdmissionDetails}">
@@ -110,8 +110,11 @@
 
 				<p:outputLabel id="#{cc.attrs.id}_adm_admission_date_label" value="#{msg.admission_date}"
 					for="#{cc.attrs.id}_adm_admission_date" />
-				<p:calendar id="#{cc.attrs.id}_adm_admission_date" value="#{cc.attrs.student.admissionDate}" navigator="true"
-					showOn="button" pattern="dd/MM/yyyy" yearRange="2010" disabled="#{cc.attrs.disableAdmissionDetails}" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="#{cc.attrs.id}_adm_admission_date" value="#{cc.attrs.student.admissionDate}" navigator="true"
+						showOn="button" pattern="dd/MM/yyyy" yearRange="2010" disabled="#{cc.attrs.disableAdmissionDetails}" />
+					<p:watermark for="#{cc.attrs.id}_adm_admission_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 				<p:message id="#{cc.attrs.id}_adm_admission_date_msg" for="#{cc.attrs.id}_adm_admission_date" />
 
 			</c:if>
@@ -132,8 +135,11 @@
 			<p:message id="#{cc.attrs.id}_last_name_msg" for="#{cc.attrs.id}_last_name" />
 
 			<p:outputLabel id="#{cc.attrs.id}_dob_label" value="Student date of birth" for="#{cc.attrs.id}_dob" />
-			<p:calendar id="#{cc.attrs.id}_dob" value="#{cc.attrs.student.dateOfBirth}" navigator="true" showOn="button"
-				  pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:calendar id="#{cc.attrs.id}_dob" value="#{cc.attrs.student.dateOfBirth}" navigator="true" showOn="button"
+					pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+				<p:watermark for="#{cc.attrs.id}_dob" value="dd/MM/yyyy" />
+			</p:panelGrid>
 			<p:message id="#{cc.attrs.id}_dob_msg" for="#{cc.attrs.id}_dob" />
 
 			<p:outputLabel id="#{cc.attrs.id}_gender_label" value="Gender" for="#{cc.attrs.id}_gender" />

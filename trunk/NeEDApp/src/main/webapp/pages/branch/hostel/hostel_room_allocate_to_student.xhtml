@@ -19,15 +19,21 @@
 
 
 				<p:outputLabel id="available_start_date_label" value="Start date" for="available_start_date" />
-				<p:calendar id="available_start_date" value="#{hostelRoomBean.studentAcademicYearHostelRoom.startDate}"
-					navigator="true" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button"
-					mindate="#{hostelRoomBean.hostelRoom.startDate}" maxdate="#{sessionBean.currentDate}" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="available_start_date" value="#{hostelRoomBean.studentAcademicYearHostelRoom.startDate}"
+						navigator="true" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button"
+						mindate="#{hostelRoomBean.hostelRoom.startDate}" maxdate="#{sessionBean.currentDate}" />
+					<p:watermark for="available_start_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 				<p:message id="available_start_date_msg" for="available_start_date" />
 
 				<p:outputLabel id="available_end_date_label" value="End date" for="available_end_date" />
-				<p:calendar id="available_end_date" value="#{hostelRoomBean.studentAcademicYearHostelRoom.endDate}" navigator="true"
-					pattern="dd/MMM/yyyy" size="20" maxlength="20" showOn="button"
-					mindate="#{hostelRoomBean.studentAcademicYearHostelRoom.startDate}" maxdate="#{sessionBean.currentDate}" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="available_end_date" value="#{hostelRoomBean.studentAcademicYearHostelRoom.endDate}"
+						navigator="true" pattern="dd/MMM/yyyy" size="20" maxlength="20" showOn="button"
+						mindate="#{hostelRoomBean.studentAcademicYearHostelRoom.startDate}" maxdate="#{sessionBean.currentDate}" />
+					<p:watermark for="available_end_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 				<p:message id="available_end_date_msg" for="available_end_date" />
 
 				<p:outputLabel id="bed_number_label" value="Bed number" for="bed_number" />

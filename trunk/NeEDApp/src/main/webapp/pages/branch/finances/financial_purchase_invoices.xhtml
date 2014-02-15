@@ -27,10 +27,13 @@
 					<p:message id="purchase_order_number_msg" for="purchase_order_number" />
 
 					<p:outputLabel id="invoice_date_label" value="Invoice date" for="invoice_date" />
-					<p:calendar id="invoice_date" value="#{purchaseInvoiceBean.purchaseInvoice.invoiceDate}" navigator="true"
-						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true">
-						<p:ajax process="@this" update="@this" />
-					</p:calendar>
+					<p:panelGrid columns="2" style="border:0px;">
+						<p:calendar id="invoice_date" value="#{purchaseInvoiceBean.purchaseInvoice.invoiceDate}" navigator="true"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true">
+							<p:ajax process="@this" update="@this" />
+						</p:calendar>
+						<p:watermark for="invoice_date" value="dd/MM/yyyy" />
+					</p:panelGrid>
 					<p:message id="invoice_date_msg" for="invoice_date" />
 
 					<p:outputLabel value="Select payment mode" for="d_payment_type" />

@@ -42,8 +42,11 @@
 
 
 				<p:outputLabel id="purchase_order_date_label" value="Purchase order date" for="purchase_order_date" />
-				<p:calendar id="purchase_order_date" value="#{purchaseOrderBean.purchaseOrder.purchaseDate}" navigator="true"
-					showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="purchase_order_date" value="#{purchaseOrderBean.purchaseOrder.purchaseDate}" navigator="true"
+						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+					<p:watermark for="purchase_order_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 				<p:message id="purchase_order_date_msg" for="purchase_order_date" />
 
 				<p:outputLabel id="total_amount_label" value="Total amount" for="total_amount" />
@@ -91,10 +94,11 @@
 			action="#{purchaseOrderBean.calcelAction}" />
 	</p:panel>
 
-	<p:dialog widgetVar="dlg" resizable="false" dynamic="true" modal="true" width="600" >
+	<p:dialog widgetVar="dlg" resizable="false" dynamic="true" modal="true" width="600">
 
 		<f:facet name="header">
-			<h:outputText value="Purchase order number : #{purchaseOrderBean.purchaseOrder.purchaseOrderNumber}" style="font-size:20px;"/>
+			<h:outputText value="Purchase order number : #{purchaseOrderBean.purchaseOrder.purchaseOrderNumber}"
+				style="font-size:20px;" />
 		</f:facet>
 		<p:messages id="dialogMessages" />
 
@@ -119,11 +123,11 @@
 		</h:panelGrid>
 	</p:dialog>
 
-	<script type="text/javascript">  
-	function handleComplete(xhr, status, args) {
-        if(!args.validationFailed) {
-        	dlg.hide();
-        }
-     }
-  </script>
+	<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if (!args.validationFailed) {
+				dlg.hide();
+			}
+		}
+	</script>
 </ui:composition>

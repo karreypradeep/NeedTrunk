@@ -49,14 +49,20 @@
 						</p:inputText>
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-						<p:calendar id="from_date" value="#{financeExpensesBean.branchExpenseSearchCriteria.fromDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{financeExpensesBean.minimumDateForCurrentBranch}" maxdate="#{financeExpensesBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="from_date" value="#{financeExpensesBean.branchExpenseSearchCriteria.fromDate}" navigator="true"
+								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								mindate="#{financeExpensesBean.minimumDateForCurrentBranch}" maxdate="#{financeExpensesBean.currentDate}" />
+							<p:watermark for="from_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-						<p:calendar id="to_date" value="#{financeExpensesBean.branchExpenseSearchCriteria.toDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{financeExpensesBean.minimumDateForCurrentBranch}" maxdate="#{financeExpensesBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="to_date" value="#{financeExpensesBean.branchExpenseSearchCriteria.toDate}" navigator="true"
+								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								mindate="#{financeExpensesBean.minimumDateForCurrentBranch}" maxdate="#{financeExpensesBean.currentDate}" />
+							<p:watermark for="to_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 					</h:panelGrid>
 

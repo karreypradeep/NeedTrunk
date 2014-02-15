@@ -8,7 +8,7 @@
 		<f:event type="preRenderView" listener="#{academicYearWeekEndBean.loadEventsForMonth}" />
 	</f:metadata>
 	<p:panel>
-		<p:schedule value="#{academicYearWeekEndBean.eventModel}" widgetVar="myschedule" >
+		<p:schedule value="#{academicYearWeekEndBean.eventModel}" widgetVar="myschedule">
 			<p:ajax event="dateSelect" listener="#{academicYearWeekEndBean.onDateSelect}" update="eventDialog1"
 				oncomplete="dlg.show()" />
 			<p:ajax event="eventSelect" listener="#{academicYearWeekEndBean.onEventSelect}" update="eventDialog1"
@@ -23,14 +23,20 @@
 		<h:panelGrid id="eventDetails" columns="2">
 
 			<h:outputLabel for="fromDate" value="Start date:" />
-			<p:calendar id="fromDate" value="#{academicYearWeekEndBean.scheduleStartDate}" pattern="dd/MM/yyyy" showOn="button" 
-				disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}" mindate="#{academicYearBean.academicYear.startDate}"
-				maxdate="#{academicYearBean.academicYear.endDate}" />
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:calendar id="fromDate" value="#{academicYearWeekEndBean.scheduleStartDate}" pattern="dd/MM/yyyy" showOn="button"
+					disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}"
+					mindate="#{academicYearBean.academicYear.startDate}" maxdate="#{academicYearBean.academicYear.endDate}" />
+				<p:watermark for="fromDate" value="dd/MM/yyyy" />
+			</p:panelGrid>
 
 			<h:outputLabel for="toDate" value="End date:" />
-			<p:calendar id="toDate" value="#{academicYearWeekEndBean.scheduleEndDate}" pattern="dd/MM/yyyy" showOn="button" 
-				disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}" mindate="#{academicYearBean.academicYear.startDate}"
-				maxdate="#{academicYearBean.academicYear.endDate}" />
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:calendar id="toDate" value="#{academicYearWeekEndBean.scheduleEndDate}" pattern="dd/MM/yyyy" showOn="button"
+					disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}"
+					mindate="#{academicYearBean.academicYear.startDate}" maxdate="#{academicYearBean.academicYear.endDate}" />
+				<p:watermark for="toDate" value="dd/MM/yyyy" />
+			</p:panelGrid>
 
 			<h:outputText value="Apply To Days: " />
 			<p:selectManyCheckbox value="#{academicYearWeekEndBean.selectedWeekDays}" converter="weekDayConverter"
@@ -51,14 +57,14 @@
 		</h:panelGrid>
 	</p:dialog>
 
-	<script type="text/javascript">  
-	function handleComplete(xhr, status, args) {
-		if(!args.validationFailed) {
-	        if(args.isValid){
-        		myschedule.update();
-        		dlg.hide();
-	        }
-        } 
-     }
-    </script>
+	<script type="text/javascript">
+		function handleComplete(xhr, status, args) {
+			if (!args.validationFailed) {
+				if (args.isValid) {
+					myschedule.update();
+					dlg.hide();
+				}
+			}
+		}
+	</script>
 </ui:composition>

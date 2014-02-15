@@ -23,7 +23,7 @@
 			<p:message id="emp_last_name_msg" for="emp_last_name" />
 
 			<p:outputLabel id="emp_dob_label" value="Date of birth" for="emp_dob" />
-			<p:panelGrid columns="2">
+			<p:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="emp_dob" value="#{employeeBean.employee.dateOfBirth}" navigator="true" showOn="button"
 					pattern="dd/MM/yyyy" yearRange="1900" required="true" maxdate="#{sessionBean.systemDate}" />
 				<p:watermark for="emp_dob" value="dd/MM/yyyy" />
@@ -37,7 +37,7 @@
 			<p:message id="emp_gender_msg" for="emp_gender" />
 
 			<p:outputLabel id="emp_start_date_label" value="Joining date" for="emp_start_date" />
-			<p:panelGrid columns="2">
+			<p:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="emp_start_date" value="#{employeeBean.employeeDesignation.startDate}" navigator="true"
 					showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
 					mindate="#{sessionBean.currentBranch.startDate}" />

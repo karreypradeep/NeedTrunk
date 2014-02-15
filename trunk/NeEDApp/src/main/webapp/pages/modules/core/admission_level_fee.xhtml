@@ -35,14 +35,14 @@
 		</p:inputText>
 		<p:message id="application_fee_msg" for="application_fee" />
 
-
-
-
 		<p:outputLabel id="app_fee_date_lbl" value="Application fee paid date" for="app_fee_date" />
-		<p:calendar id="app_fee_date" value="#{admissionBean.admissionReservationFee.applicationFeePaidDate}" navigator="true"
-			showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true">
-			<p:ajax event="dateSelect" process="@this" />
-		</p:calendar>
+		<p:panelGrid columns="2" style="border:0px;">
+			<p:calendar id="app_fee_date" value="#{admissionBean.admissionReservationFee.applicationFeePaidDate}"
+				navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true">
+				<p:ajax event="dateSelect" process="@this" />
+			</p:calendar>
+			<p:watermark for="app_fee_date" value="dd/MM/yyyy" />
+		</p:panelGrid>
 		<p:message id="app_fee_date_msg" for="app_fee_date" />
 
 
@@ -71,11 +71,15 @@
 
 		<p:outputLabel id="ext_trans_date_lbl" value="Application fee external transaction date" for="ext_trans_date"
 			rendered="#{admissionBean.applicationFeeExternalTransaction}" />
-		<p:calendar id="ext_trans_date" value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionDate}"
-			navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
-			rendered="#{admissionBean.applicationFeeExternalTransaction}">
-			<p:ajax event="dateSelect" process="@this" />
-		</p:calendar>
+		<p:panelGrid columns="2" style="border:0px;">
+			<p:calendar id="ext_trans_date"
+				value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionDate}" navigator="true"
+				showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
+				rendered="#{admissionBean.applicationFeeExternalTransaction}">
+				<p:ajax event="dateSelect" process="@this" />
+			</p:calendar>
+			<p:watermark for="ext_trans_date" value="dd/MM/yyyy" />
+		</p:panelGrid>
 		<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.applicationFeeExternalTransaction}" />
 
 		<p:outputLabel id="stu_adm_reservation_fee_label" value="Reservation fee" for="stu_adm_reservation_fee"
@@ -91,11 +95,14 @@
 
 		<p:outputLabel id="res_fee_date_lbl" value="Reservation fee paid date" for="res_fee_date"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}" />
-		<p:calendar id="res_fee_date" value="#{admissionBean.admissionReservationFee.reservationFeePaidDate}" navigator="true"
-			showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true"
-			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}">
-			<p:ajax event="dateSelect" process="@this" />
-		</p:calendar>
+		<p:panelGrid columns="2" style="border:0px;">
+			<p:calendar id="res_fee_date" value="#{admissionBean.admissionReservationFee.reservationFeePaidDate}"
+				navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true"
+				rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}">
+				<p:ajax event="dateSelect" process="@this" />
+			</p:calendar>
+			<p:watermark for="res_fee_date" value="dd/MM/yyyy" />
+		</p:panelGrid>
 		<p:message id="res_fee_date_msg" for="res_fee_date"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED'}" />
 
@@ -131,12 +138,15 @@
 
 		<p:outputLabel value="Reservation fee external Transaction Date" for="ext_res_trans_date"
 			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />
-		<p:calendar id="ext_res_trans_date"
-			value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true"
-			showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
-			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}">
-			<p:ajax event="dateSelect" process="@this" />
-		</p:calendar>
+		<p:panelGrid columns="2" style="border:0px;">
+			<p:calendar id="ext_res_trans_date"
+				value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true"
+				showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
+				rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}">
+				<p:ajax event="dateSelect" process="@this" />
+			</p:calendar>
+			<p:watermark for="ext_res_trans_date" value="dd/MM/yyyy" />
+		</p:panelGrid>
 		<p:message id="ext_res_trans_date_msg" for="ext_res_trans_date"
 			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />
 

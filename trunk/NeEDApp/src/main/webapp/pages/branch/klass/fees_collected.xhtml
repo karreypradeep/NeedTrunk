@@ -22,11 +22,14 @@
 				</p:selectOneMenu>
 
 				<p:outputLabel id="due_date_label" value="Due date" for="due_date" />
-				<p:calendar id="due_date" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.dueDate}"
-					navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-					mindate="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear.startDate}"
-					maxdate="#{studentBean.currentDate}"
-					disabled="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear==null}" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="due_date" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.dueDate}"
+						navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+						mindate="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear.startDate}"
+						maxdate="#{studentBean.currentDate}"
+						disabled="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear==null}" />
+					<p:watermark for="date_of_birth" value="dd/MM/yyyy" />
+				</p:panelGrid>
 			</h:panelGrid>
 		</h:panelGrid>
 		<p:commandButton id="expense_type_search_buton" value="Search"

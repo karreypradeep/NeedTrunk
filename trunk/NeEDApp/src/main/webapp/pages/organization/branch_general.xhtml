@@ -23,8 +23,11 @@
 				<p:message id="branch_type_msg" for="branch_type" />
 
 				<p:outputLabel id="branch_start_date_label" value="#{msg.branch_start_date}" for="branch_start_date" />
-				<p:calendar id="branch_start_date" value="#{branchBean.branch.startDate}" navigator="true" showOn="button"
-					  pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="branch_start_date" value="#{branchBean.branch.startDate}" navigator="true" showOn="button"
+						pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+					<p:watermark for="branch_start_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 				<p:message id="branch_start_date_msg" for="branch_start_date" />
 
 				<p:outputLabel id="branch_registration_type_label" value="#{msg.branch_registration_type}"
@@ -38,8 +41,11 @@
 
 				<p:outputLabel id="branch_registration_date_label" value="#{msg.branch_registration_date}"
 					for="branch_registration_date" />
-				<p:calendar id="branch_registration_date" value="#{branchBean.branch.registrationDate}" navigator="true"
-					showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="branch_registration_date" value="#{branchBean.branch.registrationDate}" navigator="true"
+						showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+					<p:watermark for="branch_registration_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 				<p:message id="branch_registration_date_msg" for="branch_registration_date" />
 
 				<p:outputLabel id="branch_recognised_by_label" value="#{msg.recognised_by}" for="branch_recognised_by" />
@@ -53,17 +59,17 @@
 				<p:spacer width="10px" />
 				<p:commandButton id="branch_activate" value="Activate" action="#{branchBean.activateBranch}" update="@form"
 					style="width:100%" disabled="#{branchBean.disableActivate || !grantedAuthorityBean.userAllowedToActivateBranch}"
-					icon="ui-icon-play"  process="@this"/>
+					icon="ui-icon-play" process="@this" />
 				<p:spacer width="10px" />
 				<p:commandButton id="branch_development" value="Development" action="#{branchBean.inactivateBranch}" update="@form"
 					style="width:100%"
 					disabled="#{branchBean.disableInActivate || !grantedAuthorityBean.userAllowedToDeactivateBranch}"
-					icon="ui-icon-wrench" process="@this"/>
+					icon="ui-icon-wrench" process="@this" />
 			</h:panelGrid>
 		</h:panelGrid>
 		<p:panel header="Branch Address" style="border:0px;">
 			<h:panelGrid id="branch_address_grid" cellpadding="4" style="border:0px;">
-				<biz:address addressModel="#{branchBean.branch.address}" personAddress="false" displayOfficePhoneNumber="true"/>
+				<biz:address addressModel="#{branchBean.branch.address}" personAddress="false" displayOfficePhoneNumber="true" />
 			</h:panelGrid>
 		</p:panel>
 	</p:panel>

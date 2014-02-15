@@ -7,15 +7,16 @@
 
 
 	<h:panelGrid columns="2" width="100%">
-		<p:commandButton  icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;" value="Back">
+		<p:commandButton icon="ui-icon-circle-arrow-w" update="@form" process="@this" style="float:left;" value="Back">
 			<f:setPropertyActionListener target="#{studentFinancialBean.paymentWizardAciveStep}" value="processDeduction" />
 		</p:commandButton>
 
-		<p:commandButton id="confirmAndRequestDeduction1" value="Confirm And Request Deduction" icon="ui-icon-circle-check" process="@form" update="@form"
-			style="float:right;" action="#{studentFinancialBean.deductPayments()}" disabled="#{!grantedAuthorityBean.userAllowedToProcessFeeDeduction}"/>
+		<p:commandButton id="confirmAndRequestDeduction1" value="Confirm And Request Deduction" icon="ui-icon-circle-check"
+			process="@form" update="@form" style="float:right;" action="#{studentFinancialBean.deductPayments()}"
+			disabled="#{!grantedAuthorityBean.userAllowedToProcessFeeDeduction}" />
 
 	</h:panelGrid>
-	
+
 	<p:blockUI block="form" trigger="confirmAndRequestDeduction1">  
         		Request is processing, please wait<br />
 		<p:graphicImage value="/images/ajax-loader.gif" />
@@ -86,8 +87,11 @@
 
 
 				<p:outputLabel value="External Transaction Date" for="d_extTransDate" />
-				<p:calendar id="d_extTransDate" value="#{studentFinancialBean.studentFeeTransaction.externalTransactionDate}"
-					navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="d_extTransDate" value="#{studentFinancialBean.studentFeeTransaction.externalTransactionDate}"
+						navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+					<p:watermark for="d_extTransDate" value="dd/MM/yyyy" />
+				</p:panelGrid>
 				<p:message id="d_extTransDateMsg" for="d_extTransDate" />
 			</h:panelGrid>
 

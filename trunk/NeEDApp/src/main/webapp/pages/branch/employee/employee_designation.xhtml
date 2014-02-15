@@ -45,7 +45,7 @@
 				<p:message id="emp_desig_msg" for="emp_desig" />
 
 				<p:outputLabel id="emp_sd_label" value="Start date" for="emp_sd" />
-				<p:panelGrid columns="2">
+				<p:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="emp_sd" value="#{employeeDesignationBean.employeeDesignation.startDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 					<p:watermark for="emp_sd" value="dd/MM/yyyy" />
@@ -64,7 +64,7 @@
 
 
 				<p:outputLabel id="emp_ed_label" value="End date" for="emp_ed" />
-				<p:panelGrid columns="2">
+				<p:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="emp_ed" value="#{employeeDesignationBean.employeeDesignation.endDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true" />
 					<p:watermark for="emp_ed" value="dd/MM/yyyy" />
@@ -190,7 +190,7 @@
 		<h:panelGrid id="close_details_grid" columns="3">
 
 			<p:outputLabel id="dsg_cd_label" value="Enter designation close date" for="dsg_cd" />
-			<p:panelGrid columns="2">
+			<p:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="dsg_cd" value="#{employeeDesignationBean.designationCloseDate}" navigator="true" showOn="button"
 					pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 				<p:watermark for="dsg_cd" value="dd/MM/yyyy" />

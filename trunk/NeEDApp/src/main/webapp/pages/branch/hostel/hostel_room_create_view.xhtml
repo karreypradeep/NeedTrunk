@@ -8,7 +8,7 @@
 		<f:event type="preRenderView" listener="#{hostelRoomBean.loadHostelRoomTypeBuildingBlocks()}" />
 	</f:metadata>
 	<p:toolbar>
-		<p:toolbarGroup align="left"  style="margin-top:5px;margin-left:2px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
 			<h:outputText value="Hostel Room" style="font-size:20px;" />
 		</p:toolbarGroup>
 	</p:toolbar>
@@ -31,8 +31,11 @@
 		<p:message id="hostel_room_type_msg" for="hostel_room_type" />
 
 		<p:outputLabel id="available_start_date_label" value="Available start date" for="available_start_date" />
-		<p:calendar id="available_start_date" value="#{hostelRoomBean.hostelRoom.startDate}" navigator="true"
-			pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button" />
+		<p:panelGrid columns="2" style="border:0px;">
+			<p:calendar id="available_start_date" value="#{hostelRoomBean.hostelRoom.startDate}" navigator="true"
+				pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button" />
+			<p:watermark for="available_start_date" value="dd/MM/yyyy" />
+		</p:panelGrid>
 		<p:message id="available_start_date_msg" for="available_start_date" />
 
 		<p:outputLabel id="available_beds_label" value="Total beds" for="available_beds" />

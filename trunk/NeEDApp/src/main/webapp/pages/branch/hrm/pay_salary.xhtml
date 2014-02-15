@@ -35,11 +35,15 @@
 					<p:message id="salary_type_msg" for="salary_type" />
 
 					<p:outputLabel id="salary_month_label" value="Salary for month" for="salary_month" />
-					<p:calendar id="salary_month" value="#{employeeSalaryBean.employeeSalary.salaryMonth}" pattern="dd/MM/yyyy"
-						size="20" maxlength="20" required="true" showOn="button" showButtonPanel="true"
-						disabled="#{employeeSalaryBean.employeeSalary.id != null}">
-						<p:ajax event="dateSelect" process="@this" update="@form" listener="#{employeeSalaryBean.handleSalaryMonthChange}"></p:ajax>
-					</p:calendar>
+					<p:panelGrid columns="2" style="border:0px;">
+						<p:calendar id="salary_month" value="#{employeeSalaryBean.employeeSalary.salaryMonth}" pattern="dd/MM/yyyy"
+							size="20" maxlength="20" required="true" showOn="button" showButtonPanel="true"
+							disabled="#{employeeSalaryBean.employeeSalary.id != null}">
+							<p:ajax event="dateSelect" process="@this" update="@form"
+								listener="#{employeeSalaryBean.handleSalaryMonthChange}"></p:ajax>
+						</p:calendar>
+						<p:watermark for="available_start_date" value="dd/MM/yyyy" />
+					</p:panelGrid>
 					<p:message id="salary_month_msg" for="salary_month" />
 
 					<p:outputLabel value="Select payment mode" for="d_payment_type" />
@@ -146,13 +150,15 @@
 	<p:panel rendered="#{employeeSalaryBean.loadEmployeeSalaryDetails}">
 
 		<p:outputLabel id="salary_paid_date_label" value="Salary paid date" for="salary_paid_date" />
-		<p:calendar id="salary_paid_date" value="#{employeeSalaryBean.employeeSalary.paidDate}" navigator="true"
-			showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
-			maxdate="#{sessionBean.currentDate}"
-			mindate="#{employeeSalaryBean.currentEmployeeDO!=null?employeeSalaryBean.currentEmployeeDO.joiningDate:sessionBean.currentBranch.startDate}"
-			disabled="#{employeeSalaryBean.employeeSalary.id != null}">
-			<p:ajax event="dateSelect" process="@this" update="@form"></p:ajax>
-		</p:calendar>
+		<p:panelGrid columns="2" style="border:0px;">
+			<p:calendar id="salary_paid_date" value="#{employeeSalaryBean.employeeSalary.paidDate}" navigator="true"
+				showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" maxdate="#{sessionBean.currentDate}"
+				mindate="#{employeeSalaryBean.currentEmployeeDO!=null?employeeSalaryBean.currentEmployeeDO.joiningDate:sessionBean.currentBranch.startDate}"
+				disabled="#{employeeSalaryBean.employeeSalary.id != null}">
+				<p:ajax event="dateSelect" process="@this" update="@form"></p:ajax>
+			</p:calendar>
+			<p:watermark for="available_start_date" value="dd/MM/yyyy" />
+		</p:panelGrid>
 		<p:message id="salary_paid_date_msg" for="salary_paid_date" />
 
 		<br />

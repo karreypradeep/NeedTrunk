@@ -22,14 +22,20 @@
 				</p:selectOneMenu>
 
 				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-				<p:calendar id="from_date" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.fromDate}" navigator="true"
-					showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{studentBean.currentDate}"
-					disabled="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear==null}" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="from_date" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.fromDate}" navigator="true"
+						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{studentBean.currentDate}"
+						disabled="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear==null}" />
+					<p:watermark for="from_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 
 				<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-				<p:calendar id="to_date" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.toDate}" navigator="true"
-					showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{studentBean.currentDate}"
-					disabled="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear==null}" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="to_date" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.toDate}" navigator="true"
+						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{studentBean.currentDate}"
+						disabled="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear==null}" />
+					<p:watermark for="to_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 
 			</h:panelGrid>
 
@@ -37,7 +43,8 @@
 			<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
 
 				<p:outputLabel id="class_label" value="Class" for="class" />
-				<p:selectOneMenu id="class" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.klass}" converter="klassConverter">
+				<p:selectOneMenu id="class" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.klass}"
+					converter="klassConverter">
 					<f:selectItem itemLabel="Select class" itemValue="" />
 					<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
 					<p:ajax update="expense_type_grid2" listener="#{financeFeesCollectedBean.handleFromKlassChange}" process="@this" />
@@ -45,10 +52,11 @@
 
 
 				<p:outputLabel id="section_label" value="Section" for="section" />
-				<p:selectOneMenu id="section" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.section}" converter="sectionConverter">
+				<p:selectOneMenu id="section" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.section}"
+					converter="sectionConverter">
 					<f:selectItem itemLabel="Select section" itemValue="" />
-					<f:selectItems value="#{financeFeesCollectedBean.sectionsForSearhCriteriaByKlass}" var="section" itemLabel="#{section.name}"
-						itemValue="#{section}" />
+					<f:selectItems value="#{financeFeesCollectedBean.sectionsForSearhCriteriaByKlass}" var="section"
+						itemLabel="#{section.name}" itemValue="#{section}" />
 				</p:selectOneMenu>
 			</h:panelGrid>
 		</h:panelGrid>
@@ -127,7 +135,7 @@
 			<f:facet name="header">
 				<h:outputText value="Amount" />
 			</f:facet>
-			<h:outputText value="#{studentFeeTransaction.amount}" >
+			<h:outputText value="#{studentFeeTransaction.amount}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>
@@ -161,7 +169,7 @@
 			className="#{financeFeesCollectedBean.studentSection.section.klass.name}"
 			sectionName="#{financeFeesCollectedBean.studentSection.section.name}"
 			receiptHeaer="#{financeFeesCollectedBean.studentFeeTransactionDO.studentFeeTransaction.studentFeeTransactionType.label} receipt"
-			showSignature="false" parentName="#{financeFeesCollectedBean.studentParentOrGuardianName}"/>
+			showSignature="false" parentName="#{financeFeesCollectedBean.studentParentOrGuardianName}" />
 		<f:facet name="footer">
 			<p:commandButton value="Calcel" oncomplete="dlg.hide();" update=":form" process="@this" />
 		</f:facet>

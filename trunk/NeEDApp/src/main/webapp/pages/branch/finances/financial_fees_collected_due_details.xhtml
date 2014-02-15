@@ -13,35 +13,42 @@
 			<h:panelGrid columns="2" id="expense_type_grid1" cellpadding="4" style="border:0px;">
 
 				<p:outputLabel id="academic_year_label" value="Academic year" for="academic_year" />
-				<p:selectOneMenu id="academic_year" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear}" required="true"
-					converter="academicYearConverter">
-					<f:selectItem itemLabel="Select academic year" itemValue=""/>
+				<p:selectOneMenu id="academic_year" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear}"
+					required="true" converter="academicYearConverter">
+					<f:selectItem itemLabel="Select academic year" itemValue="" />
 					<f:selectItems value="#{financeFeesCollectedDueDetailsBean.activeAcademicYears}" var="academicYear"
 						itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
 					<p:ajax process="@this" update="@form" listener="#{financeFeesCollectedDueDetailsBean.onChangeAcademicYear}" />
 				</p:selectOneMenu>
 
 				<p:outputLabel id="due_date_label" value="Due date" for="due_date" />
-				<p:calendar id="due_date" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.dueDate}" navigator="true"
-					showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-					mindate="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear.startDate}" maxdate="#{studentBean.currentDate}"
-					disabled="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear==null}" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="due_date" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.dueDate}"
+						navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+						mindate="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear.startDate}"
+						maxdate="#{studentBean.currentDate}"
+						disabled="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear==null}" />
+					<p:watermark for="due_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 			</h:panelGrid>
 			<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
 
 				<p:outputLabel id="class_label" value="Class" for="class" />
-				<p:selectOneMenu id="class" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.klass}" converter="klassConverter">
+				<p:selectOneMenu id="class" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.klass}"
+					converter="klassConverter">
 					<f:selectItem itemLabel="Select class" itemValue="" />
 					<f:selectItems value="#{sessionBean.activeKlasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
-					<p:ajax update="expense_type_grid2" listener="#{financeFeesCollectedDueDetailsBean.handleFromKlassChange}" process="@this" />
+					<p:ajax update="expense_type_grid2" listener="#{financeFeesCollectedDueDetailsBean.handleFromKlassChange}"
+						process="@this" />
 				</p:selectOneMenu>
 
 
 				<p:outputLabel id="section_label" value="Section" for="section" />
-				<p:selectOneMenu id="section" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.section}" converter="sectionConverter">
+				<p:selectOneMenu id="section" value="#{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.section}"
+					converter="sectionConverter">
 					<f:selectItem itemLabel="Select section" itemValue="" />
-					<f:selectItems value="#{financeFeesCollectedDueDetailsBean.sectionsForSearhCriteriaByKlass}" var="section" itemLabel="#{section.name}"
-						itemValue="#{section}" />
+					<f:selectItems value="#{financeFeesCollectedDueDetailsBean.sectionsForSearhCriteriaByKlass}" var="section"
+						itemLabel="#{section.name}" itemValue="#{section}" />
 				</p:selectOneMenu>
 			</h:panelGrid>
 		</h:panelGrid>
@@ -50,10 +57,12 @@
 			icon="ui-icon-search" />
 		<p:spacer width="5px" />
 		<p:commandButton id="expense_type_reset" value="Reset" update="@form"
-			action="#{financeFeesCollectedDueDetailsBean.resetSearchCriteria}" process="@this" style="width:80px;" icon="ui-icon-refresh" />
+			action="#{financeFeesCollectedDueDetailsBean.resetSearchCriteria}" process="@this" style="width:80px;"
+			icon="ui-icon-refresh" />
 	</p:panel>
 
-	<p:treeTable value="#{financeFeesCollectedDueDetailsBean.root}" var="branchFeeCollectedTreeNode" id="fees_due_collected_table">
+	<p:treeTable value="#{financeFeesCollectedDueDetailsBean.root}" var="branchFeeCollectedTreeNode"
+		id="fees_due_collected_table">
 
 		<f:facet name="header">
            		Fees collected  for academic year #{financeFeesCollectedDueDetailsBean.feeDueSearchCriteria.academicYear.displayLabel}
@@ -70,7 +79,7 @@
 			<f:facet name="header">  
                 		Total fees	  
             </f:facet>
-			<h:outputText value="#{branchFeeCollectedTreeNode.totalFee}" >
+			<h:outputText value="#{branchFeeCollectedTreeNode.totalFee}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>
@@ -79,7 +88,7 @@
 			<f:facet name="header">  
                			 Fees waived  
             </f:facet>
-			<h:outputText value="#{branchFeeCollectedTreeNode.feeWaived}" >
+			<h:outputText value="#{branchFeeCollectedTreeNode.feeWaived}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>
@@ -88,7 +97,7 @@
 			<f:facet name="header">  
                			 Net Fee  
             </f:facet>
-			<h:outputText value="#{branchFeeCollectedTreeNode.netfeeExpected}" >
+			<h:outputText value="#{branchFeeCollectedTreeNode.netfeeExpected}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>
@@ -97,7 +106,7 @@
 			<f:facet name="header">  
                			 Fees collected  
             </f:facet>
-			<h:outputText value="#{branchFeeCollectedTreeNode.feePaid}" >
+			<h:outputText value="#{branchFeeCollectedTreeNode.feePaid}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>
@@ -106,7 +115,7 @@
 			<f:facet name="header">  
                			 Fees due  
             </f:facet>
-			<h:outputText value="#{branchFeeCollectedTreeNode.feeDue}" >
+			<h:outputText value="#{branchFeeCollectedTreeNode.feeDue}">
 				<f:convertNumber pattern="#,##,##,##,###.00" />
 			</h:outputText>
 		</p:column>

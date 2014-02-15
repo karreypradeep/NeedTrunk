@@ -25,10 +25,13 @@
 			<p:message id="studentAdditionalFeeMsg" for="studentAdditionalFee" />
 
 			<p:outputLabel id="dueDatelabel" value="End date" for="dueDate" style="white-space:nowrap;" />
-			<p:calendar id="dueDate" value="#{studentAdditionalFeeBean.studentAdditionalFee.dueDate}" navigator="true"
-				showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
-				mindate="#{studentBean.studentAcademicYear.academicYear.startDate}"
-				maxdate="#{studentBean.studentAcademicYear.academicYear.endDate}" />
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:calendar id="dueDate" value="#{studentAdditionalFeeBean.studentAdditionalFee.dueDate}" navigator="true"
+					showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
+					mindate="#{studentBean.studentAcademicYear.academicYear.startDate}"
+					maxdate="#{studentBean.studentAcademicYear.academicYear.endDate}" />
+				<p:watermark for="dueDate" value="dd/MM/yyyy" />
+			</p:panelGrid>
 			<p:message id="dueDatemsg" for="dueDate" />
 
 
@@ -88,8 +91,7 @@
 
 		<p:column headerText="Options" style="width:20px;">
 			<p:commandLink id="deleteFeeLink" styleClass="ui-icon ui-icon-trash" title="Delete"
-				style="margin:0px 0px 0px;float:left;" process="@this"
-				onclick="confirmation.show()">
+				style="margin:0px 0px 0px;float:left;" process="@this" onclick="confirmation.show()">
 				<f:setPropertyActionListener target="#{studentAdditionalFeeBean.studentAdditionalFee}"
 					value="#{studentAdditionalFee}" />
 			</p:commandLink>

@@ -28,8 +28,11 @@
 					<p:message id="name_msg" for="name" />
 
 					<p:outputLabel id="date_label" value="Date" for="date" />
-					<p:calendar id="date" value="#{financeLiabilityBean.branchLiability.date}" navigator="true" showOn="button"
-						  pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+					<p:panelGrid columns="2" style="border:0px;">
+						<p:calendar id="date" value="#{financeLiabilityBean.branchLiability.date}" navigator="true" showOn="button"
+							pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+						<p:watermark for="date" value="dd/MM/yyyy" />
+					</p:panelGrid>
 					<p:message id="date_msg" for="date" />
 
 					<p:outputLabel id="total_amount_label" value="Liability amount" for="total_amount" />
@@ -46,7 +49,7 @@
 
 				</h:panelGrid>
 				<p:commandButton id="liability_save" value="Save" action="#{financeLiabilityBean.saveBranchLiability}"
-					update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateLiability}"/>
+					update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateLiability}" />
 				<p:commandButton id="liability_clear" value="Cancel" immediate="true" update="@form"
 					action="#{financeLiabilityBean.calcelAction}" />
 			</p:panel>
@@ -60,7 +63,8 @@
 
 				<p:toolbarGroup align="right">
 					<p:commandButton value="New liability" icon="ui-icon-document" action="#{financeLiabilityBean.newBranchLiability}"
-						style="width:100%;" process="@this" update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateLiability}">
+						style="width:100%;" process="@this" update="@form"
+						disabled="#{!grantedAuthorityBean.userAllowedToCreateLiability}">
 						<f:setPropertyActionListener target="#{financeLiabilityBean.viewOrNewAction}" value="true" />
 						<f:setPropertyActionListener target="#{financeLiabilityBean.loadLiabilityTypesFromDB}" value="true" />
 					</p:commandButton>
@@ -86,14 +90,20 @@
 						</p:inputText>
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-						<p:calendar id="from_date" value="#{financeLiabilityBean.branchLiabilitySearchCriteria.fromDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{financeLiabilityBean.minimumDateForCurrentBranch}" maxdate="#{financeLiabilityBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="from_date" value="#{financeLiabilityBean.branchLiabilitySearchCriteria.fromDate}"
+								navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								mindate="#{financeLiabilityBean.minimumDateForCurrentBranch}" maxdate="#{financeLiabilityBean.currentDate}" />
+							<p:watermark for="from_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-						<p:calendar id="to_date" value="#{financeLiabilityBean.branchLiabilitySearchCriteria.toDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{financeLiabilityBean.minimumDateForCurrentBranch}" maxdate="#{financeLiabilityBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="to_date" value="#{financeLiabilityBean.branchLiabilitySearchCriteria.toDate}" navigator="true"
+								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								mindate="#{financeLiabilityBean.minimumDateForCurrentBranch}" maxdate="#{financeLiabilityBean.currentDate}" />
+							<p:watermark for="to_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 					</h:panelGrid>
 
@@ -122,8 +132,8 @@
 			<p:separator />
 			<p:spacer height="10" />
 
-			<p:dataTable id="liabilities_table" var="liability"
-				value="#{financeLiabilityBean.branchLiabilitiesBySearchCriteria}" paginator="true" rows="10"
+			<p:dataTable id="liabilities_table" var="liability" value="#{financeLiabilityBean.branchLiabilitiesBySearchCriteria}"
+				paginator="true" rows="10"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
 
@@ -172,12 +182,14 @@
 				</p:column>
 
 				<p:column headerText="Options" styleClass="options-column" exportable="false">
-					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" action="#{financeLiabilityBean.viewBranchLiability}"
-						title="View" style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
+					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search"
+						action="#{financeLiabilityBean.viewBranchLiability}" title="View" style="margin:0px 0px 0px;float:left;"
+						process="@this" update="@form">
 						<f:setPropertyActionListener value="#{liability}" target="#{financeLiabilityBean.branchLiability}" />
 					</p:commandLink>
 					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
-						process="@this" title="Delete" onclick="confirmation.show()" disabled="#{!grantedAuthorityBean.userAllowedToRemoveLiability}">
+						process="@this" title="Delete" onclick="confirmation.show()"
+						disabled="#{!grantedAuthorityBean.userAllowedToRemoveLiability}">
 						<f:setPropertyActionListener value="#{liability}" target="#{financeLiabilityBean.branchLiability}" />
 					</p:commandLink>
 				</p:column>

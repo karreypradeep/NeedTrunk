@@ -5,56 +5,58 @@
 
 	<f:facet name="header">Personal</f:facet>
 
-		<h:panelGrid columns="3" cellpadding="5">
+	<h:panelGrid columns="3" cellpadding="5">
 
-			<p:outputLabel id="admid_first_name_label" value="Student first name" for="admid_first_name" />
-			<p:inputText id="admid_first_name" value="#{admissionBean.student.firstName}" required="true" />
-			<p:message id="admid_first_name_msg" for="admid_first_name" />
+		<p:outputLabel id="admid_first_name_label" value="Student first name" for="admid_first_name" />
+		<p:inputText id="admid_first_name" value="#{admissionBean.student.firstName}" required="true" />
+		<p:message id="admid_first_name_msg" for="admid_first_name" />
 
-			<p:outputLabel id="admid_middle_name_label" value="Student middle name" for="admid_middle_name" />
-			<p:inputText id="admid_middle_name" value="#{admissionBean.student.middleName}" />
-			<p:message id="admid_middle_name_msg" for="admid_middle_name" />
+		<p:outputLabel id="admid_middle_name_label" value="Student middle name" for="admid_middle_name" />
+		<p:inputText id="admid_middle_name" value="#{admissionBean.student.middleName}" />
+		<p:message id="admid_middle_name_msg" for="admid_middle_name" />
 
-			<p:outputLabel id="admid_last_name_label" value="Student last name" for="admid_last_name" />
-			<p:inputText id="admid_last_name" value="#{admissionBean.student.lastName}" required="true" />
-			<p:message id="admid_last_name_msg" for="admid_last_name" />
+		<p:outputLabel id="admid_last_name_label" value="Student last name" for="admid_last_name" />
+		<p:inputText id="admid_last_name" value="#{admissionBean.student.lastName}" required="true" />
+		<p:message id="admid_last_name_msg" for="admid_last_name" />
 
-			<p:outputLabel id="admid_dob_label" value="Student date of birth" for="admid_dob" />
+		<p:outputLabel id="admid_dob_label" value="Student date of birth" for="admid_dob" />
+		<p:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="admid_dob" value="#{admissionBean.student.dateOfBirth}" navigator="true" showOn="button"
-				 pattern="dd/MM/yyyy" yearRange="1900" required="true" />
-			<p:message id="admid_dob_msg" for="admid_dob" />
+				pattern="dd/MM/yyyy" yearRange="1900" required="true" />
+			<p:watermark for="admid_dob" value="dd/MM/yyyy" />
+		</p:panelGrid>
+		<p:message id="admid_dob_msg" for="admid_dob" />
 
-			<p:outputLabel id="admid_gender_label" value="Gender" for="admid_gender" />
-			<p:selectOneRadio id="admid_gender" value="#{admissionBean.student.gender}" required="true">
-				<f:selectItems value="#{enumConstantsBean.gender}" var="gender" itemLabel="#{gender.label}" itemValue="#{gender}" />
-			</p:selectOneRadio>
-			<p:message id="admid_gender_msg" for="admid_gender" />
+		<p:outputLabel id="admid_gender_label" value="Gender" for="admid_gender" />
+		<p:selectOneRadio id="admid_gender" value="#{admissionBean.student.gender}" required="true">
+			<f:selectItems value="#{enumConstantsBean.gender}" var="gender" itemLabel="#{gender.label}" itemValue="#{gender}" />
+		</p:selectOneRadio>
+		<p:message id="admid_gender_msg" for="admid_gender" />
 
-			<p:outputLabel id="admid_nationality_label" value="Nationality" for="admid_nationality" />
-			<p:inputText id="admid_nationality" value="#{admissionBean.student.nationality}" required="true" />
-			<p:message id="admid_nationality_msg" for="admid_nationality" />
+		<p:outputLabel id="admid_nationality_label" value="Nationality" for="admid_nationality" />
+		<p:inputText id="admid_nationality" value="#{admissionBean.student.nationality}" required="true" />
+		<p:message id="admid_nationality_msg" for="admid_nationality" />
 
-			<p:outputLabel id="admid_religion_label" value="Religion" for="admid_religion" />
-			<p:inputText id="admid_religion" value="#{admissionBean.student.religion}" />
-			<p:message id="admid_religion_msg" for="admid_religion" />
+		<p:outputLabel id="admid_religion_label" value="Religion" for="admid_religion" />
+		<p:inputText id="admid_religion" value="#{admissionBean.student.religion}" />
+		<p:message id="admid_religion_msg" for="admid_religion" />
 
-			<p:outputLabel id="admid_mother_tongue_label" value="Mother tongue" for="admid_mother_tongue" />
-			<p:inputText id="admid_mother_tongue" value="#{admissionBean.student.motherTongue}" />
-			<p:message id="admid_mother_tongue_msg" for="admid_mother_tongue" />
+		<p:outputLabel id="admid_mother_tongue_label" value="Mother tongue" for="admid_mother_tongue" />
+		<p:inputText id="admid_mother_tongue" value="#{admissionBean.student.motherTongue}" />
+		<p:message id="admid_mother_tongue_msg" for="admid_mother_tongue" />
 
-			<p:outputLabel id="admid_reservation_label" value="Reservation" for="admid_reservation" />
-			<p:inputText id="admid_reservation" value="#{admissionBean.student.reservation}" />
-			<p:message id="admid_reservation_msg" for="admid_reservation" />
+		<p:outputLabel id="admid_reservation_label" value="Reservation" for="admid_reservation" />
+		<p:inputText id="admid_reservation" value="#{admissionBean.student.reservation}" />
+		<p:message id="admid_reservation_msg" for="admid_reservation" />
 
-			<p:outputLabel id="admid_residence_label" value="Residence type" for="admid_residence" />
-			<p:selectOneRadio id="admid_residence" value="#{admissionBean.student.residence}" style="width:155px;"
-				required="true">
-				<f:selectItems value="#{enumConstantsBean.residences}" var="redidence" itemLabel="#{redidence.label}"
-					itemValue="#{redidence}" />
-			</p:selectOneRadio>
-			<p:message id="admid_residence_label_msg" for="admid_residence" />
+		<p:outputLabel id="admid_residence_label" value="Residence type" for="admid_residence" />
+		<p:selectOneRadio id="admid_residence" value="#{admissionBean.student.residence}" style="width:155px;" required="true">
+			<f:selectItems value="#{enumConstantsBean.residences}" var="redidence" itemLabel="#{redidence.label}"
+				itemValue="#{redidence}" />
+		</p:selectOneRadio>
+		<p:message id="admid_residence_label_msg" for="admid_residence" />
 
-		</h:panelGrid>
+	</h:panelGrid>
 
 	<p:commandButton id="personalBack" value="Back" action="#{admissionBean.performSearch()}" update="@form"
 		icon="ui-icon-circle-arrow-w" style="width:80px;">

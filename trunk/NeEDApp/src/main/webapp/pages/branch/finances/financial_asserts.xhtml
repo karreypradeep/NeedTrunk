@@ -28,9 +28,12 @@
 					<p:message id="assert_name_msg" for="assert_name" />
 
 					<p:outputLabel id="purchase_date_label" value="Purchase date" for="purchase_date" />
-					<p:calendar id="purchase_date" value="#{financeAssertBean.branchAssert.date}" navigator="true" showOn="button"
-						 pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
-						mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
+					<p:panelGrid columns="2" style="border:0px;">
+						<p:calendar id="purchase_date" value="#{financeAssertBean.branchAssert.date}" navigator="true" showOn="button"
+							pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
+							mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
+						<p:watermark for="purchase_date" value="dd/MM/yyyy" />
+					</p:panelGrid>
 					<p:message id="purchase_date_msg" for="purchase_date" />
 
 					<p:outputLabel id="quantity_label" value="Quantity" for="quantity" />
@@ -50,7 +53,8 @@
 					<p:message id="descriptionId_msg" for="descriptionId" />
 
 				</h:panelGrid>
-				<p:commandButton id="assert_type_save" value="Save" action="#{financeAssertBean.saveBranchAssert}" update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateAssert}"/>
+				<p:commandButton id="assert_type_save" value="Save" action="#{financeAssertBean.saveBranchAssert}" update="@form"
+					disabled="#{!grantedAuthorityBean.userAllowedToCreateAssert}" />
 				<p:commandButton id="assert_type_clear" value="Cancel" update="@form" action="#{financeAssertBean.calcelAction}"
 					process="@this" />
 			</p:panel>
@@ -90,14 +94,20 @@
 						</p:inputText>
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-						<p:calendar id="from_date" value="#{financeAssertBean.branchAssertSearchCriteria.fromDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="from_date" value="#{financeAssertBean.branchAssertSearchCriteria.fromDate}" navigator="true"
+								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
+							<p:watermark for="from_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-						<p:calendar id="to_date" value="#{financeAssertBean.branchAssertSearchCriteria.toDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="to_date" value="#{financeAssertBean.branchAssertSearchCriteria.toDate}" navigator="true"
+								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
+							<p:watermark for="to_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 					</h:panelGrid>
 
@@ -180,7 +190,8 @@
 						<f:setPropertyActionListener value="#{assert}" target="#{financeAssertBean.branchAssert}" />
 					</p:commandLink>
 					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
-						process="@this" title="Delete" onclick="confirmation.show()" disabled="#{!grantedAuthorityBean.userAllowedToRemoveAssert}">
+						process="@this" title="Delete" onclick="confirmation.show()"
+						disabled="#{!grantedAuthorityBean.userAllowedToRemoveAssert}">
 						<f:setPropertyActionListener value="#{assert}" target="#{financeAssertBean.branchAssert}" />
 					</p:commandLink>
 				</p:column>

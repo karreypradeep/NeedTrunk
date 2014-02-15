@@ -1,7 +1,8 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="/templates/main-login.xhtml">
 
@@ -47,7 +48,8 @@
 								In case if you any trouble while login please check with you branch admin or organization admin.
 
 							</p:panel>
-						<p:commandButton id="back" value="Back" process="@this" action="login" actionListener="#{registrationBean.reset()}" icon="ui-icon-circle-arrow-w" />
+						<p:commandButton id="back" value="Back" process="@this" action="login"
+							actionListener="#{registrationBean.reset()}" icon="ui-icon-circle-arrow-w" />
 
 					</c:when>
 
@@ -72,14 +74,15 @@
 									<p:message id="userNameMessage" for="userName" />
 
 									<p:outputLabel id="passwordLabel" for="password" value="#{msg.passwordMand}" />
-									<p:password id="password" value="#{registrationBean.password}" required="true" label="#{msg.password}" feedback="true" match="reenterPassword"
-										requiredMessage="#{model.password_mandatory}">
+									<p:password id="password" value="#{registrationBean.password}" required="true" label="#{msg.password}"
+										feedback="true" match="reenterPassword" requiredMessage="#{model.password_mandatory}">
 										<f:validateLength minimum="8" />
 									</p:password>
 									<p:message id="passwordMessage" for="password" />
 
 									<p:outputLabel id="reenterPasswordLabel" for="reenterPassword" value="#{msg.reenterPasswordMand}" />
-									<p:password id="reenterPassword" value="#{registrationBean.confirmPassword}" required="true" label="#{msg.reenterPassword}" />
+									<p:password id="reenterPassword" value="#{registrationBean.confirmPassword}" required="true"
+										label="#{msg.reenterPassword}" />
 									<p:message id="reenterPasswordMessage" for="reenterPassword" />
 
 								</h:panelGrid>
@@ -89,7 +92,8 @@
 									<p:outputLabel id="login_type_label" value="Registration type" for="login_type" />
 									<p:selectOneMenu id="login_type" value="#{registrationBean.registrationType}" required="true">
 										<f:selectItem itemLabel="Select login type" itemValue="" />
-										<f:selectItems value="#{enumConstantsBean.loginTypeConstants}" var="loginType" itemLabel="#{loginType.label}" itemValue="#{loginType}" />
+										<f:selectItems value="#{enumConstantsBean.loginTypeConstants}" var="loginType" itemLabel="#{loginType.label}"
+											itemValue="#{loginType}" />
 										<p:ajax process="@this" update="user_info_grid" />
 									</p:selectOneMenu>
 									<p:message id="login_type_msg" for="login_type" />
@@ -103,19 +107,24 @@
 									<p:message id="last_name_msg" for="last_name" />
 
 									<p:outputLabel id="dob_label" value="Date of birth" for="stu_dob" />
-									<p:calendar id="stu_dob" value="#{registrationBean.dateOfBirth}" navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900"
-										required="true" maxdate="#{sessionBean.systemDate}" />
+									<p:panelGrid columns="2" style="border:0px;">
+										<p:calendar id="stu_dob" value="#{registrationBean.dateOfBirth}" navigator="true" showOn="button"
+											pattern="dd/MM/yyyy" yearRange="1900" required="true" maxdate="#{sessionBean.systemDate}" />
+										<p:watermark for="stu_dob" value="dd/MM/yyyy" />
+									</p:panelGrid>
 									<p:message id="stu_dob_msg" for="stu_dob" />
 
 									<p:outputLabel id="admissionNrLabel" for="admissionNr" value="Student admission Number"
 										rendered="#{registrationBean.registrationType == 'STUDENT' or registrationBean.registrationType == 'PARENT'}" />
 
-									<p:inputText id="admissionNr" value="#{registrationBean.admissionNumber}" required="true" label="#{msg.username}"
+									<p:inputText id="admissionNr" value="#{registrationBean.admissionNumber}" required="true"
+										label="#{msg.username}"
 										rendered="#{registrationBean.registrationType == 'STUDENT' or registrationBean.registrationType == 'PARENT'}" />
 									<p:message id="admissionNrMsg" for="admissionNr"
 										rendered="#{registrationBean.registrationType == 'STUDENT' or registrationBean.registrationType == 'PARENT'}" />
 
-									<p:outputLabel id="employeeNrLabel" for="employeeNr" value="Employee number" rendered="#{registrationBean.registrationType == 'EMPLOYEE'}" />
+									<p:outputLabel id="employeeNrLabel" for="employeeNr" value="Employee number"
+										rendered="#{registrationBean.registrationType == 'EMPLOYEE'}" />
 									<p:inputText id="employeeNr" value="#{registrationBean.employeeNumber}" required="true" label="#{msg.username}"
 										rendered="#{registrationBean.registrationType == 'EMPLOYEE'}" />
 									<p:message id="employeeNrMsg" for="employeeNr" rendered="#{registrationBean.registrationType == 'EMPLOYEE'}" />
@@ -130,23 +139,24 @@
 
 
 
-							
 
-								<div id="recaptcha_div"></div>
-				
+
+							<div id="recaptcha_div"></div>
+
 
 
 						</p:panel>
 
 						<div style="margin-top: 40px;">
 							<center>
-								<p:commandButton id="back" value="Back" process="@this" action="login" actionListener="#{registrationBean.reset()}" icon="ui-icon-circle-arrow-w" />
+								<p:commandButton id="back" value="Back" process="@this" action="login"
+									actionListener="#{registrationBean.reset()}" icon="ui-icon-circle-arrow-w" />
 								<p:spacer width="5px" />
-								<p:commandButton id="reset" value="Reset" process="@this" update="user_messages user_information" icon="ui-icon-circle-triangle-w"
-									oncomplete="showRecaptcha('recaptcha_div');" />
+								<p:commandButton id="reset" value="Reset" process="@this" update="user_messages user_information"
+									icon="ui-icon-circle-triangle-w" oncomplete="showRecaptcha('recaptcha_div');" />
 								<p:spacer width="5px" />
 								<p:commandButton id="save" value="Create Account" update="@form" icon="ui-icon-person"
-									action="#{registrationBean.createNewAccount()}" oncomplete="showRecaptcha('recaptcha_div');"  />
+									action="#{registrationBean.createNewAccount()}" oncomplete="showRecaptcha('recaptcha_div');" />
 							</center>
 						</div>
 

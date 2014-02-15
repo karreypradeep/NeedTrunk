@@ -40,12 +40,18 @@
 			</p:selectOneMenu>
 
 			<h:outputLabel for="fromDate" value="Start date:" />
-			<p:calendar id="fromDate" value="#{sectionTimetableBean.scheduleStartDate}" pattern="dd/MM/yyyy"
-				disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}" />
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:calendar id="fromDate" value="#{sectionTimetableBean.scheduleStartDate}" pattern="dd/MM/yyyy"
+					disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}" />
+				<p:watermark for="fromDate" value="dd/MM/yyyy" />
+			</p:panelGrid>
 
 			<h:outputLabel for="toDate" value="End date:" />
-			<p:calendar id="toDate" value="#{sectionTimetableBean.scheduleEndDate}" pattern="dd/MM/yyyy"
-				disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}" />
+			<p:panelGrid columns="2" style="border:0px;">
+				<p:calendar id="toDate" value="#{sectionTimetableBean.scheduleEndDate}" pattern="dd/MM/yyyy"
+					disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}" />
+				<p:watermark for="toDate" value="dd/MM/yyyy" />
+			</p:panelGrid>
 
 			<h:outputLabel for="fromTime" value="Start time" />
 			<p:calendar id="fromTime" value="#{sectionTimetableBean.scheduleStartTime}" pattern="HH:mm" minHour="8" maxHour="18"

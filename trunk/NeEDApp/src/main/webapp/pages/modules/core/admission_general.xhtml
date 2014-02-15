@@ -11,9 +11,10 @@
 
 	<h:panelGrid id="admission_general_panel" columns="3" cellpadding="5">
 
-		<p:outputLabel id="previous_academic_year_admission_label" value="Previous academic year admission" for="previous_academic_year_admission" />
+		<p:outputLabel id="previous_academic_year_admission_label" value="Previous academic year admission"
+			for="previous_academic_year_admission" />
 		<p:selectBooleanCheckbox id="previous_academic_year_admission" value="#{admissionBean.previousAcademicYearAdmission}">
-			<p:ajax event="change" update="@form" process="@this" listener="#{admissionBean.loadAcademicYearsForAdmission()}" /> 
+			<p:ajax event="change" update="@form" process="@this" listener="#{admissionBean.loadAcademicYearsForAdmission()}" />
 		</p:selectBooleanCheckbox>
 		<p:message for="previous_academic_year_admission" />
 
@@ -77,11 +78,14 @@
 		<p:message id="stu_referenced_by_msg" for="stu_referenced_by" />
 
 		<p:outputLabel id="stu_admission_date_label" value="#{msg.admission_date}" for="stu_admission_date" />
-		<p:calendar id="stu_admission_date" value="#{admissionBean.student.admissionDate}" navigator="true" showOn="button"
-			pattern="dd/MM/yyyy" yearRange="1990" maxdate="#{admissionBean.appliedForAcademicYear.admissionEndDate}"
-			mindate="#{admissionBean.appliedForAcademicYear.admissionStartDate}">
-			<p:ajax event="dateSelect" process="@this" />
-		</p:calendar>
+		<p:panelGrid columns="2" style="border:0px;">
+			<p:calendar id="stu_admission_date" value="#{admissionBean.student.admissionDate}" navigator="true" showOn="button"
+				pattern="dd/MM/yyyy" yearRange="1990" maxdate="#{admissionBean.appliedForAcademicYear.admissionEndDate}"
+				mindate="#{admissionBean.appliedForAcademicYear.admissionStartDate}">
+				<p:ajax event="dateSelect" process="@this" />
+			</p:calendar>
+			<p:watermark for="stu_admission_date" value="dd/MM/yyyy" />
+		</p:panelGrid>
 		<p:message id="stu_admission_date_msg" for="stu_admission_date" />
 
 	</h:panelGrid>

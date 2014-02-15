@@ -14,8 +14,8 @@
 				<h:panelGrid columns="3" id="academic_year_investment_grid" cellpadding="4" style="border:0px;">
 
 					<p:outputLabel id="investment_type_label" value="Investment type" for="investment_type" />
-					<p:selectOneMenu id="investment_type" value="#{financeInvestmentBean.branchInvestment.investmentBuildingBlock}" required="true"
-						converter="buildingBlockConverter">
+					<p:selectOneMenu id="investment_type" value="#{financeInvestmentBean.branchInvestment.investmentBuildingBlock}"
+						required="true" converter="buildingBlockConverter">
 						<f:selectItem itemLabel="Select investment type" itemValue="" />
 						<f:selectItems value="#{financeInvestmentBean.investmentsTypeBuildingBlocks}" var="investmentsTypeBuildingBlock"
 							itemLabel="#{investmentsTypeBuildingBlock.name}" itemValue="#{investmentsTypeBuildingBlock}" />
@@ -28,24 +28,30 @@
 					<p:message id="investment_name_msg" for="investment_name" />
 
 					<p:outputLabel id="investment_date_label" value="Investment date" for="investment_date" />
-					<p:calendar id="investment_date" value="#{financeInvestmentBean.branchInvestment.investmentDate}" navigator="true" showOn="button"
-						  pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+					<p:panelGrid columns="2" style="border:0px;">
+						<p:calendar id="investment_date" value="#{financeInvestmentBean.branchInvestment.investmentDate}" navigator="true"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
+						<p:watermark for="investment_date" value="dd/MM/yyyy" />
+					</p:panelGrid>
 					<p:message id="investment_date_msg" for="investment_date" />
 
 					<p:outputLabel id="investment_amount_label" value="Investment amount" for="investment_amount" />
-					<p:inputText id="investment_amount" value="#{financeInvestmentBean.branchInvestment.amount}" size="20" maxlength="20">
+					<p:inputText id="investment_amount" value="#{financeInvestmentBean.branchInvestment.amount}" size="20"
+						maxlength="20">
 						<f:convertNumber pattern="000.00" />
 					</p:inputText>
 					<p:message id="investment_amount_msg" for="investment_amount" />
 
 
 					<p:outputLabel id="description_label" value="Description" for="descriptionId" />
-					<p:inputTextarea id="descriptionId" value="#{financeInvestmentBean.branchInvestment.description}" maxlength="200" rows="5"></p:inputTextarea>
+					<p:inputTextarea id="descriptionId" value="#{financeInvestmentBean.branchInvestment.description}" maxlength="200"
+						rows="5"></p:inputTextarea>
 					<p:message id="descriptionId_msg" for="descriptionId" />
 
 				</h:panelGrid>
-				<p:commandButton id="academic_year_investment_save" value="Save" action="#{financeInvestmentBean.saveBranchInvestment}"
-					update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateInvestment}"/>
+				<p:commandButton id="academic_year_investment_save" value="Save"
+					action="#{financeInvestmentBean.saveBranchInvestment}" update="@form"
+					disabled="#{!grantedAuthorityBean.userAllowedToCreateInvestment}" />
 				<p:commandButton id="academic_year_investment_clear" value="Cancel" immediate="true" update="@form"
 					action="#{financeInvestmentBean.calcelAction}" />
 			</p:panel>
@@ -58,8 +64,9 @@
 				</p:toolbarGroup>
 
 				<p:toolbarGroup align="right">
-					<p:commandButton value="New investment" icon="ui-icon-document" action="#{financeInvestmentBean.newBranchInvestment}"
-						style="width:100%;" process="@this" update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateInvestment}">
+					<p:commandButton value="New investment" icon="ui-icon-document"
+						action="#{financeInvestmentBean.newBranchInvestment}" style="width:100%;" process="@this" update="@form"
+						disabled="#{!grantedAuthorityBean.userAllowedToCreateInvestment}">
 						<f:setPropertyActionListener target="#{financeInvestmentBean.viewOrNewAction}" value="true" />
 						<f:setPropertyActionListener target="#{financeInvestmentBean.loadInvestmentTypesFromDB}" value="true" />
 					</p:commandButton>
@@ -80,19 +87,25 @@
 					<h:panelGrid columns="2" id="investment_type_grid1" cellpadding="4" style="border:0px;">
 
 						<p:outputLabel id="investment_name_search_label" value="Investment name" for="investment_name_search" />
-						<p:inputText id="investment_name_search" value="#{financeInvestmentBean.branchInvestmentSearchCriteria.investmentName}" size="20"
-							maxlength="20">
+						<p:inputText id="investment_name_search"
+							value="#{financeInvestmentBean.branchInvestmentSearchCriteria.investmentName}" size="20" maxlength="20">
 						</p:inputText>
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-						<p:calendar id="from_date" value="#{financeInvestmentBean.branchInvestmentSearchCriteria.fromDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{financeInvestmentBean.minimumDateForCurrentBranch}" maxdate="#{financeInvestmentBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="from_date" value="#{financeInvestmentBean.branchInvestmentSearchCriteria.fromDate}"
+								navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								mindate="#{financeInvestmentBean.minimumDateForCurrentBranch}" maxdate="#{financeInvestmentBean.currentDate}" />
+							<p:watermark for="from_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-						<p:calendar id="to_date" value="#{financeInvestmentBean.branchInvestmentSearchCriteria.toDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-							mindate="#{financeInvestmentBean.minimumDateForCurrentBranch}" maxdate="#{financeInvestmentBean.currentDate}" />
+						<p:panelGrid columns="2" style="border:0px;">
+							<p:calendar id="to_date" value="#{financeInvestmentBean.branchInvestmentSearchCriteria.toDate}" navigator="true"
+								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								mindate="#{financeInvestmentBean.minimumDateForCurrentBranch}" maxdate="#{financeInvestmentBean.currentDate}" />
+							<p:watermark for="to_date" value="dd/MM/yyyy" />
+						</p:panelGrid>
 
 					</h:panelGrid>
 
@@ -121,8 +134,8 @@
 			<p:separator />
 			<p:spacer height="10" />
 
-			<p:dataTable id="investment_table" var="investment" value="#{financeInvestmentBean.branchInvestmentsBySearchCriteria}"
-				paginator="true" rows="10"
+			<p:dataTable id="investment_table" var="investment"
+				value="#{financeInvestmentBean.branchInvestmentsBySearchCriteria}" paginator="true" rows="10"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
 
@@ -171,12 +184,14 @@
 				</p:column>
 
 				<p:column headerText="Options" styleClass="options-column" exportable="false">
-					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" action="#{financeInvestmentBean.viewBranchInvestment}"
-						title="View" style="margin:0px 0px 0px;float:left;" process="@this" update="@form">
+					<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search"
+						action="#{financeInvestmentBean.viewBranchInvestment}" title="View" style="margin:0px 0px 0px;float:left;"
+						process="@this" update="@form">
 						<f:setPropertyActionListener value="#{investment}" target="#{financeInvestmentBean.branchInvestment}" />
 					</p:commandLink>
 					<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
-						process="@this" title="Delete" onclick="confirmation.show()" disabled="#{!grantedAuthorityBean.userAllowedToRemoveInvestment}">
+						process="@this" title="Delete" onclick="confirmation.show()"
+						disabled="#{!grantedAuthorityBean.userAllowedToRemoveInvestment}">
 						<f:setPropertyActionListener value="#{investment}" target="#{financeInvestmentBean.branchInvestment}" />
 					</p:commandLink>
 				</p:column>

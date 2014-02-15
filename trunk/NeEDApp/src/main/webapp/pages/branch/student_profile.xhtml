@@ -3,9 +3,9 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
-	
+
 	<f:facet name="header">Personal</f:facet>
-	
+
 	<link type="text/css" rel="stylesheet"
 		href="#{facesContext.externalContext.requestContextPath}/resources/css/student-profile.css" />
 
@@ -13,8 +13,8 @@
 		<f:event type="preRenderView" listener="#{studentBean.loadRelations}" />
 		<f:event type="preRenderView" listener="#{studentBean.loadProfilePicture}" />
 	</f:metadata>
-	
-	
+
+
 	<h:panelGrid columns="2" columnClasses="column-vertical-align,profile-right-column" style="width:100%">
 
 		<p:panel id="studentProfilePanel" style="padding:0px;margin:0px;border:0px;">
@@ -38,8 +38,11 @@
 
 
 							<p:outputLabel value="#{msg.dob}" style="font-weight:bold" for="dob" />
-							<p:calendar id="dob" value="#{studentBean.student.dateOfBirth}" navigator="true" showOn="button"
-								pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+							<p:panelGrid columns="2" style="border:0px;">
+								<p:calendar id="dob" value="#{studentBean.student.dateOfBirth}" navigator="true" showOn="button"
+									pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
+								<p:watermark for="dob" value="dd/MM/yyyy" />
+							</p:panelGrid>
 							<p:message id="dob_msg" for="dob" />
 
 							<p:outputLabel value="#{msg.gender}" style="font-weight:bold" for="gender" />
@@ -51,15 +54,15 @@
 
 							<p:outputLabel value="#{msg.class}" style="font-weight:bold" for="klassName" />
 							<p:inputText id="klassName" value="#{studentBean.currentOrMostRecentStudentSection.section.klass.name}"
-								required="true" disabled="true"/>
+								required="true" disabled="true" />
 							<p:message id="klassName_msg" for="klassName" />
 
 
 							<p:outputLabel value="#{msg.section}" style="font-weight:bold" for="sectionName" />
 							<p:inputText id="sectionName" value="#{studentBean.currentOrMostRecentStudentSection.section.name}"
-								required="true" disabled="true"/>
+								required="true" disabled="true" />
 							<p:message id="sectionName_msg" for="sectionName" />
-							
+
 							<p:outputLabel id="student_classification_type_label" value="Student classification"
 								for="student_classification_type" style="font-weight:bold" />
 							<p:selectOneMenu id="student_classification_type" value="#{studentBean.student.studentClassificationType}"
@@ -120,7 +123,7 @@
 							<p:commandLink value="Edit" style="font-size: 15; color: blue; font-weight:bold" update="personalDetailsPanel"
 								process="@this" rendered="#{grantedAuthorityBean.userAllowedToUpdateStudentPersonalDetails}">
 								<f:setPropertyActionListener target="#{studentBean.editStudentPersonalDetails}" value="true" />
-							</p:commandLink>  
+							</p:commandLink>
 						</p:panel>
 					</c:otherwise>
 				</c:choose>

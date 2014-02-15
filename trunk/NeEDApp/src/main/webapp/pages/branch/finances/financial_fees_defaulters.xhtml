@@ -22,17 +22,20 @@
 				</p:selectOneMenu>
 
 				<p:outputLabel id="due_date_label" value="Due date" for="due_date" />
-				<p:calendar id="due_date" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.dueDate}" navigator="true"
-					showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
-					mindate="#{financeFeesDefaultersBean.feeDueSearchCriteria.academicYear.startDate}"
-					maxdate="#{studentBean.currentDate}"
-					disabled="#{financeFeesDefaultersBean.feeDueSearchCriteria.academicYear==null}" />
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="due_date" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.dueDate}" navigator="true"
+						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+						mindate="#{financeFeesDefaultersBean.feeDueSearchCriteria.academicYear.startDate}"
+						maxdate="#{studentBean.currentDate}"
+						disabled="#{financeFeesDefaultersBean.feeDueSearchCriteria.academicYear==null}" />
+					<p:watermark for="due_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 
 				<p:outputLabel id="fee_due_perentage_label" value="Minimum Fee due %" for="fee_due_perentage_amount" />
 				<p:inputText id="fee_due_perentage_amount" value="#{financeFeesDefaultersBean.feeDueSearchCriteria.feeDuePercetage}"
-					size="20" maxlength="3" >
+					size="20" maxlength="3">
 					<f:convertNumber pattern="000" maxFractionDigits="0" maxIntegerDigits="3" />
-				</p:inputText> 
+				</p:inputText>
 
 			</h:panelGrid>
 			<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">
@@ -142,8 +145,8 @@
 			</h:outputText>
 		</p:column>
 
-		<p:column sortBy="#{studentFinancialAcademicYearDO.netFee}"
-			filterBy="#{studentFinancialAcademicYearDO.netFee}" filterMatchMode="contains">
+		<p:column sortBy="#{studentFinancialAcademicYearDO.netFee}" filterBy="#{studentFinancialAcademicYearDO.netFee}"
+			filterMatchMode="contains">
 			<f:facet name="header">
 				<h:outputText value="Net Fee" />
 			</f:facet>

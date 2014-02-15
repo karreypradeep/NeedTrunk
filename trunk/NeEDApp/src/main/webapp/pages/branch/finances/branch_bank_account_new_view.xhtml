@@ -13,29 +13,36 @@
 				<p:message id="account_number_msg" for="account_number" />
 
 				<p:outputLabel id="bank_name_label" value="Bank Name" for="bank_name" />
-				<p:inputText id="bank_name" value="#{branchBankAccountBean.currentBranchBankAccount.bankName}" size="20" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}">
+				<p:inputText id="bank_name" value="#{branchBankAccountBean.currentBranchBankAccount.bankName}" size="20"
+					disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}">
 				</p:inputText>
 				<p:message id="bank_name_msg" for="bank_name" />
 
 				<p:outputLabel id="bank_branch_label" value="Bank Branch" for="bank_branch" />
-				<p:inputText id="bank_branch" value="#{branchBankAccountBean.currentBranchBankAccount.bankBranch}" size="20" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}">
+				<p:inputText id="bank_branch" value="#{branchBankAccountBean.currentBranchBankAccount.bankBranch}" size="20"
+					disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}">
 				</p:inputText>
 				<p:message id="bank_branch_msg" for="bank_branch" />
 
 				<p:outputLabel id="account_opening_date_label" value="Account opening date" for="account_opening_date" />
-				<p:calendar id="account_opening_date" value="#{branchBankAccountBean.currentBranchBankAccount.accountOpeningDate}"
-					navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}"/>
+				<p:panelGrid columns="2" style="border:0px;">
+					<p:calendar id="account_opening_date" value="#{branchBankAccountBean.currentBranchBankAccount.accountOpeningDate}"
+						navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
+						disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}" />
+					<p:watermark for="account_opening_date" value="dd/MM/yyyy" />
+				</p:panelGrid>
 				<p:message id="account_opening_date_msg" for="account_opening_date" />
 
 			</h:panelGrid>
 			<h:panelGrid id="father_address_grid" columns="3" columnClasses="label, value, label" styleClass="grid"
 				cellpadding="5">
-				<biz:address addressModel="#{branchBankAccountBean.currentBranchBankAccount.bankBranchAddress}" readOnly="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}"/>
+				<biz:address addressModel="#{branchBankAccountBean.currentBranchBankAccount.bankBranchAddress}"
+					readOnly="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}" />
 			</h:panelGrid>
 
 		</h:panelGrid>
 		<p:commandButton id="branch_bank_account_save" value="Save" action="#{branchBankAccountBean.saveBranchBankAccount}"
-			update="@form" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}"/>
+			update="@form" disabled="#{not branchBankAccountBean.editBrachBankAccountDetailsInd}" />
 		<p:commandButton id="branch_bank_account_edit" value="Edit Account Details" immediate="true" update="@form"
 			action="#{branchBankAccountBean.editBankAccountDetails}" />
 		<p:commandButton id="branch_bank_account_clear" value="Cancel" immediate="true" update="@form"

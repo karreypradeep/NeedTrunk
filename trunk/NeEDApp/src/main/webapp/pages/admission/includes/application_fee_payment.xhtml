@@ -44,13 +44,13 @@
 
 		<p:outputLabel id="ext_trans_date_lbl" value="#{msg.external_transaction_date}" for="ext_trans_date"
 			rendered="#{admissionBean.applicationFeeExternalTransaction}" />
-		<p:panelGrid columns="2">
+		<p:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="ext_trans_date"
 				value="#{admissionBean.admissionReservationFee.applicationFeeExternalTransactionDate}" navigator="true"
 				showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
 				rendered="#{admissionBean.applicationFeeExternalTransaction}">
 				<p:ajax event="dateSelect" process="@this" />
-			</p:calendar>
+			</p:calendar> 
 			<p:watermark for="ext_trans_date" value="dd/MM/yyyy" />
 		</p:panelGrid>
 		<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.applicationFeeExternalTransaction}" />

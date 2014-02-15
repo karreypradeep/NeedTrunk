@@ -17,8 +17,11 @@
 					</p:inputText>
 
 					<p:outputLabel id="date_of_birth_label" value="#{msg.date_of_birth}" for="date_of_birth" />
-					<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
-						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
+					<p:panelGrid columns="2" style="border:0px;">
+						<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
+							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
+						<p:watermark for="date_of_birth" value="dd/MM/yyyy" />
+					</p:panelGrid>
 				</h:panelGrid>
 
 				<h:panelGrid columns="2" id="student_lookup_panel3" cellpadding="4" style="border:0px;">
@@ -53,7 +56,9 @@
 							Student name
 				</f:facet>
 					<p:commandLink id="viewLink" value="#{studentSection.studentAcademicYear.student.displayName}" title="View"
-						style="margin:0px 0px 0px;" process="@this" update=":form:parents_panel" action="#{admissionBean.findStudentRelations(studentSection.studentAcademicYear.student)}" oncomplete="parent_lokkup_widget.hide();">
+						style="margin:0px 0px 0px;" process="@this" update=":form:parents_panel"
+						action="#{admissionBean.findStudentRelations(studentSection.studentAcademicYear.student)}"
+						oncomplete="parent_lokkup_widget.hide();">
 					</p:commandLink>
 				</p:column>
 				<p:column sortBy="#{studentSection.studentAcademicYear.student.registrationNr}"
