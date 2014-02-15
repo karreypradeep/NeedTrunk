@@ -30,6 +30,7 @@ public enum NotificationSubTypeConstant implements Labeled {
 	NEW_ADMISSION_ACCEPTED_NOTIFICATION("new_admission_accepted_notification", false, false, false, true, false, false),
 	NEW_ADMISSION_SUBMITTED_NOTIFICATION("new_admission_submitted_notification", false, false, false, true, false, false),
 	NEW_ADMISSION_NOTIFICATION("new_admission_admitted_notification", false, false, false, true, false, false),
+	NEW_STUDENT_REGISTRATION_NOTIFICATION("new_student_registration_notification", false, false, false, true, false, false),
 	REPORT_CARD_NOTIFICATION("report_card_notification", true, false, false, false, false, false),
 	EXAM_RESULT_NOTIFICATION("exam_result_notification", true, false, false, false, false, false),
 	ADHOC_NOTIFICATION("adhoc_notification", true, true, false, false, false, false);
@@ -82,6 +83,7 @@ public enum NotificationSubTypeConstant implements Labeled {
 		brachNotifications.add(NEW_ADMISSION_NOTIFICATION);
 		brachNotifications.add(REPORT_CARD_NOTIFICATION);
 		brachNotifications.add(EXAM_RESULT_NOTIFICATION);
+		brachNotifications.add(NEW_STUDENT_REGISTRATION_NOTIFICATION);
 	}
 
 	/**

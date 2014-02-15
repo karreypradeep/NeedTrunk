@@ -3,7 +3,7 @@
  * SMSystem.
  * www.apeironsol.com
  * Copyright © 2012 apeironsol
- *
+ * 
  */
 package com.apeironsol.need.core.model;
 
@@ -23,9 +23,9 @@ import com.apeironsol.framework.BaseEntity;
 
 /**
  * @author sunny
- *
+ * 
  *         Entity class for admission reservation fee
- *
+ * 
  */
 @Entity
 @Table(name = "ADMISSION_RESERVATION_FEE")
@@ -73,6 +73,15 @@ public class AdmissionReservationFee extends BaseEntity implements Serializable 
 
 	@Column(name = "APPL_FEE_APPLIED")
 	private Boolean				applicationFeeAppliedToStudentFees;
+
+	@Column(name = "APPL_FEE_NOTIFI_SENT")
+	private Boolean				applicationFeeNotificationSent;
+
+	@Column(name = "RESER_FEE_NOTIFI_SENT")
+	private Boolean				reservationFeeNotificationSent;
+
+	@Column(name = "COMITTED_FEE")
+	private Double				comittedFee;
 
 	public Double getReservationFee() {
 		return this.reservationFee;
@@ -160,6 +169,51 @@ public class AdmissionReservationFee extends BaseEntity implements Serializable 
 
 	public void setApplicationFormFee(final Double applicationFormFee) {
 		this.applicationFormFee = applicationFormFee;
+	}
+
+	/**
+	 * @return the comittedFee
+	 */
+	public Double getComittedFee() {
+		return this.comittedFee;
+	}
+
+	/**
+	 * @param comittedFee
+	 *            the comittedFee to set
+	 */
+	public void setComittedFee(final Double comittedFee) {
+		this.comittedFee = comittedFee;
+	}
+
+	/**
+	 * @return the applicationFeeNotificationSent
+	 */
+	public Boolean getApplicationFeeNotificationSent() {
+		return this.applicationFeeNotificationSent;
+	}
+
+	/**
+	 * @param applicationFeeNotificationSent
+	 *            the applicationFeeNotificationSent to set
+	 */
+	public void setApplicationFeeNotificationSent(final Boolean applicationFeeNotificationSent) {
+		this.applicationFeeNotificationSent = applicationFeeNotificationSent;
+	}
+
+	/**
+	 * @return the reservationFeeNotificationSent
+	 */
+	public Boolean getReservationFeeNotificationSent() {
+		return this.reservationFeeNotificationSent;
+	}
+
+	/**
+	 * @param reservationFeeNotificationSent
+	 *            the reservationFeeNotificationSent to set
+	 */
+	public void setReservationFeeNotificationSent(final Boolean reservationFeeNotificationSent) {
+		this.reservationFeeNotificationSent = reservationFeeNotificationSent;
 	}
 
 }

@@ -21,14 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.SMSProvider;
-import com.apeironsol.need.core.model.Student;
-import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.financial.model.BranchExpense;
 import com.apeironsol.need.financial.service.BranchExpenseService;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
-import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.model.BranchNotification;
 import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
 import com.apeironsol.need.notifications.service.BranchNotificationService;
@@ -72,16 +70,16 @@ public class BranchExpenseIncurredSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final Student student,
-			final BatchLog batchLog) throws ClientProtocolException, URISyntaxException, IOException {
+	public NotificationMessage sendSMS(final NeEDJMSObject neEDJMSObject) throws ClientProtocolException, URISyntaxException, IOException {
 		final NotificationMessage notificationMessage = new NotificationMessage();
-		if (batchLog.getNotificationLevelId() != null) {
-			final BranchExpense branchExpense = this.branchExpenseService.findBranchExpenseById(batchLog.getNotificationLevelId());
+		final SMSProvider sMSProvider = neEDJMSObject.getSmsProvider() != null ? neEDJMSObject.getSmsProvider() : neEDJMSObject.getBatchLog().getSmsProvider();
+		if (neEDJMSObject.getBatchLog().getNotificationLevelId() != null) {
+			final BranchExpense branchExpense = this.branchExpenseService.findBranchExpenseById(neEDJMSObject.getBatchLog().getNotificationLevelId());
 			if (branchExpense != null) {
-				String smsText = batchLog.getMessage();
+				String smsText = neEDJMSObject.getBatchLog().getMessage();
 				final Map<String, String> model = new HashMap<String, String>();
 				model.put("amount", branchExpense.getAmount().toString());
-				model.put("branchName", batchLog.getBranch().getName());
+				model.put("branchName", neEDJMSObject.getBatchLog().getBranch().getName());
 				model.put("date", new SimpleDateFormat("dd/mm/yyyy").format(branchExpense.getExpenseDate()));
 				model.put("expenseName", branchExpense.getName());
 				model.put("userName", branchExpense.getAuditUsername());
@@ -90,8 +88,8 @@ public class BranchExpenseIncurredSMSWorker implements SMSWorker {
 				}
 				notificationMessage.setMessage(smsText);
 				final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
-				final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(batchLog
-						.getBranch().getId(), NotificationSubTypeConstant.EXPENSES_INCURRED_NOTIFICATION);
+				final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
+						neEDJMSObject.getBatchLog().getBranch().getId(), NotificationSubTypeConstant.EXPENSES_INCURRED_NOTIFICATION);
 				if ((branchNotification.getMinimumAmount() != null) && (branchExpense.getAmount() < branchNotification.getMinimumAmount())) {
 					notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
 					notificationMessage.setErrorMessage("Expense entered is less than minimum amount required for sending SMS.");
@@ -111,7 +109,8 @@ public class BranchExpenseIncurredSMSWorker implements SMSWorker {
 				}
 			} else {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
-				notificationMessage.setErrorMessage("Branch Expense with expense id " + batchLog.getNotificationLevelId() + " is not available.");
+				notificationMessage.setErrorMessage("Branch Expense with expense id " + neEDJMSObject.getBatchLog().getNotificationLevelId()
+						+ " is not available.");
 			}
 		} else {
 			notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
@@ -121,13 +120,13 @@ public class BranchExpenseIncurredSMSWorker implements SMSWorker {
 	}
 
 	@Override
-	public String getMessage(final StudentAcademicYear studentAcademicYear, final Student student, final BatchLog batchLog) throws ApplicationException {
-		String smsText = batchLog.getMessage();
+	public String getMessage(final NeEDJMSObject neEDJMSObject) throws ApplicationException {
+		String smsText = neEDJMSObject.getBatchLog().getMessage();
 		final Map<String, String> model = new HashMap<String, String>();
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
 		}
-		batchLog.setMessage(smsText);
-		return batchLog.getMessage();
+		neEDJMSObject.getBatchLog().setMessage(smsText);
+		return neEDJMSObject.getBatchLog().getMessage();
 	}
 }

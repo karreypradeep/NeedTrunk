@@ -6,7 +6,29 @@
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 	<c:choose>
 		<c:when test="#{studentRegistrationBean.viewOrNewAction}">
-			<ui:include src="create_view_student_registrations.xhtml" />
+			<p:tabMenu activeIndex="#{studentRegistrationBean.activeTabIndex}">
+
+				<p:menuitem value="New/View Student Registration" action="#{studentRegistrationBean.onTabChange}" process="@this"
+					update="@form">
+					<f:setPropertyActionListener target="#{studentRegistrationBean.activeTabIndex}" value="0" />
+				</p:menuitem>
+
+				<p:menuitem value="Notifications" action="#{studentRegistrationBean.onTabChange}" process="@this" update="@form"
+					disabled="#{studentRegistrationBean.currentStudentRegistration.id ==null}">
+					<f:setPropertyActionListener target="#{studentRegistrationBean.activeTabIndex}" value="1" />
+				</p:menuitem>
+
+			</p:tabMenu>
+			<p:panel style="border:0px">
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+				<c:if test="#{studentRegistrationBean.activeTabIndex == 0}">
+					<ui:include src="create_view_student_registrations.xhtml" />
+				</c:if>
+				<c:if test="#{studentRegistrationBean.activeTabIndex == 1}">
+					<ui:include src="student_registration_notifications.xhtml" />
+				</c:if>
+			</p:panel>
+			
 		</c:when>
 		<c:otherwise>
 			<f:metadata>
@@ -23,6 +45,7 @@
 						action="#{studentRegistrationBean.newStudentRegistration}" update="@form" process="@this"
 						disabled="#{!grantedAuthorityBean.userAllowedToCreateStudentRegistration}" style="font-weight:bold;">
 						<f:setPropertyActionListener target="#{studentRegistrationBean.viewOrNewAction}" value="true" />
+						<f:setPropertyActionListener target="#{studentRegistrationBean.activeTabIndex}" value="0" />
 					</p:commandButton>
 				</p:toolbarGroup>
 			</p:toolbar>
@@ -96,6 +119,8 @@
 								target="#{studentRegistrationBean.currentStudentRegistration}" />
 							<f:setPropertyActionListener target="#{studentRegistrationBean.loadAllAcademicYearsFlag}" value="true" />
 							<f:setPropertyActionListener target="#{studentRegistrationBean.viewOrNewAction}" value="true" />
+							<f:setPropertyActionListener target="#{studentRegistrationBean.loadBatchLogMessagesFromDB}" value="true" />
+							<f:setPropertyActionListener target="#{studentRegistrationBean.activeTabIndex}" value="0" />
 						</p:commandLink>
 					</p:column>
 

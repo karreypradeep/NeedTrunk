@@ -7,7 +7,9 @@
  */
 package com.apeironsol.need.core.portal;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -19,6 +21,10 @@ import org.springframework.context.annotation.Scope;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.StudentRegistration;
 import com.apeironsol.need.core.service.StudentRegistrationService;
+import com.apeironsol.need.notifications.model.BatchLogMessage;
+import com.apeironsol.need.notifications.service.BatchLogMessageService;
+import com.apeironsol.need.notifications.service.BatchLogService;
+import com.apeironsol.need.util.comparator.BatchLogMessageComparator;
 import com.apeironsol.need.util.constants.StudentRegistrationStatusConstant;
 import com.apeironsol.need.util.portal.ViewUtil;
 
@@ -44,6 +50,38 @@ public class StudentRegistrationBean extends AbstractTabbedBean {
 
 	private List<String>						interestedGroups;
 
+	/**
+	 * Batch log messages for the section for selected batch log.
+	 */
+	private Collection<BatchLogMessage>			studentRegistrationBatchLogMessages		= new ArrayList<BatchLogMessage>();
+
+	/**
+	 * Batch log message service.
+	 */
+	@Resource
+	private BatchLogMessageService				batchLogMessageService;
+
+	/**
+	 * Batch log service.
+	 */
+	@Resource
+	private BatchLogService						batchLogService;
+
+	/**
+	 * Indicator to specify if batch logs has to be fetched form DB.
+	 */
+	private boolean								loadBatchLogMessagesFromDB				= false;
+
+	/**
+	 * Variable to hole batch log message error message.
+	 */
+	private String								batchLogMessageErrorMessage;
+
+	/**
+	 * Variable to hold batch log message sent.
+	 */
+	private String								batchLogMessageSentMessage;
+
 	@Override
 	public void onTabChange() {
 
@@ -65,9 +103,15 @@ public class StudentRegistrationBean extends AbstractTabbedBean {
 	}
 
 	public void searchStudentRegistrartionBySearchCriteria() {
-		if ((this.academicYearForSearch != null) || (this.currentStudentRegistration != null)) {
+		if (((this.academicYearForSearch != null) && (this.registrationStatusConstantForSearch != null))) {
 			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationesByAcademicYearIdAndStatus(
 					this.academicYearForSearch != null ? this.academicYearForSearch.getId() : null, this.registrationStatusConstantForSearch);
+		} else if (this.academicYearForSearch != null) {
+			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationesByAcademicYearId(this.academicYearForSearch
+					.getId());
+		} else if (this.registrationStatusConstantForSearch != null) {
+			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService
+					.findStudentRegistrationesByStudentRegistrationStatus(this.registrationStatusConstantForSearch);
 		} else {
 			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationesByBranchId(this.sessionBean.getCurrentBranch()
 					.getId());
@@ -75,7 +119,7 @@ public class StudentRegistrationBean extends AbstractTabbedBean {
 	}
 
 	public void viewStudentRegistration() {
-
+		this.currentStudentRegistration.setBranch(this.sessionBean.getCurrentBranch());
 	}
 
 	public void resetSearchCriteria() {
@@ -162,6 +206,109 @@ public class StudentRegistrationBean extends AbstractTabbedBean {
 	 */
 	public void setInterestedGroups(final List<String> interestedGroups) {
 		this.interestedGroups = interestedGroups;
+	}
+
+	/**
+	 * @return the studentRegistrationService
+	 */
+	public StudentRegistrationService getStudentRegistrationService() {
+		return this.studentRegistrationService;
+	}
+
+	/**
+	 * @param studentRegistrationService
+	 *            the studentRegistrationService to set
+	 */
+	public void setStudentRegistrationService(final StudentRegistrationService studentRegistrationService) {
+		this.studentRegistrationService = studentRegistrationService;
+	}
+
+	/**
+	 * @return the studentRegistrationBatchLogMessages
+	 */
+	public Collection<BatchLogMessage> getStudentRegistrationBatchLogMessages() {
+		return this.studentRegistrationBatchLogMessages;
+	}
+
+	/**
+	 * @param studentRegistrationBatchLogMessages
+	 *            the studentRegistrationBatchLogMessages to set
+	 */
+	public void setStudentRegistrationBatchLogMessages(final Collection<BatchLogMessage> studentRegistrationBatchLogMessages) {
+		this.studentRegistrationBatchLogMessages = studentRegistrationBatchLogMessages;
+	}
+
+	/**
+	 * @return the batchLogMessageService
+	 */
+	public BatchLogMessageService getBatchLogMessageService() {
+		return this.batchLogMessageService;
+	}
+
+	/**
+	 * @param batchLogMessageService
+	 *            the batchLogMessageService to set
+	 */
+	public void setBatchLogMessageService(final BatchLogMessageService batchLogMessageService) {
+		this.batchLogMessageService = batchLogMessageService;
+	}
+
+	/**
+	 * @return the loadBatchLogMessagesFromDB
+	 */
+	public boolean isLoadBatchLogMessagesFromDB() {
+		return this.loadBatchLogMessagesFromDB;
+	}
+
+	/**
+	 * @param loadBatchLogMessagesFromDB
+	 *            the loadBatchLogMessagesFromDB to set
+	 */
+	public void setLoadBatchLogMessagesFromDB(final boolean loadBatchLogMessagesFromDB) {
+		this.loadBatchLogMessagesFromDB = loadBatchLogMessagesFromDB;
+	}
+
+	/**
+	 * @return the batchLogMessageErrorMessage
+	 */
+	public String getBatchLogMessageErrorMessage() {
+		return this.batchLogMessageErrorMessage;
+	}
+
+	/**
+	 * @param batchLogMessageErrorMessage
+	 *            the batchLogMessageErrorMessage to set
+	 */
+	public void setBatchLogMessageErrorMessage(final String batchLogMessageErrorMessage) {
+		this.batchLogMessageErrorMessage = batchLogMessageErrorMessage;
+	}
+
+	/**
+	 * @return the batchLogMessageSentMessage
+	 */
+	public String getBatchLogMessageSentMessage() {
+		return this.batchLogMessageSentMessage;
+	}
+
+	/**
+	 * @param batchLogMessageSentMessage
+	 *            the batchLogMessageSentMessage to set
+	 */
+	public void setBatchLogMessageSentMessage(final String batchLogMessageSentMessage) {
+		this.batchLogMessageSentMessage = batchLogMessageSentMessage;
+	}
+
+	/**
+	 * Fetch batch log messages for batch log from database.
+	 */
+	public void loadBatchLogMessagesByStudentRegistration() {
+		if (this.loadBatchLogMessagesFromDB) {
+			this.setStudentRegistrationBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByStudentRegistrationId(this.currentStudentRegistration
+					.getId()));
+			Collections.sort((List<BatchLogMessage>) this.getStudentRegistrationBatchLogMessages(), new BatchLogMessageComparator(
+					BatchLogMessageComparator.Order.ID));
+			this.loadBatchLogMessagesFromDB = false;
+		}
 	}
 
 }

@@ -104,7 +104,7 @@ public class StudentRegistration extends BaseEntity implements Serializable {
 	@Column(name = "CEC_GROUP_IND")
 	private boolean								interestedInCECGroup;
 
-	@Column(name = "REGISTRATION_NR", length = 50, unique = true)
+	@Column(name = "REGISTRATION_NR", length = 50, unique = true, nullable = false)
 	private String								registrationNr;
 
 	@Basic
@@ -485,4 +485,15 @@ public class StudentRegistration extends BaseEntity implements Serializable {
 		this.registrationNr = registrationNr;
 	}
 
+	public String getContactNumber() {
+		if (!StringUtils.isEmpty(this.primaryContactNumber)) {
+			return this.primaryContactNumber;
+		}
+
+		if (!StringUtils.isEmpty(this.secondaryContactNumber)) {
+			return this.secondaryContactNumber;
+		}
+
+		return "";
+	}
 }

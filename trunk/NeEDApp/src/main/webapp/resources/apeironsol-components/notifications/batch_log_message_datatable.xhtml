@@ -22,9 +22,12 @@
 			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" style="margin-top:1px;">
 
-			<p:column headerText="Student" sortBy="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}"
-				filterBy="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}" filterMatchMode="contains">
-				<h:outputText value="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}" />
+			<p:column headerText="Student"
+				sortBy="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}"
+				filterBy="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}"
+				filterMatchMode="contains">
+				<h:outputText
+					value="#{batchLogMessage.studentAcademicYear==null ? batchLogMessage.student.displayName : batchLogMessage.studentAcademicYear.student.displayName}" />
 			</p:column>
 
 			<p:column headerText="Batch Id" sortBy="#{batchLogMessage.batchLog.id}" filterBy="#{batchLogMessage.batchLog.id}"
@@ -55,16 +58,18 @@
 			</p:column>
 
 			<p:column headerText="Message" styleClass="options-column">
-				<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" update="@form" process="@this" rendered="#{batchLogMessage.messageSent != null || batchLogMessage.batchLog.message!=null}"
-					oncomplete="stackTraceDlg.show()"  title="View message" style="margin:0px 0px 0px;float:left;">
+				<p:commandLink id="viewButton" styleClass="ui-icon ui-icon-search" update="@form" process="@this"
+					rendered="#{batchLogMessage.messageSent != null || batchLogMessage.batchLog.message!=null}"
+					oncomplete="stackTraceDlg.show()" title="View message" style="margin:0px 0px 0px;float:left;">
 					<f:setPropertyActionListener target="#{cc.attrs.messageSent}"
 						value="#{(batchLogMessage.batchLog.message==null || batchLogMessage.batchLog.message.trim().isEmpty()) ? batchLogMessage.messageSent  : batchLogMessage.batchLog.message}"></f:setPropertyActionListener>
 				</p:commandLink>
 			</p:column>
 
 			<p:column headerText="Error Message" styleClass="options-column">
-				<p:commandLink id="viewErrorMessage" styleClass="ui-icon ui-icon-search" update="@form" process="@this" rendered="#{batchLogMessage.errorMessage != null}"
-					oncomplete="errorMessageDlg.show()"  title="View error message" style="margin:0px 0px 0px;float:left;">
+				<p:commandLink id="viewErrorMessage" styleClass="ui-icon ui-icon-search" update="@form" process="@this"
+					rendered="#{batchLogMessage.errorMessage != null}" oncomplete="errorMessageDlg.show()" title="View error message"
+					style="margin:0px 0px 0px;float:left;">
 					<f:setPropertyActionListener target="#{cc.attrs.errorMessage}" value="#{batchLogMessage.errorMessage}"></f:setPropertyActionListener>
 				</p:commandLink>
 			</p:column>

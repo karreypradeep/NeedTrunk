@@ -118,11 +118,17 @@ public class BatchLogBuilder {
 		batchLog.setMessage(builder.messageToBeSent);
 		batchLog.setReportCard(this.reportCard);
 		batchLog.setExam(this.exam);
-		batchLog.setSmsProvider(this.smsProvider);
+
 		if (this.nrElements != null) {
 			batchLog.setNrElements(builder.nrElements);
 			batchLog.setBatchStatusConstant(builder.nrElements > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			batchLog.setCompletedIndicator(builder.nrElements > 0 ? false : true);
+		}
+		if (this.smsProvider != null) {
+			batchLog.setSmsProvider(this.smsProvider);
+		} else {
+			batchLog.setMessage("SMS Provider is not selected for the branch.");
+			batchLog.setBatchStatusConstant(BatchStatusConstant.CANCELLED);
 		}
 		batchLog.setExecutionStartDate(DateUtil.getSystemDate());
 		return batchLog;

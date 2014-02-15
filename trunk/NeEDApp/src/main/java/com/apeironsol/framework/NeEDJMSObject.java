@@ -11,6 +11,7 @@ import java.io.Serializable;
 import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.model.StudentRegistration;
 import com.apeironsol.need.notifications.model.BatchLog;
 
 public class NeEDJMSObject implements Serializable {
@@ -50,6 +51,11 @@ public class NeEDJMSObject implements Serializable {
 	 * User name of user logged into application.
 	 */
 	private final BatchLog		batchLog;
+
+	/**
+	 * Student to whom notification has to be sent.
+	 */
+	private StudentRegistration	studentRegistration;
 
 	/**
 	 * @param batchId
@@ -157,6 +163,21 @@ public class NeEDJMSObject implements Serializable {
 	 */
 	public BatchLog getBatchLog() {
 		return this.batchLog;
+	}
+
+	/**
+	 * @return the studentRegistration
+	 */
+	public StudentRegistration getStudentRegistration() {
+		return this.studentRegistration;
+	}
+
+	/**
+	 * @param studentRegistration
+	 *            the studentRegistration to set
+	 */
+	public void setStudentRegistration(final StudentRegistration studentRegistration) {
+		this.studentRegistration = studentRegistration;
 	}
 
 }

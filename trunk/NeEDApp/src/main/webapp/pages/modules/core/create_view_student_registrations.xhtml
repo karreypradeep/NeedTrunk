@@ -4,119 +4,121 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 
-	<p:panel id="batch" style="margin-bottom:10px;">
-		<f:facet name="header">
+	<f:facet name="header">
 			Student Registration
 		</f:facet>
-		<p:messages id="messages" globalOnly="true" />
-		<h:panelGrid columns="2"  cellpadding="4" style="border:0px;">
-			<p:outputLabel id="academic_year_label" value="Academic year" for="academic_year" />
-			<h:panelGrid columns="2"   style="border:0px;">
-				<p:selectOneMenu id="academic_year" value="#{studentRegistrationBean.currentStudentRegistration.academicYear}"
-					converter="academicYearConverter" style="width:165px;" required="true">
-					<f:selectItem itemLabel="Select academic year" itemValue="" />
-					<f:selectItems value="#{studentRegistrationBean.academicYearsWithAdmissionOpen}" var="academicYear"
-						itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
-				</p:selectOneMenu>
-				<p:message id="academic_year_msg" for="academic_year" />
-			</h:panelGrid>
+	<h:panelGrid columns="2" cellpadding="4" style="border:0px;">
 
-			<p:outputLabel id="student_name_label" value="Student name" for="student_first_name" />
-			<h:panelGrid columns="8"   style="border:0px;">
-				<p:inputText id="student_first_name" value="#{studentRegistrationBean.currentStudentRegistration.studentFirstName}"
-					requiredMessage="First name is required" required="true" maxlength="255">
-				</p:inputText>
-				<p:message id="student_first_name_msg" for="student_first_name" />
-				<p:watermark for="student_first_name" value="First name" />
-				<p:inputText id="student_middle_name"
-					value="#{studentRegistrationBean.currentStudentRegistration.studentMiddleName}" maxlength="255">
-				</p:inputText>
-				<p:watermark for="student_middle_name" value="Middle name" />
-				<p:inputText id="student_last_name" value="#{studentRegistrationBean.currentStudentRegistration.studentLastName}"
-					requiredMessage="Last name is required" required="true" maxlength="255">
-				</p:inputText>
-				<p:message id="student_last_name_msg" for="student_last_name" />
-				<p:watermark for="student_last_name" value="Last name" />
-			</h:panelGrid>
+		<p:outputLabel id="registraton_nr_label" value="Registration Number" for="registraton_nr"
+			rendered="#{studentRegistrationBean.currentStudentRegistration.registrationNr != null}" />
+		<p:inputText id="registraton_nr" value="#{studentRegistrationBean.currentStudentRegistration.registrationNr}"
+			disabled="true" rendered="#{studentRegistrationBean.currentStudentRegistration.registrationNr != null}">
+		</p:inputText>
 
-
-			<p:outputLabel id="father_name_label" value="Father name" for="father_first_name" />
-			<h:panelGrid columns="8"   style="border:0px;">
-				<p:inputText id="father_first_name" value="#{studentRegistrationBean.currentStudentRegistration.fatherFirstName}"
-					requiredMessage="First name is required" required="true" maxlength="255">
-				</p:inputText>
-				<p:message id="father_first_name_msg" for="father_first_name" />
-				<p:watermark for="father_first_name" value="First name" />
-				<p:inputText id="father_middle_name" value="#{studentRegistrationBean.currentStudentRegistration.fatherMiddleName}"
-					maxlength="255">
-				</p:inputText>
-				<p:watermark for="father_middle_name" value="Middle name" />
-				<p:inputText id="father_last_name" value="#{studentRegistrationBean.currentStudentRegistration.fatherLastName}"
-					requiredMessage="Last name is required" required="true" maxlength="255">
-				</p:inputText>
-				<p:message id="father_last_name_msg" for="father_last_name" />
-				<p:watermark for="father_last_name" value="Last name" />
-			</h:panelGrid>
-
-			<p:outputLabel id="father_occupation_label" value="Occupation" for="father_occupation" />
-			<p:inputText id="father_occupation" value="#{studentRegistrationBean.currentStudentRegistration.fatherOccupation}"
-				maxlength="255">
-			</p:inputText>
-
-
-			<p:outputLabel id="address_label" value="Address" for="address" />
-			<h:panelGrid columns="2"   style="border:0px;">
-				<p:inputTextarea id="address" rows="5" cols="50" autoResize="false" required="true"
-					value="#{studentRegistrationBean.currentStudentRegistration.address}" />
-				<p:message id="address_msg" for="address" />
-			</h:panelGrid>
-
-			<p:outputLabel id="primary_contact_number_label" value="Primary contact number" for="primary_contact_number" />
-			<h:panelGrid columns="2"   style="border:0px;">
-				<p:inputMask id="primary_contact_number"
-					value="#{studentRegistrationBean.currentStudentRegistration.primaryContactNumber}" mask="9999999999"
-					required="true" />
-				<p:message id="primary_contact_number_msg" for="primary_contact_number" />
-			</h:panelGrid>
-
-			<p:outputLabel id="secondary_contact_number_label" value="Secondary contact number" for="secondary_contact_number" />
-			<p:inputMask id="secondary_contact_number"
-				value="#{studentRegistrationBean.currentStudentRegistration.secondaryContactNumber}" mask="9999999999" />
-
-			<p:outputLabel id="group_interested_label" value="Groups interested" for="group_interested" />
-			<p:selectManyCheckbox id="group_interested" value="#{studentRegistrationBean.interestedGroups}">
-				<f:selectItem itemLabel="MEC" itemValue="MEC" />
-				<f:selectItem itemLabel="MPC" itemValue="MPC" />
-				<f:selectItem itemLabel="BiPC" itemValue="BiPC" />
-				<f:selectItem itemLabel="CEC" itemValue="CEC" />
-			</p:selectManyCheckbox>
-
-			<p:outputLabel id="school_name_label" value="School name" for="school_name" />
-			<p:inputText id="school_name" value="#{studentRegistrationBean.currentStudentRegistration.schoolName}"
-				maxlength="255">
-			</p:inputText>
-
-			<p:outputLabel id="area_label" value="Area" for="area" />
-			<p:inputText id="area" value="#{studentRegistrationBean.currentStudentRegistration.area}" maxlength="255">
-			</p:inputText>
-
-			<p:outputLabel id="district_label" value="District" for="district" />
-			<p:inputText id="district" value="#{studentRegistrationBean.currentStudentRegistration.district}" maxlength="255">
-			</p:inputText>
-
+		<p:outputLabel id="academic_year_label" value="Academic year" for="academic_year" />
+		<h:panelGrid columns="2" style="border:0px;">
+			<p:selectOneMenu id="academic_year" value="#{studentRegistrationBean.currentStudentRegistration.academicYear}"
+				converter="academicYearConverter" style="width:165px;" required="true">
+				<f:selectItem itemLabel="Select academic year" itemValue="" />
+				<f:selectItems value="#{studentRegistrationBean.academicYearsWithAdmissionOpen}" var="academicYear"
+					itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+			</p:selectOneMenu>
+			<p:message id="academic_year_msg" for="academic_year" />
 		</h:panelGrid>
 
-		<p:commandButton id="student_resistration_cancle" value="Back" process="@this" update="@form"
-			icon="ui-icon-circle-arrow-w">
-			<f:setPropertyActionListener target="#{studentRegistrationBean.viewOrNewAction}" value="false" />
-		</p:commandButton>
-		<p:commandButton id="student_resistration_save" value="Save"
-			action="#{studentRegistrationBean.saveStudentRegistration}" update="@form" icon="ui-icon-circle-check" />
-		<p:defaultCommand target="student_resistration_save" />
-		<p:blockUI block="form" trigger="student_resistration_save student_resistration_cancle">  
-        		Request is processing, please wait<br />
-			<p:graphicImage value="/images/ajax-loader.gif" />
-		</p:blockUI>
+		<p:outputLabel id="student_name_label" value="Student name" for="student_first_name" />
+		<h:panelGrid columns="8" style="border:0px;">
+			<p:inputText id="student_first_name" value="#{studentRegistrationBean.currentStudentRegistration.studentFirstName}"
+				requiredMessage="First name is required" required="true" maxlength="255">
+			</p:inputText>
+			<p:message id="student_first_name_msg" for="student_first_name" />
+			<p:watermark for="student_first_name" value="First name" />
+			<p:inputText id="student_middle_name" value="#{studentRegistrationBean.currentStudentRegistration.studentMiddleName}"
+				maxlength="255">
+			</p:inputText>
+			<p:watermark for="student_middle_name" value="Middle name" />
+			<p:inputText id="student_last_name" value="#{studentRegistrationBean.currentStudentRegistration.studentLastName}"
+				requiredMessage="Last name is required" required="true" maxlength="255">
+			</p:inputText>
+			<p:message id="student_last_name_msg" for="student_last_name" />
+			<p:watermark for="student_last_name" value="Last name" />
+		</h:panelGrid>
 
-	</p:panel>
+
+		<p:outputLabel id="father_name_label" value="Father name" for="father_first_name" />
+		<h:panelGrid columns="8" style="border:0px;">
+			<p:inputText id="father_first_name" value="#{studentRegistrationBean.currentStudentRegistration.fatherFirstName}"
+				requiredMessage="First name is required" required="true" maxlength="255">
+			</p:inputText>
+			<p:message id="father_first_name_msg" for="father_first_name" />
+			<p:watermark for="father_first_name" value="First name" />
+			<p:inputText id="father_middle_name" value="#{studentRegistrationBean.currentStudentRegistration.fatherMiddleName}"
+				maxlength="255">
+			</p:inputText>
+			<p:watermark for="father_middle_name" value="Middle name" />
+			<p:inputText id="father_last_name" value="#{studentRegistrationBean.currentStudentRegistration.fatherLastName}"
+				requiredMessage="Last name is required" required="true" maxlength="255">
+			</p:inputText>
+			<p:message id="father_last_name_msg" for="father_last_name" />
+			<p:watermark for="father_last_name" value="Last name" />
+		</h:panelGrid>
+
+		<p:outputLabel id="father_occupation_label" value="Occupation" for="father_occupation" />
+		<p:inputText id="father_occupation" value="#{studentRegistrationBean.currentStudentRegistration.fatherOccupation}"
+			maxlength="255">
+		</p:inputText>
+
+
+		<p:outputLabel id="address_label" value="Address" for="address" />
+		<h:panelGrid columns="2" style="border:0px;">
+			<p:inputTextarea id="address" rows="5" cols="50" autoResize="false" required="true"
+				value="#{studentRegistrationBean.currentStudentRegistration.address}" />
+			<p:message id="address_msg" for="address" />
+		</h:panelGrid>
+
+		<p:outputLabel id="primary_contact_number_label" value="Primary contact number" for="primary_contact_number" />
+		<h:panelGrid columns="2" style="border:0px;">
+			<p:inputMask id="primary_contact_number"
+				value="#{studentRegistrationBean.currentStudentRegistration.primaryContactNumber}" mask="9999999999" required="true" />
+			<p:message id="primary_contact_number_msg" for="primary_contact_number" />
+		</h:panelGrid>
+
+		<p:outputLabel id="secondary_contact_number_label" value="Secondary contact number" for="secondary_contact_number" />
+		<p:inputMask id="secondary_contact_number"
+			value="#{studentRegistrationBean.currentStudentRegistration.secondaryContactNumber}" mask="9999999999" />
+
+		<p:outputLabel id="group_interested_label" value="Groups interested" for="group_interested" />
+		<p:selectManyCheckbox id="group_interested" value="#{studentRegistrationBean.interestedGroups}">
+			<f:selectItem itemLabel="MEC" itemValue="MEC" />
+			<f:selectItem itemLabel="MPC" itemValue="MPC" />
+			<f:selectItem itemLabel="BiPC" itemValue="BiPC" />
+			<f:selectItem itemLabel="CEC" itemValue="CEC" />
+		</p:selectManyCheckbox>
+
+		<p:outputLabel id="school_name_label" value="School name" for="school_name" />
+		<p:inputText id="school_name" value="#{studentRegistrationBean.currentStudentRegistration.schoolName}" maxlength="255">
+		</p:inputText>
+
+		<p:outputLabel id="area_label" value="Area" for="area" />
+		<p:inputText id="area" value="#{studentRegistrationBean.currentStudentRegistration.area}" maxlength="255">
+		</p:inputText>
+
+		<p:outputLabel id="district_label" value="District" for="district" />
+		<p:inputText id="district" value="#{studentRegistrationBean.currentStudentRegistration.district}" maxlength="255">
+		</p:inputText>
+
+	</h:panelGrid>
+
+	<p:commandButton id="student_resistration_cancle" value="Back" process="@this" update="@form"
+		icon="ui-icon-circle-arrow-w">
+		<f:setPropertyActionListener target="#{studentRegistrationBean.viewOrNewAction}" value="false" />
+	</p:commandButton>
+	<p:commandButton id="student_resistration_save" value="Save"
+		action="#{studentRegistrationBean.saveStudentRegistration}" update="@form" icon="ui-icon-circle-check" />
+	<p:defaultCommand target="student_resistration_save" />
+	<p:blockUI block="form" trigger="student_resistration_save student_resistration_cancle">  
+        		Request is processing, please wait<br />
+		<p:graphicImage value="/images/ajax-loader.gif" />
+	</p:blockUI>
+
 </ui:composition>

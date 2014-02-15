@@ -54,6 +54,12 @@
 				 pattern="dd/MM/yyyy" yearRange="1900" required="true" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 			<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 
+			<p:outputLabel id="comitted_fee_label" value="Comitted fee" for="comitted_fee" />
+			<p:inputText id="comitted_fee" value="#{admissionBean.admissionReservationFee.comittedFee}">
+				<p:ajax process="@this" update="@this" />
+			</p:inputText>
+			<p:message id="comitted_fee_msg" for="comitted_fee" />
+
 			<p:outputLabel id="comments_label" value="Comments" for="comments" />
 			<p:inputTextarea id="comments" rows="10" cols="100" required="true" value="#{admissionBean.actionComment}" />
 			<p:message id="comments_msg" for="comments" />

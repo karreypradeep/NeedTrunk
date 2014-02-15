@@ -34,6 +34,7 @@ import com.apeironsol.need.core.model.Section;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAbsent;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.model.StudentRegistration;
 import com.apeironsol.need.core.service.AttendanceService;
 import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.core.service.BranchService;
@@ -691,6 +692,29 @@ public class NotificationServiceImpl implements NotificationService {
 			studentMap.put(student.getId(), student);
 		}
 		return studentMap.values();
+	}
+
+	@Override
+	public BatchLog sendNotificationForStudentRegistration(final StudentRegistration studentRegistration, final BatchLog batchLog) throws ApplicationException {
+		BatchLog result = batchLog;
+		if (result == null) {
+			throw new ApplicationException("BatchLog cannot be null");
+		} else if (result.getBranch() == null) {
+			throw new ApplicationException("Branch for BatchLog cannot be null");
+		}
+
+		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+		if (result.getId() == null) {
+			result.setNrElements(Long.valueOf(1));
+			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
+			result = notificationProducerUtil.createBatchLog(result);
+		}
+		notificationProducerUtil.sendNotificationJMS(studentRegistration, result);
+		return result;
 	}
 
 }

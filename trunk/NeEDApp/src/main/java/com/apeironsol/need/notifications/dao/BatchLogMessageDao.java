@@ -118,4 +118,27 @@ public interface BatchLogMessageDao extends BaseDao<BatchLogMessage> {
 	 */
 	BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentId(final Long batchLogId, final Long studentId) throws BusinessException;
 
+	/**
+	 * Find all batch log messages for student academic year.
+	 * 
+	 * @param studentId
+	 *            studentId.
+	 * @return collection of all batch log messages for student academic year.
+	 * @throws BusinessException
+	 *             In case of exception.
+	 */
+	Collection<BatchLogMessage> findBatchLogMessagesByStudentRegistrationId(final Long studentRegistrationId) throws BusinessException;
+
+	/**
+	 * Find batch log message for batch log id and student academic year id.
+	 * 
+	 * @param branchLogId
+	 *            branchLogId.
+	 * @param studentId
+	 *            studentId.
+	 * @return batch log message for batch log id and student academic year id.
+	 * @throws BusinessException
+	 *             In case of exception.
+	 */
+	BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentRegistrationId(final Long batchLogId, final Long studentRegistrationId) throws BusinessException;
 }

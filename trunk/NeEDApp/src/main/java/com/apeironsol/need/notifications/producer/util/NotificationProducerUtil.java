@@ -26,6 +26,7 @@ import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.need.core.model.BranchRule;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.model.StudentRegistration;
 import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.service.BatchLogService;
@@ -292,6 +293,56 @@ public class NotificationProducerUtil implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @param studentAcademicYear
+	 * @param branchId
+	 * @param batchLog
+	 */
+	public synchronized void sendNotificationJMS(final StudentRegistration studentRegistration, final BatchLog batchLog) {
+		Connection queueConn = null;
+		Session session = null;
+		try {
+			// create a queue connection
+			queueConn = this.getJmsConnectionFactory().createConnection();
+			// create a queue session
+			session = queueConn.createSession(true, Session.AUTO_ACKNOWLEDGE);
+			// create a queue producer
+			final MessageProducer producer = session.createProducer(this.getDestination());
+			producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+
+			ObjectMessage message = this.createNotificationMessage(studentRegistration, batchLog, Long.valueOf(1), session);
+			// send the message
+			producer.send(message);
+
+			// Send this message as last message to update batch log.
+			message = this.createLastMessage(batchLog, session);
+			// send the message
+			producer.send(message);
+			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.DISTRIBUTED, Long.valueOf(1));
+			session.commit();
+		} catch (final Exception e) {
+			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.SENDING_FAILED, Long.valueOf(1));
+			if (session != null) {
+				try {
+					session.rollback();
+				} catch (final JMSException e1) {
+					Logger.error(e.getCause());
+				}
+			}
+			Logger.error(e.getCause());
+		} finally {
+			// close the queue connection
+			if (queueConn != null) {
+				try {
+					queueConn.close();
+				} catch (final JMSException e) {
+					Logger.error(e.getCause());
+				}
+			}
+		}
+	}
+
+	/**
 	 * Updates supplied batch log to status supplied.
 	 * 
 	 * @param batchLog
@@ -353,6 +404,36 @@ public class NotificationProducerUtil implements Serializable {
 		if (student != null) {
 			jmsObject.setStudent(student);
 		}
+		jmsObject.setSmsProvider(batchLog.getSmsProvider());
+		jmsObject.setSequenceNr(Long.valueOf(1));
+		jmsObject.setUserName(ViewUtil.getPrincipal());
+		final ObjectMessage message = session.createObjectMessage(jmsObject);
+		message.setJMSPriority(Message.DEFAULT_PRIORITY);
+		return message;
+	}
+
+	/**
+	 * Creates object message of JMSObject for student.
+	 * 
+	 * @param studentAcademicYear
+	 *            studentAcademicYear.
+	 * @param batchLog
+	 *            batchLog.
+	 * @param sequenceNr
+	 *            sequenceNr.
+	 * @param session
+	 *            session.
+	 * @return
+	 * @throws JMSException
+	 */
+	private ObjectMessage createNotificationMessage(final StudentRegistration studentRegistration, final BatchLog batchLog, final Long sequenceNr,
+			final Session session) throws JMSException {
+		// Send this message as last message to update batch log.
+		final NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog);
+		if (studentRegistration != null) {
+			jmsObject.setStudentRegistration(studentRegistration);
+		}
+
 		jmsObject.setSmsProvider(batchLog.getSmsProvider());
 		jmsObject.setSequenceNr(Long.valueOf(1));
 		jmsObject.setUserName(ViewUtil.getPrincipal());

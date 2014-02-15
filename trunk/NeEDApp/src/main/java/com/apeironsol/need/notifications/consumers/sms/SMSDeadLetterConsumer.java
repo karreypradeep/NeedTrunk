@@ -25,7 +25,6 @@ import com.apeironsol.need.core.service.BranchRuleService;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorker;
 import com.apeironsol.need.notifications.consumers.worker.sms.SMSWorkerFactory;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
-import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.model.BatchLogMessage;
 import com.apeironsol.need.notifications.service.BatchLogMessageService;
 import com.apeironsol.need.notifications.service.BatchLogService;
@@ -72,7 +71,7 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 						.getStudent().getId());
 			}
 			if (batchLogMessage == null) {
-				this.processBatchMesssage(jmsObject, jmsObject.getBatchLog());
+				this.processBatchMesssage(jmsObject);
 			}
 		}
 	}
@@ -84,18 +83,16 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 	 *            apeironsolJMSObject.
 	 * @throws MessagingException
 	 */
-	private void processBatchMesssage(final NeEDJMSObject jmsObject, final BatchLog batchLog) {
+	private void processBatchMesssage(final NeEDJMSObject jmsObject) {
 		NotificationMessage notificationMessage = null;
-		final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
+		final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(jmsObject.getBatchLog().getNotificationSubTypeConstant());
 		try {
-			notificationMessage = smsWorker.sendSMS(batchLog.getSmsProvider() != null ? batchLog.getSmsProvider() : jmsObject.getSmsProvider(), jmsObject
-					.getStudentAcademicYear(), jmsObject.getStudentAcademicYear() == null ? jmsObject.getStudent() : jmsObject.getStudentAcademicYear()
-					.getStudent(), batchLog);
-			this.postProcessElement(jmsObject, batchLog, notificationMessage);
+			notificationMessage = smsWorker.sendSMS(jmsObject);
+			this.postProcessElement(jmsObject, notificationMessage);
 		} catch (final Throwable exception) {
 			logger.error(exception);
 			notificationMessage = this.createNotificationMessage(null, exception.getMessage(), BatchLogMessageStatusConstant.FAILED);
-			this.postProcessElement(jmsObject, batchLog, notificationMessage);
+			this.postProcessElement(jmsObject, notificationMessage);
 		}
 	}
 
@@ -106,15 +103,18 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 	 * @param messageException
 	 * @param batchLog
 	 */
-	private void postProcessElement(final NeEDJMSObject jmsObject, final BatchLog batchLog, final NotificationMessage notificationMessage) {
+	private void postProcessElement(final NeEDJMSObject jmsObject, final NotificationMessage notificationMessage) {
 		final BatchLogMessage batchLogMessage = new BatchLogMessage();
-		batchLogMessage.setBatchLog(batchLog);
+		batchLogMessage.setBatchLog(jmsObject.getBatchLog());
 		if (jmsObject.getStudentAcademicYear() != null) {
 			batchLogMessage.setStudentAcademicYear(jmsObject.getStudentAcademicYear());
 			batchLogMessage.setSendTo(jmsObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
 		}
 		if (jmsObject.getStudent() != null) {
 			batchLogMessage.setStudent(jmsObject.getStudent());
+		}
+		if (jmsObject.getStudentRegistration() != null) {
+			batchLogMessage.setStudentRegistration(jmsObject.getStudentRegistration());
 		}
 		batchLogMessage.setAuditUsername(jmsObject.getUserName());
 		if (notificationMessage.getMessage() != null) {

@@ -14,6 +14,7 @@ import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.model.Section;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.model.StudentRegistration;
 import com.apeironsol.need.notifications.model.BatchLog;
 
 public interface NotificationService {
@@ -37,4 +38,6 @@ public interface NotificationService {
 	BatchLog sendReportCardNotificationForStudent(BatchLog batchLog) throws ApplicationException;
 
 	BatchLog sendNotification(BatchLog batchLog) throws ApplicationException;
+
+	BatchLog sendNotificationForStudentRegistration(StudentRegistration studentRegistration, BatchLog batchLog) throws ApplicationException;
 }

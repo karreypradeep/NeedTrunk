@@ -66,4 +66,16 @@ public interface StudentRegistrationDao extends BaseDao<StudentRegistration> {
 	 */
 	Collection<StudentRegistration> findStudentRegistrationesByAcademicYearIdAndStatus(Long academicYearId,
 			StudentRegistrationStatusConstant studentRegistrationStatus) throws BusinessException;
+
+	/**
+	 * Retrieves all studentRegistrationes of supplied branch id.
+	 * 
+	 * @param branchId
+	 *            branch id.
+	 * @return all studentRegistrationes of supplied branch id.
+	 * @throws BusinessException
+	 *             In case of exception.
+	 */
+	Collection<StudentRegistration> findStudentRegistrationesByStudentRegistrationStatus(StudentRegistrationStatusConstant studentRegistrationStatus)
+			throws BusinessException;
 }

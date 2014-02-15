@@ -17,6 +17,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.core.model.AcademicYear;
@@ -186,14 +187,14 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 			// student.setStudentStatus(StudentStatusConstant.IN_ADMISSION);
 			final Student result = this.studentService.saveStudent(student);
-
 			// student application fee
+			AdmissionReservationFee admiReservationFee = admissionReservationFee;
 			if ((admissionReservationFee != null) && (admissionReservationFee.getApplicationFormFee() != null)
 					&& (admissionReservationFee.getApplicationFormFee() > 0)) {
 				admissionReservationFee.setStudent(result);
 				admissionReservationFee.setApplicationFeeAppliedToStudentFees(false);
 				admissionReservationFee.setApplicationFeePaidDate(DateUtil.getSystemDate());
-				this.admissionReservationFeeService.saveAdmissionReservationFee(admissionReservationFee);
+				admiReservationFee = this.admissionReservationFeeService.saveAdmissionReservationFee(admissionReservationFee);
 			}
 
 			// Education history
@@ -215,6 +216,11 @@ public class AdmissionServiceImpl implements AdmissionService {
 					if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
 							|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
 						this.notificationService.sendNotificationForStudentAdmission(result, batchLog);
+						if ((admiReservationFee != null) && (admiReservationFee.getApplicationFormFee() != null)
+								&& (admiReservationFee.getApplicationFormFee() > 0)) {
+							admiReservationFee.setApplicationFeeNotificationSent(true);
+							this.admissionReservationFeeService.saveAdmissionReservationFee(admiReservationFee);
+						}
 					}
 				}
 			} catch (final Exception e) {
@@ -311,22 +317,46 @@ public class AdmissionServiceImpl implements AdmissionService {
 					studentAcademicYear.setSequenceNr(Integer.valueOf(1));
 					studentAcademicYear = this.studentAcademicYearService.saveStudentAcademicYear(studentAcademicYear);
 				}
+				AdmissionReservationFee admiReservationFee = admissionReservationFee;
+				if ((admissionReservationFee.getComittedFee() != null)
+						|| ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0))) {
+					this.validateReservationFee(admissionReservationFee, currentStudent, acceptedForKlass);
+					if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0)) {
+						admissionReservationFee.setReservationFeeAppliedToStudentFees(false);
+						admissionReservationFee.setReservationFeePaidDate(DateUtil.getSystemDate());
+
+					}
+					admissionReservationFee.setStudent(currentStudent);
+					admiReservationFee = this.admissionReservationFeeService.saveAdmissionReservationFee(admissionReservationFee);
+				}
 
 				currentStudent.setAdmissionStatus(AdmissionStatusConstant.ACCEPTED);
 				currentStudent.setStudentStatus(StudentStatusConstant.ACCEPTED);
 				currentStudent.setAcceptedForKlass(acceptedForKlass);
 				final Student result = this.studentService.saveStudent(currentStudent);
-
-				if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0)) {
-					admissionReservationFee.setReservationFeeAppliedToStudentFees(false);
-					admissionReservationFee.setReservationFeePaidDate(DateUtil.getSystemDate());
-					admissionReservationFee.setStudent(result);
-					this.admissionReservationFeeService.saveAdmissionReservationFee(admissionReservationFee);
-				}
-
 				// Log student state history
 				this.saveStudentStatusHistory(studentStatusHistory, result, AdmissionStatusConstant.ACCEPTED.getLabel());
 
+				try {
+					final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
+							appliedForAcademicYear.getBranch().getId(), NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION);
+					if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
+						final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), appliedForAcademicYear.getBranch().getId(), result.getId(),
+								NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT,
+								NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION, null, null);
+						if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
+								|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
+							this.notificationService.sendNotificationForStudentAdmission(result, batchLog);
+							if ((admiReservationFee != null) && (admiReservationFee.getReservationFee() != null)
+									&& (admiReservationFee.getReservationFee() > 0)) {
+								admiReservationFee.setReservationFeeNotificationSent(true);
+								this.admissionReservationFeeService.saveAdmissionReservationFee(admiReservationFee);
+							}
+						}
+					}
+				} catch (final Exception e) {
+					e.printStackTrace();
+				}
 				return result;
 
 			} else {
@@ -335,6 +365,50 @@ public class AdmissionServiceImpl implements AdmissionService {
 		} catch (final Throwable e) {
 			throw new SystemException(e);
 		}
+	}
+
+	private void validateReservationFee(final AdmissionReservationFee admissionReservationFee, final Student student, final Klass acceptedForKlass) {
+		double maxReservationFeeCanBePaid = 0;
+		if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() <= 0d)) {
+			throw new ApplicationException("Reservation fee should be grater than 0.");
+		} else if ((admissionReservationFee.getComittedFee() != null) || (admissionReservationFee.getReservationFee() != null)) {
+			final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearId(student.getBranch()
+					.getId(), student.getAppliedForAcademicYear().getId());
+			for (final BranchLevelFee branchLevelFee : branchLevelFees) {
+				if ((student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER) && FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee.getBuildingBlock()
+						.getFeeType()))
+						|| FeeTypeConstant.APPLICATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())
+						|| FeeTypeConstant.RESERVATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())) {
+					// don't create hostel fee.
+					continue;
+				}
+
+				maxReservationFeeCanBePaid = maxReservationFeeCanBePaid + branchLevelFee.getAmount();
+			}
+
+			final Collection<KlassLevelFee> klassLevelFees = this.klassLevelFeeService.findAllKlassFeesByKlassIdAndAcademicYearId(acceptedForKlass.getId(),
+					student.getAppliedForAcademicYear().getId());
+			for (final KlassLevelFee klassLevelFee : klassLevelFees) {
+				if (student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
+						&& FeeTypeConstant.HOSTEL_FEE.equals(klassLevelFee.getBuildingBlock().getFeeType())) {
+					// don't create hostel fee.
+					continue;
+				}
+				if (student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
+						&& FeeTypeConstant.APPLICATION_FEE.equals(klassLevelFee.getBuildingBlock().getFeeType())) {
+					// don't create hostel fee.
+					continue;
+				}
+				maxReservationFeeCanBePaid = maxReservationFeeCanBePaid + klassLevelFee.getAmount();
+			}
+			if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > maxReservationFeeCanBePaid)) {
+				throw new ApplicationException("Reservation fee cannot exceed " + maxReservationFeeCanBePaid);
+			}
+			if ((admissionReservationFee.getComittedFee() != null) && (admissionReservationFee.getComittedFee() > maxReservationFeeCanBePaid)) {
+				throw new ApplicationException("Comitted fee cannot exceed " + maxReservationFeeCanBePaid);
+			}
+		}
+
 	}
 
 	@Override
@@ -567,16 +641,20 @@ public class AdmissionServiceImpl implements AdmissionService {
 			// Process Application fee
 			if ((admissionReservationFee.getApplicationFormFee() != null) && (admissionReservationFee.getApplicationFormFee() > 0d)
 					&& (admissionReservationFee.getApplicationFeePaidDate() != null)) {
-				this.processApplicationFee(studentFees, studentAcademicYear, skipApplicatinFee, admissionReservationFee, studentFeeTransactionLocal);
+				this.processApplicationFee(studentFees, studentAcademicYear, skipApplicatinFee, admissionReservationFee, studentFeeTransactionLocal,
+						admissionReservationFee.getApplicationFeeNotificationSent() != null ? admissionReservationFee.getApplicationFeeNotificationSent()
+								: false);
 			}
 			// Process reservation fee
 			if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0d)
 					&& (admissionReservationFee.getReservationFeePaidDate() != null)) {
 				this.processReservationFee(studentFees, studentAcademicYear, admissionFeeDOs, skipReservationFee, admissionReservationFee,
-						studentFeeTransactionLocal);
+						studentFeeTransactionLocal,
+						admissionReservationFee.getReservationFeeNotificationSent() != null ? admissionReservationFee.getReservationFeeNotificationSent()
+								: false);
 			}
 			try {
-				if (studentFeeTransactionLocal != null) {
+				if ((studentFeeTransactionLocal != null) && (admissionReservationFee.getReservationFeeNotificationSent() == null)) {
 					final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
 							studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
 					if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
@@ -606,7 +684,8 @@ public class AdmissionServiceImpl implements AdmissionService {
 	 * @param studentFeeTxn
 	 */
 	private void processApplicationFee(final Collection<StudentFee> studentFees, final StudentAcademicYear studentAcademicYear,
-			final boolean skipApplicatinFee, final AdmissionReservationFee admissionReservationFee, final StudentFeeTransaction studentFeeTxn) {
+			final boolean skipApplicatinFee, final AdmissionReservationFee admissionReservationFee, final StudentFeeTransaction studentFeeTxn,
+			final boolean applicationFeePaidNotificationAlreadySent) {
 		if ((admissionReservationFee != null) && (admissionReservationFee.getApplicationFormFee() != null) && skipApplicatinFee) {
 
 			throw new BusinessException("Application fee payment conversion cannot be skipped, because application fee is paid");
@@ -645,7 +724,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 				studentFeeTransactionLocal = this.studentFeeTransactionService.saveStudentFeeTransaction(studentFeeTransaction);
 			}
 			this.processFeePayment(studentFees, FeeTypeConstant.APPLICATION_FEE, studentFeeTransactionLocal, admissionReservationFee.getApplicationFormFee());
-			if (studentFeeTxn == null) {
+			if ((studentFeeTxn == null) && !applicationFeePaidNotificationAlreadySent) {
 				try {
 					final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
 							studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
@@ -677,7 +756,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 	 */
 	private void processReservationFee(final Collection<StudentFee> studentFees, final StudentAcademicYear studentAcademicYear,
 			final Collection<AdmissionFeeDO> admissionFeeDOs, final boolean skipReservationFee, final AdmissionReservationFee admissionReservationFee,
-			final StudentFeeTransaction studentFeeTxn) {
+			final StudentFeeTransaction studentFeeTxn, final boolean reservationFeePaidNotificationAlreadySent) {
 
 		final double amount = admissionReservationFee.getReservationFee();
 		StudentFeeTransaction studentFeeTransactionLocal = studentFeeTxn;
@@ -812,7 +891,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 		}
 
 		try {
-			if (studentFeeTransactionLocal != null) {
+			if ((studentFeeTransactionLocal != null) && !reservationFeePaidNotificationAlreadySent) {
 				final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
 						studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
 				if ((branchNotification != null) && branchNotification.getSmsIndicator()) {

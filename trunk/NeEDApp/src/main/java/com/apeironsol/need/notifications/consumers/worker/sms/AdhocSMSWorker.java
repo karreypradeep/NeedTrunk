@@ -14,12 +14,10 @@ import javax.mail.MessagingException;
 import org.apache.http.client.ClientProtocolException;
 import org.springframework.stereotype.Component;
 
+import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.SMSProvider;
-import com.apeironsol.need.core.model.Student;
-import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
-import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 
@@ -43,34 +41,34 @@ public class AdhocSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final Student student,
-			final BatchLog batchLog) throws ClientProtocolException, URISyntaxException, IOException {
+	public NotificationMessage sendSMS(final NeEDJMSObject neEDJMSObject) throws ClientProtocolException, URISyntaxException, IOException {
 		final NotificationMessage notificationMessage = new NotificationMessage();
+		final SMSProvider sMSProvider = neEDJMSObject.getSmsProvider() != null ? neEDJMSObject.getSmsProvider() : neEDJMSObject.getBatchLog().getSmsProvider();
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
-		final String smsText = batchLog.getMessage();
-		if (studentAcademicYear.getStudent().getAddress().getContactNumber() != null) {
-			notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
-			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() },
-					smsText);
+		final String smsText = neEDJMSObject.getBatchLog().getMessage();
+		if (neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber() != null) {
+			notificationMessage.setSentAddress(neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
+			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { neEDJMSObject.getStudentAcademicYear().getStudent().getAddress()
+					.getContactNumber() }, smsText);
 			if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
-				notificationMessage.setMessage(batchLog.getMessage());
+				notificationMessage.setMessage(neEDJMSObject.getBatchLog().getMessage());
 			} else {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.FAILED);
-				notificationMessage.setMessage(batchLog.getMessage());
+				notificationMessage.setMessage(neEDJMSObject.getBatchLog().getMessage());
 				notificationMessage.setErrorMessage(smsReturnTest);
 			}
 		} else {
 			notificationMessage.setSentAddress("Not Available");
 			notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
-			notificationMessage.setMessage(batchLog.getMessage());
+			notificationMessage.setMessage(neEDJMSObject.getBatchLog().getMessage());
 			notificationMessage.setErrorMessage("Contact number not available");
 		}
 		return notificationMessage;
 	}
 
 	@Override
-	public String getMessage(final StudentAcademicYear studentAcademicYear, final Student student, final BatchLog batchLog) throws ApplicationException {
-		return batchLog.getMessage();
+	public String getMessage(final NeEDJMSObject neEDJMSObject) throws ApplicationException {
+		return neEDJMSObject.getBatchLog().getMessage();
 	}
 }

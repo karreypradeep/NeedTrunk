@@ -21,15 +21,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.StudentExamSubject;
 import com.apeironsol.need.academics.service.StudentExamSubjectService;
 import com.apeironsol.need.core.model.SMSProvider;
-import com.apeironsol.need.core.model.Student;
-import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
-import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
@@ -70,24 +68,24 @@ public class ExamResultSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final Student student,
-			final BatchLog batchLog) throws ClientProtocolException, URISyntaxException, IOException {
+	public NotificationMessage sendSMS(final NeEDJMSObject neEDJMSObject) throws ClientProtocolException, URISyntaxException, IOException {
 		final NotificationMessage notificationMessage = new NotificationMessage();
+		final SMSProvider sMSProvider = neEDJMSObject.getSmsProvider() != null ? neEDJMSObject.getSmsProvider() : neEDJMSObject.getBatchLog().getSmsProvider();
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
-		String smsText = batchLog.getMessage();
+		String smsText = neEDJMSObject.getBatchLog().getMessage();
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			final Map<String, String> model = new HashMap<String, String>();
-			model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
-			final Exam exam = batchLog.getExam();
+			model.put("studentName", neEDJMSObject.getStudentAcademicYear().getStudent().getDisplayName());
+			final Exam exam = neEDJMSObject.getBatchLog().getExam();
 			if (exam != null) {
-				model.put("examName", batchLog.getExam().getName());
+				model.put("examName", neEDJMSObject.getBatchLog().getExam().getName());
 			} else {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
 				notificationMessage.setErrorMessage("Exam is null in batch log.");
 				return notificationMessage;
 			}
 			final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findStudentExamSubjectsByStudentAcademicYearIdAndExamId(
-					studentAcademicYear.getId(), exam.getId());
+					neEDJMSObject.getStudentAcademicYear().getId(), exam.getId());
 			String subjects = "";
 			double total = 0;
 			double maxMarks = 0;
@@ -115,10 +113,10 @@ public class ExamResultSMSWorker implements SMSWorker {
 		}
 		notificationMessage.setMessage(smsText);
 
-		if (studentAcademicYear.getStudent().getAddress().getContactNumber() != null) {
-			notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
-			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() },
-					smsText);
+		if (neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber() != null) {
+			notificationMessage.setSentAddress(neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
+			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { neEDJMSObject.getStudentAcademicYear().getStudent().getAddress()
+					.getContactNumber() }, smsText);
 			if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 			} else {
@@ -134,14 +132,14 @@ public class ExamResultSMSWorker implements SMSWorker {
 	}
 
 	@Override
-	public String getMessage(final StudentAcademicYear studentAcademicYear, final Student student, final BatchLog batchLog) throws ApplicationException {
-		String smsText = batchLog.getMessage();
+	public String getMessage(final NeEDJMSObject neEDJMSObject) throws ApplicationException {
+		String smsText = neEDJMSObject.getBatchLog().getMessage();
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			final Map<String, String> model = new HashMap<String, String>();
-			model.put("studentName", studentAcademicYear.getStudent().getDisplayName());
-			model.put("examName", batchLog.getExam().getName());
+			model.put("studentName", neEDJMSObject.getStudentAcademicYear().getStudent().getDisplayName());
+			model.put("examName", neEDJMSObject.getBatchLog().getExam().getName());
 			final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findStudentExamSubjectsByStudentAcademicYearIdAndExamId(
-					studentAcademicYear.getId(), batchLog.getExam().getId());
+					neEDJMSObject.getStudentAcademicYear().getId(), neEDJMSObject.getBatchLog().getExam().getId());
 			String subjects = "";
 			double total = 0;
 			double maxMarks = 0;

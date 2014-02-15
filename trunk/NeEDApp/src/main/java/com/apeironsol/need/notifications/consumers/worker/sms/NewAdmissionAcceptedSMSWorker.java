@@ -38,7 +38,7 @@ import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
  * @author Pradeep
  */
 @Component
-public class NewAdmissionSubmittedSMSWorker implements SMSWorker {
+public class NewAdmissionAcceptedSMSWorker implements SMSWorker {
 
 	/**
 	 * Velocity engine for compiling and merging text with velocity templates.
@@ -49,12 +49,14 @@ public class NewAdmissionSubmittedSMSWorker implements SMSWorker {
 	/**
 	 * Velocity template path for notification.
 	 */
-	private static final String		VELOCITY_TEMPLATE_PATH					= "velocityTemplates/newAdmissionSubmittedSMSTemplate.vm";
+	private static final String		VELOCITY_TEMPLATE_PATH								= "velocityTemplates/newAdmissionAcceptedSMSTemplate.vm";
 
 	/**
-	 * Velocity template path for notification.
+	 * Velocity template path for notification. .vm
 	 */
-	private static final String		VELOCITY_TEMPLATE_PATH_WITH_FEE_DETAILS	= "velocityTemplates/newAdmissionSubmittedWithFeeSMSTemplate.vm";
+	private static final String		VELOCITY_TEMPLATE_PATH_WITH_RESER_APPL_FEE_DETAILS	= "velocityTemplates/newAdmissionAcceptedWithAppliAndReserFeeSMSTemplate.vm";
+
+	private static final String		VELOCITY_TEMPLATE_PATH_WITH_RESER_FEE_DETAILS		= "velocityTemplates/newAdmissionAcceptedWithReserFeeSMSTemplate.vm";
 
 	@Resource
 	AdmissionReservationFeeService	admissionReservationFeeService;
@@ -79,9 +81,19 @@ public class NewAdmissionSubmittedSMSWorker implements SMSWorker {
 				.getStudent().getId());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
 		String template = VELOCITY_TEMPLATE_PATH;
-		if ((admissionReservationFee.getApplicationFormFee() != null) && (admissionReservationFee.getApplicationFormFee() > 0)) {
-			model.put("amount", admissionReservationFee.getApplicationFormFee() + "");
-			template = VELOCITY_TEMPLATE_PATH_WITH_FEE_DETAILS;
+		if (((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0))
+				|| (((admissionReservationFee.getApplicationFeeNotificationSent() != null) && !admissionReservationFee.getApplicationFeeNotificationSent() && (admissionReservationFee
+						.getApplicationFormFee() != null)) && (admissionReservationFee.getApplicationFormFee() > 0))) {
+			final double amount = admissionReservationFee.getReservationFee() != null ? admissionReservationFee.getReservationFee() : 0;
+			model.put("amount", amount + "");
+			model.put("reservationAmount", amount + "");
+
+			template = VELOCITY_TEMPLATE_PATH_WITH_RESER_FEE_DETAILS;
+			if ((((admissionReservationFee.getApplicationFeeNotificationSent() == null) || !admissionReservationFee.getApplicationFeeNotificationSent())
+					&& (admissionReservationFee.getApplicationFormFee() != null) && (admissionReservationFee.getApplicationFormFee() > 0))) {
+				model.put("applicationAmount", admissionReservationFee.getApplicationFormFee() + "");
+				template = VELOCITY_TEMPLATE_PATH_WITH_RESER_APPL_FEE_DETAILS;
+			}
 		}
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, template, model);
@@ -111,9 +123,24 @@ public class NewAdmissionSubmittedSMSWorker implements SMSWorker {
 		final Map<String, String> model = new HashMap<String, String>();
 		model.put("organizationName", neEDJMSObject.getStudent().getBranch().getName());
 		model.put("rehistrationNumer", neEDJMSObject.getStudent().getRegistrationNr());
+		final AdmissionReservationFee admissionReservationFee = this.admissionReservationFeeService.findAdmissionReservationFeeByStudentID(neEDJMSObject
+				.getStudent().getId());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
+		String template = VELOCITY_TEMPLATE_PATH;
+		if (((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0))
+				|| (((admissionReservationFee.getApplicationFeeNotificationSent() != null) && !admissionReservationFee.getApplicationFeeNotificationSent() && (admissionReservationFee
+						.getApplicationFormFee() != null)) && (admissionReservationFee.getApplicationFormFee() > 0))) {
+			double amount = admissionReservationFee.getReservationFee() != null ? admissionReservationFee.getReservationFee() : 0;
+			template = VELOCITY_TEMPLATE_PATH_WITH_RESER_FEE_DETAILS;
+			if ((((admissionReservationFee.getApplicationFeeNotificationSent() == null) || !admissionReservationFee.getApplicationFeeNotificationSent())
+					&& (admissionReservationFee.getApplicationFormFee() != null) && (admissionReservationFee.getApplicationFormFee() > 0))) {
+				amount = amount + admissionReservationFee.getApplicationFormFee();
+				model.put("amount", amount + "");
+				template = VELOCITY_TEMPLATE_PATH_WITH_RESER_APPL_FEE_DETAILS;
+			}
+		}
 		if ((smsText == null) || smsText.trim().isEmpty()) {
-			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
+			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, template, model);
 		}
 		return smsText;
 	}

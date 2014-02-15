@@ -71,7 +71,7 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 			final NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
 
 			if (this.isCanceled(jmsObject.getBatchLog())) {
-				this.postProcessElement(jmsObject, jmsObject.getBatchLog(),
+				this.postProcessElement(jmsObject,
 						this.createNotificationMessage("Batch Cancelled", "Batch Cancelled", BatchLogMessageStatusConstant.CANCELLED));
 			} else {
 
@@ -100,9 +100,12 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 						} else if (jmsObject.getStudent() != null) {
 							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentId(jmsObject.getBatchLog().getId(),
 									jmsObject.getStudent().getId());
+						} else if (jmsObject.getStudentRegistration() != null) {
+							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentRegistrationId(jmsObject.getBatchLog()
+									.getId(), jmsObject.getStudentRegistration().getId());
 						}
 						if (batchLogMessage == null) {
-							this.processBatchMesssage(jmsObject, jmsObject.getBatchLog());
+							this.processBatchMesssage(jmsObject);
 						}
 					} catch (final Exception e) {
 						throw new JMSException(e.getMessage());
@@ -133,13 +136,11 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	 *            apeironsolJMSObject.
 	 * @throws MessagingException
 	 */
-	private void processBatchMesssage(final NeEDJMSObject jmsObject, final BatchLog batchLog) throws Exception {
+	private void processBatchMesssage(final NeEDJMSObject jmsObject) throws Exception {
 		try {
-			final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(batchLog.getNotificationSubTypeConstant());
-			final NotificationMessage notificationMessage = smsWorker.sendSMS(
-					jmsObject.getSmsProvider() != null ? jmsObject.getSmsProvider() : batchLog.getSmsProvider(), jmsObject.getStudentAcademicYear(),
-					jmsObject.getStudentAcademicYear() == null ? jmsObject.getStudent() : jmsObject.getStudentAcademicYear().getStudent(), batchLog);
-			this.postProcessElement(jmsObject, batchLog, notificationMessage);
+			final SMSWorker smsWorker = SMSWorkerFactory.getSMSWorker(jmsObject.getBatchLog().getNotificationSubTypeConstant());
+			final NotificationMessage notificationMessage = smsWorker.sendSMS(jmsObject);
+			this.postProcessElement(jmsObject, notificationMessage);
 		} catch (final Throwable exception) {
 			throw new Exception(exception);
 		}
@@ -152,9 +153,9 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	 * @param messageException
 	 * @param batchLog
 	 */
-	private void postProcessElement(final NeEDJMSObject jmsObject, final BatchLog batchLog, final NotificationMessage notificationMessage) {
+	private void postProcessElement(final NeEDJMSObject jmsObject, final NotificationMessage notificationMessage) {
 		final BatchLogMessage batchLogMessage = new BatchLogMessage();
-		batchLogMessage.setBatchLog(batchLog);
+		batchLogMessage.setBatchLog(jmsObject.getBatchLog());
 		batchLogMessage.setSendTo(notificationMessage.getSentAddress());
 		if (jmsObject.getStudentAcademicYear() != null) {
 			batchLogMessage.setStudentAcademicYear(jmsObject.getStudentAcademicYear());
@@ -162,8 +163,11 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 		if (jmsObject.getStudent() != null) {
 			batchLogMessage.setStudent(jmsObject.getStudent());
 		}
+		if (jmsObject.getStudentRegistration() != null) {
+			batchLogMessage.setStudentRegistration(jmsObject.getStudentRegistration());
+		}
 		batchLogMessage.setAuditUsername(jmsObject.getUserName());
-		if ((batchLog.getMessage() == null) || batchLog.getMessage().trim().isEmpty()) {
+		if ((jmsObject.getBatchLog().getMessage() == null) || jmsObject.getBatchLog().getMessage().trim().isEmpty()) {
 			batchLogMessage.setMessageSent(notificationMessage.getMessage());
 		}
 		batchLogMessage.setErrorMessage(notificationMessage.getErrorMessage());

@@ -30,7 +30,7 @@
 		<p:outputLabel id="application_fee_label" value="Application fee" for="application_fee" />
 		<p:inputText id="application_fee" value="#{admissionBean.admissionReservationFee.applicationFormFee}"
 			disable="#{!admissionBean.showApplicationFormFee()}">
-			 <f:convertNumber pattern="#,###,##0.00"/>
+			<f:convertNumber pattern="#,###,##0.00" />
 			<p:ajax process="@this" />
 		</p:inputText>
 		<p:message id="application_fee_msg" for="application_fee" />
@@ -83,7 +83,7 @@
 		<p:inputText id="stu_adm_reservation_fee" value="#{admissionBean.admissionReservationFee.reservationFee}"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED'}">
 			<p:ajax process="@this" />
-			 <f:convertNumber pattern="#,###,##0.00"/>
+			<f:convertNumber pattern="#,###,##0.00" />
 		</p:inputText>
 
 		<p:message id="stu_adm_reservation_fee_msg" for="stu_adm_reservation_fee"
@@ -139,6 +139,17 @@
 		</p:calendar>
 		<p:message id="ext_res_trans_date_msg" for="ext_res_trans_date"
 			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />
+
+		<p:outputLabel id="comitted_fee_label" value="Comitted fee" for="comitted_fee"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}" />
+		<p:inputText id="comitted_fee" value="#{admissionBean.admissionReservationFee.comittedFee}"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}">
+			<p:ajax process="@this" update="@this" />
+			<f:convertNumber pattern="#,###,##0.00" />
+		</p:inputText>
+		<p:message id="comitted_fee_msg" for="comitted_fee"
+			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}" />
+
 
 	</h:panelGrid>
 

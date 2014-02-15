@@ -1554,7 +1554,7 @@ public class AdmissionBean extends AbstractStudentBean {
 		double maxReservationFeeCanBePaid = 0;
 		if ((this.admissionReservationFee.getReservationFee() != null) && (this.admissionReservationFee.getReservationFee() <= 0d)) {
 			throw new ApplicationException("Reservation fee should be grater than 0.");
-		} else if (this.admissionReservationFee.getReservationFee() != null) {
+		} else if ((this.admissionReservationFee.getComittedFee() != null) || (this.admissionReservationFee.getReservationFee() != null)) {
 			final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearId(this.sessionBean
 					.getCurrentBranch().getId(), this.student.getAppliedForAcademicYear().getId());
 			for (final BranchLevelFee branchLevelFee : branchLevelFees) {
@@ -1586,6 +1586,9 @@ public class AdmissionBean extends AbstractStudentBean {
 			}
 			if (this.admissionReservationFee.getReservationFee() > maxReservationFeeCanBePaid) {
 				throw new ApplicationException("Reservation fee cannot exceed " + maxReservationFeeCanBePaid);
+			}
+			if ((this.admissionReservationFee.getComittedFee() != null) && (this.admissionReservationFee.getComittedFee() > maxReservationFeeCanBePaid)) {
+				throw new ApplicationException("Comitted fee cannot exceed " + maxReservationFeeCanBePaid);
 			}
 		}
 

@@ -52,6 +52,15 @@ public class StudentRegistrationDaoImpl extends BaseDaoImpl<StudentRegistration>
 	}
 
 	@Override
+	public Collection<StudentRegistration> findStudentRegistrationesByStudentRegistrationStatus(
+			final StudentRegistrationStatusConstant studentRegistrationStatus) throws BusinessException {
+		final TypedQuery<StudentRegistration> query = this.getEntityManager().createQuery(
+				"select st from StudentRegistration st where st.registrationStatus = :registrationStatus", StudentRegistration.class);
+		query.setParameter("registrationStatus", studentRegistrationStatus);
+		return query.getResultList();
+	}
+
+	@Override
 	public Collection<StudentRegistration> findStudentRegistrationesByAcademicYearIdAndStatus(final Long academicYearId,
 			final StudentRegistrationStatusConstant studentRegistrationStatus) throws BusinessException {
 		final TypedQuery<StudentRegistration> query = this.getEntityManager().createQuery(
@@ -61,5 +70,4 @@ public class StudentRegistrationDaoImpl extends BaseDaoImpl<StudentRegistration>
 		query.setParameter("registrationStatus", studentRegistrationStatus);
 		return query.getResultList();
 	}
-
 }

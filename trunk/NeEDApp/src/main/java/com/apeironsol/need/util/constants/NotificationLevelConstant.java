@@ -19,6 +19,7 @@ public enum NotificationLevelConstant implements Labeled {
 	CLASS("class"),
 	SECTION("section"),
 	STUDENT("student"),
+	STUDENT_REGISTRATION("student_registration"),
 	STUDENT_ACADEMIC_YEAR("student_academic_year"),
 	ADHOC("adhoc");
 

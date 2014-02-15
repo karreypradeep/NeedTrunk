@@ -139,4 +139,29 @@ public class BatchLogMessageDaoImpl extends BaseDaoImpl<BatchLogMessage> impleme
 		}
 	}
 
+	@Override
+	public Collection<BatchLogMessage> findBatchLogMessagesByStudentRegistrationId(final Long studentRegistrationId) throws BusinessException {
+		final TypedQuery<BatchLogMessage> query = this.getEntityManager().createQuery(
+				"select blm from BatchLogMessage blm where blm.studentRegistration.id = :studentRegistrationId order by blm.messageSentTime DESC",
+				BatchLogMessage.class);
+		query.setParameter("studentRegistrationId", studentRegistrationId);
+		return query.getResultList();
+	}
+
+	@Override
+	public BatchLogMessage findBatchLogMessageByBatchLogIdAndStudentRegistrationId(final Long batchLogId, final Long studentRegistrationId)
+			throws BusinessException {
+		try {
+			final TypedQuery<BatchLogMessage> query = this.getEntityManager().createQuery(
+					"select blm from BatchLogMessage blm where blm.batchLog.id = :batchLogId and blm.studentRegistration.id = :studentRegistrationId",
+					BatchLogMessage.class);
+			query.setParameter("batchLogId", batchLogId);
+			query.setParameter("studentRegistrationId", studentRegistrationId);
+			return query.getSingleResult();
+		} catch (final NoResultException e) {
+			log.info(e.getMessage());
+			return null;
+		}
+	}
+
 }

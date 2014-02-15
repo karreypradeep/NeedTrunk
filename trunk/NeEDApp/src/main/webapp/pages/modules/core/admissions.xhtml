@@ -13,8 +13,8 @@
 		<c:otherwise>
 			<f:metadata>
 				<f:event type="preRenderView" listener="#{admissionBean.loadActiveClassesForCurrentBranch}" />
-				<f:event type="preRenderView" listener="#{admissionBean.loadActiveAcademicYearsForCurrentBranch()}" />
-			</f:metadata>
+				<f:event type="preRenderView" listener="#{admissionBean.loadAllAcademicYearsForCurrentBranch()}" />
+			</f:metadata>  
 			<p:toolbar style="margin-bottom:1px;">
 				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
 					<h:outputText value="Admissions" style="font-size:20px;" />

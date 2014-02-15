@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.academics.dataobject.ReportCardDO;
 import com.apeironsol.need.academics.dataobject.StudentAcademicExamDO;
@@ -29,7 +30,6 @@ import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.ReportCardExam;
 import com.apeironsol.need.academics.service.StudentAcademicService;
 import com.apeironsol.need.core.model.SMSProvider;
-import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.model.BatchLog;
@@ -70,21 +70,21 @@ public class ReportCardSMSWorker implements SMSWorker {
 	 * @throws MessagingException
 	 */
 	@Override
-	public NotificationMessage sendSMS(final SMSProvider sMSProvider, final StudentAcademicYear studentAcademicYear, final Student student,
-			final BatchLog batchLog) throws ClientProtocolException, URISyntaxException, IOException {
+	public NotificationMessage sendSMS(final NeEDJMSObject neEDJMSObject) throws ClientProtocolException, URISyntaxException, IOException {
 		final NotificationMessage notificationMessage = new NotificationMessage();
+		final SMSProvider sMSProvider = neEDJMSObject.getSmsProvider() != null ? neEDJMSObject.getSmsProvider() : neEDJMSObject.getBatchLog().getSmsProvider();
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
-		final ReportCard reportCard = batchLog.getReportCard();
+		final ReportCard reportCard = neEDJMSObject.getBatchLog().getReportCard();
 		if (reportCard != null) {
-			final ReportCardDO reportCardDO = this.getReportCardDO(studentAcademicYear, batchLog);
+			final ReportCardDO reportCardDO = this.getReportCardDO(neEDJMSObject.getStudentAcademicYear(), neEDJMSObject.getBatchLog());
 			reportCardDO.computeReportCard();
 			if (!StudentSubjectExamResultConstant.NOT_APPLICABLE.equals(reportCardDO.getStudentReportCardResult())) {
-				final String smsText = this.getNotificationMessage(reportCardDO, studentAcademicYear, batchLog);
+				final String smsText = this.getNotificationMessage(reportCardDO, neEDJMSObject.getStudentAcademicYear(), neEDJMSObject.getBatchLog());
 				notificationMessage.setMessage(smsText);
-				if (studentAcademicYear.getStudent().getAddress().getContactNumber() != null) {
-					notificationMessage.setSentAddress(studentAcademicYear.getStudent().getAddress().getContactNumber());
-					final String smsReturnTest = universalSMSProvider.sendSMS(
-							new String[] { studentAcademicYear.getStudent().getAddress().getContactNumber() }, smsText);
+				if (neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber() != null) {
+					notificationMessage.setSentAddress(neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
+					final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { neEDJMSObject.getStudentAcademicYear().getStudent().getAddress()
+							.getContactNumber() }, smsText);
 					if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 						notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 					} else {
@@ -170,9 +170,9 @@ public class ReportCardSMSWorker implements SMSWorker {
 	}
 
 	@Override
-	public String getMessage(final StudentAcademicYear studentAcademicYear, final Student student, final BatchLog batchLog) throws ApplicationException {
-		final ReportCardDO reportCardDO = this.getReportCardDO(studentAcademicYear, batchLog);
-		return this.getNotificationMessage(reportCardDO, studentAcademicYear, batchLog);
+	public String getMessage(final NeEDJMSObject neEDJMSObject) throws ApplicationException {
+		final ReportCardDO reportCardDO = this.getReportCardDO(neEDJMSObject.getStudentAcademicYear(), neEDJMSObject.getBatchLog());
+		return this.getNotificationMessage(reportCardDO, neEDJMSObject.getStudentAcademicYear(), neEDJMSObject.getBatchLog());
 	}
 
 }
