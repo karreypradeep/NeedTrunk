@@ -15,13 +15,13 @@ import com.apeironsol.need.util.portal.ViewUtil;
  * 
  * @author Pradeep
  */
-public enum RegistrationStatusConstant implements Labeled {
+public enum StudentRegistrationStatusConstant implements Labeled {
 
-	SUBMITTED("submitted"), ADMISSION("admission"), JOINED_OTHER_COLLEGE("joined_other_college");
+	SUBMITTED("submitted"), ADMITTED("admitted"), JOINED_OTHER_COLLEGE("joined_other_college"), NOT_AVAILABLE("not_available");
 
 	private String	label;
 
-	RegistrationStatusConstant(final String label) {
+	StudentRegistrationStatusConstant(final String label) {
 		this.label = label;
 	}
 
@@ -35,9 +35,9 @@ public enum RegistrationStatusConstant implements Labeled {
 		this.label = label;
 	}
 
-	public static RegistrationStatusConstant[] getValuesSortedByLabels() {
-		return EnumUtil.getEnumsSortedByLabels(RegistrationStatusConstant.class).toArray(
-				new RegistrationStatusConstant[RegistrationStatusConstant.values().length]);
+	public static StudentRegistrationStatusConstant[] getValuesSortedByLabels() {
+		return EnumUtil.getEnumsSortedByLabels(StudentRegistrationStatusConstant.class).toArray(
+				new StudentRegistrationStatusConstant[StudentRegistrationStatusConstant.values().length]);
 	}
 
 	public String getValue() {

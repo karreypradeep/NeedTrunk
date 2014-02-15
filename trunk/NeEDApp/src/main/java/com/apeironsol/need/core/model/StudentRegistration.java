@@ -19,13 +19,17 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.apeironsol.framework.BaseEntity;
-import com.apeironsol.need.util.constants.RegistrationStatusConstant;
+import com.apeironsol.need.util.constants.StudentRegistrationStatusConstant;
 
 @Entity
 @Table(name = "STUDENT_REGISTRATION")
@@ -34,73 +38,85 @@ public class StudentRegistration extends BaseEntity implements Serializable {
 	/**
 	 * Universal serial version id for this class
 	 */
-	private static final long			serialVersionUID	= 250845254808368057L;
+	private static final long					serialVersionUID	= 250845254808368057L;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "BRANCH_ID", nullable = false)
+	private Branch								branch;
+
+	@NotNull(message = "model.academic_year_mandatory")
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ACADEMIC_YEAR_ID", nullable = false)
+	private AcademicYear						academicYear;
 
 	@NotEmpty(message = "Student First name is mandatory.")
 	@Column(name = "STUDENT_FIRST_NAME", nullable = false)
-	private String						studentFirstName;
+	private String								studentFirstName;
 
 	@NotEmpty(message = "Student Last name is mandatory.")
 	@Column(name = "STUDENT_LAST_NAME", nullable = false)
-	private String						studentLastName;
+	private String								studentLastName;
 
 	@Column(name = "STUDENT_MIDDLE_NAME")
-	private String						studentMiddleName;
+	private String								studentMiddleName;
 
 	@NotEmpty(message = "Father First name is mandatory.")
 	@Column(name = "FATHER_FIRST_NAME", nullable = false)
-	private String						fatherFirstName;
+	private String								fatherFirstName;
 
 	@NotEmpty(message = "Father Last name is mandatory.")
 	@Column(name = "FATHER_LAST_NAME", nullable = false)
-	private String						fatherLastName;
+	private String								fatherLastName;
 
 	@Column(name = "FATHER_MIDDLE_NAME")
-	private String						fatherMiddleName;
+	private String								fatherMiddleName;
 
 	@Column(name = "FATHER_OCCUPATION")
-	private String						fatherOccupation;
+	private String								fatherOccupation;
 
 	@Column(name = "ADDRESS")
-	private String						address;
+	private String								address;
 
 	@Column(name = "PRIMARY_CONTACT", nullable = false)
-	private String						primaryContactNumber;
+	private String								primaryContactNumber;
 
 	@Column(name = "SECONDARY_CONTACT")
-	private String						secondaryContactNumber;
+	private String								secondaryContactNumber;
 
 	@Column(name = "SCHOOL_NAME")
-	private String						schoolName;
+	private String								schoolName;
 
 	@Column(name = "AREA")
-	private String						area;
+	private String								area;
 
-	@Column(name = "LOCATION")
-	private String						location;
+	@Column(name = "DISTRICT")
+	private String								district;
 
 	@Column(name = "MPC_GROUP_IND")
-	private boolean						interestedInMPCGroup;
+	private boolean								interestedInMPCGroup;
 
 	@Column(name = "MEC_GROUP_IND")
-	private boolean						interestedInMECGroup;
+	private boolean								interestedInMECGroup;
 
 	@Column(name = "BIPC_GROUP_IND")
-	private boolean						interestedInBiPCGroup;
+	private boolean								interestedInBiPCGroup;
 
 	@Column(name = "CEC_GROUP_IND")
-	private boolean						interestedInCECGroup;
+	private boolean								interestedInCECGroup;
+
+	@Column(name = "REGISTRATION_NR", length = 50, unique = true)
+	private String								registrationNr;
 
 	@Basic
 	@Column(name = "STATUS", nullable = false)
 	@Enumerated(EnumType.STRING)
-	private RegistrationStatusConstant	registrationStatus;
+	private StudentRegistrationStatusConstant	registrationStatus;
 
 	@Column(name = "COLLEGE_JOINED_NAME")
-	private String						collegeJoinedName;
+	private String								collegeJoinedName;
 
 	@Column(name = "REASON")
-	private String						reason;
+	private String								reason;
 
 	public String getStudentDisplayName() {
 		if (StringUtils.isEmpty(this.studentFirstName) && StringUtils.isEmpty(this.studentLastName)) {
@@ -305,18 +321,18 @@ public class StudentRegistration extends BaseEntity implements Serializable {
 	}
 
 	/**
-	 * @return the location
+	 * @return the district
 	 */
-	public String getLocation() {
-		return this.location;
+	public String getDistrict() {
+		return this.district;
 	}
 
 	/**
-	 * @param location
-	 *            the location to set
+	 * @param district
+	 *            the district to set
 	 */
-	public void setLocation(final String location) {
-		this.location = location;
+	public void setDistrict(final String district) {
+		this.district = district;
 	}
 
 	/**
@@ -382,7 +398,7 @@ public class StudentRegistration extends BaseEntity implements Serializable {
 	/**
 	 * @return the registrationStatus
 	 */
-	public RegistrationStatusConstant getRegistrationStatus() {
+	public StudentRegistrationStatusConstant getRegistrationStatus() {
 		return this.registrationStatus;
 	}
 
@@ -390,7 +406,7 @@ public class StudentRegistration extends BaseEntity implements Serializable {
 	 * @param registrationStatus
 	 *            the registrationStatus to set
 	 */
-	public void setRegistrationStatus(final RegistrationStatusConstant registrationStatus) {
+	public void setRegistrationStatus(final StudentRegistrationStatusConstant registrationStatus) {
 		this.registrationStatus = registrationStatus;
 	}
 
@@ -422,6 +438,51 @@ public class StudentRegistration extends BaseEntity implements Serializable {
 	 */
 	public void setReason(final String reason) {
 		this.reason = reason;
+	}
+
+	/**
+	 * @return the branch
+	 */
+	public Branch getBranch() {
+		return this.branch;
+	}
+
+	/**
+	 * @param branch
+	 *            the branch to set
+	 */
+	public void setBranch(final Branch branch) {
+		this.branch = branch;
+	}
+
+	/**
+	 * @return the academicYear
+	 */
+	public AcademicYear getAcademicYear() {
+		return this.academicYear;
+	}
+
+	/**
+	 * @param academicYear
+	 *            the academicYear to set
+	 */
+	public void setAcademicYear(final AcademicYear academicYear) {
+		this.academicYear = academicYear;
+	}
+
+	/**
+	 * @return the registrationNr
+	 */
+	public String getRegistrationNr() {
+		return this.registrationNr;
+	}
+
+	/**
+	 * @param registrationNr
+	 *            the registrationNr to set
+	 */
+	public void setRegistrationNr(final String registrationNr) {
+		this.registrationNr = registrationNr;
 	}
 
 }

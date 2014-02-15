@@ -729,8 +729,8 @@ public class AdmissionBean extends AbstractStudentBean {
 
 	public void admitStudent() {
 
-		if (this.admissionReservationFee != null && this.admissionReservationFee.getApplicationFormFee() != null
-				&& this.admissionReservationFee.getApplicationFormFee() > 0 && this.skipApplicationFee) {
+		if ((this.admissionReservationFee != null) && (this.admissionReservationFee.getApplicationFormFee() != null)
+				&& (this.admissionReservationFee.getApplicationFormFee() > 0) && this.skipApplicationFee) {
 
 			ViewUtil.addMessage("Application fee is paid so it cannot be skipped. ", FacesMessage.SEVERITY_ERROR);
 		}
@@ -770,7 +770,7 @@ public class AdmissionBean extends AbstractStudentBean {
 
 			this.student.setRelations(this.relationService.findRelationByStudentId(this.student.getId()));
 			final Section admitForSection = this.sectionService.findSectionById(this.getAdmitForSectionId());
-			StudentAcademicYear studentAcademicYear = this.admissionService.admitStudent(this.student, admitForSection, this.medicalHistory,
+			final StudentAcademicYear studentAcademicYear = this.admissionService.admitStudent(this.student, admitForSection, this.medicalHistory,
 					this.admissionSubmittedDocuments, this.getAdmissionFeeDOs(), this.deductReservationFee, this.skipApplicationFee, this.skipReservationFee);
 			this.studentAcademicYearFeeSummaryService.createStudentAcademicYearFeeSummaryForStudentAcademicYearId(studentAcademicYear.getId());
 			ViewUtil.addMessage("Admission state sucessfully changes as admitted.", FacesMessage.SEVERITY_INFO);
@@ -885,15 +885,15 @@ public class AdmissionBean extends AbstractStudentBean {
 
 			final Collection<BuildingBlock> buildingBlocks = this.buildingBlockService.findFeeTypeBuildingBlocksbyBranchIdAndFeeType(this.sessionBean
 					.getCurrentBranch().getId(), FeeTypeConstant.APPLICATION_FEE);
-			BuildingBlock applicationFeeBuildingBlock = buildingBlocks.iterator().next();
+			final BuildingBlock applicationFeeBuildingBlock = buildingBlocks.iterator().next();
 
 			if (FeeClassificationLevelConstant.BRANCH_LEVEL.equals(applicationFeeBuildingBlock.getFeeClassificationLevel())) {
 
-				Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearIdAndBuildingBlockId(
+				final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearIdAndBuildingBlockId(
 						this.sessionBean.getCurrentBranch().getId(), this.appliedForAcademicYear.getId(), applicationFeeBuildingBlock.getId());
 
-				if (branchLevelFees != null && !branchLevelFees.isEmpty()) {
-					for (BranchLevelFee branchLevelFee : branchLevelFees) {
+				if ((branchLevelFees != null) && !branchLevelFees.isEmpty()) {
+					for (final BranchLevelFee branchLevelFee : branchLevelFees) {
 						this.applicationFormFee = this.applicationFormFee + branchLevelFee.getAmount();
 					}
 				}
@@ -907,7 +907,7 @@ public class AdmissionBean extends AbstractStudentBean {
 
 	public boolean isAdmissionDisabled() {
 		boolean result = false;
-		if (this.student != null && AdmissionStatusConstant.ADMITTED.equals(this.student.getAdmissionStatus())) {
+		if ((this.student != null) && AdmissionStatusConstant.ADMITTED.equals(this.student.getAdmissionStatus())) {
 			result = true;
 		}
 		return result;
@@ -948,7 +948,7 @@ public class AdmissionBean extends AbstractStudentBean {
 		} else if (3 == this.getActiveTabIndex()) {
 			this.educationHistories = this.studentService.findPreviousEducationHistoryByStudentId(this.student.getId());
 			// Recent school addresses
-			if (this.educationHistories == null || this.educationHistories.isEmpty()) {
+			if ((this.educationHistories == null) || this.educationHistories.isEmpty()) {
 				this.educationHistories = new ArrayList<EducationHistory>();
 				this.educationHistory = new EducationHistory();
 				this.educationHistory.setAddress(new Address());
@@ -973,7 +973,7 @@ public class AdmissionBean extends AbstractStudentBean {
 	}
 
 	public boolean isAdmissionBeReviewed() {
-		if (this.student != null && AdmissionStatusConstant.SUBMITTED.equals(this.student.getAdmissionStatus())
+		if (((this.student != null) && AdmissionStatusConstant.SUBMITTED.equals(this.student.getAdmissionStatus()))
 				|| AdmissionStatusConstant.INREVIEW.equals(this.student.getAdmissionStatus())) {
 			return true;
 		} else {
@@ -982,7 +982,7 @@ public class AdmissionBean extends AbstractStudentBean {
 	}
 
 	public boolean isAdmissionBeAccepted() {
-		if (this.student != null && AdmissionStatusConstant.REVIEWED.equals(this.student.getAdmissionStatus())) {
+		if ((this.student != null) && AdmissionStatusConstant.REVIEWED.equals(this.student.getAdmissionStatus())) {
 			return true;
 		} else {
 			return false;
@@ -990,7 +990,7 @@ public class AdmissionBean extends AbstractStudentBean {
 	}
 
 	public boolean isAdmissionBeAdmitted() {
-		if (this.student != null && AdmissionStatusConstant.ACCEPTED.equals(this.student.getAdmissionStatus())) {
+		if ((this.student != null) && AdmissionStatusConstant.ACCEPTED.equals(this.student.getAdmissionStatus())) {
 			return true;
 		} else {
 			return false;
@@ -998,7 +998,7 @@ public class AdmissionBean extends AbstractStudentBean {
 	}
 
 	public boolean isAdmissionStateRollbacked() {
-		if (this.student != null
+		if ((this.student != null)
 				&& (AdmissionStatusConstant.REJECTED.equals(this.student.getAdmissionStatus())
 						|| AdmissionStatusConstant.INREVIEW.equals(this.student.getAdmissionStatus()) || AdmissionStatusConstant.REVIEWED.equals(this.student
 						.getAdmissionStatus()))) {
@@ -1009,7 +1009,7 @@ public class AdmissionBean extends AbstractStudentBean {
 	}
 
 	public boolean isAdmissionBeRejected() {
-		if (this.student != null
+		if ((this.student != null)
 				&& (AdmissionStatusConstant.SUBMITTED.equals(this.student.getAdmissionStatus())
 						|| AdmissionStatusConstant.INREVIEW.equals(this.student.getAdmissionStatus())
 						|| AdmissionStatusConstant.REVIEWED.equals(this.student.getAdmissionStatus()) || AdmissionStatusConstant.ACCEPTED.equals(this.student
@@ -1083,8 +1083,8 @@ public class AdmissionBean extends AbstractStudentBean {
 			final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearId(this.sessionBean
 					.getCurrentBranch().getId(), this.student.getAppliedForAcademicYear().getId());
 			for (final BranchLevelFee branchLevelFee : branchLevelFees) {
-				if (this.getStudent().getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
-						&& FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())
+				if ((this.getStudent().getResidence().equals(ResidenceConstant.DAY_SCHOOLER) && FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee
+						.getBuildingBlock().getFeeType()))
 						|| FeeTypeConstant.APPLICATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())
 						|| FeeTypeConstant.RESERVATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())) {
 					// don't create hostel fee.
@@ -1123,8 +1123,8 @@ public class AdmissionBean extends AbstractStudentBean {
 	}
 
 	public boolean isAdmissionReservationFeePaid() {
-		return this.admissionReservationFee != null && this.admissionReservationFee.getReservationFee() != null
-				&& this.admissionReservationFee.getReservationFee() > 0;
+		return (this.admissionReservationFee != null) && (this.admissionReservationFee.getReservationFee() != null)
+				&& (this.admissionReservationFee.getReservationFee() > 0);
 	}
 
 	public String admissionAdmitOnFlowProcess(final FlowEvent event) {
@@ -1195,7 +1195,7 @@ public class AdmissionBean extends AbstractStudentBean {
 		} else {
 			this.admissionSearchCriteria.setBranch(this.sessionBean.getCurrentBranch());
 			this.studentsBySearchCriteria = this.admissionService.findAdmissionsBySearchCriteria(this.admissionSearchCriteria);
-			if (this.studentsBySearchCriteria == null || this.studentsBySearchCriteria.isEmpty()) {
+			if ((this.studentsBySearchCriteria == null) || this.studentsBySearchCriteria.isEmpty()) {
 				ViewUtil.addMessage("No admissions found for entered search criteria..", FacesMessage.SEVERITY_INFO);
 			}
 		}
@@ -1245,7 +1245,7 @@ public class AdmissionBean extends AbstractStudentBean {
 
 	public void loadAcademicYearsForBatch() {
 		try {
-			if (this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator() && this.appliedForBatch != null) {
+			if (this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator() && (this.appliedForBatch != null)) {
 				this.academicYearsForBatch = this.academicYearService.findAcademicYearsForBatchId(this.appliedForBatch.getId(), this.sessionBean
 						.getCurrentBranch().getId());
 			}
@@ -1352,7 +1352,7 @@ public class AdmissionBean extends AbstractStudentBean {
 	public Double getTotalAdmissionReservationFeeAdjusted() {
 		double totalAdjusted = 0.0;
 		for (final AdmissionFeeDO admissionFeeDO : this.admissionFeeDOs) {
-			if (admissionFeeDO.getFeePaidDuringAdmission() != null && admissionFeeDO.getFeePaidDuringAdmission() > Double.valueOf(0)) {
+			if ((admissionFeeDO.getFeePaidDuringAdmission() != null) && (admissionFeeDO.getFeePaidDuringAdmission() > Double.valueOf(0))) {
 				totalAdjusted += admissionFeeDO.getFeePaidDuringAdmission().doubleValue();
 			}
 		}
@@ -1400,12 +1400,12 @@ public class AdmissionBean extends AbstractStudentBean {
 
 	public void determinAdmissionLevelFeeRules() {
 
-		if (this.admissionStatusAction != null && this.admissionStatusAction.equals(AdmissionStatusConstant.ADMITTED)) {
+		if ((this.admissionStatusAction != null) && this.admissionStatusAction.equals(AdmissionStatusConstant.ADMITTED)) {
 
 			final Collection<BranchLevelFee> reservationTypeFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearIdAndFeeType(
 					this.sessionBean.getCurrentBranch().getId(), this.student.getAppliedForAcademicYear().getId(), FeeTypeConstant.RESERVATION_FEE);
 
-			if (reservationTypeFees != null && !reservationTypeFees.isEmpty()) {
+			if ((reservationTypeFees != null) && !reservationTypeFees.isEmpty()) {
 
 				this.skipReservationFee = false;
 				this.reservationFeeDefinedInBranch = true;
@@ -1420,7 +1420,7 @@ public class AdmissionBean extends AbstractStudentBean {
 			final Collection<BranchLevelFee> applicationFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearIdAndFeeType(
 					this.sessionBean.getCurrentBranch().getId(), this.student.getAppliedForAcademicYear().getId(), FeeTypeConstant.APPLICATION_FEE);
 
-			if (applicationFees != null && !applicationFees.isEmpty()) {
+			if ((applicationFees != null) && !applicationFees.isEmpty()) {
 
 				this.skipApplicationFee = false;
 				this.applicationFeeDefinedInBranch = true;
@@ -1438,7 +1438,7 @@ public class AdmissionBean extends AbstractStudentBean {
 
 	public void saveAdmissionReservationFee() {
 
-		if (this.admissionReservationFee.getApplicationFormFee() == null && this.admissionReservationFee.getReservationFee() == null) {
+		if ((this.admissionReservationFee.getApplicationFormFee() == null) && (this.admissionReservationFee.getReservationFee() == null)) {
 			ViewUtil.addMessage("Unable to save, please specify application fee or reservation fee.", FacesMessage.SEVERITY_ERROR);
 			return;
 		}
@@ -1520,42 +1520,46 @@ public class AdmissionBean extends AbstractStudentBean {
 	 * form fee applicable for the branch.
 	 */
 	private void validateApplicationFormFee() throws ApplicationException {
-		if (this.admissionReservationFee.getApplicationFormFee() != null && this.admissionReservationFee.getApplicationFormFee() <= 0d) {
+		// Validate application form fee amount so that amount paid is not
+		// more than application fee applicable.
+		final Collection<BuildingBlock> buildingBlocks = this.buildingBlockService.findFeeTypeBuildingBlocksbyBranchIdAndFeeType(this.sessionBean
+				.getCurrentBranch().getId(), FeeTypeConstant.APPLICATION_FEE);
+		if ((this.admissionReservationFee.getApplicationFormFee() != null) && (buildingBlocks != null) && (buildingBlocks.size() > 0)) {
 
-			throw new ApplicationException("Application fee should be grater than 0.");
-		} else if (this.admissionReservationFee.getApplicationFormFee() != null) {
-
-			// Validate application form fee amount so that amount paid is not
-			// more than application fee applicable.
-			final Collection<BuildingBlock> buildingBlocks = this.buildingBlockService.findFeeTypeBuildingBlocksbyBranchIdAndFeeType(this.sessionBean
-					.getCurrentBranch().getId(), FeeTypeConstant.APPLICATION_FEE);
-			BuildingBlock applicationFeeBuildingBlock = buildingBlocks.iterator().next();
+			final BuildingBlock applicationFeeBuildingBlock = buildingBlocks.iterator().next();
 			double branchApplicationFormFee = 0;
 			if (FeeClassificationLevelConstant.BRANCH_LEVEL.equals(applicationFeeBuildingBlock.getFeeClassificationLevel())) {
-				Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearIdAndBuildingBlockId(
+				final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearIdAndBuildingBlockId(
 						this.sessionBean.getCurrentBranch().getId(), this.appliedForAcademicYear.getId(), applicationFeeBuildingBlock.getId());
-				if (branchLevelFees != null && !branchLevelFees.isEmpty()) {
-					for (BranchLevelFee branchLevelFee : branchLevelFees) {
+				if ((branchLevelFees != null) && !branchLevelFees.isEmpty()) {
+					for (final BranchLevelFee branchLevelFee : branchLevelFees) {
 						branchApplicationFormFee = branchApplicationFormFee + branchLevelFee.getAmount();
 					}
 				}
 			}
-			if (this.admissionReservationFee.getApplicationFormFee() > branchApplicationFormFee) {
-				throw new ApplicationException("Application fee cannot exceed " + branchApplicationFormFee);
+			if (branchApplicationFormFee > 0) {
+				if (this.admissionReservationFee.getApplicationFormFee() > branchApplicationFormFee) {
+					throw new ApplicationException("Application fee cannot exceed " + branchApplicationFormFee);
+				} else if ((this.admissionReservationFee.getApplicationFormFee() != null) && (this.admissionReservationFee.getApplicationFormFee() <= 0d)) {
+
+					throw new ApplicationException("Application fee should be grater than 0.");
+				}
+			} else if ((branchApplicationFormFee == 0) && (this.admissionReservationFee.getApplicationFormFee() != 0.0)) {
+				throw new ApplicationException("Application fee is not defined for the academic year " + this.appliedForAcademicYear.getDisplayLabel());
 			}
 		}
 	}
 
 	private void validateReservationFee() {
 		double maxReservationFeeCanBePaid = 0;
-		if (this.admissionReservationFee.getReservationFee() != null && this.admissionReservationFee.getReservationFee() <= 0d) {
+		if ((this.admissionReservationFee.getReservationFee() != null) && (this.admissionReservationFee.getReservationFee() <= 0d)) {
 			throw new ApplicationException("Reservation fee should be grater than 0.");
 		} else if (this.admissionReservationFee.getReservationFee() != null) {
 			final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearId(this.sessionBean
 					.getCurrentBranch().getId(), this.student.getAppliedForAcademicYear().getId());
 			for (final BranchLevelFee branchLevelFee : branchLevelFees) {
-				if (this.getStudent().getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
-						&& FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())
+				if ((this.getStudent().getResidence().equals(ResidenceConstant.DAY_SCHOOLER) && FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee
+						.getBuildingBlock().getFeeType()))
 						|| FeeTypeConstant.APPLICATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())
 						|| FeeTypeConstant.RESERVATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())) {
 					// don't create hostel fee.

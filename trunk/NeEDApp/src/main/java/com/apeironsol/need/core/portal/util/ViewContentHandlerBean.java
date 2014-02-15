@@ -231,4 +231,8 @@ public class ViewContentHandlerBean implements Serializable {
 		return ViewContentConstant.BRANCH_REPORT_CARD.equals(this.getCurrentViewContent());
 	}
 
+	public boolean isViewContentStudentRegistrations() {
+		return ViewContentConstant.BRANCH_REGISTRATIONS.equals(this.getCurrentViewContent());
+	}
+
 }

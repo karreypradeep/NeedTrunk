@@ -48,7 +48,7 @@ public class GrantedAuthorityBean implements Serializable {
 	 */
 	public boolean isUserHasAuthorities(final EnumSet<AuthorityConstant> userAuthorities) {
 		boolean result = false;
-		if (userAuthorities != null && !userAuthorities.isEmpty()) {
+		if ((userAuthorities != null) && !userAuthorities.isEmpty()) {
 			final Collection<GrantedAuthority> grantedAuthorities = ViewUtil.getGrantedAuthorities();
 			for (final AuthorityConstant UserAuthority : userAuthorities) {
 				for (final GrantedAuthority grantedAuthority : grantedAuthorities) {
@@ -285,6 +285,10 @@ public class GrantedAuthorityBean implements Serializable {
 		return this.isUserHasAuthority(AuthorityConstant.ACCESS_ADMISSIONS);
 	}
 
+	public boolean isUserAllowedToAccessRegistrations() {
+		return this.isUserHasAuthority(AuthorityConstant.ACCESS_REGISTRATIONS);
+	}
+
 	public boolean isUserAllowedToAccessStudents() {
 		return this.isUserHasAuthority(AuthorityConstant.ACCESS_STUDENTS);
 	}
@@ -467,6 +471,14 @@ public class GrantedAuthorityBean implements Serializable {
 
 	public boolean isUserAllowedToCreateAdmission() {
 		return this.isUserHasAuthority(AuthorityConstant.CREATE_ADMISSION);
+	}
+
+	public boolean isUserAllowedToCreateStudentRegistration() {
+		return this.isUserHasAuthority(AuthorityConstant.CREATE_STUDENT_REGISTRATION);
+	}
+
+	public boolean isUserAllowedToRemovetudentRegistration() {
+		return this.isUserHasAuthority(AuthorityConstant.REMOVE_STUDENT_REGISTRATION);
 	}
 
 	public boolean isUserAllowedToReviewAdmission() {

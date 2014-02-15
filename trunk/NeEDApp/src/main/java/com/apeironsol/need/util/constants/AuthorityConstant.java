@@ -43,7 +43,7 @@ public enum AuthorityConstant implements Labeled {
 	ACCESS_HOSTEL_ROOMS("access_hostel_rooms", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 	ACCESS_GRADE_SYSTEM("access_grade_system", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 	ACCESS_REPORT_CARD("access_report_card", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
-
+	ACCESS_REGISTRATIONS("access_registrations", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ACCESS),
 	// Access Security
 	ACCESS_SECURITY("access_security", AuthorityCategoryConstant.SECURITY, AuthoritySubCategoryConstant.ACCESS),
 
@@ -188,6 +188,10 @@ public enum AuthorityConstant implements Labeled {
 	ADMIT_ADMISSION("admit_admission", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ADMISSION),
 	REJECT_ADMISSION("reject_admission", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ADMISSION),
 	ROLLBACK_ADMISSION("rollback_admission", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.ADMISSION),
+
+	// Registrations
+	CREATE_STUDENT_REGISTRATION("create_student_registration", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.STUDENT_REGISTRATION),
+	REMOVE_STUDENT_REGISTRATION("remove_student_registration", AuthorityCategoryConstant.CORE, AuthoritySubCategoryConstant.STUDENT_REGISTRATION),
 
 	// Employees
 	CREATE_EMPLOYEE("create_employee", AuthorityCategoryConstant.HUMAN_RESOURCE, AuthoritySubCategoryConstant.EMPLOYEE),

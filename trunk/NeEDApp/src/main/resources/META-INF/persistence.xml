@@ -113,7 +113,7 @@
 		<class>com.apeironsol.need.core.model.AdmissionReservationFee</class>
 		<class>com.apeironsol.need.hostel.model.StudentAcademicYearHostelRoom</class>
 		<class>com.apeironsol.need.hostel.model.HostelRoom</class>
-		
+		<class>com.apeironsol.need.core.model.StudentRegistration</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<!-- property name="jboss.entity.manager.factory.jndi.name" value="java:jboss/apeironsol/XADatasourceSMS" / -->

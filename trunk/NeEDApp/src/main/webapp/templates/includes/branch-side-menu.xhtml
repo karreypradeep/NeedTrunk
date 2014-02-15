@@ -11,7 +11,15 @@
 		activeIndex="#{leftMenuBean.activeTabIndex}" id="branch_side_menu">
 
 		<p:tab title="#{msg.students}" id="left_students_tab">
-			<h:panelGrid columns="1" cellpadding="2">
+			<h:panelGrid columns="1" cellpadding="2"> 
+				<p:commandLink value="#{msg.registrations}" process="branch_side_menu" update="@form"
+					actionListener="#{admissionBean.performSearch()}" rendered="#{grantedAuthorityBean.userAllowedToAccessRegistrations}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_REGISTRATIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{studentRegistrationBean.loadAcademicYearsForAdmissionsOpenedFlag}" value="true" />
+					<f:setPropertyActionListener target="#{studentRegistrationBean.viewOrNewAction}" value="false" />
+				</p:commandLink>
 				<p:commandLink value="#{msg.admissions}" process="branch_side_menu" update="@form"
 					actionListener="#{admissionBean.performSearch()}" rendered="#{grantedAuthorityBean.userAllowedToAccessAdmissions}">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_ADMISSIONS">

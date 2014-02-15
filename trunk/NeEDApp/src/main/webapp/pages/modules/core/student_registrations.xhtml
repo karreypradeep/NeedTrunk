@@ -1,0 +1,148 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<c:choose>
+		<c:when test="#{studentRegistrationBean.viewOrNewAction}">
+			<ui:include src="create_view_student_registrations.xhtml" />
+		</c:when>
+		<c:otherwise>
+			<f:metadata>
+				<f:event type="preRenderView" listener="#{studentRegistrationBean.loadAcademicYearsForAdmissionsOpened}" />
+			</f:metadata>
+
+			<p:toolbar style="margin-bottom:1px;">
+				<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+					<h:outputText value="Registrations" style="font-size:20px;" />
+				</p:toolbarGroup>
+
+				<p:toolbarGroup align="right">
+					<p:commandButton id="new_registration" value="New registration" icon="ui-icon-plus"
+						action="#{studentRegistrationBean.newStudentRegistration}" update="@form" process="@this"
+						disabled="#{!grantedAuthorityBean.userAllowedToCreateStudentRegistration}" style="font-weight:bold;">
+						<f:setPropertyActionListener target="#{studentRegistrationBean.viewOrNewAction}" value="true" />
+					</p:commandButton>
+				</p:toolbarGroup>
+			</p:toolbar>
+			<p:panel style="margin-top:1px;">
+				<f:facet name="header">
+					<h:outputLabel value="Search Criteria" style="font-weight:bold;" />
+				</f:facet>
+				<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
+				<h:panelGrid columns="1" id="expense_type_grid" cellpadding="4"
+					columnClasses="column-vertical-align,column-vertical-align">
+					<h:panelGrid columns="2" id="admission_search_grid2" cellpadding="4" style="border:0px;">
+
+						<p:outputLabel id="academic_year_label" value="Academic year" for="academic_year" />
+						<p:selectOneMenu id="academic_year" value="#{studentRegistrationBean.academicYearForSearch}"
+							converter="academicYearConverter" style="width:165px;">
+							<f:selectItem itemLabel="Select academic year" itemValue="" />
+							<f:selectItems value="#{studentRegistrationBean.academicYearsWithAdmissionOpen}" var="academicYear"
+								itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
+						</p:selectOneMenu>
+
+						<p:outputLabel id="registration_status_label" value="Registration status" for="registration_status" />
+						<p:selectOneMenu id="registration_status" value="#{studentRegistrationBean.registrationStatusConstantForSearch}"
+							style="width:165px;">
+							<f:selectItem itemLabel="Select status" itemValue="" />
+							<f:selectItems value="#{enumConstantsBean.studentRegistrationStatusTypes}" var="registration"
+								itemLabel="#{registration.label}" itemValue="#{registration}" />
+						</p:selectOneMenu>
+
+					</h:panelGrid>
+				</h:panelGrid>
+
+
+				<p:commandButton id="search_registrations" value="Search"
+					action="#{studentRegistrationBean.searchStudentRegistrartionBySearchCriteria}" update="@form" icon="ui-icon-search"
+					tabindex="1" />
+				<p:spacer width="5px" />
+				<p:commandButton id="admission_search_reset" value="Reset" update="@form"
+					action="#{studentRegistrationBean.resetSearchCriteria}" process="@this" icon="ui-icon-refresh" />
+
+
+				<p:dataTable id="registrations_table" var="studentRegistration"
+					value="#{studentRegistrationBean.studentRegistrationsBySearchCriteria}" paginator="true" rows="15"
+					currentPageReportTemplate="(Displaying {startRecord} - {endRecord} of {totalRecords}, Page: {currentPage}/{totalPages})"
+					paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+					rowsPerPageTemplate="5,10,15,30,60,100" paginatorPosition="bottom" style="margin-top:15px;">
+
+					<f:facet name="header">
+						<h:outputText value="Search Results" style="float:left;margin-top:5px;margin-bottom:5px;" />
+						<h:commandLink style="float:right;"
+							rendered="#{studentRegistrationBean.studentRegistrationsBySearchCriteria.size()>0}">
+							<p:graphicImage value="/images/excel.png" />
+							<p:dataExporter type="xls" target="registrations_table" fileName="Registrations" />
+						</h:commandLink>
+						<h:commandLink style="float:right;"
+							rendered="#{studentRegistrationBean.studentRegistrationsBySearchCriteria.size()>0}">
+							<p:graphicImage value="/images/pdf.png" />
+							<p:dataExporter type="pdf" target="registrations_table" fileName="Registrations"
+								preProcessor="#{studentBean.preProcessPDF}" />
+						</h:commandLink>
+					</f:facet>
+
+					<p:column sortBy="#{studentRegistration.studentDisplayName}" filterBy="#{studentRegistration.studentDisplayName}"
+						filterMatchMode="contains">
+						<f:facet name="header">
+							Student name
+						</f:facet>
+						<p:commandLink id="studentNameLink" value="#{studentRegistration.studentDisplayName}"
+							action="#{studentRegistrationBean.viewStudentRegistration}" title="View" style="margin:0px 0px 0px;float:left;"
+							process="@this" update="@form">
+							<f:setPropertyActionListener value="#{studentRegistration}"
+								target="#{studentRegistrationBean.currentStudentRegistration}" />
+							<f:setPropertyActionListener target="#{studentRegistrationBean.loadAllAcademicYearsFlag}" value="true" />
+							<f:setPropertyActionListener target="#{studentRegistrationBean.viewOrNewAction}" value="true" />
+						</p:commandLink>
+					</p:column>
+
+					<p:column sortBy="#{studentRegistration.registrationNr}" filterBy="#{studentRegistration.registrationNr}"
+						filterMatchMode="contains">
+						<f:facet name="header">
+							Registration number
+						</f:facet>
+						<h:outputText value="#{studentRegistration.registrationNr}" />
+					</p:column>
+
+					<p:column sortBy="#{studentRegistration.fatherDisplayName}" filterBy="#{studentRegistration.fatherDisplayName}"
+						filterMatchMode="contains">
+						<f:facet name="header">
+							Father Name
+						</f:facet>
+						<h:outputText value="#{studentRegistration.fatherDisplayName}" />
+					</p:column>
+
+					<p:column headerText="Options" styleClass="options-column" exportable="false">
+						<p:commandLink id="deleteButton" styleClass="ui-icon ui-icon-trash" style="margin:0px 0px 0px;float:right;"
+							process="@this" title="Delete" onclick="confirmation.show()">
+							<f:setPropertyActionListener value="#{studentRegistration}"
+								target="#{studentRegistrationBean.currentStudentRegistration}" />
+						</p:commandLink>
+					</p:column>
+				</p:dataTable>
+
+			</p:panel>
+
+			<p:confirmDialog id="confirmDialog" header="Confirmation" severity="alert" widgetVar="confirmation">
+				<f:facet name="message">
+					<h:panelGrid columns="1">
+						<h:outputText value="Are you want to delete the student registration details?" />
+						<h:outputText value="Deleting these details will permenently loose all the information of the student" />
+					</h:panelGrid>
+				</f:facet>
+				<p:commandButton id="confirm" value="Yes Sure" update="@form" process="@this" oncomplete="confirmation.hide()"
+					action="#{studentRegistrationBean.removeStudentRegistration}">
+				</p:commandButton>
+				<p:commandButton id="decline" value="No" onclick="confirmation.hide()" type="button" />
+			</p:confirmDialog>
+			<p:defaultCommand target="search_registrations" />
+			<p:blockUI block="form" trigger="new_registration search_registrations">  
+        		Request is processing, please wait<br />
+				<p:graphicImage value="/images/ajax-loader.gif" />
+			</p:blockUI>
+		</c:otherwise>
+	</c:choose>
+</ui:composition>

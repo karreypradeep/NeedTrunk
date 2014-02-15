@@ -20,6 +20,7 @@ public enum AuthoritySubCategoryConstant implements Labeled {
 	ROLE("role"),
 	ACCESS("access"),
 	ADMISSION("admission"),
+	STUDENT_REGISTRATION("student_registration"),
 	ORGANIZATION("organization"),
 	BRANCH("branch"),
 	BUILDING_BLOCK("building_block"),

@@ -53,6 +53,7 @@ import com.apeironsol.need.util.constants.StudentExamSubjectStatusConstant;
 import com.apeironsol.need.util.constants.StudentFeeTransactionStatusConstant;
 import com.apeironsol.need.util.constants.StudentFeeTransactionTypeConstant;
 import com.apeironsol.need.util.constants.StudentPocketMoneyTransactionTypeConstant;
+import com.apeironsol.need.util.constants.StudentRegistrationStatusConstant;
 import com.apeironsol.need.util.constants.StudentReportNamesConstant;
 import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
 import com.apeironsol.need.util.constants.StudentStatusConstant;
@@ -80,8 +81,8 @@ public class EnumConstantsBean implements Serializable {
 		return SchoolTypeConstant.values();
 	}
 
-	public RegistrationTypeConstant[] getRegistrationTypes() {
-		return RegistrationTypeConstant.values();
+	public StudentRegistrationStatusConstant[] getStudentRegistrationStatusTypes() {
+		return StudentRegistrationStatusConstant.values();
 	}
 
 	public MonthConstant[] getMonths() {
@@ -118,6 +119,10 @@ public class EnumConstantsBean implements Serializable {
 
 	public AdmissionStatusConstant[] getAdmissionStatusTypes() {
 		return AdmissionStatusConstant.values();
+	}
+
+	public RegistrationTypeConstant[] getRegistrationTypes() {
+		return RegistrationTypeConstant.values();
 	}
 
 	public PaymentFrequencyConstant[] getPaymentFrequencies() {
