@@ -66,13 +66,13 @@ public class EmailConsumer implements SessionAwareMessageListener<Message> {
 			System.out.println(((TextMessage) message).getText() + " onMessage arg1 " + session.getAcknowledgeMode());
 		} else if (message instanceof ObjectMessage) {
 			final NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
-			final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
-			if (this.isCanceled(batchLog)) {
-				this.postProcessElement(jmsObject, batchLog,
+			if (this.isCanceled(jmsObject.getBatchLog())) {
+				this.postProcessElement(jmsObject, jmsObject.getBatchLog(),
 						this.createNotificationMessage("Batch Cancelled", "Batch Cancelled", BatchLogMessageStatusConstant.CANCELLED));
 			} else {
 
 				if (jmsObject.isLastMessage()) {
+					final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchLog().getId());
 					final Collection<BatchLogMessage> batchLogMessages = this.batchLogMessageService.findBatchLogMessagesByBatchLogId(batchLog.getId());
 					final long totalBatchLogMessages = batchLogMessages != null ? batchLogMessages.size() : 0;
 					if (totalBatchLogMessages != batchLog.getNrElements().longValue()) {
@@ -82,7 +82,7 @@ public class EmailConsumer implements SessionAwareMessageListener<Message> {
 					}
 				} else {
 					try {
-						this.processBatchMesssage(jmsObject, batchLog);
+						this.processBatchMesssage(jmsObject, jmsObject.getBatchLog());
 					} catch (final Exception e) {
 						throw new JMSException(e.getMessage());
 					}
@@ -99,7 +99,7 @@ public class EmailConsumer implements SessionAwareMessageListener<Message> {
 	 *            batch log.
 	 */
 	private void resendLastMessage(final BatchLog batchLog) {
-		final NeEDJMSObject newJmsObject = new NeEDJMSObject(batchLog.getId());
+		final NeEDJMSObject newJmsObject = new NeEDJMSObject(batchLog);
 		newJmsObject.setLastMessage(true);
 		this.jmsTemplate.setPriority(HIGH_PRIORITY);
 		this.jmsTemplate.convertAndSend(newJmsObject);

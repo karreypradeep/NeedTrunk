@@ -321,7 +321,7 @@ public class NotificationProducerUtil implements Serializable {
 	 */
 	private ObjectMessage createLastMessage(final BatchLog batchLog, final Session session) throws JMSException {
 		// Send this message as last message to update batch log.
-		final NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog.getId());
+		final NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog);
 		jmsObject.setLastMessage(true);
 		jmsObject.setUserName(ViewUtil.getPrincipal());
 		final ObjectMessage message = session.createObjectMessage(jmsObject);
@@ -346,7 +346,7 @@ public class NotificationProducerUtil implements Serializable {
 	private ObjectMessage createNotificationMessage(final StudentAcademicYear studentAcademicYear, final Student student, final BatchLog batchLog,
 			final Long sequenceNr, final Session session) throws JMSException {
 		// Send this message as last message to update batch log.
-		final NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog.getId());
+		final NeEDJMSObject jmsObject = new NeEDJMSObject(batchLog);
 		if (studentAcademicYear != null) {
 			jmsObject.setStudentAcademicYear(studentAcademicYear);
 		}

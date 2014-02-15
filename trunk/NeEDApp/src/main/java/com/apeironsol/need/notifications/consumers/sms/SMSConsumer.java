@@ -69,13 +69,14 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 			System.out.println(((TextMessage) message).getText() + " onMessage arg1 " + session.getAcknowledgeMode());
 		} else if (message instanceof ObjectMessage) {
 			final NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
-			final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
-			if (this.isCanceled(batchLog)) {
-				this.postProcessElement(jmsObject, batchLog,
+
+			if (this.isCanceled(jmsObject.getBatchLog())) {
+				this.postProcessElement(jmsObject, jmsObject.getBatchLog(),
 						this.createNotificationMessage("Batch Cancelled", "Batch Cancelled", BatchLogMessageStatusConstant.CANCELLED));
 			} else {
 
 				if (jmsObject.isLastMessage()) {
+					final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchLog().getId());
 					final Collection<BatchLogMessage> batchLogMessages = this.batchLogMessageService.findBatchLogMessagesByBatchLogId(batchLog.getId());
 					final long totalBatchLogMessages = batchLogMessages != null ? batchLogMessages.size() : 0;
 					if (!BatchStatusConstant.FINISHED.equals(batchLog.getBatchStatusConstant())
@@ -94,14 +95,14 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 					try {
 						BatchLogMessage batchLogMessage = null;
 						if (jmsObject.getStudentAcademicYear() != null) {
-							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject
-									.getStudentAcademicYear().getId());
+							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(jmsObject.getBatchLog()
+									.getId(), jmsObject.getStudentAcademicYear().getId());
 						} else if (jmsObject.getStudent() != null) {
-							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentId(batchLog.getId(), jmsObject.getStudent()
-									.getId());
+							batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentId(jmsObject.getBatchLog().getId(),
+									jmsObject.getStudent().getId());
 						}
 						if (batchLogMessage == null) {
-							this.processBatchMesssage(jmsObject, batchLog);
+							this.processBatchMesssage(jmsObject, jmsObject.getBatchLog());
 						}
 					} catch (final Exception e) {
 						throw new JMSException(e.getMessage());
@@ -119,7 +120,7 @@ public class SMSConsumer implements SessionAwareMessageListener<Message> {
 	 *            batch log.
 	 */
 	private void resendLastMessage(final BatchLog batchLog) {
-		final NeEDJMSObject newJmsObject = new NeEDJMSObject(batchLog.getId());
+		final NeEDJMSObject newJmsObject = new NeEDJMSObject(batchLog);
 		newJmsObject.setLastMessage(true);
 		this.jmsTemplate.setPriority(HIGH_PRIORITY);
 		this.jmsTemplate.convertAndSend(newJmsObject);

@@ -61,7 +61,7 @@ public class EmailDeadLetterConsumer implements SessionAwareMessageListener<Mess
 			System.out.println(((TextMessage) message).getText() + " onMessage arg1 " + session.getAcknowledgeMode());
 		} else if (message instanceof ObjectMessage) {
 			final NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
-			final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
+			final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchLog().getId());
 			this.processBatchMesssage(jmsObject, batchLog);
 		}
 	}

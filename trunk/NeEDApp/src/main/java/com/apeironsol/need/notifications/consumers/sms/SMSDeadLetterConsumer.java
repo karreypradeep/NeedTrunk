@@ -63,16 +63,16 @@ public class SMSDeadLetterConsumer implements SessionAwareMessageListener<Messag
 			System.out.println(((TextMessage) message).getText() + " onMessage arg1 " + session.getAcknowledgeMode());
 		} else if (message instanceof ObjectMessage) {
 			final NeEDJMSObject jmsObject = (NeEDJMSObject) ((ObjectMessage) message).getObject();
-			final BatchLog batchLog = this.batchLogService.findBatchLogById(jmsObject.getBatchId());
 			BatchLogMessage batchLogMessage = null;
 			if (jmsObject.getStudentAcademicYear() != null) {
-				batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(batchLog.getId(), jmsObject
-						.getStudentAcademicYear().getId());
+				batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentAcademicYearId(jmsObject.getBatchLog().getId(),
+						jmsObject.getStudentAcademicYear().getId());
 			} else if (jmsObject.getStudent() != null) {
-				batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentId(batchLog.getId(), jmsObject.getStudent().getId());
+				batchLogMessage = this.batchLogMessageService.findBatchLogMessageByBatchLogIdAndStudentId(jmsObject.getBatchLog().getId(), jmsObject
+						.getStudent().getId());
 			}
 			if (batchLogMessage == null) {
-				this.processBatchMesssage(jmsObject, batchLog);
+				this.processBatchMesssage(jmsObject, jmsObject.getBatchLog());
 			}
 		}
 	}

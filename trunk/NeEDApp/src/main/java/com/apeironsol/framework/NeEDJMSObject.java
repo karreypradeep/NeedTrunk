@@ -11,6 +11,7 @@ import java.io.Serializable;
 import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.notifications.model.BatchLog;
 
 public class NeEDJMSObject implements Serializable {
 
@@ -30,9 +31,6 @@ public class NeEDJMSObject implements Serializable {
 	private Student				student;
 
 	/** The batch id. */
-	private final Long			batchId;
-
-	/** The batch id. */
 	private Long				sequenceNr;
 
 	/** The batch id. */
@@ -49,19 +47,15 @@ public class NeEDJMSObject implements Serializable {
 	private SMSProvider			smsProvider;
 
 	/**
-	 * @param batchId
+	 * User name of user logged into application.
 	 */
-	public NeEDJMSObject(final Long batchId) {
-		this.batchId = batchId;
-	}
+	private final BatchLog		batchLog;
 
 	/**
-	 * Returns the batch id.
-	 * 
-	 * @return the batch id.
+	 * @param batchId
 	 */
-	public Long getBatchId() {
-		return this.batchId;
+	public NeEDJMSObject(final BatchLog batchLog) {
+		this.batchLog = batchLog;
 	}
 
 	/**
@@ -147,14 +141,22 @@ public class NeEDJMSObject implements Serializable {
 	 * @return the student
 	 */
 	public Student getStudent() {
-		return student;
+		return this.student;
 	}
 
 	/**
-	 * @param student the student to set
+	 * @param student
+	 *            the student to set
 	 */
-	public void setStudent(Student student) {
+	public void setStudent(final Student student) {
 		this.student = student;
+	}
+
+	/**
+	 * @return the batchLog
+	 */
+	public BatchLog getBatchLog() {
+		return this.batchLog;
 	}
 
 }
