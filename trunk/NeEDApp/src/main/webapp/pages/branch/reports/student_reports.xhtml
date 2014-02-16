@@ -103,13 +103,10 @@
 					</c:when>
 				</c:choose>
 
-				<p:commandLink id="students_personal_excel" style="float:right;"
-					rendered="#{studentReportBean.studentROList.size()>0}">
+				<h:commandLink style="float:right;" rendered="#{studentReportBean.studentROList.size()>0}">
 					<p:graphicImage value="/images/excel.png" />
-					<f:setPropertyActionListener target="#{studentReportBean.reportType}" value="EXCEL_REPORT" />
-					<p:dataExporter type="xls" target="students_details_table" fileName="Student Details"
-						postProcessor="#{studentReportBean.postProcessXLS}" />
-				</p:commandLink>
+					<p:dataExporter type="xls" target="students_details_table" fileName="student_report" />
+				</h:commandLink>  
 
 				<p:commandLink id="students_personal_pdf" style="float:right;"
 					rendered="#{studentReportBean.studentROList.size()>0}" ajax="false">
