@@ -106,7 +106,7 @@
 				<h:commandLink style="float:right;" rendered="#{studentReportBean.studentROList.size()>0}">
 					<p:graphicImage value="/images/excel.png" />
 					<p:dataExporter type="xls" target="students_details_table" fileName="student_report" />
-				</h:commandLink>  
+				</h:commandLink>
 
 				<p:commandLink id="students_personal_pdf" style="float:right;"
 					rendered="#{studentReportBean.studentROList.size()>0}" ajax="false">
