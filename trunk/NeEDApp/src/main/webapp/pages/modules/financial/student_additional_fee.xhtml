@@ -25,13 +25,13 @@
 			<p:message id="studentAdditionalFeeMsg" for="studentAdditionalFee" />
 
 			<p:outputLabel id="dueDatelabel" value="End date" for="dueDate" style="white-space:nowrap;" />
-			<p:panelGrid columns="2" style="border:0px;">
+			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="dueDate" value="#{studentAdditionalFeeBean.studentAdditionalFee.dueDate}" navigator="true"
 					showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
 					mindate="#{studentBean.studentAcademicYear.academicYear.startDate}"
 					maxdate="#{studentBean.studentAcademicYear.academicYear.endDate}" />
 				<p:watermark for="dueDate" value="dd/MM/yyyy" />
-			</p:panelGrid>
+			</h:panelGrid>
 			<p:message id="dueDatemsg" for="dueDate" />
 
 

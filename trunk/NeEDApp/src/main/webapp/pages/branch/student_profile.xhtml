@@ -38,11 +38,11 @@
 
 
 							<p:outputLabel value="#{msg.dob}" style="font-weight:bold" for="dob" />
-							<p:panelGrid columns="2" style="border:0px;">
+							<h:panelGrid columns="2" style="border:0px;">
 								<p:calendar id="dob" value="#{studentBean.student.dateOfBirth}" navigator="true" showOn="button"
 									pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
 								<p:watermark for="dob" value="dd/MM/yyyy" />
-							</p:panelGrid>
+							</h:panelGrid>
 							<p:message id="dob_msg" for="dob" />
 
 							<p:outputLabel value="#{msg.gender}" style="font-weight:bold" for="gender" />

@@ -107,11 +107,11 @@
 									<p:message id="last_name_msg" for="last_name" />
 
 									<p:outputLabel id="dob_label" value="Date of birth" for="stu_dob" />
-									<p:panelGrid columns="2" style="border:0px;">
+									<h:panelGrid columns="2" style="border:0px;">
 										<p:calendar id="stu_dob" value="#{registrationBean.dateOfBirth}" navigator="true" showOn="button"
 											pattern="dd/MM/yyyy" yearRange="1900" required="true" maxdate="#{sessionBean.systemDate}" />
 										<p:watermark for="stu_dob" value="dd/MM/yyyy" />
-									</p:panelGrid>
+									</h:panelGrid>
 									<p:message id="stu_dob_msg" for="stu_dob" />
 
 									<p:outputLabel id="admissionNrLabel" for="admissionNr" value="Student admission Number"

@@ -22,7 +22,7 @@
 		<p:message id="subject_msg" for="section_subject" rendered="#{sectionAttendanceBean.attendanceSubjectWise}" />
 
 		<h:outputLabel value="Attendance date" for="attendance_date" />
-		<p:panelGrid columns="2" style="border:0px;">
+		<h:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="attendance_date" value="#{sectionAttendanceBean.attendanceDate}" navigator="true" showOn="button"
 				pattern="dd/MM/yyyy" mindate="#{sectionBean.section.academicYear.classStartDate}"
 				maxdate="#{sectionAttendanceBean.maxDateForTakeAttendance}" required="true">
@@ -30,7 +30,7 @@
 					listener="#{sectionAttendanceBean.clearSectionStudentAbsentDetailsByDate}"></p:ajax>
 			</p:calendar>
 			<p:watermark for="attendance_date" value="dd/MM/yyyy" />
-		</p:panelGrid>
+		</h:panelGrid>
 		<p:message id="branch_registration_date_msg" for="attendance_date" />
 		<p:commandButton id="takeAttendanceSubmit" value="Get attendance details" process="@form" update="@form"
 			style="float:left;" actionListener="#{sectionAttendanceBean.getAttendanceDetails}" />

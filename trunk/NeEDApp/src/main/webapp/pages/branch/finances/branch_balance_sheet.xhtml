@@ -9,12 +9,12 @@
 		<h:panelGrid id="father_panel_grid" columns="3" columnClasses="label, value,  label" styleClass="grid" cellpadding="5">
 
 			<p:outputLabel id="start_date_label" value="Start date" for="start_date" />
-			<p:panelGrid columns="2" style="border:0px;">
+			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="start_date" value="#{branchBalanceSheetBean.currentBranchBalanceSheet.startDate}" navigator="true"
 					pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button"
 					disabled="#{branchBalanceSheetBean.currentBranchBalanceSheet.id!=null}" maxdate="#{sessionBean.systemDate}" />
 				<p:watermark for="start_date" value="dd/MM/yyyy" />
-			</p:panelGrid>
+			</h:panelGrid>
 			<p:message id="start_date_msg" for="start_date" />
 
 			<p:outputLabel id="opening_balance_label" value="Opening Balance" for="opening_balance" />
@@ -26,11 +26,11 @@
 			<p:message id="opening_balance_msg" for="opening_balance" />
 
 			<p:outputLabel id="end_date_label" value="End date" for="end_date" />
-			<p:panelGrid columns="2" style="border:0px;">
+			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="end_date" value="#{branchBalanceSheetBean.currentBranchBalanceSheet.endDate}" navigator="true"
 					pattern="dd/MMM/yyyy" size="20" maxlength="20" showOn="button" maxdate="#{sessionBean.systemDate}" />
 				<p:watermark for="end_date" value="dd/MM/yyyy" />
-			</p:panelGrid>
+			</h:panelGrid>
 			<p:message id="end_date_msg" for="end_date" />
 
 			<p:outputLabel id="closing_balance_label" value="Closing Balance" for="closing_balance" />

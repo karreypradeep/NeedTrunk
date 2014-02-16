@@ -42,11 +42,11 @@
 
 
 				<p:outputLabel id="purchase_order_date_label" value="Purchase order date" for="purchase_order_date" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="purchase_order_date" value="#{purchaseOrderBean.purchaseOrder.purchaseDate}" navigator="true"
 						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
 					<p:watermark for="purchase_order_date" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 				<p:message id="purchase_order_date_msg" for="purchase_order_date" />
 
 				<p:outputLabel id="total_amount_label" value="Total amount" for="total_amount" />

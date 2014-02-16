@@ -14,12 +14,12 @@
 			<p:message id="emp_ctc_amount_msg" for="emp_ctc_amount" />
 
 			<p:outputLabel id="emp_start_date_label" value="Start date" for="emp_start_date" />
-			<p:panelGrid columns="2" style="border:0px;">
+			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="emp_start_date" value="#{employeeCTCBean.employeeCTC.startDate}" navigator="true" showOn="button"
 					pattern="dd/MM/yyyy" yearRange="1900" required="true"
 					disabled="#{employeeCTCBean.employeeCTCsByEmployee == null || employeeCTCBean.employeeCTCsByEmployee.isEmpty()}" />
 				<p:watermark for="emp_start_date" value="dd/MM/yyyy" />
-			</p:panelGrid>
+			</h:panelGrid>
 			<p:message id="emp_start_date_msg" for="emp_start_date" />
 
 		</h:panelGrid>

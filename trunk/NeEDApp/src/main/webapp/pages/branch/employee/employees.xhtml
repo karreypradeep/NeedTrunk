@@ -45,11 +45,11 @@
 						</p:inputText>
 
 						<p:outputLabel id="date_of_birth_label" value="Date of birth" for="date_of_birth" />
-						<p:panelGrid columns="2" style="border:0px;">
+						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="date_of_birth" value="#{employeeBean.employeeSearchCriteria.dateOfBirth}" navigator="true"
 								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
 							<p:watermark for="date_of_birth" value="dd/MM/yyyy" />
-						</p:panelGrid>
+						</h:panelGrid>
 					</h:panelGrid>
 
 					<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">

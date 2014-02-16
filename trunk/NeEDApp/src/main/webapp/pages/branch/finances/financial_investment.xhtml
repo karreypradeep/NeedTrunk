@@ -28,11 +28,11 @@
 					<p:message id="investment_name_msg" for="investment_name" />
 
 					<p:outputLabel id="investment_date_label" value="Investment date" for="investment_date" />
-					<p:panelGrid columns="2" style="border:0px;">
+					<h:panelGrid columns="2" style="border:0px;">
 						<p:calendar id="investment_date" value="#{financeInvestmentBean.branchInvestment.investmentDate}" navigator="true"
 							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
 						<p:watermark for="investment_date" value="dd/MM/yyyy" />
-					</p:panelGrid>
+					</h:panelGrid>
 					<p:message id="investment_date_msg" for="investment_date" />
 
 					<p:outputLabel id="investment_amount_label" value="Investment amount" for="investment_amount" />
@@ -92,20 +92,20 @@
 						</p:inputText>
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-						<p:panelGrid columns="2" style="border:0px;">
+						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="from_date" value="#{financeInvestmentBean.branchInvestmentSearchCriteria.fromDate}"
 								navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 								mindate="#{financeInvestmentBean.minimumDateForCurrentBranch}" maxdate="#{financeInvestmentBean.currentDate}" />
 							<p:watermark for="from_date" value="dd/MM/yyyy" />
-						</p:panelGrid>
+						</h:panelGrid>
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-						<p:panelGrid columns="2" style="border:0px;">
+						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="to_date" value="#{financeInvestmentBean.branchInvestmentSearchCriteria.toDate}" navigator="true"
 								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 								mindate="#{financeInvestmentBean.minimumDateForCurrentBranch}" maxdate="#{financeInvestmentBean.currentDate}" />
 							<p:watermark for="to_date" value="dd/MM/yyyy" />
-						</p:panelGrid>
+						</h:panelGrid>
 
 					</h:panelGrid>
 

@@ -28,12 +28,12 @@
 					<p:message id="assert_name_msg" for="assert_name" />
 
 					<p:outputLabel id="purchase_date_label" value="Purchase date" for="purchase_date" />
-					<p:panelGrid columns="2" style="border:0px;">
+					<h:panelGrid columns="2" style="border:0px;">
 						<p:calendar id="purchase_date" value="#{financeAssertBean.branchAssert.date}" navigator="true" showOn="button"
 							pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
 							mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
 						<p:watermark for="purchase_date" value="dd/MM/yyyy" />
-					</p:panelGrid>
+					</h:panelGrid>
 					<p:message id="purchase_date_msg" for="purchase_date" />
 
 					<p:outputLabel id="quantity_label" value="Quantity" for="quantity" />
@@ -94,20 +94,20 @@
 						</p:inputText>
 
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-						<p:panelGrid columns="2" style="border:0px;">
+						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="from_date" value="#{financeAssertBean.branchAssertSearchCriteria.fromDate}" navigator="true"
 								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 								mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
 							<p:watermark for="from_date" value="dd/MM/yyyy" />
-						</p:panelGrid>
+						</h:panelGrid>
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-						<p:panelGrid columns="2" style="border:0px;">
+						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="to_date" value="#{financeAssertBean.branchAssertSearchCriteria.toDate}" navigator="true"
 								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 								mindate="#{financeAssertBean.minimumDateForCurrentBranch}" maxdate="#{financeAssertBean.currentDate}" />
 							<p:watermark for="to_date" value="dd/MM/yyyy" />
-						</p:panelGrid>
+						</h:panelGrid>
 
 					</h:panelGrid>
 

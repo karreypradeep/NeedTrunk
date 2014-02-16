@@ -23,20 +23,20 @@
 		<h:panelGrid id="eventDetails" columns="2">
 
 			<h:outputLabel for="fromDate" value="Start date:" />
-			<p:panelGrid columns="2" style="border:0px;">
+			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="fromDate" value="#{academicYearWeekEndBean.scheduleStartDate}" pattern="dd/MM/yyyy" showOn="button"
 					disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}"
 					mindate="#{academicYearBean.academicYear.startDate}" maxdate="#{academicYearBean.academicYear.endDate}" />
 				<p:watermark for="fromDate" value="dd/MM/yyyy" />
-			</p:panelGrid>
+			</h:panelGrid>
 
 			<h:outputLabel for="toDate" value="End date:" />
-			<p:panelGrid columns="2" style="border:0px;">
+			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="toDate" value="#{academicYearWeekEndBean.scheduleEndDate}" pattern="dd/MM/yyyy" showOn="button"
 					disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}"
 					mindate="#{academicYearBean.academicYear.startDate}" maxdate="#{academicYearBean.academicYear.endDate}" />
 				<p:watermark for="toDate" value="dd/MM/yyyy" />
-			</p:panelGrid>
+			</h:panelGrid>
 
 			<h:outputText value="Apply To Days: " />
 			<p:selectManyCheckbox value="#{academicYearWeekEndBean.selectedWeekDays}" converter="weekDayConverter"

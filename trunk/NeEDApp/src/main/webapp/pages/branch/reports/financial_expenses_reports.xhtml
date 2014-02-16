@@ -24,20 +24,20 @@
 				</p:inputText>
 
 				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="from_date" value="#{financialReportBean.branchExpenseSearchCriteria.fromDate}" navigator="true"
 						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 						mindate="#{financialReportBean.minimumDateForCurrentBranch}" maxdate="#{financialReportBean.currentDate}" />
 					<p:watermark for="from_date" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 
 				<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="to_date" value="#{financialReportBean.branchExpenseSearchCriteria.toDate}" navigator="true"
 						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 						mindate="#{financialReportBean.minimumDateForCurrentBranch}" maxdate="#{financialReportBean.currentDate}" />
 					<p:watermark for="to_date" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 
 			</h:panelGrid>
 			<h:panelGrid columns="2" id="expense_type_grid2" cellpadding="4" style="border:0px;">

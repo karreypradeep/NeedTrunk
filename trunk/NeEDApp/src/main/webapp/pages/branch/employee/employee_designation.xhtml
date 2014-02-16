@@ -45,11 +45,11 @@
 				<p:message id="emp_desig_msg" for="emp_desig" />
 
 				<p:outputLabel id="emp_sd_label" value="Start date" for="emp_sd" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="emp_sd" value="#{employeeDesignationBean.employeeDesignation.startDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 					<p:watermark for="emp_sd" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 				<p:message id="emp_sd_msg" for="emp_sd" />
 
 				<p:outputLabel id="emp_dept_label" value="Department" for="emp_dept" />
@@ -64,11 +64,11 @@
 
 
 				<p:outputLabel id="emp_ed_label" value="End date" for="emp_ed" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="emp_ed" value="#{employeeDesignationBean.employeeDesignation.endDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true" />
 					<p:watermark for="emp_ed" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 				<p:message id="emp_ed_msg" for="emp_ed" />
 
 				<p:outputLabel id="emp_type_label" value="Employment Type" for="emp_type" />
@@ -190,11 +190,11 @@
 		<h:panelGrid id="close_details_grid" columns="3">
 
 			<p:outputLabel id="dsg_cd_label" value="Enter designation close date" for="dsg_cd" />
-			<p:panelGrid columns="2" style="border:0px;">
+			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="dsg_cd" value="#{employeeDesignationBean.designationCloseDate}" navigator="true" showOn="button"
 					pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 				<p:watermark for="dsg_cd" value="dd/MM/yyyy" />
-			</p:panelGrid>
+			</h:panelGrid>
 			<p:message id="dsg_cd_msg" for="dsg_cd" />
 
 

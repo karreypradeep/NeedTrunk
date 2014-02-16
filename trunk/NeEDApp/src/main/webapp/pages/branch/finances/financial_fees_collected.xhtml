@@ -22,20 +22,20 @@
 				</p:selectOneMenu>
 
 				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="from_date" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.fromDate}" navigator="true"
 						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{studentBean.currentDate}"
 						disabled="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear==null}" />
 					<p:watermark for="from_date" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 
 				<p:outputLabel id="to_date_label" value="To date" for="to_date" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="to_date" value="#{financeFeesCollectedBean.feeCollectedSearchCriteria.toDate}" navigator="true"
 						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{studentBean.currentDate}"
 						disabled="#{financeFeesCollectedBean.feeCollectedSearchCriteria.academicYear==null}" />
 					<p:watermark for="to_date" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 
 			</h:panelGrid>
 

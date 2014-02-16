@@ -23,11 +23,11 @@
 		<p:message id="stu_last_name_msg" for="stu_last_name" />
 
 		<p:outputLabel id="stu_dob_label" value="Student date of birth" for="stu_dob" />
-		<p:panelGrid columns="2" style="border:0px;">
+		<h:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="stu_dob" value="#{admissionBean.student.dateOfBirth}" navigator="true" showOn="button"
 				pattern="dd/MM/yyyy" yearRange="1900" required="true" maxdate="#{sessionBean.systemDate}" />
 			<p:watermark for="stu_dob" value="dd/MM/yyyy" />
-		</p:panelGrid>
+		</h:panelGrid>
 		<p:message id="stu_dob_msg" for="stu_dob" />
 
 		<p:outputLabel id="stu_gender_label" value="Gender" for="stu_gender" />

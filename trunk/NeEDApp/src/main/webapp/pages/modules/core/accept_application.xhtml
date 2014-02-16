@@ -60,13 +60,13 @@
 
 			<p:outputLabel value="External Transaction Date" for="ext_trans_date"
 				rendered="#{admissionBean.reservationFeeExternalTransaction}" />
-			<p:panelGrid columns="2" style="border:0px;">
+			<h:panelGrid columns="2" style="border:0px;" rendered="#{admissionBean.reservationFeeExternalTransaction}">
 				<p:calendar id="ext_trans_date"
 					value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true"
 					showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
 					rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 				<p:watermark for="ext_trans_date" value="dd/MM/yyyy" />
-			</p:panelGrid>
+			</h:panelGrid>
 			<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 
 			<p:outputLabel id="comitted_fee_label" value="Comitted fee" for="comitted_fee" />

@@ -16,11 +16,11 @@
 			<h:panelGrid columns="3" id="grid" cellpadding="4" style="border:0px;margin-bottom:10px;">
 
 				<p:outputLabel id="start_date_label" value="Start date" for="start_date" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="start_date" value="#{branchDepartmentBean.branchDepartment.startDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" yearRange="1900" />
 					<p:watermark for="start_date" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 				<p:message id="start_date_msg" for="start_date" />
 
 				<p:outputLabel id="end_date_label" value="End date" for="end_date" />

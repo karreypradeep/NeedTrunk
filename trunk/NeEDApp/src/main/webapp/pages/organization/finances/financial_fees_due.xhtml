@@ -22,13 +22,13 @@
 				</p:selectOneMenu>
 
 				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="from_date" value="#{financeFeesDueBean.feeDueSearchCriteria.dueDate}" navigator="true"
 						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
 						mindate="#{financeFeesDueBean.feeDueSearchCriteria.academicYear.startDate}" maxdate="#{studentBean.currentDate}"
 						disabled="#{financeFeesDueBean.feeDueSearchCriteria.academicYear==null}" />
 					<p:watermark for="from_date" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 
 			</h:panelGrid>
 

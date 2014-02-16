@@ -85,11 +85,11 @@
 
 
 				<p:outputLabel value="External Transaction Date" for="r_extTransDate" />
-				<p:panelGrid columns="2" style="border:0px;">
+				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="r_extTransDate" value="#{studentFinancialBean.studentFeeTransaction.externalTransactionDate}"
 						navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 					<p:watermark for="r_extTransDate" value="dd/MM/yyyy" />
-				</p:panelGrid>
+				</h:panelGrid>
 				<p:message id="r_extTransDateMsg" for="r_extTransDate" />
 			</h:panelGrid>
 
