@@ -19,7 +19,7 @@
 						<p:calendar id="start_date" value="#{academicYearHolidayBean.academicYearHoliday.startDate}" navigator="true"
 							showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
 							mindate="#{academicYearBean.academicYear.startDate}" maxdate="#{academicYearBean.academicYear.endDate}" />
-						<p:watermark for="start_date" value="dd/MM/yyyy" />
+						<p:watermark for="start_date" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="start_date_msg" for="start_date" />
 
@@ -28,7 +28,7 @@
 						<p:calendar id="end_date" value="#{academicYearHolidayBean.academicYearHoliday.endDate}" navigator="true"
 							showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" mindate="#{academicYearBean.academicYear.endDate}"
 							maxdate="#{academicYearBean.academicYear.endDate}" />
-						<p:watermark for="end_date" value="dd/MM/yyyy" />
+						<p:watermark for="end_date" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="end_date_msg" for="end_date" />
 

@@ -41,7 +41,7 @@
 				navigator="true" showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true">
 				<p:ajax event="dateSelect" process="@this" />
 			</p:calendar>
-			<p:watermark for="app_fee_date" value="dd/MM/yyyy" />
+			<p:watermark for="app_fee_date" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="app_fee_date_msg" for="app_fee_date" />
 
@@ -78,7 +78,7 @@
 				rendered="#{admissionBean.applicationFeeExternalTransaction}">
 				<p:ajax event="dateSelect" process="@this" />
 			</p:calendar>
-			<p:watermark for="ext_trans_date" value="dd/MM/yyyy" />
+			<p:watermark for="ext_trans_date" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.applicationFeeExternalTransaction}" />
 
@@ -101,7 +101,7 @@
 				rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED'}">
 				<p:ajax event="dateSelect" process="@this" />
 			</p:calendar>
-			<p:watermark for="res_fee_date" value="dd/MM/yyyy" />
+			<p:watermark for="res_fee_date" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="res_fee_date_msg" for="res_fee_date"
 			rendered="#{admissionBean.student.admissionStatus == 'ACCEPTED' or admissionBean.student.admissionStatus == 'ADMITTED'}" />
@@ -145,7 +145,7 @@
 				rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}">
 				<p:ajax event="dateSelect" process="@this" />
 			</p:calendar>
-			<p:watermark for="ext_res_trans_date" value="dd/MM/yyyy" />
+			<p:watermark for="ext_res_trans_date" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="ext_res_trans_date_msg" for="ext_res_trans_date"
 			rendered="#{admissionBean.reservationFeeExternalTransaction and (admissionBean.student.admissionStatus == 'ACCEPTED'  or admissionBean.student.admissionStatus == 'ADMITTED')}" />

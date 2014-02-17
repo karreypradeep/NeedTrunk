@@ -33,8 +33,8 @@
 		<p:outputLabel id="available_start_date_label" value="Available start date" for="available_start_date" />
 		<h:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="available_start_date" value="#{hostelRoomBean.hostelRoom.startDate}" navigator="true"
-				pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button" />
-			<p:watermark for="available_start_date" value="dd/MM/yyyy" />
+				pattern="dd/MM/yyyy" size="20" maxlength="20" required="true" showOn="button" />
+			<p:watermark for="available_start_date" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="available_start_date_msg" for="available_start_date" />
 

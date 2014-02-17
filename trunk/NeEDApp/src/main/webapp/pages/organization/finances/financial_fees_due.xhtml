@@ -24,10 +24,10 @@
 				<p:outputLabel id="from_date_label" value="From date" for="from_date" />
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="from_date" value="#{financeFeesDueBean.feeDueSearchCriteria.dueDate}" navigator="true"
-						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+						showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20"
 						mindate="#{financeFeesDueBean.feeDueSearchCriteria.academicYear.startDate}" maxdate="#{studentBean.currentDate}"
 						disabled="#{financeFeesDueBean.feeDueSearchCriteria.academicYear==null}" />
-					<p:watermark for="from_date" value="dd/MM/yyyy" />
+					<p:watermark for="from_date" value="DD/MM/YYYY" />
 				</h:panelGrid>
 
 			</h:panelGrid>

@@ -543,11 +543,11 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 		try {
 			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
-					studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION);
+					studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.NEW_ADMISSION_NOTIFICATION);
 			if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
 				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
 						studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
-						NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION, null, null);
+						NotificationSubTypeConstant.NEW_ADMISSION_NOTIFICATION, null, null);
 				if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
 						|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
 					this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);

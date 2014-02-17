@@ -42,11 +42,11 @@
 					<h:panelGrid columns="2" style="border:0px;">
 						<p:calendar id="student_pocket_money_date"
 							value="#{studentPocketMoneyBean.studentPocketMoneyTransaction.depositOrWithdrawDate}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true"
+							showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20" required="true"
 							mindate="#{studentBean.studentAcademicYear.academicYear.startDate}" maxdate="#{sessionBean.currentDate}">
 							<p:ajax event="dateSelect" update="@this" process="@this" />
 						</p:calendar>
-						<p:watermark for="student_pocket_money_date" value="dd/MM/yyyy" />
+						<p:watermark for="student_pocket_money_date" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="student_pocket_money_date_msg" for="student_pocket_money_date" />
 

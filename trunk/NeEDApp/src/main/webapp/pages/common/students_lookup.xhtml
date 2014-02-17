@@ -19,8 +19,8 @@
 					<p:outputLabel id="date_of_birth_label" value="#{msg.date_of_birth}" for="date_of_birth" />
 					<h:panelGrid columns="2" style="border:0px;">
 						<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
-							showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
-						<p:watermark for="date_of_birth" value="dd/MM/yyyy" />
+							showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
+						<p:watermark for="date_of_birth" value="DD/MM/YYYY" />
 					</h:panelGrid>
 				</h:panelGrid>
 

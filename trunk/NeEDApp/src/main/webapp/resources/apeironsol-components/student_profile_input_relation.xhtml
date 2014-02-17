@@ -32,7 +32,7 @@
 		<h:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="#{cc.attrs.id}_dob" value="#{cc.attrs.relationModel.dateOfBirth}" navigator="true" showOn="button"
 				pattrsern="dd/MM/yyyy" yearRange="1947" required="true" />
-			<p:watermark for="#{cc.attrs.id}_dob" value="dd/MM/yyyy" />
+			<p:watermark for="#{cc.attrs.id}_dob" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="#{cc.attrs.id}_dob_msg" for="#{cc.attrs.id}_dob" />
 

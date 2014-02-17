@@ -9,16 +9,16 @@
 			<p:outputLabel id="from_date_label" value="From date" for="from_date" />
 			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="from_date" value="#{branchBankAccountBean.transactionFromDate}" showOn="button"
-					pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
-				<p:watermark for="from_date" value="dd/MM/yyyy" />
+					pattern="dd/MM/yyyy" size="20" maxlength="20" required="true" />
+				<p:watermark for="from_date" value="DD/MM/YYYY" />
 			</h:panelGrid>
 			<p:message id="from_date_msg" for="from_date" />
 
 			<p:outputLabel id="to_date_label" value="To date" for="to_date" />
 			<h:panelGrid columns="2" style="border:0px;">
-				<p:calendar id="to_date" value="#{branchBankAccountBean.transactionToDate}" pattern="dd/MMM/yyyy" size="20"
+				<p:calendar id="to_date" value="#{branchBankAccountBean.transactionToDate}" pattern="dd/MM/yyyy" size="20"
 					maxlength="20" showOn="button" required="true" />
-				<p:watermark for="to_date" value="dd/MM/yyyy" />
+				<p:watermark for="to_date" value="DD/MM/YYYY" />
 			</h:panelGrid>
 			<p:message id="to_date_msg" for="to_date" />
 

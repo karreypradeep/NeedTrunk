@@ -57,9 +57,9 @@
 						<p:outputLabel id="date_of_birth_label" value="Date of birth" for="date_of_birth" />
 						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="date_of_birth" value="#{admissionBean.admissionSearchCriteria.dateOfBirth}" navigator="true"
-								showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" maxdate="#{admissionBean.currentDate}"
+								showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20" maxdate="#{admissionBean.currentDate}"
 								onkeypress="if (event.keyCode == 13) {document.getElementById('search_admissions').click(); return false;}" />
-							<p:watermark for="date_of_birth" value="dd/MM/yyyy" />
+							<p:watermark for="date_of_birth" value="DD/MM/YYYY" />
 						</h:panelGrid>
 
 					</h:panelGrid>
@@ -151,7 +151,7 @@
 					<p:column sortBy="#{student.externalAdmissionNr}" filterBy="#{student.externalAdmissionNr}"
 						filterMatchMode="contains">
 						<f:facet name="header">
-							Ext admission nunber
+							Ext admission number
 						</f:facet>
 						<h:outputText value="#{student.externalAdmissionNr}" />
 					</p:column>
@@ -182,14 +182,14 @@
 					<p:column sortBy="#{student.applyingForKlass.name}" filterBy="#{student.applyingForKlass.name}"
 						filterMatchMode="contains">
 						<f:facet name="header">
-							Accepcted for class
+							Accepted for class
 						</f:facet>
 						<h:outputText value="#{student.acceptedForKlass.name}" />
 					</p:column>
 
 					<p:column sortBy="#{student.residence.label}" filterBy="#{student.residence.label}">
 						<f:facet name="header">
-							Residance
+							Residence
 						</f:facet>
 						<h:outputText value="#{student.residence.label}" />
 					</p:column>

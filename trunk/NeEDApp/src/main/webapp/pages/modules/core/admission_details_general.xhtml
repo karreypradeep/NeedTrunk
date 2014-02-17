@@ -84,7 +84,7 @@
 			<p:calendar id="admid_adm_admission_date" value="#{admissionBean.student.admissionDate}" navigator="true"
 				showOn="button" pattern="dd/MM/yyyy" yearRange="2010"
 				disabled="#{admissionBean.student.admissionStatus.value == 'accepted'}" />
-			<p:watermark for="admid_adm_admission_date" value="dd/MM/yyyy" />
+			<p:watermark for="admid_adm_admission_date" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="admid_adm_admission_date_msg" for="admid_adm_admission_date" />
 

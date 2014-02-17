@@ -43,7 +43,7 @@
 							<h:panelGrid columns="2" style="border:0px;">
 								<p:calendar id="emp_dob" value="#{employeeBean.employeeDO.employee.dateOfBirth}" navigator="true"
 									showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
-								<p:watermark for="emp_dob" value="dd/MM/yyyy" />
+								<p:watermark for="emp_dob" value="DD/MM/YYYY" />
 							</h:panelGrid>
 							<p:message id="emp_dob_msg" for="emp_dob" />
 

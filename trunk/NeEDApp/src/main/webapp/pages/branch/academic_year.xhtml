@@ -12,7 +12,7 @@
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="start_date" value="#{academicYearBean.academicYear.startDate}" navigator="true" showOn="button"
 						pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" mindate="#{sessionBean.currentBranch.startDate}" />
-					<p:watermark for="start_date" value="dd/MM/yyyy" />
+					<p:watermark for="start_date" value="DD/MM/YYYY" />
 				</h:panelGrid>
 				<p:message id="start_date_msg" for="start_date" />
 
@@ -20,7 +20,7 @@
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="end_date" value="#{academicYearBean.academicYear.endDate}" navigator="true" showOn="button"
 						pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
-					<p:watermark for="end_date" value="dd/MM/yyyy" />
+					<p:watermark for="end_date" value="DD/MM/YYYY" />
 				</h:panelGrid>
 				<p:message id="end_date_msg" for="end_date" />
 			</h:panelGrid>
@@ -32,7 +32,7 @@
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="admission_start_date" value="#{academicYearBean.academicYear.admissionStartDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
-					<p:watermark for="admission_start_date" value="dd/MM/yyyy" />
+					<p:watermark for="admission_start_date" value="DD/MM/YYYY" />
 				</h:panelGrid>
 				<p:message id="admission_start_date_msg" for="admission_start_date" />
 
@@ -41,7 +41,7 @@
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="admission_end_date" value="#{academicYearBean.academicYear.admissionEndDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
-					<p:watermark for="admission_end_date" value="dd/MM/yyyy" />
+					<p:watermark for="admission_end_date" value="DD/MM/YYYY" />
 				</h:panelGrid>
 				<p:message id="admission_end_date_msg" for="admission_end_date" />
 
@@ -54,7 +54,7 @@
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="class_start_date" value="#{academicYearBean.academicYear.classStartDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true" />
-					<p:watermark for="class_start_date" value="dd/MM/yyyy" />
+					<p:watermark for="class_start_date" value="DD/MM/YYYY" />
 				</h:panelGrid>
 				<p:message id="class_start_date_msg" for="class_start_date" />
 

@@ -23,7 +23,7 @@
 		<h:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="admid_dob" value="#{admissionBean.student.dateOfBirth}" navigator="true" showOn="button"
 				pattern="dd/MM/yyyy" yearRange="1900" required="true" />
-			<p:watermark for="admid_dob" value="dd/MM/yyyy" />
+			<p:watermark for="admid_dob" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="admid_dob_msg" for="admid_dob" />
 

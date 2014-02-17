@@ -65,7 +65,7 @@
 					value="#{admissionBean.admissionReservationFee.reservationFeeExternalTransactionDate}" navigator="true"
 					showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true"
 					rendered="#{admissionBean.reservationFeeExternalTransaction}" />
-				<p:watermark for="ext_trans_date" value="dd/MM/yyyy" />
+				<p:watermark for="ext_trans_date" value="DD/MM/YYYY" />
 			</h:panelGrid>
 			<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 

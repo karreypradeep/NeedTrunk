@@ -43,14 +43,14 @@
 			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="fromDate" value="#{sectionTimetableBean.scheduleStartDate}" pattern="dd/MM/yyyy"
 					disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}" />
-				<p:watermark for="fromDate" value="dd/MM/yyyy" />
+				<p:watermark for="fromDate" value="DD/MM/YYYY" />
 			</h:panelGrid>
 
 			<h:outputLabel for="toDate" value="End date:" />
 			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="toDate" value="#{sectionTimetableBean.scheduleEndDate}" pattern="dd/MM/yyyy"
 					disabled="#{sectionTimetableBean.scheduleEventBeingUpdated}" />
-				<p:watermark for="toDate" value="dd/MM/yyyy" />
+				<p:watermark for="toDate" value="DD/MM/YYYY" />
 			</h:panelGrid>
 
 			<h:outputLabel for="fromTime" value="Start time" />

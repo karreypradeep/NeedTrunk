@@ -27,7 +27,7 @@
 				<p:calendar id="fromDate" value="#{academicYearWeekEndBean.scheduleStartDate}" pattern="dd/MM/yyyy" showOn="button"
 					disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}"
 					mindate="#{academicYearBean.academicYear.startDate}" maxdate="#{academicYearBean.academicYear.endDate}" />
-				<p:watermark for="fromDate" value="dd/MM/yyyy" />
+				<p:watermark for="fromDate" value="DD/MM/YYYY" />
 			</h:panelGrid>
 
 			<h:outputLabel for="toDate" value="End date:" />
@@ -35,7 +35,7 @@
 				<p:calendar id="toDate" value="#{academicYearWeekEndBean.scheduleEndDate}" pattern="dd/MM/yyyy" showOn="button"
 					disabled="#{academicYearWeekEndBean.scheduleEventBeingUpdated}"
 					mindate="#{academicYearBean.academicYear.startDate}" maxdate="#{academicYearBean.academicYear.endDate}" />
-				<p:watermark for="toDate" value="dd/MM/yyyy" />
+				<p:watermark for="toDate" value="DD/MM/YYYY" />
 			</h:panelGrid>
 
 			<h:outputText value="Apply To Days: " />

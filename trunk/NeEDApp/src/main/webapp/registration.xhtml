@@ -110,7 +110,7 @@
 									<h:panelGrid columns="2" style="border:0px;">
 										<p:calendar id="stu_dob" value="#{registrationBean.dateOfBirth}" navigator="true" showOn="button"
 											pattern="dd/MM/yyyy" yearRange="1900" required="true" maxdate="#{sessionBean.systemDate}" />
-										<p:watermark for="stu_dob" value="dd/MM/yyyy" />
+										<p:watermark for="stu_dob" value="DD/MM/YYYY" />
 									</h:panelGrid>
 									<p:message id="stu_dob_msg" for="stu_dob" />
 

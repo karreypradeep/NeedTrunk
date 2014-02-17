@@ -37,7 +37,7 @@
 		<h:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="father_dob" value="#{admissionBean.studentFather.dateOfBirth}" navigator="true" showOn="button"
 				pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayFatherInfo}" />
-			<p:watermark for="father_dob" value="dd/MM/yyyy" />
+			<p:watermark for="father_dob" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="father_dob_msg" for="father_dob" rendered="#{admissionBean.displayFatherInfo}" />
 
@@ -145,7 +145,7 @@
 		<h:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="mother_dob" value="#{admissionBean.studentMother.dateOfBirth}" navigator="true" showOn="button"
 				pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayMotherInfo}" />
-			<p:watermark for="mother_dob" value="dd/MM/yyyy" />
+			<p:watermark for="mother_dob" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="mother_dob_msg" for="mother_dob" rendered="#{admissionBean.displayMotherInfo}" />
 
@@ -253,7 +253,7 @@
 		<h:panelGrid columns="2" style="border:0px;">
 			<p:calendar id="guardian_dob" value="#{admissionBean.studentGuardian.dateOfBirth}" navigator="true" showOn="button"
 				pattern="dd/MM/yyyy" yearRange="1947" rendered="#{admissionBean.displayGuardianInfo}" />
-			<p:watermark for="guardian_dob" value="dd/MM/yyyy" />
+			<p:watermark for="guardian_dob" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="guardian_dob_msg" for="guardian_dob" rendered="#{admissionBean.displayGuardianInfo}" />
 

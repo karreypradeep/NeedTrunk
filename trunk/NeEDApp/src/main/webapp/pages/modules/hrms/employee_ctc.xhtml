@@ -18,7 +18,7 @@
 				<p:calendar id="emp_start_date" value="#{employeeCTCBean.employeeCTC.startDate}" navigator="true" showOn="button"
 					pattern="dd/MM/yyyy" yearRange="1900" required="true"
 					disabled="#{employeeCTCBean.employeeCTCsByEmployee == null || employeeCTCBean.employeeCTCsByEmployee.isEmpty()}" />
-				<p:watermark for="emp_start_date" value="dd/MM/yyyy" />
+				<p:watermark for="emp_start_date" value="DD/MM/YYYY" />
 			</h:panelGrid>
 			<p:message id="emp_start_date_msg" for="emp_start_date" />
 

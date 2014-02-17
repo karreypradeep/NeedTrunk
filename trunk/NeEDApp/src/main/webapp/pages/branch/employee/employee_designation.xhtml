@@ -48,7 +48,7 @@
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="emp_sd" value="#{employeeDesignationBean.employeeDesignation.startDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" yearRange="1900" required="true" />
-					<p:watermark for="emp_sd" value="dd/MM/yyyy" />
+					<p:watermark for="emp_sd" value="DD/MM/YYYY" />
 				</h:panelGrid>
 				<p:message id="emp_sd_msg" for="emp_sd" />
 
@@ -67,7 +67,7 @@
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="emp_ed" value="#{employeeDesignationBean.employeeDesignation.endDate}" navigator="true"
 						showOn="button" pattern="dd/MM/yyyy" yearRange="1900" disabled="true" />
-					<p:watermark for="emp_ed" value="dd/MM/yyyy" />
+					<p:watermark for="emp_ed" value="DD/MM/YYYY" />
 				</h:panelGrid>
 				<p:message id="emp_ed_msg" for="emp_ed" />
 
@@ -193,7 +193,7 @@
 			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="dsg_cd" value="#{employeeDesignationBean.designationCloseDate}" navigator="true" showOn="button"
 					pattern="dd/MM/yyyy" yearRange="1900" required="true" />
-				<p:watermark for="dsg_cd" value="dd/MM/yyyy" />
+				<p:watermark for="dsg_cd" value="DD/MM/YYYY" />
 			</h:panelGrid>
 			<p:message id="dsg_cd_msg" for="dsg_cd" />
 

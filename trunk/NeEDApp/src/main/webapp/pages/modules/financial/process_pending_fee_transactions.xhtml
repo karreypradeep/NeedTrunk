@@ -57,17 +57,17 @@
 						<p:outputLabel id="from_date_label" value="From date" for="from_date" />
 						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="from_date" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.fromDate}"
-								navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								navigator="true" showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20"
 								mindate="{#{sessionBean.currentBranch.startDate}" maxdate="#{studentBean.currentDate}" />
-							<p:watermark for="from_date" value="dd/MM/yyyy" />
+							<p:watermark for="from_date" value="DD/MM/YYYY" />
 						</h:panelGrid>
 
 						<p:outputLabel id="to_date_label" value="To date" for="to_date" />
 						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="to_date" value="#{studentFinancialBean.studentFeeTransactionSearchCriteria.toDate}"
-								navigator="true" showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20"
+								navigator="true" showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20"
 								mindate="{#{sessionBean.currentBranch.startDate}" maxdate="#{studentBean.currentDate}" />
-							<p:watermark for="to_date" value="dd/MM/yyyy" />
+							<p:watermark for="to_date" value="DD/MM/YYYY" />
 						</h:panelGrid>
 
 					</h:panelGrid>

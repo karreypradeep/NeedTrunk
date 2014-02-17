@@ -43,7 +43,7 @@
 						<h:panelGrid columns="2" style="border:0px;">
 							<p:calendar id="date_of_birth" value="#{studentBean.studentSearchCriteria.dateOfBirth}" navigator="true"
 								showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20" maxdate="#{sessionBean.currentDate}" />
-							<p:watermark for="date_of_birth" value="dd/MM/yyyy" />
+							<p:watermark for="date_of_birth" value="DD/MM/YYYY" />
 						</h:panelGrid>
 
 						<p:outputLabel id="student_status_label" value="#{msg.status}" for="student_status" />

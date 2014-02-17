@@ -37,7 +37,7 @@
 					<h:panelGrid columns="2" style="border:0px;">
 						<p:calendar id="start_date" value="#{financialYearBean.financialYear.startDate}" navigator="true" showOn="button"
 							pattern="dd/MM/yyyy" size="10" maxlength="10" />
-						<p:watermark for="start_date" value="dd/MM/yyyy" />
+						<p:watermark for="start_date" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="start_date_msg" for="start_date" />
 
@@ -45,7 +45,7 @@
 					<h:panelGrid columns="2" style="border:0px;">
 						<p:calendar id="end_date" value="#{financialYearBean.financialYear.endDate}" navigator="true" showOn="button"
 							pattern="dd/MM/yyyy" size="10" maxlength="10" />
-						<p:watermark for="end_date" value="dd/MM/yyyy" />
+						<p:watermark for="end_date" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="end_date_msg" for="end_date" />
 

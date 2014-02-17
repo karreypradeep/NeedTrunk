@@ -21,7 +21,7 @@
 						<p:calendar id="start_date" value="#{sectionTeacherBean.sectionTeacher.startDate}" navigator="true"
 							showOn="button" pattern="dd/MM/yyyy" size="10" maxlength="10" required="true"
 							maxdate="#{sectionBean.section.academicYear.endDate}" mindate="#{sectionBean.section.academicYear.startDate}" />
-						<p:watermark for="attendance_date" value="dd/MM/yyyy" />
+						<p:watermark for="attendance_date" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="start_date_msg" for="start_date" />
 
@@ -30,7 +30,7 @@
 						<p:calendar id="end_date" value="#{sectionTeacherBean.sectionTeacher.endDate}" navigator="true" showOn="button"
 							pattern="dd/MM/yyyy" size="10" maxlength="10" maxdate="#{sectionBean.section.academicYear.endDate}"
 							mindate="#{sectionBean.section.academicYear.startDate}" />
-						<p:watermark for="attendance_date" value="dd/MM/yyyy" />
+						<p:watermark for="attendance_date" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="end_date_msg" for="end_date" />
 

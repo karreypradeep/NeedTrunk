@@ -645,12 +645,11 @@ public class AdmissionBean extends AbstractStudentBean {
 
 			this.student = this.admissionService.submitAdmission(this.student, relations, this.primaryAddress, this.educationHistories, currentBranch.getId(),
 					this.admissionReservationFee, this.applicationFeeExternalTransaction, history);
-			if (!this.admissionSearchCriteria.isSearchCriteriaIsEmpty()) {
-				this.searchAdmissionsBySearchCriteria();
-			}
 
 			if (this.admissionSearchCriteria == null) {
 				this.admissionSearchCriteria = new AdmissionSearchCriteria(this.sessionBean.getCurrentBranch());
+			} else {
+				this.admissionSearchCriteria.resetSeacrhCriteria();
 			}
 
 			this.admissionSearchCriteria.setName(this.student.getFirstName());
@@ -659,7 +658,7 @@ public class AdmissionBean extends AbstractStudentBean {
 
 			this.searchAdmissionsBySearchCriteria();
 
-			ViewUtil.addMessage("Admission has submitted sucessfully", FacesMessage.SEVERITY_INFO);
+			ViewUtil.addMessage("Admission has submitted sucessfully with registration number " + this.student.getRegistrationNr(), FacesMessage.SEVERITY_INFO);
 
 			this.loadBranchStudentsFlag = true;
 
@@ -681,7 +680,7 @@ public class AdmissionBean extends AbstractStudentBean {
 			final StudentStatusHistory history = new StudentStatusHistory();
 			history.setComments(this.actionComment);
 			this.student = this.admissionService.anotherReviewAdmission(this.student, history);
-			ViewUtil.addMessage("Admission state sucessfully changes as inreview.", FacesMessage.SEVERITY_INFO);
+			ViewUtil.addMessage("Admission state sucessfully changes as in-review.", FacesMessage.SEVERITY_INFO);
 			this.admissionStatusAction = null;
 		} catch (final BusinessException e) {
 			ViewExceptionHandler.handle(e);
@@ -714,9 +713,11 @@ public class AdmissionBean extends AbstractStudentBean {
 			history.setComments(this.actionComment);
 
 			this.student = this.admissionService.acceptAdmission(this.student, this.student.getAcceptedForKlass(), this.admissionReservationFee, history);
-			if (!this.admissionSearchCriteria.isSearchCriteriaIsEmpty()) {
-				this.searchAdmissionsBySearchCriteria();
-			}
+			/*
+			 * if (!this.admissionSearchCriteria.isSearchCriteriaIsEmpty()) {
+			 * this.searchAdmissionsBySearchCriteria();
+			 * }
+			 */
 			ViewUtil.addMessage("Admission state sucessfully changes as accepted.", FacesMessage.SEVERITY_INFO);
 			this.admissionStatusAction = null;
 		} catch (final BusinessException e) {

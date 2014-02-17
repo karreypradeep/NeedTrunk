@@ -44,8 +44,8 @@
 				<p:outputLabel id="purchase_order_date_label" value="Purchase order date" for="purchase_order_date" />
 				<h:panelGrid columns="2" style="border:0px;">
 					<p:calendar id="purchase_order_date" value="#{purchaseOrderBean.purchaseOrder.purchaseDate}" navigator="true"
-						showOn="button" pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" />
-					<p:watermark for="purchase_order_date" value="dd/MM/yyyy" />
+						showOn="button" pattern="dd/MM/yyyy" size="20" maxlength="20" required="true" />
+					<p:watermark for="purchase_order_date" value="DD/MM/YYYY" />
 				</h:panelGrid>
 				<p:message id="purchase_order_date_msg" for="purchase_order_date" />
 

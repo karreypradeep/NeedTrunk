@@ -29,7 +29,7 @@
 				<p:ajax process="@this" update="@form" event="dateSelect"
 					listener="#{sectionAttendanceBean.clearSectionStudentAbsentDetailsByDate}"></p:ajax>
 			</p:calendar>
-			<p:watermark for="attendance_date" value="dd/MM/yyyy" />
+			<p:watermark for="attendance_date" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="branch_registration_date_msg" for="attendance_date" />
 		<p:commandButton id="takeAttendanceSubmit" value="Get attendance details" process="@form" update="@form"

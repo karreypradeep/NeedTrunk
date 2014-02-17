@@ -84,8 +84,8 @@
 					<p:outputLabel id="expense_date_label" value="Expense date" for="expense_date" />
 					<h:panelGrid columns="2" style="border:0px;">
 						<p:calendar id="expense_date" value="#{financeExpensesBean.branchExpense.expenseDate}" navigator="true"
-							pattern="dd/MMM/yyyy" size="20" maxlength="20" required="true" showOn="button" />
-						<p:watermark for="expense_date" value="dd/MM/yyyy" />
+							pattern="dd/MM/yyyy" size="20" maxlength="20" required="true" showOn="button" />
+						<p:watermark for="expense_date" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="expense_date_msg" for="expense_date" />
 
