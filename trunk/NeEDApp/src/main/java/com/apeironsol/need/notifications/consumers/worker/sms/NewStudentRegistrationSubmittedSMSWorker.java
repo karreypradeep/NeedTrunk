@@ -62,7 +62,8 @@ public class NewStudentRegistrationSubmittedSMSWorker implements SMSWorker {
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 		final Map<String, String> model = new HashMap<String, String>();
 		model.put("organizationName", neEDJMSObject.getStudentRegistration().getBranch().getName());
-		model.put("rehistrationNumer", neEDJMSObject.getStudentRegistration().getRegistrationNr());
+		model.put("studentName", neEDJMSObject.getStudentRegistration().getStudentDisplayName());
+		model.put("registrationNumber", neEDJMSObject.getStudentRegistration().getRegistrationNr());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);

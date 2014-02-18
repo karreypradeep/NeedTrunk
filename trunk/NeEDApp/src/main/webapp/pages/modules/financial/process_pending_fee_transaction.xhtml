@@ -88,9 +88,9 @@
 			className="#{studentFinancialBean.studentFeeTransactionDO.className}"
 			sectionName="#{studentFinancialBean.studentFeeTransactionDO.sectionName}"
 			branchPincode="#{sessionBean.currentBranch.address.zipCode}"
-			branchAddress="#{sessionBean.currentBranch.address.address}"
+			branchAddress="#{sessionBean.currentBranch.address}"
 			receiptHeaer="#{studentFinancialBean.studentFeeTransactionDO.studentFeeTransaction.studentFeeTransactionType.label} receipt"
 			showSignature="${studentFinancialBean.studentFeeTransaction.statusProcessedForRefundOrDeductionOrPayment}"
-			parentName="" />
+			parentName="" />    
 	</p:panel>
 </ui:composition>

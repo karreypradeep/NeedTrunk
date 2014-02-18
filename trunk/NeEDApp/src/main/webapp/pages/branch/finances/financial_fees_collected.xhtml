@@ -163,13 +163,15 @@
 	</p:dataTable>
 	<p:dialog header="Transactoin details" widgetVar="dlg" showEffect="explode" resizable="false" dynamic="true"
 		modal="true">
-		<biz:student_fee_transaction_receipt
-			studentFeeTransactionDOModel="#{financeFeesCollectedBean.studentFeeTransactionDO}"
+		<biz:student_fee_transaction_receipt studentFeeTransactionDOModel="#{financeFeesCollectedBean.studentFeeTransactionDO}"
 			organizationName="#{sessionBean.currentOrganization.name}" branchName="#{sessionBean.currentBranch.name}"
 			className="#{financeFeesCollectedBean.studentSection.section.klass.name}"
 			sectionName="#{financeFeesCollectedBean.studentSection.section.name}"
+			branchPincode="#{sessionBean.currentBranch.address.zipCode}"
+			branchAddress="#{sessionBean.currentBranch.address}"
 			receiptHeaer="#{financeFeesCollectedBean.studentFeeTransactionDO.studentFeeTransaction.studentFeeTransactionType.label} receipt"
-			showSignature="false" parentName="#{financeFeesCollectedBean.studentParentOrGuardianName}" />
+			showSignature="false"
+			parentName="#{financeFeesCollectedBean.studentParentOrGuardianName}" /> 
 		<f:facet name="footer">
 			<p:commandButton value="Calcel" oncomplete="dlg.hide();" update=":form" process="@this" />
 		</f:facet>

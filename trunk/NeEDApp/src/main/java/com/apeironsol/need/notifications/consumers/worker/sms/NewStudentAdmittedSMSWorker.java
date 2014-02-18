@@ -35,7 +35,7 @@ import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
  * @author Pradeep
  */
 @Component
-public class NewAdmissionSMSWorker implements SMSWorker {
+public class NewStudentAdmittedSMSWorker implements SMSWorker {
 
 	/**
 	 * Velocity engine for compiling and merging text with velocity templates.
@@ -63,16 +63,18 @@ public class NewAdmissionSMSWorker implements SMSWorker {
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 		final Map<String, String> model = new HashMap<String, String>();
 		model.put("organizationName", neEDJMSObject.getStudentAcademicYear().getStudent().getBranch().getName());
+		model.put("studentName", neEDJMSObject.getStudentAcademicYear().getStudent().getDisplayName());
+		model.put("admissionNumber", neEDJMSObject.getStudentAcademicYear().getStudent().getAdmissionNr());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
+		final String template = VELOCITY_TEMPLATE_PATH;
 		if ((smsText == null) || smsText.trim().isEmpty()) {
-			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
+			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, template, model);
 		}
 		notificationMessage.setMessage(smsText);
 
-		if (neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber() != null) {
-			notificationMessage.setSentAddress(neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
-			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { neEDJMSObject.getStudentAcademicYear().getStudent().getAddress()
-					.getContactNumber() }, smsText);
+		if (neEDJMSObject.getStudent().getAddress().getContactNumber() != null) {
+			notificationMessage.setSentAddress(neEDJMSObject.getStudent().getAddress().getContactNumber());
+			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { neEDJMSObject.getStudent().getAddress().getContactNumber() }, smsText);
 			if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 			} else {
@@ -91,7 +93,8 @@ public class NewAdmissionSMSWorker implements SMSWorker {
 	public String getMessage(final NeEDJMSObject neEDJMSObject) throws ApplicationException {
 		new EmailAndSMSUtil();
 		final Map<String, String> model = new HashMap<String, String>();
-		model.put("organizationName", neEDJMSObject.getStudentAcademicYear().getStudent().getBranch().getOrganization().getName());
+		model.put("organizationName", neEDJMSObject.getStudentAcademicYear().getStudent().getBranch().getName());
+		model.put("admissionNumber", neEDJMSObject.getStudentAcademicYear().getStudent().getAdmissionNr());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);

@@ -1,2 +1,2 @@
 Dear Parent,
-Thank you for choosing ${organizationName}. Your ward's application has been accepted. Please note Registration# ${rehistrationNumer} for future reference.
+Thank you for choosing ${organizationName}. Your ward's ${studentName} application has been accepted. Please note Registration No: ${registrationNumber} for further communications.

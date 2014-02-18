@@ -76,7 +76,8 @@ public class NewAdmissionAcceptedSMSWorker implements SMSWorker {
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 		final Map<String, String> model = new HashMap<String, String>();
 		model.put("organizationName", neEDJMSObject.getStudent().getBranch().getName());
-		model.put("rehistrationNumer", neEDJMSObject.getStudent().getRegistrationNr());
+		model.put("studentName", neEDJMSObject.getStudent().getDisplayName());
+		model.put("registrationNumber", neEDJMSObject.getStudent().getRegistrationNr());
 		final AdmissionReservationFee admissionReservationFee = this.admissionReservationFeeService.findAdmissionReservationFeeByStudentID(neEDJMSObject
 				.getStudent().getId());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
