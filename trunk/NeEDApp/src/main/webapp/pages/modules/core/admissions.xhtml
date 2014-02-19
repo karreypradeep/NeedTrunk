@@ -69,7 +69,7 @@
 						<p:selectOneMenu id="academic_year" value="#{admissionBean.admissionSearchCriteria.academicYear}"
 							converter="academicYearConverter" style="width:165px;">
 							<f:selectItem itemLabel="Select academic year" itemValue="" />
-							<f:selectItems value="#{admissionBean.activeAcademicYears}" var="academicYear"
+							<f:selectItems value="#{admissionBean.allAcademicYearsForCurrentBranch}" var="academicYear"
 								itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
 						</p:selectOneMenu>
 

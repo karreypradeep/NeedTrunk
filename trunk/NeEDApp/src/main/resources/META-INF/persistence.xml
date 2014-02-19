@@ -67,6 +67,7 @@
 		<class>com.apeironsol.need.core.model.StudentAbsent</class>
 		<class>com.apeironsol.need.core.model.StudentAcademicYear</class>
 		<class>com.apeironsol.need.core.model.StudentAcademicYearFeeSummary</class>
+		<class>com.apeironsol.need.core.model.StudentAcademicYearFeeComitted</class>
 		<class>com.apeironsol.need.core.model.Student</class>
 		<class>com.apeironsol.need.core.model.State</class>
 		<class>com.apeironsol.need.core.model.SequenceGenerator</class>

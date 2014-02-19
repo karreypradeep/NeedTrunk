@@ -43,14 +43,25 @@
 
 					<h:outputLabel value="Total Fee" style="float: left; font-size: 16px; font-weight:bold;" />
 					<h:outputText value="" />
-					<h:outputText value="#{studentFinancialBean.studentTotalFeePayable}" style="font-size: 16px; font-weight:bold;color:blue">
+					<h:outputText value="#{studentFinancialBean.studentTotalFeePayable}"
+						style="font-size: 16px; font-weight:bold;color:blue">
 						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
 					</h:outputText>
 
 
 					<h:outputLabel value="Total Fee Paid" style="float: left; font-size: 16px; font-weight:bold;" />
 					<h:outputText value="" />
-					<h:outputText value="#{studentFinancialBean.studentTotalFeePaid}" style="font-size: 16px; font-weight:bold;color:blue">
+					<h:outputText value="#{studentFinancialBean.studentTotalFeePaid}"
+						style="font-size: 16px; font-weight:bold;color:blue">
+						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
+					</h:outputText>
+
+					<h:outputLabel value="Comitted Fee" style="float: left; font-size: 16px; font-weight:bold;"
+						rendered="#{studentFinancialBean.comittedFeeForStudentFinancialYear > 0}" />
+					<h:outputText value="" rendered="#{studentFinancialBean.comittedFeeForStudentFinancialYear > 0}" />
+					<h:outputText value="#{studentFinancialBean.comittedFeeForStudentFinancialYear}"
+						style="font-size: 16px; font-weight:bold;color:blue"
+						rendered="#{studentFinancialBean.comittedFeeForStudentFinancialYear > 0}">
 						<f:convertNumber pattern="&#x20B9; ##,##,###.00" />
 					</h:outputText>
 				</h:panelGrid>

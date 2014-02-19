@@ -80,9 +80,6 @@ public class AdmissionReservationFee extends BaseEntity implements Serializable 
 	@Column(name = "RESER_FEE_NOTIFI_SENT")
 	private Boolean				reservationFeeNotificationSent;
 
-	@Column(name = "COMITTED_FEE")
-	private Double				comittedFee;
-
 	public Double getReservationFee() {
 		return this.reservationFee;
 	}
@@ -169,21 +166,6 @@ public class AdmissionReservationFee extends BaseEntity implements Serializable 
 
 	public void setApplicationFormFee(final Double applicationFormFee) {
 		this.applicationFormFee = applicationFormFee;
-	}
-
-	/**
-	 * @return the comittedFee
-	 */
-	public Double getComittedFee() {
-		return this.comittedFee;
-	}
-
-	/**
-	 * @param comittedFee
-	 *            the comittedFee to set
-	 */
-	public void setComittedFee(final Double comittedFee) {
-		this.comittedFee = comittedFee;
 	}
 
 	/**

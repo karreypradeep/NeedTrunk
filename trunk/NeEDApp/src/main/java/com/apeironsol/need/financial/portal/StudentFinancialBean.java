@@ -29,11 +29,13 @@ import org.springframework.context.annotation.Scope;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.model.BuildingBlock;
+import com.apeironsol.need.core.model.StudentAcademicYearFeeComitted;
 import com.apeironsol.need.core.model.StudentSection;
 import com.apeironsol.need.core.portal.AbstractStudentBean;
 import com.apeironsol.need.core.portal.StudentBean;
 import com.apeironsol.need.core.portal.messages.BusinessMessages;
 import com.apeironsol.need.core.service.BuildingBlockService;
+import com.apeironsol.need.core.service.StudentAcademicYearFeeComittedService;
 import com.apeironsol.need.financial.model.StudentFeeTransaction;
 import com.apeironsol.need.financial.model.StudentFeeTransactionDetails;
 import com.apeironsol.need.financial.service.StudentFinancialService;
@@ -126,6 +128,11 @@ public class StudentFinancialBean extends AbstractStudentBean {
 	private StudentFeeTransactionStatusConstant			studentFeeTransactionStatusConstantForPrint;
 
 	private Collection<StudentFeeTransaction>			studentFeeTransactionsForPrint;
+
+	private double										comittedFeeForStudentFinancialYear;
+
+	@Resource
+	private StudentAcademicYearFeeComittedService		studentAcademicYearFeeComittedService;
 
 	public enum PaymentWizard {
 
@@ -364,6 +371,13 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 		this.setFeeDueAsOfToday(this.studentFinancialService.getStudentFeeDue(this.studentBean.getStudent(), this.studentBean.getStudentAcademicYear()
 				.getAcademicYear(), DateUtil.getSystemDate()));
+		final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted = this.studentAcademicYearFeeComittedService
+				.findStudentAcademicYearFeeComittedByStudentIdAndAcademicYearId(this.studentBean.getStudentAcademicYear().getStudent().getId(),
+						this.studentBean.getStudentAcademicYear().getAcademicYear().getId());
+		if ((studentAcademicYearFeeComitted != null) && (studentAcademicYearFeeComitted.getFeeComitted() != null)
+				&& (studentAcademicYearFeeComitted.getFeeComitted() > 0)) {
+			this.comittedFeeForStudentFinancialYear = studentAcademicYearFeeComitted.getFeeComitted();
+		}
 	}
 
 	public Double getStudentTotalFeeDue() {
@@ -446,7 +460,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 	}
 
 	private boolean validatePaymentsAction() {
-		if (this.selectedStudentFinancialDOs == null || this.selectedStudentFinancialDOs.length == 0) {
+		if ((this.selectedStudentFinancialDOs == null) || (this.selectedStudentFinancialDOs.length == 0)) {
 			ViewUtil.addMessage("Select Fee's to process payments.", FacesMessage.SEVERITY_WARN);
 			return false;
 		}
@@ -480,7 +494,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 		for (final StudentFinancialDO studentFinancialDO : this.selectedStudentFinancialDOs) {
 
 			final Collection<StudentFeeDetailsDO> studentFeeDetails = studentFinancialDO.getStudentFeeDetailsDOs();
-			if (studentFeeDetails != null && !studentFeeDetails.isEmpty()) {
+			if ((studentFeeDetails != null) && !studentFeeDetails.isEmpty()) {
 				final List<StudentFeeDetailsDO> sortedStudentFeeDetailsByDueDate = new ArrayList<StudentFeeDetailsDO>();
 				for (final StudentFeeDetailsDO studentFinancialTransactionDO : studentFeeDetails) {
 					sortedStudentFeeDetailsByDueDate.add(studentFinancialTransactionDO);
@@ -511,7 +525,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 				final Double payingAmount = studentFeeDetailsDO.getPayingAmount();
 
-				if (payingAmount != null && payingAmount != 0) {
+				if ((payingAmount != null) && (payingAmount != 0)) {
 
 					final double totalAmount = studentFeeDetailsDO.getTotalNetDue()
 							- (studentFeeDetailsDO.getTotalFeePaymentPendingAmount() + studentFeeDetailsDO.getTotalFeeDeductionRequestAmount());
@@ -699,7 +713,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 				final Double refundAmount = studentFeeDetailsDO.getRefundAmount();
 
-				if (refundAmount != null && refundAmount != 0) {
+				if ((refundAmount != null) && (refundAmount != 0)) {
 
 					final double allowedRefund = studentFeeDetailsDO.getTotalFeePaymentAmount()
 							- (studentFeeDetailsDO.getTotalFeeRefundPendingAmount() + studentFeeDetailsDO.getTotalFeeRefundRequestAmount() + studentFeeDetailsDO
@@ -768,7 +782,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 				final Double deductAmount = studentFeeDetailsDO.getDeductingAmount();
 
-				if (deductAmount != null && deductAmount != 0) {
+				if ((deductAmount != null) && (deductAmount != 0)) {
 
 					final double allowedDeduction = studentFeeDetailsDO.getTotalNetAmount()
 							- (studentFeeDetailsDO.getTotalFeeDeductionRequestAmount() + studentFeeDetailsDO.getTotalFeePaymentPendingAmount());
@@ -863,7 +877,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 			final Double payingAmount = studentFinancialTransactionDO.getPayingAmount();
 
-			if (payingAmount != null && payingAmount != 0) {
+			if ((payingAmount != null) && (payingAmount != 0)) {
 				total = total + payingAmount;
 			}
 		}
@@ -976,7 +990,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 			this.studentFeeTransactions = this.studentFinancialService
 					.findStudentFeeTransactionsBySearchCriteria(this.getStudentFeeTransactionSearchCriteria());
 
-			if (this.studentFeeTransactions == null || this.studentFeeTransactions.isEmpty()) {
+			if ((this.studentFeeTransactions == null) || this.studentFeeTransactions.isEmpty()) {
 				ViewUtil.addMessage("No transactions found for entered search criteria..", FacesMessage.SEVERITY_INFO);
 			}
 
@@ -1024,7 +1038,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 			this.viewStudentFeeTransaction();
 
-		} catch (ApplicationException e) {
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
 		}
 
@@ -1062,7 +1076,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 			this.viewStudentFeeTransaction();
 
-		} catch (ApplicationException e) {
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
 		}
 
@@ -1075,13 +1089,13 @@ public class StudentFinancialBean extends AbstractStudentBean {
 
 		this.paymentWizardAciveStep = PaymentWizard.CONFIRM_AND_SUBMIT_PENDING_FEE_TRANSACTION.getKey();
 
-		Collection<StudentFeeTransactionDetailsDO> studentFeeTransactionDetailsDOs = this.studentFeeTransactionDO.getStudentFeeTransactionDetailsDOs();
+		final Collection<StudentFeeTransactionDetailsDO> studentFeeTransactionDetailsDOs = this.studentFeeTransactionDO.getStudentFeeTransactionDetailsDOs();
 
 		double totalAmount = 0d;
 
-		for (StudentFeeTransactionDetailsDO studentFeeTransactionDetailsDO : studentFeeTransactionDetailsDOs) {
+		for (final StudentFeeTransactionDetailsDO studentFeeTransactionDetailsDO : studentFeeTransactionDetailsDOs) {
 
-			StudentFeeTransactionDetails studentFeeTransactionDetails = studentFeeTransactionDetailsDO.getStudentFeeTransactionDetails();
+			final StudentFeeTransactionDetails studentFeeTransactionDetails = studentFeeTransactionDetailsDO.getStudentFeeTransactionDetails();
 
 			totalAmount = totalAmount + studentFeeTransactionDetails.getAmount();
 
@@ -1118,7 +1132,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 			}
 
 			ViewUtil.addMessage("Transactions has bean processed successfully.", FacesMessage.SEVERITY_INFO);
-		} catch (ApplicationException e) {
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
 		}
 
@@ -1183,7 +1197,7 @@ public class StudentFinancialBean extends AbstractStudentBean {
 	public void fetchStudentFeeTransactionsForPrint() {
 		if (this.studentFeeTransactionStatusConstantForPrint != null) {
 			this.studentFeeTransactionsForPrint = new ArrayList<StudentFeeTransaction>();
-			for (StudentFeeTransaction studentFeeTransaction : this.studentFeeTransactions) {
+			for (final StudentFeeTransaction studentFeeTransaction : this.studentFeeTransactions) {
 				if (this.studentFeeTransactionStatusConstantForPrint.equals(studentFeeTransaction.getStudentFeeTransactionStatus())) {
 					this.studentFeeTransactionsForPrint.add(studentFeeTransaction);
 				}
@@ -1192,4 +1206,20 @@ public class StudentFinancialBean extends AbstractStudentBean {
 			this.studentFeeTransactionsForPrint = this.studentFeeTransactions;
 		}
 	}
+
+	/**
+	 * @return the comittedFeeForStudentFinancialYear
+	 */
+	public double getComittedFeeForStudentFinancialYear() {
+		return this.comittedFeeForStudentFinancialYear;
+	}
+
+	/**
+	 * @param comittedFeeForStudentFinancialYear
+	 *            the comittedFeeForStudentFinancialYear to set
+	 */
+	public void setComittedFeeForStudentFinancialYear(final double comittedFeeForStudentFinancialYear) {
+		this.comittedFeeForStudentFinancialYear = comittedFeeForStudentFinancialYear;
+	}
+
 }

@@ -10,10 +10,11 @@
 
 		<h:panelGrid columns="3" cellpadding="7">
 
-			<p:outputLabel id="assigned_batch_label" value="Applied for batch" for="assigned_batch" />
+			<p:outputLabel id="assigned_batch_label" value="Applied for batch" for="assigned_batch"
+				rendered="#{admissionBean.student.appliedForBatch !=null }" />
 			<h:outputLabel id="assigned_batch" value="#{admissionBean.student.appliedForBatch.name}" readonly="true"
-				style="font-weight:bold;" />
-			<p:message id="assigned_batch_msg" for="assigned_batch" />
+				style="font-weight:bold;" rendered="#{admissionBean.student.appliedForBatch !=null }" />
+			<p:message id="assigned_batch_msg" for="assigned_batch" rendered="#{admissionBean.student.appliedForBatch !=null }" />
 
 			<p:outputLabel id="assigned_academic_year_label" value="Applied for academic year" for="assigned_academic_year" />
 			<h:outputLabel id="assigned_academic_year" value="#{admissionBean.student.appliedForAcademicYear.displayLabel}"
@@ -69,17 +70,10 @@
 			</h:panelGrid>
 			<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 
-			<p:outputLabel id="comitted_fee_label" value="Comitted fee" for="comitted_fee" />
-			<p:inputText id="comitted_fee" value="#{admissionBean.admissionReservationFee.comittedFee}">
-				<p:ajax process="@this" update="@this" />
-			</p:inputText>
-			<p:message id="comitted_fee_msg" for="comitted_fee" />
-
 			<p:outputLabel id="comments_label" value="Comments" for="comments" />
-			<p:inputTextarea id="comments" rows="10" cols="100" required="true" value="#{admissionBean.actionComment}" />
+			<p:inputTextarea id="comments" rows="10" cols="75" required="true" value="#{admissionBean.actionComment}" />
 			<p:message id="comments_msg" for="comments" />
 		</h:panelGrid>
-
 		<p:commandButton id="accept_save" value="Accept" process="@form" update="@form"
 			disabled="#{!admissionBean.admissionBeAccepted}" action="#{admissionBean.acceptAdmission}" style="width:80px;"
 			icon="ui-icon-circle-check">

@@ -24,11 +24,11 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.apeironsol.framework.BaseEntity;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.core.model.BuildingBlock;
 import com.apeironsol.need.core.model.StudentAcademicYear;
 import com.apeironsol.need.util.constants.PaymentFrequencyConstant;
-import com.apeironsol.framework.BaseEntity;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Entity class for Class fee
@@ -66,6 +66,9 @@ public class StudentLevelFee extends BaseEntity implements Serializable {
 	@OneToMany(mappedBy = "studentLevelFee", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private Collection<StudentLevelFeeCatalog>	studentLevelFeeCatalogs;
 
+	@Column(name = "DESCRIPTION", length = 200, nullable = false)
+	private String								description;
+
 	public Double getAmount() {
 		return this.amount;
 	}
@@ -94,8 +97,8 @@ public class StudentLevelFee extends BaseEntity implements Serializable {
 	public void validate() throws InvalidArgumentException {
 		super.validate();
 		Double totalAmountPayments = 0d;
-		if (this.studentLevelFeeCatalogs != null && !this.studentLevelFeeCatalogs.isEmpty()) {
-			for (StudentLevelFeeCatalog studentLeveFeeCatalog : this.studentLevelFeeCatalogs) {
+		if ((this.studentLevelFeeCatalogs != null) && !this.studentLevelFeeCatalogs.isEmpty()) {
+			for (final StudentLevelFeeCatalog studentLeveFeeCatalog : this.studentLevelFeeCatalogs) {
 				totalAmountPayments += studentLeveFeeCatalog.getAmount();
 			}
 			if (Math.round(totalAmountPayments) != Math.round(this.amount)) {
@@ -120,4 +123,20 @@ public class StudentLevelFee extends BaseEntity implements Serializable {
 	public void setStudentAcademicYear(final StudentAcademicYear studentAcademicYear) {
 		this.studentAcademicYear = studentAcademicYear;
 	}
+
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
+		return this.description;
+	}
+
+	/**
+	 * @param description
+	 *            the description to set
+	 */
+	public void setDescription(final String description) {
+		this.description = description;
+	}
+
 }

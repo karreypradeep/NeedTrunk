@@ -22,7 +22,8 @@
 		<p:message id="fee_type_msg" for="fee_type" />
 
 		<p:outputLabel id="fee_amount_label" value="Fee Amount" for="fee_amount" />
-		<p:inputText id="fee_amount" value="#{studentLevelFeeBean.studentLevelFee.amount}" style="width:95%" disabled="#{studentLevelFeeBean.studentLevelFee.buildingBlock == null}">
+		<p:inputText id="fee_amount" value="#{studentLevelFeeBean.studentLevelFee.amount}" style="width:95%"
+			disabled="#{studentLevelFeeBean.studentLevelFee.buildingBlock == null}">
 			<p:ajax process="@this" update="studentLevelFeeCatalog" listener="#{studentLevelFeeBean.onChangeAmount}" />
 		</p:inputText>
 		<p:message id="fee_amount_msg" for="fee_amount" />
@@ -40,11 +41,20 @@
 		<p:outputLabel id="payments_label" value="No of Payments" for="payments"
 			rendered="#{studentLevelFeeBean.displayNoOfPayments}" />
 		<p:inputText id="payments" value="#{studentLevelFeeBean.noOfPayments}"
-			rendered="#{studentLevelFeeBean.displayNoOfPayments}" style="width:95%" disabled="#{studentLevelFeeBean.studentLevelFee.buildingBlock == null}">
+			rendered="#{studentLevelFeeBean.displayNoOfPayments}" style="width:95%"
+			disabled="#{studentLevelFeeBean.studentLevelFee.buildingBlock == null}">
 			<f:validateLongRange minimum="1" maximum="12" />
 			<p:ajax process="@this" update="@form" listener="#{studentLevelFeeBean.onChangeNumberOfPayments}" />
 		</p:inputText>
 		<p:message id="payments_msg" for="payments" rendered="#{studentLevelFeeBean.displayNoOfPayments}" />
+
+		<p:outputLabel id="description_label" value="Description" for="descriptionId" />
+		<p:inputTextarea id="descriptionId" value="#{studentLevelFeeBean.studentLevelFee.description}"
+			maxlength="200" rows="5" required="true">
+			<p:ajax process="@this" update="@this" />
+		</p:inputTextarea>
+		<p:message id="descriptionId_msg" for="descriptionId" />
+
 	</h:panelGrid>
 
 	<p:dataTable id="studentLevelFeeCatalog" value="#{studentLevelFeeBean.studentLevelFeeCatalogs}"
@@ -62,8 +72,8 @@
 					</h:outputText>
 				</f:facet>
 				<f:facet name="input">
-					<p:calendar value="#{studentLevelFeeCatalog.dueDate}" navigator="true" showOn="button"
-						pattern="dd/MM/yyyy" mindate="#{studentBean.studentAcademicYear.academicYear.startDate}"
+					<p:calendar value="#{studentLevelFeeCatalog.dueDate}" navigator="true" showOn="button" pattern="dd/MM/yyyy"
+						mindate="#{studentBean.studentAcademicYear.academicYear.startDate}"
 						maxdate="#{studentBean.studentAcademicYear.academicYear.endDate}">
 						<p:ajax process="@this" update="studentLevelFeeCatalog"></p:ajax>
 					</p:calendar>
@@ -97,7 +107,8 @@
 	<br />
 
 	<br />
-	<p:commandButton id="save" value="Save" action="#{studentLevelFeeBean.saveStudentLevelFee()}" update="@form" disabled="#{!grantedAuthorityBean.userAllowedToCreateFeeDefinitions}"/>
+	<p:commandButton id="save" value="Save" action="#{studentLevelFeeBean.saveStudentLevelFee()}" update="@form"
+		disabled="#{!grantedAuthorityBean.userAllowedToCreateFeeDefinitions}" />
 	<p:commandButton id="cancel" value="Cancel" update="@form" process="@this">
 		<f:setPropertyActionListener target="#{studentLevelFeeBean.loadStudentLevelFeesFlag}" value="true" />
 		<f:setPropertyActionListener target="#{studentLevelFeeBean.newAction}" value="false" />

@@ -35,6 +35,7 @@ import com.apeironsol.need.core.model.Relation;
 import com.apeironsol.need.core.model.Section;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.model.StudentAcademicYearFeeComitted;
 import com.apeironsol.need.core.model.StudentSection;
 import com.apeironsol.need.core.model.StudentStatusHistory;
 import com.apeironsol.need.financial.model.BranchLevelFee;
@@ -153,6 +154,9 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 	@Resource
 	BatchLogService							batchLogService;
+
+	@Resource
+	StudentAcademicYearFeeComittedService	studentAcademicYearFeeComittedService;
 
 	/**
 	 * {@inheritDoc}
@@ -318,8 +322,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 					studentAcademicYear = this.studentAcademicYearService.saveStudentAcademicYear(studentAcademicYear);
 				}
 				AdmissionReservationFee admiReservationFee = admissionReservationFee;
-				if ((admissionReservationFee.getComittedFee() != null)
-						|| ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0))) {
+				if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0)) {
 					this.validateReservationFee(admissionReservationFee, currentStudent, acceptedForKlass);
 					if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0)) {
 						admissionReservationFee.setReservationFeeAppliedToStudentFees(false);
@@ -334,6 +337,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 				currentStudent.setStudentStatus(StudentStatusConstant.ACCEPTED);
 				currentStudent.setAcceptedForKlass(acceptedForKlass);
 				final Student result = this.studentService.saveStudent(currentStudent);
+
 				// Log student state history
 				this.saveStudentStatusHistory(studentStatusHistory, result, AdmissionStatusConstant.ACCEPTED.getLabel());
 
@@ -369,9 +373,9 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 	private void validateReservationFee(final AdmissionReservationFee admissionReservationFee, final Student student, final Klass acceptedForKlass) {
 		double maxReservationFeeCanBePaid = 0;
-		if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() <= 0d)) {
-			throw new ApplicationException("Reservation fee should be grater than 0.");
-		} else if ((admissionReservationFee.getComittedFee() != null) || (admissionReservationFee.getReservationFee() != null)) {
+		if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() < 0d)) {
+			throw new ApplicationException("Reservation fee should not be less than 0.");
+		} else if (admissionReservationFee.getReservationFee() != null) {
 			final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearId(student.getBranch()
 					.getId(), student.getAppliedForAcademicYear().getId());
 			for (final BranchLevelFee branchLevelFee : branchLevelFees) {
@@ -404,8 +408,61 @@ public class AdmissionServiceImpl implements AdmissionService {
 			if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > maxReservationFeeCanBePaid)) {
 				throw new ApplicationException("Reservation fee cannot exceed " + maxReservationFeeCanBePaid);
 			}
-			if ((admissionReservationFee.getComittedFee() != null) && (admissionReservationFee.getComittedFee() > maxReservationFeeCanBePaid)) {
-				throw new ApplicationException("Comitted fee cannot exceed " + maxReservationFeeCanBePaid);
+
+		}
+
+	}
+
+	private void validateComittedFee(final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComittedForStudent, final Student student,
+			final Klass acceptedForKlass) {
+		double maxReservationFeeCanBePaid = 0;
+		if ((studentAcademicYearFeeComittedForStudent != null) && (studentAcademicYearFeeComittedForStudent.size() > 0)) {
+			for (final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted : studentAcademicYearFeeComittedForStudent) {
+				maxReservationFeeCanBePaid = 0;
+				if ((studentAcademicYearFeeComitted.getFeeComitted() != null) && (studentAcademicYearFeeComitted.getFeeComitted() < 0d)) {
+					throw new ApplicationException("Comitted fee should not be less than 0.");
+				} else if ((studentAcademicYearFeeComitted.getFeeComitted() != null) && (studentAcademicYearFeeComitted.getFeeComitted() > 0)) {
+
+					final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearId(student
+							.getBranch().getId(), studentAcademicYearFeeComitted.getAcademicYear().getId());
+					if (branchLevelFees != null) {
+						for (final BranchLevelFee branchLevelFee : branchLevelFees) {
+							if ((student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER) && FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee
+									.getBuildingBlock().getFeeType()))
+									|| FeeTypeConstant.APPLICATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())
+									|| FeeTypeConstant.RESERVATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())) {
+								// don't create hostel fee.
+								continue;
+							}
+
+							maxReservationFeeCanBePaid = maxReservationFeeCanBePaid + branchLevelFee.getAmount();
+						}
+					}
+
+					final Collection<KlassLevelFee> klassLevelFees = this.klassLevelFeeService.findAllKlassFeesByKlassIdAndAcademicYearId(
+							acceptedForKlass.getId(), studentAcademicYearFeeComitted.getAcademicYear().getId());
+					if (klassLevelFees != null) {
+						for (final KlassLevelFee klassLevelFee : klassLevelFees) {
+							if (student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
+									&& FeeTypeConstant.HOSTEL_FEE.equals(klassLevelFee.getBuildingBlock().getFeeType())) {
+								// don't create hostel fee.
+								continue;
+							}
+							if (student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
+									&& FeeTypeConstant.APPLICATION_FEE.equals(klassLevelFee.getBuildingBlock().getFeeType())) {
+								// don't create hostel fee.
+								continue;
+							}
+							maxReservationFeeCanBePaid = maxReservationFeeCanBePaid + klassLevelFee.getAmount();
+						}
+					}
+					if ((maxReservationFeeCanBePaid > 0) && (studentAcademicYearFeeComitted.getFeeComitted() != null)
+							&& (studentAcademicYearFeeComitted.getFeeComitted() > maxReservationFeeCanBePaid)) {
+						throw new ApplicationException("Comitted fee cannot exceed " + maxReservationFeeCanBePaid + " for academic year "
+								+ studentAcademicYearFeeComitted.getAcademicYear().getDisplayLabel());
+					}
+
+				}
 			}
 		}
 
@@ -415,9 +472,25 @@ public class AdmissionServiceImpl implements AdmissionService {
 	@Transactional(rollbackFor = Exception.class)
 	public StudentAcademicYear admitStudent(final Student student, final Section admitForSection, final MedicalHistory medicalHistory,
 			final Collection<BuildingBlock> admissionSubmittedDocuments, final Collection<AdmissionFeeDO> admissionFeeDOs, final boolean deductReservationFee,
-			final boolean skipApplicatinFee, final boolean skipReservationFee) throws BusinessException, SystemException {
+			final boolean skipApplicatinFee, final boolean skipReservationFee,
+			final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComittedForStudent) throws BusinessException, SystemException {
 
 		final Student currentStudent = this.studentService.findStudentById(student.getId());
+
+		if (!admitForSection.getAcademicYear().isActive()) {
+			throw new BusinessException("Academic year " + admitForSection.getAcademicYear().getDisplayLabel()
+					+ " is not active. Please activate the academic year and proceed with admission.");
+		}
+
+		if (!student.getAcceptedForKlass().isActive()) {
+			throw new BusinessException("Class " + student.getAcceptedForKlass().getName()
+					+ " to which student is accepted is not active. Please activate the class and proceed with admission.");
+		}
+
+		if (!admitForSection.getKlass().isActive()) {
+			throw new BusinessException("Class " + admitForSection.getKlass().getName() + " of section " + admitForSection.getName()
+					+ " to which student is accepted is not active.Please activate the class and proceed with admission.");
+		}
 
 		// Get new admission number.
 		if (currentStudent.getAdmissionNr() == null) {
@@ -541,6 +614,15 @@ public class AdmissionServiceImpl implements AdmissionService {
 			this.admissionSubmittedDocumentsService.saveAdmissionSubmittedDocuments(admissionDocument);
 		}
 
+		// Process application and reservation fee
+		this.processPayments(studentFees, studentAcademicYear, admissionFeeDOs, deductReservationFee, skipApplicatinFee, skipReservationFee);
+		this.validateComittedFee(studentAcademicYearFeeComittedForStudent, result, result.getAcceptedForKlass());
+		for (final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted : studentAcademicYearFeeComittedForStudent) {
+			if ((studentAcademicYearFeeComitted.getFeeComitted() != null) && (studentAcademicYearFeeComitted.getFeeComitted() > 0)) {
+				this.studentAcademicYearFeeComittedService.saveStudentAcademicYearFeeComitted(studentAcademicYearFeeComitted);
+			}
+		}
+
 		try {
 			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
 					studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.NEW_ADMISSION_NOTIFICATION);
@@ -556,9 +638,6 @@ public class AdmissionServiceImpl implements AdmissionService {
 		} catch (final Exception e) {
 			e.printStackTrace();
 		}
-
-		// Process application and reservation fee
-		this.processPayments(studentFees, studentAcademicYear, admissionFeeDOs, deductReservationFee, skipApplicatinFee, skipReservationFee);
 
 		// Log student state history
 		final StudentStatusHistory studentStatusHistory = new StudentStatusHistory();

@@ -21,6 +21,7 @@ import com.apeironsol.need.core.model.Relation;
 import com.apeironsol.need.core.model.Section;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.model.StudentAcademicYearFeeComitted;
 import com.apeironsol.need.core.model.StudentStatusHistory;
 import com.apeironsol.need.util.dataobject.AdmissionFeeDO;
 import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
@@ -125,7 +126,8 @@ public interface AdmissionService {
 	 */
 	StudentAcademicYear admitStudent(final Student student, final Section admitForSection, final MedicalHistory medicalHistory,
 			final Collection<BuildingBlock> admissionSubmittedDocuments, Collection<AdmissionFeeDO> admissionFeeDOs, final boolean deductReservationFee,
-			final boolean skipApplicatinFee, final boolean skipReservationFee) throws BusinessException, SystemException;
+			final boolean skipApplicatinFee, final boolean skipReservationFee,
+			final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComittedForStudent) throws BusinessException, SystemException;
 
 	/**
 	 * Reject admission.

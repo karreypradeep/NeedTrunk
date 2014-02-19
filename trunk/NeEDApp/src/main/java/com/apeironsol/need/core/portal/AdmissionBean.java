@@ -30,6 +30,7 @@ import org.springframework.context.annotation.Scope;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.dao.AddressDao;
+import com.apeironsol.need.core.dataobject.StudentAcademicYearFeeComittedDO;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Address;
 import com.apeironsol.need.core.model.Admission;
@@ -44,6 +45,7 @@ import com.apeironsol.need.core.model.Relation;
 import com.apeironsol.need.core.model.Section;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYear;
+import com.apeironsol.need.core.model.StudentAcademicYearFeeComitted;
 import com.apeironsol.need.core.model.StudentStatusHistory;
 import com.apeironsol.need.core.service.AdmissionReservationFeeService;
 import com.apeironsol.need.core.service.BuildingBlockService;
@@ -54,6 +56,7 @@ import com.apeironsol.need.financial.model.BranchLevelFee;
 import com.apeironsol.need.financial.model.KlassLevelFee;
 import com.apeironsol.need.financial.service.BranchLevelFeeService;
 import com.apeironsol.need.financial.service.KlassLevelFeeService;
+import com.apeironsol.need.financial.service.StudentFinancialService;
 import com.apeironsol.need.reporting.model.AdmissionReportParameterBean;
 import com.apeironsol.need.reporting.util.JReportGenerator;
 import com.apeironsol.need.reporting.util.JReportType;
@@ -77,139 +80,144 @@ public class AdmissionBean extends AbstractStudentBean {
 	/**
 	 * Unique serial version id for this class.
 	 */
-	private static final long				serialVersionUID							= 3120175111183256699L;
+	private static final long								serialVersionUID							= 3120175111183256699L;
 
-	private static final Logger				log											= Logger.getLogger(AdmissionBean.class);
-
-	@Resource
-	private BuildingBlockService			buildingBlockService;
+	private static final Logger								log											= Logger.getLogger(AdmissionBean.class);
 
 	@Resource
-	private StudentService					studentService;
+	private BuildingBlockService							buildingBlockService;
 
 	@Resource
-	private AdmissionReservationFeeService	admissionReservationFeeService;
+	private StudentService									studentService;
 
 	@Resource
-	private KlassLevelFeeService			klassLevelFeeService;
+	private AdmissionReservationFeeService					admissionReservationFeeService;
 
 	@Resource
-	private BranchLevelFeeService			branchLevelFeeService;
+	private KlassLevelFeeService							klassLevelFeeService;
 
 	@Resource
-	private RelationService					relationService;
+	private BranchLevelFeeService							branchLevelFeeService;
 
 	@Resource
-	private AddressDao						addressDao;
-
-	private Admission						admission;
-
-	private Address							fatherAddress;
-
-	private Address							motherAddress;
-
-	private Address							guardianAddress;
-
-	private boolean							displayFatherInfo							= true;
-
-	private boolean							displayMotherInfo							= true;
-
-	private boolean							displayGuardianInfo							= false;
-
-	private boolean							fatherAddressSameAsPrimary					= false;
-
-	private boolean							motherAddressSameAsPrimary					= false;
-
-	private boolean							guardianAddressSameAsPrimary				= false;
-
-	private EducationHistory				educationHistory;
-
-	private Long							applyingForClassId;
-
-	private Collection<EducationHistory>	educationHistories;
-
-	private String							educationHistoryRowId;
-
-	private boolean							disableRecentSchoolInfo;
-
-	private String							activeStep									= GENERAL;
-
-	private static final String				GENERAL										= "general";
-
-	private static final String				PERSONAL									= "personal";
-
-	private static final String				CONTACT										= "contact";
-
-	private static final String				PARENTS										= "parents";
-
-	private static final String				EDUCATION									= "education";
-
-	private static final String				CONFIRM										= "confirm";
-
-	private static final String				PAYMNET										= "payment";
-
-	LinkedList<String>						processFlow									= new LinkedList<String>();
-
-	private AdmissionStatusConstant			admissionStatusAction;
-
-	private String							actionComment;
-
-	private boolean							admissionStateSetToRollback;
-
-	private boolean							viewNewAdmission;
-
-	private Collection<Student>				studentsBySearchCriteria					= new ArrayList<Student>();
-
-	private MedicalHistory					medicalHistory;
-
-	private Batch							appliedForBatch;
-
-	private AcademicYear					appliedForAcademicYear;
-
-	private Collection<AcademicYear>		academicYearsForBatch;
-
-	private AdmissionSearchCriteria			admissionSearchCriteria						= null;
-
-	private boolean							existingAdmissionNumber;
-
-	private Collection<BuildingBlock>		buildingBlockTypeAdmissionDocuments;
-
-	private Collection<BuildingBlock>		admissionSubmittedDocuments;
-
-	private Collection<BuildingBlock>		buildingBlockTypeStudentClassifications;
-
-	private boolean							loadStudentClassificationBuildingBlockTypes	= false;
-
-	private int								nrOfStudentsForSectionId;
-
-	private AdmissionReservationFee			admissionReservationFee;
-
-	private Collection<AdmissionFeeDO>		admissionFeeDOs;
-
-	private boolean							applicationFeeExternalTransaction;
-
-	private boolean							reservationFeeExternalTransaction;
-
-	private boolean							recentSchoolAddressAvailable;
-
-	private boolean							deductReservationFee;
-
-	private boolean							skipReservationFee;
-
-	private boolean							skipApplicationFee;
-
-	private boolean							reservationFeeDefinedInBranch;
-
-	private boolean							applicationFeeDefinedInBranch;
-
-	private Collection<AdmissionFeeDO>		admissionWavedFeeDOs;
+	private RelationService									relationService;
 
 	@Resource
-	StudentAcademicYearFeeSummaryService	studentAcademicYearFeeSummaryService;
+	private StudentFinancialService							studentFinancialService;
 
-	private double							applicationFormFee							= 0;
+	@Resource
+	private AddressDao										addressDao;
 
-	private boolean							previousAcademicYearAdmission				= false;
+	private Admission										admission;
+
+	private Address											fatherAddress;
+
+	private Address											motherAddress;
+
+	private Address											guardianAddress;
+
+	private boolean											displayFatherInfo							= true;
+
+	private boolean											displayMotherInfo							= true;
+
+	private boolean											displayGuardianInfo							= false;
+
+	private boolean											fatherAddressSameAsPrimary					= false;
+
+	private boolean											motherAddressSameAsPrimary					= false;
+
+	private boolean											guardianAddressSameAsPrimary				= false;
+
+	private EducationHistory								educationHistory;
+
+	private Long											applyingForClassId;
+
+	private Collection<EducationHistory>					educationHistories;
+
+	private String											educationHistoryRowId;
+
+	private boolean											disableRecentSchoolInfo;
+
+	private String											activeStep									= GENERAL;
+
+	private static final String								GENERAL										= "general";
+
+	private static final String								PERSONAL									= "personal";
+
+	private static final String								CONTACT										= "contact";
+
+	private static final String								PARENTS										= "parents";
+
+	private static final String								EDUCATION									= "education";
+
+	private static final String								CONFIRM										= "confirm";
+
+	private static final String								PAYMNET										= "payment";
+
+	LinkedList<String>										processFlow									= new LinkedList<String>();
+
+	private AdmissionStatusConstant							admissionStatusAction;
+
+	private String											actionComment;
+
+	private boolean											admissionStateSetToRollback;
+
+	private boolean											viewNewAdmission;
+
+	private Collection<Student>								studentsBySearchCriteria					= new ArrayList<Student>();
+
+	private MedicalHistory									medicalHistory;
+
+	private Batch											appliedForBatch;
+
+	private AcademicYear									appliedForAcademicYear;
+
+	private Collection<AcademicYear>						academicYearsForBatch;
+
+	private AdmissionSearchCriteria							admissionSearchCriteria						= null;
+
+	private boolean											existingAdmissionNumber;
+
+	private Collection<BuildingBlock>						buildingBlockTypeAdmissionDocuments;
+
+	private Collection<BuildingBlock>						admissionSubmittedDocuments;
+
+	private Collection<BuildingBlock>						buildingBlockTypeStudentClassifications;
+
+	private boolean											loadStudentClassificationBuildingBlockTypes	= false;
+
+	private int												nrOfStudentsForSectionId;
+
+	private AdmissionReservationFee							admissionReservationFee;
+
+	private Collection<AdmissionFeeDO>						admissionFeeDOs;
+
+	private boolean											applicationFeeExternalTransaction;
+
+	private boolean											reservationFeeExternalTransaction;
+
+	private boolean											recentSchoolAddressAvailable;
+
+	private boolean											deductReservationFee;
+
+	private boolean											skipReservationFee;
+
+	private boolean											skipApplicationFee;
+
+	private boolean											reservationFeeDefinedInBranch;
+
+	private boolean											applicationFeeDefinedInBranch;
+
+	private Collection<AdmissionFeeDO>						admissionWavedFeeDOs;
+
+	@Resource
+	StudentAcademicYearFeeSummaryService					studentAcademicYearFeeSummaryService;
+
+	private double											applicationFormFee							= 0;
+
+	private boolean											previousAcademicYearAdmission				= false;
+
+	private Collection<StudentAcademicYearFeeComittedDO>	studentAcademicYearFeeComittedForStudent	= null;
 
 	/**
 	 * @return the applicationFormFee
@@ -771,8 +779,13 @@ public class AdmissionBean extends AbstractStudentBean {
 
 			this.student.setRelations(this.relationService.findRelationByStudentId(this.student.getId()));
 			final Section admitForSection = this.sectionService.findSectionById(this.getAdmitForSectionId());
+			final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComitted = new ArrayList<StudentAcademicYearFeeComitted>();
+			for (final StudentAcademicYearFeeComittedDO studentAcademicYearFeeComittedDO : this.studentAcademicYearFeeComittedForStudent) {
+				studentAcademicYearFeeComitted.add(studentAcademicYearFeeComittedDO.getStudentAcademicYearFeeComitted());
+			}
 			final StudentAcademicYear studentAcademicYear = this.admissionService.admitStudent(this.student, admitForSection, this.medicalHistory,
-					this.admissionSubmittedDocuments, this.getAdmissionFeeDOs(), this.deductReservationFee, this.skipApplicationFee, this.skipReservationFee);
+					this.admissionSubmittedDocuments, this.getAdmissionFeeDOs(), this.deductReservationFee, this.skipApplicationFee, this.skipReservationFee,
+					studentAcademicYearFeeComitted);
 			this.studentAcademicYearFeeSummaryService.createStudentAcademicYearFeeSummaryForStudentAcademicYearId(studentAcademicYear.getId());
 			ViewUtil.addMessage("Admission state sucessfully changes as admitted.", FacesMessage.SEVERITY_INFO);
 			this.admissionStatusAction = null;
@@ -1059,6 +1072,7 @@ public class AdmissionBean extends AbstractStudentBean {
 		if (this.admissionReservationFee == null) {
 			this.admissionReservationFee = new AdmissionReservationFee();
 		}
+
 	}
 
 	public void resetBeforeAdmit() {
@@ -1071,7 +1085,42 @@ public class AdmissionBean extends AbstractStudentBean {
 				.getCurrentBranch().getId(), BuildingBlockConstant.DOCUMENTS_REQUIRD_FOR_ADMISSION));
 		this.admissionSubmittedDocuments = new ArrayList<BuildingBlock>();
 		this.actionComment = null;
+		this.studentAcademicYearFeeComittedForStudent = new ArrayList<StudentAcademicYearFeeComittedDO>();
+		this.student.setBranch(this.sessionBean.getCurrentBranch());
+		if ((this.student.getAppliedForBatch() != null) && this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator()) {
+			final Collection<AcademicYear> academicYearsForBatch = this.academicYearService.findAcademicYearsForBatchId(this.student.getAppliedForBatch()
+					.getId(), this.sessionBean.getCurrentBranch().getId());
+			for (final AcademicYear academicYear : academicYearsForBatch) {
+				final Double maximumFeePayableByStudent = this.studentFinancialService.getMaximumFeePayableByStudentForAcademicYearAndKlass(this.student,
+						academicYear.getId(), this.student.getAcceptedForKlass().getId());
+				final StudentAcademicYearFeeComittedDO studentAcademicYearFeeComittedDO = new StudentAcademicYearFeeComittedDO();
+				final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted = new StudentAcademicYearFeeComitted();
+				studentAcademicYearFeeComitted.setAcademicYear(academicYear);
+				studentAcademicYearFeeComitted.setStudent(this.student);
+				studentAcademicYearFeeComittedDO.setStudentAcademicYearFeeComitted(studentAcademicYearFeeComitted);
+				if ((maximumFeePayableByStudent != null) && (maximumFeePayableByStudent > 0)) {
+					studentAcademicYearFeeComittedDO.setMaxFeePayable(maximumFeePayableByStudent);
+				} else {
+					studentAcademicYearFeeComittedDO.setMaxFeePayable(null);
+				}
+				this.studentAcademicYearFeeComittedForStudent.add(studentAcademicYearFeeComittedDO);
+			}
 
+		} else {
+			final Double maximumFeePayableByStudent = this.studentFinancialService.getMaximumFeePayableByStudentForAcademicYearAndKlass(this.student,
+					this.student.getAppliedForAcademicYear().getId(), this.student.getAcceptedForKlass().getId());
+			final StudentAcademicYearFeeComittedDO studentAcademicYearFeeComittedDO = new StudentAcademicYearFeeComittedDO();
+			final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted = new StudentAcademicYearFeeComitted();
+			studentAcademicYearFeeComitted.setAcademicYear(this.student.getAppliedForAcademicYear());
+			studentAcademicYearFeeComitted.setStudent(this.student);
+			studentAcademicYearFeeComittedDO.setStudentAcademicYearFeeComitted(studentAcademicYearFeeComitted);
+			if ((maximumFeePayableByStudent != null) && (maximumFeePayableByStudent > 0)) {
+				studentAcademicYearFeeComittedDO.setMaxFeePayable(maximumFeePayableByStudent);
+			} else {
+				studentAcademicYearFeeComittedDO.setMaxFeePayable(null);
+			}
+			this.studentAcademicYearFeeComittedForStudent.add(studentAcademicYearFeeComittedDO);
+		}
 		this.determinAdmissionLevelFeeRules();
 	}
 
@@ -1555,7 +1604,7 @@ public class AdmissionBean extends AbstractStudentBean {
 		double maxReservationFeeCanBePaid = 0;
 		if ((this.admissionReservationFee.getReservationFee() != null) && (this.admissionReservationFee.getReservationFee() <= 0d)) {
 			throw new ApplicationException("Reservation fee should be grater than 0.");
-		} else if ((this.admissionReservationFee.getComittedFee() != null) || (this.admissionReservationFee.getReservationFee() != null)) {
+		} else if ((this.admissionReservationFee.getReservationFee() != null)) {
 			final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearId(this.sessionBean
 					.getCurrentBranch().getId(), this.student.getAppliedForAcademicYear().getId());
 			for (final BranchLevelFee branchLevelFee : branchLevelFees) {
@@ -1588,9 +1637,6 @@ public class AdmissionBean extends AbstractStudentBean {
 			if (this.admissionReservationFee.getReservationFee() > maxReservationFeeCanBePaid) {
 				throw new ApplicationException("Reservation fee cannot exceed " + maxReservationFeeCanBePaid);
 			}
-			if ((this.admissionReservationFee.getComittedFee() != null) && (this.admissionReservationFee.getComittedFee() > maxReservationFeeCanBePaid)) {
-				throw new ApplicationException("Comitted fee cannot exceed " + maxReservationFeeCanBePaid);
-			}
 		}
 
 	}
@@ -1608,6 +1654,21 @@ public class AdmissionBean extends AbstractStudentBean {
 	 */
 	public void setPreviousAcademicYearAdmission(final boolean previousAcademicYearAdmission) {
 		this.previousAcademicYearAdmission = previousAcademicYearAdmission;
+	}
+
+	/**
+	 * @return the studentAcademicYearFeeComittedForStudent
+	 */
+	public Collection<StudentAcademicYearFeeComittedDO> getStudentAcademicYearFeeComittedForStudent() {
+		return this.studentAcademicYearFeeComittedForStudent;
+	}
+
+	/**
+	 * @param studentAcademicYearFeeComittedForStudent
+	 *            the studentAcademicYearFeeComittedForStudent to set
+	 */
+	public void setStudentAcademicYearFeeComittedForStudent(final Collection<StudentAcademicYearFeeComittedDO> studentAcademicYearFeeComittedForStudent) {
+		this.studentAcademicYearFeeComittedForStudent = studentAcademicYearFeeComittedForStudent;
 	}
 
 }

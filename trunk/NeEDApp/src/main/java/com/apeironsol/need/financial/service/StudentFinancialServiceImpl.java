@@ -68,6 +68,7 @@ import com.apeironsol.need.util.constants.NotificationLevelConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.constants.PaymentMethodConstant;
+import com.apeironsol.need.util.constants.ResidenceConstant;
 import com.apeironsol.need.util.constants.StudentFeeTransactionStatusConstant;
 import com.apeironsol.need.util.constants.StudentFeeTransactionTypeConstant;
 import com.apeironsol.need.util.dataobject.StudentFeeDetailsDO;
@@ -153,6 +154,12 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 	@Resource
 	private StudentSectionDao				studentSectionDao;
+
+	@Resource
+	private KlassLevelFeeService			klassLevelFeeService;
+
+	@Resource
+	private BranchLevelFeeService			branchLevelFeeService;
 
 	/**
 	 * {@inheritDoc}
@@ -1609,5 +1616,43 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 			throw new BusinessException("Transactions status can be changed to refund processed only if the current transactions is status is refund pending.");
 		}
 
+	}
+
+	@Override
+	public Double getMaximumFeePayableByStudentForAcademicYearAndKlass(final Student student, final Long academicYearId, final Long klassId) {
+		Double maxFeePayable = 0d;
+		final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearId(
+				student.getBranch().getId(), academicYearId);
+		if (branchLevelFees != null) {
+			for (final BranchLevelFee branchLevelFee : branchLevelFees) {
+				if ((student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER) && FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee.getBuildingBlock()
+						.getFeeType()))
+						|| FeeTypeConstant.APPLICATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())
+						|| FeeTypeConstant.RESERVATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())) {
+					// don't create hostel fee.
+					continue;
+				}
+
+				maxFeePayable = maxFeePayable + branchLevelFee.getAmount();
+			}
+		}
+
+		final Collection<KlassLevelFee> klassLevelFees = this.klassLevelFeeService.findAllKlassFeesByKlassIdAndAcademicYearId(klassId, academicYearId);
+		if (klassLevelFees != null) {
+			for (final KlassLevelFee klassLevelFee : klassLevelFees) {
+				if (student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
+						&& FeeTypeConstant.HOSTEL_FEE.equals(klassLevelFee.getBuildingBlock().getFeeType())) {
+					// don't create hostel fee.
+					continue;
+				}
+				if (student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER)
+						&& FeeTypeConstant.APPLICATION_FEE.equals(klassLevelFee.getBuildingBlock().getFeeType())) {
+					// don't create hostel fee.
+					continue;
+				}
+				maxFeePayable = maxFeePayable + klassLevelFee.getAmount();
+			}
+		}
+		return maxFeePayable;
 	}
 }

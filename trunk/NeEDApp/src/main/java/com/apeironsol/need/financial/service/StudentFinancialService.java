@@ -3,13 +3,15 @@
  * SMSystem.
  * www.apeironsol.com
  * Copyright © 2012 apeironsol
- *
+ * 
  */
 package com.apeironsol.need.financial.service;
 
 import java.util.Collection;
 import java.util.Date;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.core.model.StudentAcademicYearFeeSummary;
@@ -24,20 +26,18 @@ import com.apeironsol.need.util.dataobject.StudentFinancialDO;
 import com.apeironsol.need.util.searchcriteria.FeeCollectedSearchCriteria;
 import com.apeironsol.need.util.searchcriteria.FeeDueSearchCriteria;
 import com.apeironsol.need.util.searchcriteria.StudentFeeTransactionSearchCriteria;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 /**
  * Service for student financial details.
- *
+ * 
  * @author pradeep
- *
+ * 
  */
 public interface StudentFinancialService {
 
 	/**
 	 * Retrieve student financial data by student id and academic year id.
-	 *
+	 * 
 	 * @param studentId
 	 *            student id.
 	 * @param acadmicYearId
@@ -49,7 +49,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Retrieve student fee transactions by student id and academic year id.
-	 *
+	 * 
 	 * @param studentId
 	 *            student id.
 	 * @param acadmicYearId
@@ -61,7 +61,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Deposit payments.
-	 *
+	 * 
 	 * @param studentFinancialTransactionDOs
 	 *            studentFinancialTransactionDOs.
 	 * @return transaction number if the deposit is successful.
@@ -75,7 +75,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Refund payments.
-	 *
+	 * 
 	 * @param studentFinancialTransactionDOs
 	 *            studentFinancialTransactionDOs.
 	 * @return transaction number if the deposit is successful.
@@ -89,7 +89,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Deduct payments.
-	 *
+	 * 
 	 * @param studentFinancialTransactionDOs
 	 *            studentFinancialTransactionDOs.
 	 * @return transaction number if the deposit is successful.
@@ -115,7 +115,7 @@ public interface StudentFinancialService {
 	/**
 	 * Return total fees due till due date for the student and academic year
 	 * specified.
-	 *
+	 * 
 	 * @param student
 	 *            student.
 	 * @param academicYear
@@ -132,7 +132,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Retrieve fee payment details by transaction number.
-	 *
+	 * 
 	 * @param transactionNr
 	 *            the transaction number.
 	 * @return Student fee payment transaction by transaction number.
@@ -141,7 +141,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Retrieve student fee transaction details by student id.
-	 *
+	 * 
 	 * @param studentId
 	 *            the student id.
 	 * @return student fee transaction detail objects.
@@ -150,7 +150,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Save the student fee transaction.
-	 *
+	 * 
 	 * @param studentFeeTransaction
 	 *            student fee transaction to be updated.
 	 * @return Updated the student fee transaction.
@@ -159,7 +159,7 @@ public interface StudentFinancialService {
 			final StudentFeeTransactionStatusConstant transactionStatus, final boolean updateStudentAcademicYearFeeSummary);
 
 	/**
-	 *
+	 * 
 	 * @param studentAcademicYearId
 	 * @param studentFeeTransaction
 	 * @param studentFeeDetailsDOs
@@ -172,7 +172,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Deduct payments.
-	 *
+	 * 
 	 * @param studentFinancialTransactionDOs
 	 *            studentFinancialTransactionDOs.
 	 * @return transaction number if the deposit is successful.
@@ -186,7 +186,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Find all student fee transactions that match the search criteria.
-	 *
+	 * 
 	 * @param studentFeeTransactionSearchCriteria
 	 *            studentFeeTransactionSearchCriteria.
 	 * @return collection of all student fee transactions that match the search
@@ -199,7 +199,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Find all student fee transactions that match the search criteria.
-	 *
+	 * 
 	 * @param studentFeeTransactionSearchCriteria
 	 *            studentFeeTransactionSearchCriteria.
 	 * @return collection of all student fee transactions that match the search
@@ -211,7 +211,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Retrieve student fee transaction details by student academic year id.
-	 *
+	 * 
 	 * @param studentAcademicYearId
 	 *            student academic year id.
 	 * @return student fee transaction detail objects.
@@ -221,7 +221,7 @@ public interface StudentFinancialService {
 	/**
 	 * Return student financial details by academic year and student for due
 	 * date.
-	 *
+	 * 
 	 * @param studentId
 	 * @param acadmicYearId
 	 * @param dueDate
@@ -232,7 +232,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Retrieve branch fee financial details by academic year.
-	 *
+	 * 
 	 * @param student
 	 *            student.
 	 * @param academicYearId
@@ -243,7 +243,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Retrieve fee defaulters by FeeDueSearchCriteria.
-	 *
+	 * 
 	 * @param feeDueSearchCriteria
 	 *            feeDueSearchCriteria.
 	 * @return branch fee financial details by feeDueSearchCriteria.
@@ -252,7 +252,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Retrieve student fee financial details by academic year.
-	 *
+	 * 
 	 * @param studentSections
 	 * @param academicYearId
 	 * @param dueDate
@@ -263,7 +263,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Revert Student Fee transaction.
-	 *
+	 * 
 	 * @param studentFeeTransaction
 	 * @return
 	 */
@@ -271,7 +271,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Retrieve fee payment details by transaction number.
-	 *
+	 * 
 	 * @param transactionId
 	 *            the transaction id.
 	 * @return Student fee payment transaction by transaction number.
@@ -279,21 +279,21 @@ public interface StudentFinancialService {
 	StudentFeeTransactionDO retriveStudentFeeTransactionDetailsByTransactionId(final Long transactionId);
 
 	/**
-	 *
+	 * 
 	 * @param transactionNr
 	 * @return
 	 */
 	StudentFeeTransaction retriveStudentFeeTransactionByTransactionNr(final String transactionNr);
 
 	/**
-	 *
+	 * 
 	 * @param studentAcademicYearId
 	 * @return
 	 */
 	StudentAcademicYearFeeSummary processStudentAcademicYearFeeSummary(final Long studentAcademicYearId);
 
 	/**
-	 *
+	 * 
 	 * @param studentId
 	 * @param academicYearId
 	 * @return
@@ -302,7 +302,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Reject refund for student fee.
-	 *
+	 * 
 	 * @param studentFeeTransaction
 	 * @return
 	 */
@@ -310,7 +310,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Approve refund for student fee.
-	 *
+	 * 
 	 * @param studentFeeTransaction
 	 * @return
 	 */
@@ -318,7 +318,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Reject deduction for student fee.
-	 *
+	 * 
 	 * @param studentFeeTransaction
 	 * @return
 	 */
@@ -326,7 +326,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Approve deduction for student fee.
-	 *
+	 * 
 	 * @param studentFeeTransaction
 	 * @return
 	 */
@@ -334,7 +334,7 @@ public interface StudentFinancialService {
 
 	/**
 	 * Process payment for student fee
-	 *
+	 * 
 	 * @param studentFeeTransaction
 	 * @return
 	 */
@@ -342,9 +342,12 @@ public interface StudentFinancialService {
 
 	/**
 	 * Process refund request
+	 * 
 	 * @param studentFeeTransaction
 	 * @return
 	 */
 	StudentFeeTransaction processRefundRequest(StudentFeeTransaction studentFeeTransaction) throws BusinessException, SystemException;
+
+	Double getMaximumFeePayableByStudentForAcademicYearAndKlass(final Student student, final Long academicYearId, final Long klassId);
 
 }

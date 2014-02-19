@@ -105,7 +105,7 @@ public class StudentRegistrationBean extends AbstractTabbedBean {
 	public void searchStudentRegistrartionBySearchCriteria() {
 		if (((this.academicYearForSearch != null) && (this.registrationStatusConstantForSearch != null))) {
 			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationesByAcademicYearIdAndStatus(
-					this.academicYearForSearch != null ? this.academicYearForSearch.getId() : null, this.registrationStatusConstantForSearch);
+					this.academicYearForSearch.getId(), this.registrationStatusConstantForSearch);
 		} else if (this.academicYearForSearch != null) {
 			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationesByAcademicYearId(this.academicYearForSearch
 					.getId());
