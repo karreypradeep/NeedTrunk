@@ -153,64 +153,6 @@
 			</h:panelGrid>
 		</p:panel>
 
-		<p:dataTable id="comittedFees" value="#{admissionBean.studentAcademicYearFeeComittedForStudent}"
-			var="studentAcademicYearFeeComittedDO" editable="true" style="margin:5px;margin-bottom:15px;">
-			<p:ajax event="rowEdit" update="@this" />
-			<f:facet name="header">
-				<span style="float: left"> <h:outputLabel value="Comitted Fee :" style="font-size: 13px;padding-right:10px;" />
-				</span>
-			</f:facet>
-			<p:column>
-				<f:facet name="header">
-					<h:outputLabel value="Academic Year" />
-				</f:facet>
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{studentAcademicYearFeeComittedDO.studentAcademicYearFeeComitted.academicYear.displayLabel}">
-						</h:outputText>
-					</f:facet>
-					<f:facet name="input">
-						<h:outputText value="#{studentAcademicYearFeeComittedDO.studentAcademicYearFeeComitted.academicYear.displayLabel}">
-						</h:outputText>
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
-			<p:column>
-				<f:facet name="header">
-					<h:outputLabel value="Maximum Fee" />
-				</f:facet>
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{studentAcademicYearFeeComittedDO.maxFeePayable}">
-						</h:outputText>
-					</f:facet>
-					<f:facet name="input">
-						<h:outputText value="#{studentAcademicYearFeeComittedDO.maxFeePayable}">
-						</h:outputText>
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
-			<p:column style="width:150px;">
-				<f:facet name="header">
-							Comitted Amount
-						    </f:facet>
-				<p:cellEditor>
-					<f:facet name="output">
-						<h:outputText value="#{studentAcademicYearFeeComittedDO.studentAcademicYearFeeComitted.feeComitted}">
-							<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
-						</h:outputText>
-					</f:facet>
-					<f:facet name="input">
-						<p:inputText value="#{studentAcademicYearFeeComittedDO.studentAcademicYearFeeComitted.feeComitted}" disabled="#{studentAcademicYearFeeComittedDO.maxFeePayable == null}">
-							<p:ajax process="@this" update="@this" event="change" />
-						</p:inputText>
-					</f:facet>
-				</p:cellEditor>
-			</p:column>
-			<p:column style="width:60px;text-align:center;no-wrap;">
-				<p:rowEditor />
-			</p:column>
-		</p:dataTable>
 		<p:panel header=" Submitted documents
 									details" style="border:0px;" toggleable="true" toggleSpeed="500"
 			collapsed="true">

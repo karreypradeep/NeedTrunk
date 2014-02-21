@@ -109,7 +109,8 @@ public interface AdmissionService {
 	 *             In case of exception.
 	 */
 	Student acceptAdmission(final Student student, final Klass acceptedForKlass, final AdmissionReservationFee admissionReservationFee,
-			final StudentStatusHistory studentStatusHistory) throws BusinessException, SystemException;
+			final StudentStatusHistory studentStatusHistory, final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComittedForStudent)
+			throws BusinessException, SystemException;
 
 	/**
 	 * Approve admission.
@@ -126,8 +127,7 @@ public interface AdmissionService {
 	 */
 	StudentAcademicYear admitStudent(final Student student, final Section admitForSection, final MedicalHistory medicalHistory,
 			final Collection<BuildingBlock> admissionSubmittedDocuments, Collection<AdmissionFeeDO> admissionFeeDOs, final boolean deductReservationFee,
-			final boolean skipApplicatinFee, final boolean skipReservationFee,
-			final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComittedForStudent) throws BusinessException, SystemException;
+			final boolean skipApplicatinFee, final boolean skipReservationFee) throws BusinessException, SystemException;
 
 	/**
 	 * Reject admission.

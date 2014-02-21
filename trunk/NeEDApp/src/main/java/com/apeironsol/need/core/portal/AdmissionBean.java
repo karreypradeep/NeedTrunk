@@ -719,8 +719,12 @@ public class AdmissionBean extends AbstractStudentBean {
 		try {
 			final StudentStatusHistory history = new StudentStatusHistory();
 			history.setComments(this.actionComment);
-
-			this.student = this.admissionService.acceptAdmission(this.student, this.student.getAcceptedForKlass(), this.admissionReservationFee, history);
+			final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComitted = new ArrayList<StudentAcademicYearFeeComitted>();
+			for (final StudentAcademicYearFeeComittedDO studentAcademicYearFeeComittedDO : this.studentAcademicYearFeeComittedForStudent) {
+				studentAcademicYearFeeComitted.add(studentAcademicYearFeeComittedDO.getStudentAcademicYearFeeComitted());
+			}
+			this.student = this.admissionService.acceptAdmission(this.student, this.student.getAcceptedForKlass(), this.admissionReservationFee, history,
+					studentAcademicYearFeeComitted);
 			/*
 			 * if (!this.admissionSearchCriteria.isSearchCriteriaIsEmpty()) {
 			 * this.searchAdmissionsBySearchCriteria();
@@ -779,13 +783,9 @@ public class AdmissionBean extends AbstractStudentBean {
 
 			this.student.setRelations(this.relationService.findRelationByStudentId(this.student.getId()));
 			final Section admitForSection = this.sectionService.findSectionById(this.getAdmitForSectionId());
-			final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComitted = new ArrayList<StudentAcademicYearFeeComitted>();
-			for (final StudentAcademicYearFeeComittedDO studentAcademicYearFeeComittedDO : this.studentAcademicYearFeeComittedForStudent) {
-				studentAcademicYearFeeComitted.add(studentAcademicYearFeeComittedDO.getStudentAcademicYearFeeComitted());
-			}
+
 			final StudentAcademicYear studentAcademicYear = this.admissionService.admitStudent(this.student, admitForSection, this.medicalHistory,
-					this.admissionSubmittedDocuments, this.getAdmissionFeeDOs(), this.deductReservationFee, this.skipApplicationFee, this.skipReservationFee,
-					studentAcademicYearFeeComitted);
+					this.admissionSubmittedDocuments, this.getAdmissionFeeDOs(), this.deductReservationFee, this.skipApplicationFee, this.skipReservationFee);
 			this.studentAcademicYearFeeSummaryService.createStudentAcademicYearFeeSummaryForStudentAcademicYearId(studentAcademicYear.getId());
 			ViewUtil.addMessage("Admission state sucessfully changes as admitted.", FacesMessage.SEVERITY_INFO);
 			this.admissionStatusAction = null;
@@ -1072,19 +1072,14 @@ public class AdmissionBean extends AbstractStudentBean {
 		if (this.admissionReservationFee == null) {
 			this.admissionReservationFee = new AdmissionReservationFee();
 		}
-
+		this.loadStudentAcademicYearFeeComittedForStudent();
 	}
 
-	public void resetBeforeAdmit() {
-		this.loadStudentClassifications();
-		this.setLoadSectionForKlassFlag(true);
-		this.loadSectionsForClass();
-		this.loadAdmissionReservationFee();
-		this.medicalHistory = new MedicalHistory();
-		this.setBuildingBlockTypeAdmissionDocuments(this.buildingBlockService.findBuildingBlocksbyBranchIdAndBuildingBlockType(this.sessionBean
-				.getCurrentBranch().getId(), BuildingBlockConstant.DOCUMENTS_REQUIRD_FOR_ADMISSION));
-		this.admissionSubmittedDocuments = new ArrayList<BuildingBlock>();
-		this.actionComment = null;
+	public void handleAcceptedForClassChange() {
+		this.loadStudentAcademicYearFeeComittedForStudent();
+	}
+
+	public void loadStudentAcademicYearFeeComittedForStudent() {
 		this.studentAcademicYearFeeComittedForStudent = new ArrayList<StudentAcademicYearFeeComittedDO>();
 		this.student.setBranch(this.sessionBean.getCurrentBranch());
 		if ((this.student.getAppliedForBatch() != null) && this.sessionBean.getCurrentBranchRule().isBatchRequiredIndicator()) {
@@ -1092,7 +1087,8 @@ public class AdmissionBean extends AbstractStudentBean {
 					.getId(), this.sessionBean.getCurrentBranch().getId());
 			for (final AcademicYear academicYear : academicYearsForBatch) {
 				final Double maximumFeePayableByStudent = this.studentFinancialService.getMaximumFeePayableByStudentForAcademicYearAndKlass(this.student,
-						academicYear.getId(), this.student.getAcceptedForKlass().getId());
+						academicYear.getId(), this.student.getAcceptedForKlass() != null ? this.student.getAcceptedForKlass().getId() : this.student
+								.getApplyingForKlass().getId());
 				final StudentAcademicYearFeeComittedDO studentAcademicYearFeeComittedDO = new StudentAcademicYearFeeComittedDO();
 				final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted = new StudentAcademicYearFeeComitted();
 				studentAcademicYearFeeComitted.setAcademicYear(academicYear);
@@ -1108,7 +1104,8 @@ public class AdmissionBean extends AbstractStudentBean {
 
 		} else {
 			final Double maximumFeePayableByStudent = this.studentFinancialService.getMaximumFeePayableByStudentForAcademicYearAndKlass(this.student,
-					this.student.getAppliedForAcademicYear().getId(), this.student.getAcceptedForKlass().getId());
+					this.student.getAppliedForAcademicYear().getId(), this.student.getAcceptedForKlass() != null ? this.student.getAcceptedForKlass().getId()
+							: this.student.getApplyingForKlass().getId());
 			final StudentAcademicYearFeeComittedDO studentAcademicYearFeeComittedDO = new StudentAcademicYearFeeComittedDO();
 			final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted = new StudentAcademicYearFeeComitted();
 			studentAcademicYearFeeComitted.setAcademicYear(this.student.getAppliedForAcademicYear());
@@ -1121,6 +1118,19 @@ public class AdmissionBean extends AbstractStudentBean {
 			}
 			this.studentAcademicYearFeeComittedForStudent.add(studentAcademicYearFeeComittedDO);
 		}
+	}
+
+	public void resetBeforeAdmit() {
+		this.loadStudentClassifications();
+		this.setLoadSectionForKlassFlag(true);
+		this.loadSectionsForClass();
+		this.loadAdmissionReservationFee();
+		this.medicalHistory = new MedicalHistory();
+		this.setBuildingBlockTypeAdmissionDocuments(this.buildingBlockService.findBuildingBlocksbyBranchIdAndBuildingBlockType(this.sessionBean
+				.getCurrentBranch().getId(), BuildingBlockConstant.DOCUMENTS_REQUIRD_FOR_ADMISSION));
+		this.admissionSubmittedDocuments = new ArrayList<BuildingBlock>();
+		this.actionComment = null;
+
 		this.determinAdmissionLevelFeeRules();
 	}
 

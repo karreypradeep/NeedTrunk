@@ -21,7 +21,7 @@
 			<p:outputLabel id="father_first_name_label" value="First name" for="father_first_name"
 				rendered="#{admissionBean.displayFatherInfo}" />
 			<p:inputText id="father_first_name" value="#{admissionBean.studentFather.firstName}"
-				rendered="#{admissionBean.displayFatherInfo}" required="true" />
+				rendered="#{admissionBean.displayFatherInfo}" required="true" tabindex="0"/>
 			<p:message id="father_first_name_msg" for="father_first_name" rendered="#{admissionBean.displayFatherInfo}" />
 
 			<p:outputLabel id="father_middle_name_label" value="Middle name" for="father_middle_name"

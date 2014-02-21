@@ -32,7 +32,7 @@
 				<f:selectItem itemLabel="Select assigning class" />
 				<f:selectItems value="#{admissionBean.klasses}" var="klass" itemLabel="#{klass.name}" itemValue="#{klass}" />
 				<f:converter converterId="klassConverter" />
-				<p:ajax process="@this" update="@this" />
+				<p:ajax process="@this" update="@form" listener="#{admissionBean.handleAcceptedForClassChange}" />
 			</p:selectOneMenu>
 			<p:message id="assigned_class_msg" for="assigned_class" />
 
@@ -70,6 +70,67 @@
 			</h:panelGrid>
 			<p:message id="ext_trans_date_msg" for="ext_trans_date" rendered="#{admissionBean.reservationFeeExternalTransaction}" />
 
+		</h:panelGrid>
+		<p:dataTable id="comittedFees" value="#{admissionBean.studentAcademicYearFeeComittedForStudent}"
+			var="studentAcademicYearFeeComittedDO" editable="true" style="margin:5px;margin-bottom:15px;" rendered="#{admissionBean.studentAcademicYearFeeComittedForStudent.size()>0}">
+			<p:ajax event="rowEdit" update="@this" />
+			<f:facet name="header">
+				<span style="float: left"> <h:outputLabel value="Comitted Fee :" style="font-size: 13px;padding-right:10px;" />
+				</span>
+			</f:facet>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Academic Year" />
+				</f:facet>
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{studentAcademicYearFeeComittedDO.studentAcademicYearFeeComitted.academicYear.displayLabel}">
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<h:outputText value="#{studentAcademicYearFeeComittedDO.studentAcademicYearFeeComitted.academicYear.displayLabel}">
+						</h:outputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column>
+				<f:facet name="header">
+					<h:outputLabel value="Maximum Fee" />
+				</f:facet>
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{studentAcademicYearFeeComittedDO.maxFeePayable}">
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<h:outputText value="#{studentAcademicYearFeeComittedDO.maxFeePayable}">
+						</h:outputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column style="width:150px;">
+				<f:facet name="header">
+							Comitted Amount
+						    </f:facet>
+				<p:cellEditor>
+					<f:facet name="output">
+						<h:outputText value="#{studentAcademicYearFeeComittedDO.studentAcademicYearFeeComitted.feeComitted}">
+							<f:convertNumber pattern="&#x20B9; ##,##,##0.00" />
+						</h:outputText>
+					</f:facet>
+					<f:facet name="input">
+						<p:inputText value="#{studentAcademicYearFeeComittedDO.studentAcademicYearFeeComitted.feeComitted}"
+							disabled="#{studentAcademicYearFeeComittedDO.maxFeePayable == null}">
+							<p:ajax process="@this" update="@this" event="change" />
+						</p:inputText>
+					</f:facet>
+				</p:cellEditor>
+			</p:column>
+			<p:column style="width:60px;text-align:center;no-wrap;">
+				<p:rowEditor />
+			</p:column>
+		</p:dataTable>
+		<h:panelGrid columns="3" cellpadding="7">
 			<p:outputLabel id="comments_label" value="Comments" for="comments" />
 			<p:inputTextarea id="comments" rows="10" cols="75" required="true" value="#{admissionBean.actionComment}" />
 			<p:message id="comments_msg" for="comments" />

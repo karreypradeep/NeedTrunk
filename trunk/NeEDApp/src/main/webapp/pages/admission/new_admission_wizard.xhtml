@@ -7,7 +7,8 @@
 			<h:outputText value="New Admission" style="font-size:20px;" />
 		</p:toolbarGroup>
 	</p:toolbar>
-	<p:panel>
+	<p:panel>  
+		
 		<p:wizard widgetVar="new_admission_wizard" flowListener="#{admissionBean.flowAction}" showStepStatus="true" step="#{admissionBean.activeStep}" >
 
 			<p:tab id="general" title="General">

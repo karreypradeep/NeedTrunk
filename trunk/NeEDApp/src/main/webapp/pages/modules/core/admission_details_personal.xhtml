@@ -6,11 +6,11 @@
 	<f:facet name="header">Personal</f:facet>
 
 	<h:panelGrid columns="3" cellpadding="5">
-
+    
 		<p:outputLabel id="admid_first_name_label" value="Student first name" for="admid_first_name" />
 		<p:inputText id="admid_first_name" value="#{admissionBean.student.firstName}" required="true" />
 		<p:message id="admid_first_name_msg" for="admid_first_name" />
-
+  
 		<p:outputLabel id="admid_middle_name_label" value="Student middle name" for="admid_middle_name" />
 		<p:inputText id="admid_middle_name" value="#{admissionBean.student.middleName}" />
 		<p:message id="admid_middle_name_msg" for="admid_middle_name" />

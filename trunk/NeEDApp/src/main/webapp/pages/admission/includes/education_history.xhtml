@@ -4,6 +4,7 @@
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 
 	<p:panel id="education_history_panel" style="border:0px;">
+		<p:focus context="education_history_panel" />
 		<ui:include src="/pages/common/education_history.xhtml" />
 		<h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
 			<p:outputLabel id="skip_lable" value="Skip this step" for="skip" style="font-weight:bold;" />

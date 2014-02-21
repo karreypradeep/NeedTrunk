@@ -1,2 +1,3 @@
 Dear Parent,
 Thank you for choosing ${organizationName}. Please note your ward's ${studentName} Admission No: ${admissionNumber} for further communications.
+Received payment of Rs.${amount}.

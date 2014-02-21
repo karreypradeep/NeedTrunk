@@ -227,7 +227,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 						}
 					}
 				}
-			} catch (final Exception e) {
+			} catch (final Throwable e) {
 				e.printStackTrace();
 			}
 
@@ -298,7 +298,8 @@ public class AdmissionServiceImpl implements AdmissionService {
 	 */
 	@Override
 	public Student acceptAdmission(final Student student, final Klass acceptedForKlass, final AdmissionReservationFee admissionReservationFee,
-			final StudentStatusHistory studentStatusHistory) throws BusinessException, SystemException {
+			final StudentStatusHistory studentStatusHistory, final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComittedForStudent)
+			throws BusinessException, SystemException {
 		try {
 
 			final Student currentStudent = this.studentService.findStudentById(student.getId());
@@ -338,6 +339,12 @@ public class AdmissionServiceImpl implements AdmissionService {
 				currentStudent.setAcceptedForKlass(acceptedForKlass);
 				final Student result = this.studentService.saveStudent(currentStudent);
 
+				this.validateComittedFee(studentAcademicYearFeeComittedForStudent, result, result.getAcceptedForKlass());
+				for (final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted : studentAcademicYearFeeComittedForStudent) {
+					if ((studentAcademicYearFeeComitted.getFeeComitted() != null) && (studentAcademicYearFeeComitted.getFeeComitted() > 0)) {
+						this.studentAcademicYearFeeComittedService.saveStudentAcademicYearFeeComitted(studentAcademicYearFeeComitted);
+					}
+				}
 				// Log student state history
 				this.saveStudentStatusHistory(studentStatusHistory, result, AdmissionStatusConstant.ACCEPTED.getLabel());
 
@@ -358,7 +365,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 							}
 						}
 					}
-				} catch (final Exception e) {
+				} catch (final Throwable e) {
 					e.printStackTrace();
 				}
 				return result;
@@ -472,8 +479,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 	@Transactional(rollbackFor = Exception.class)
 	public StudentAcademicYear admitStudent(final Student student, final Section admitForSection, final MedicalHistory medicalHistory,
 			final Collection<BuildingBlock> admissionSubmittedDocuments, final Collection<AdmissionFeeDO> admissionFeeDOs, final boolean deductReservationFee,
-			final boolean skipApplicatinFee, final boolean skipReservationFee,
-			final Collection<StudentAcademicYearFeeComitted> studentAcademicYearFeeComittedForStudent) throws BusinessException, SystemException {
+			final boolean skipApplicatinFee, final boolean skipReservationFee) throws BusinessException, SystemException {
 
 		final Student currentStudent = this.studentService.findStudentById(student.getId());
 
@@ -604,9 +610,6 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 		}
 
-		medicalHistory.setStudent(student);
-		this.medicalHistoryService.saveMedicalHistory(medicalHistory);
-
 		for (final BuildingBlock buildingBlock : admissionSubmittedDocuments) {
 			final AdmissionSubmittedDocuments admissionDocument = new AdmissionSubmittedDocuments();
 			admissionDocument.setStudent(result);
@@ -616,12 +619,6 @@ public class AdmissionServiceImpl implements AdmissionService {
 
 		// Process application and reservation fee
 		this.processPayments(studentFees, studentAcademicYear, admissionFeeDOs, deductReservationFee, skipApplicatinFee, skipReservationFee);
-		this.validateComittedFee(studentAcademicYearFeeComittedForStudent, result, result.getAcceptedForKlass());
-		for (final StudentAcademicYearFeeComitted studentAcademicYearFeeComitted : studentAcademicYearFeeComittedForStudent) {
-			if ((studentAcademicYearFeeComitted.getFeeComitted() != null) && (studentAcademicYearFeeComitted.getFeeComitted() > 0)) {
-				this.studentAcademicYearFeeComittedService.saveStudentAcademicYearFeeComitted(studentAcademicYearFeeComitted);
-			}
-		}
 
 		try {
 			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
@@ -635,15 +632,20 @@ public class AdmissionServiceImpl implements AdmissionService {
 					this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
 				}
 			}
-		} catch (final Exception e) {
+		} catch (final Throwable e) {
 			e.printStackTrace();
 		}
-
 		// Log student state history
+		medicalHistory.setStudent(student);
+		final MedicalHistory oldMedicalHistory = this.medicalHistoryService.findMedicalHistoryByStudentId(student.getId());
+		if (oldMedicalHistory != null) {
+			this.medicalHistoryService.deleteMedicalHistory(oldMedicalHistory.getId());
+		}
+		this.medicalHistoryService.saveMedicalHistory(medicalHistory);
+
 		final StudentStatusHistory studentStatusHistory = new StudentStatusHistory();
 		studentStatusHistory.setComments("Student Admitted");
 		this.saveStudentStatusHistory(studentStatusHistory, result, AdmissionStatusConstant.ADMITTED.getLabel());
-
 		return studentAcademicYear;
 	}
 
@@ -732,23 +734,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 						admissionReservationFee.getReservationFeeNotificationSent() != null ? admissionReservationFee.getReservationFeeNotificationSent()
 								: false);
 			}
-			try {
-				if ((studentFeeTransactionLocal != null) && (admissionReservationFee.getReservationFeeNotificationSent() == null)) {
-					final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
-							studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
-					if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
-						final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
-								studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
-								NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
-						if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
-								|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
-							this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
-						}
-					}
-				}
-			} catch (final Exception e) {
-				e.printStackTrace();
-			}
+
 		}
 
 	}
@@ -803,23 +789,6 @@ public class AdmissionServiceImpl implements AdmissionService {
 				studentFeeTransactionLocal = this.studentFeeTransactionService.saveStudentFeeTransaction(studentFeeTransaction);
 			}
 			this.processFeePayment(studentFees, FeeTypeConstant.APPLICATION_FEE, studentFeeTransactionLocal, admissionReservationFee.getApplicationFormFee());
-			if ((studentFeeTxn == null) && !applicationFeePaidNotificationAlreadySent) {
-				try {
-					final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
-							studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
-					if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
-						final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
-								studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
-								NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
-						if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
-								|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
-							this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
-						}
-					}
-				} catch (final Exception e) {
-					e.printStackTrace();
-				}
-			}
 		}
 	}
 
@@ -967,24 +936,6 @@ public class AdmissionServiceImpl implements AdmissionService {
 			final double remainingAmount = amount;
 
 			this.processFeePayment(studentFees, FeeTypeConstant.RESERVATION_FEE, studentFeeTransactionLocal, remainingAmount);
-		}
-
-		try {
-			if ((studentFeeTransactionLocal != null) && !reservationFeePaidNotificationAlreadySent) {
-				final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
-						studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
-				if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
-					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
-							studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
-							NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
-					if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
-							|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
-						this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
-					}
-				}
-			}
-		} catch (final Exception e) {
-			e.printStackTrace();
 		}
 
 	}

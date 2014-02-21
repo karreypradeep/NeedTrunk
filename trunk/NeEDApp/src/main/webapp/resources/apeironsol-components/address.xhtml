@@ -7,77 +7,87 @@
 	<composite:attribute name="id" />
 	<composite:attribute name="addressModel" required="true" displayName="address"
 		type="com.apeironsol.need.core.model.Address" />
-	<composite:attribute name="readOnly" displayName="readOnly" type="java.lang.Boolean" default="false"/>
+	<composite:attribute name="readOnly" displayName="readOnly" type="java.lang.Boolean" default="false" />
 	<composite:attribute name="showPrimary" displayName="showPrimary" type="java.lang.Boolean" />
 	<composite:attribute name="personAddress" displayName="personAddress" type="java.lang.Boolean" />
-	<composite:attribute name="displayOfficePhoneNumber" displayName="displayOfficePhoneNumber" type="java.lang.Boolean" default="false"/>
+	<composite:attribute name="displayOfficePhoneNumber" displayName="displayOfficePhoneNumber" type="java.lang.Boolean"
+		default="false" />
 </composite:interface>
 
-<composite:implementation>
+<composite:implementation>  
+	<p:panel id="address_panel1" style="border:0px">
+		<p:focus context="address_panel1" />
+		<h:panelGrid columns="3" columnClasses="label, value, label" styleClass="grid" cellpadding="3">
 
-	<h:panelGrid columns="3" columnClasses="label, value, label" styleClass="grid" cellpadding="3">
+			<p:outputLabel id="#{cc.attrs.id}_address_label" value="#{msg.address}" for="#{cc.attrs.id}_address" />
+			<p:inputTextarea id="#{cc.attrs.id}_address" value="#{cc.attrs.addressModel.address}" rows="5" cols="20"
+				counter="counter" maxlength="200" counterTemplate="{0} characters remaining." autoResize="false" required="true"
+				disabled="#{cc.attrs.readOnly}" />
+			<h:panelGrid columns="1">
+				<h:outputText id="counter" />
+				<p:message id="#{cc.attrs.id}_address_msg" for="#{cc.attrs.id}_address" />
+			</h:panelGrid>
 
-		<p:outputLabel id="#{cc.attrs.id}_address_label" value="#{msg.address}" for="#{cc.attrs.id}_address" />
-		<p:inputTextarea id="#{cc.attrs.id}_address" value="#{cc.attrs.addressModel.address}" rows="5" cols="20"
-			counter="counter" maxlength="200" counterTemplate="{0} characters remaining." autoResize="false" required="true" disabled="#{cc.attrs.readOnly}"/>
-		<h:panelGrid columns="1">
-			<h:outputText id="counter" />
-			<p:message id="#{cc.attrs.id}_address_msg" for="#{cc.attrs.id}_address" />
+			<p:outputLabel id="#{cc.attrs.id}_city_label" value="#{msg.city}" for="#{cc.attrs.id}_city" />
+			<p:inputText id="#{cc.attrs.id}_city" value="#{cc.attrs.addressModel.city}" required="true"
+				disabled="#{cc.attrs.readOnly}" />
+			<p:message for="#{cc.attrs.id}_city" />
+
+			<p:outputLabel id="#{cc.attrs.id}_country_label" value="#{msg.country}" for="#{cc.attrs.id}_country" />
+			<p:selectOneMenu id="#{cc.attrs.id}_country" value="#{cc.attrs.addressModel.country}" required="true"
+				converter="countryConverter" style="width:155px;" disabled="#{cc.attrs.readOnly}">
+				<f:selectItem itemLabel="Select country" itemValue="" />
+				<f:selectItems value="#{countryBean.countries}" var="country" itemLabel="#{country.name}" itemValue="#{country}" />
+			</p:selectOneMenu>
+			<p:message for="#{cc.attrs.id}_country" />
+
+			<p:outputLabel id="#{cc.attrs.id}_state_label" value="#{msg.state}" for="#{cc.attrs.id}_state" />
+			<p:inputText id="#{cc.attrs.id}_state" value="#{cc.attrs.addressModel.state}" required="true"
+				disabled="#{cc.attrs.readOnly}" />
+			<p:message id="#{cc.attrs.id}_state_msg" for="#{cc.attrs.id}_state" />
+
+			<p:outputLabel id="#{cc.attrs.id}_zipcode_label" value="#{msg.pincode}" for="#{cc.attrs.id}_zipcode" />
+			<p:inputMask id="#{cc.attrs.id}_zipcode" mask="999999" value="#{cc.attrs.addressModel.zipCode}" required="true"
+				validatorMessage="Invalid zipcode. [EG. 999999]" disabled="#{cc.attrs.readOnly}" />
+			<p:message id="#{cc.attrs.id}_zipcode_label_msg" for="#{cc.attrs.id}_zipcode" />
+
+			<p:outputLabel id="#{cc.attrs.id}_mobilephone_label" value="#{msg.mobileNumber}" for="#{cc.attrs.id}_mobilephone" />
+			<p:inputMask id="#{cc.attrs.id}_mobilephone" value="#{cc.attrs.addressModel.mobileNr}" mask="9999999999"
+				disabled="#{cc.attrs.readOnly}" />
+			<p:message id="#{cc.attrs.id}_mobilephone_msg" for="#{cc.attrs.id}_mobilephone" />
+
+			<p:outputLabel id="#{cc.attrs.id}_officeNumber_label" value="Office Number" for="#{cc.attrs.id}_officeNumber"
+				rendered="#{cc.attrs.displayOfficePhoneNumber}" />
+			<p:inputText id="#{cc.attrs.id}_officeNumber" value="#{cc.attrs.addressModel.officePhoneNr}"
+				validatorMessage="Accept only numbers, Min length requried 10, Max length 14. [EG. 0401234567]"
+				disabled="#{cc.attrs.readOnly}" rendered="#{cc.attrs.displayOfficePhoneNumber}">
+				<f:validateRegex pattern="[0-9]{10,14}$" />
+			</p:inputText>
+			<p:message id="#{cc.attrs.id}_officeNumber_msg" for="#{cc.attrs.id}_officeNumber"
+				rendered="#{cc.attrs.displayOfficePhoneNumber}" />
+
+			<p:outputLabel id="#{cc.attrs.id}_homephone_label" value="#{msg.alternativeNumber}" for="#{cc.attrs.id}_homephone" />
+			<p:inputText id="#{cc.attrs.id}_homephone" value="#{cc.attrs.addressModel.homePhoneNr}"
+				validatorMessage="Accept only numbers, Min length requried 10, Max length 14. [EG. 0401234567]"
+				disabled="#{cc.attrs.readOnly}">
+				<f:validateRegex pattern="[0-9]{10,14}$" />
+			</p:inputText>
+			<p:message id="#{cc.attrs.id}_homephone_msg" for="#{cc.attrs.id}_homephone" />
+
+			<p:outputLabel id="#{cc.attrs.id}_email_label" value="#{msg.emailId}" for="#{cc.attrs.id}_email" />
+			<p:inputText id="#{cc.attrs.id}_email" value="#{cc.attrs.addressModel.email}"
+				validatorMessage="Invalid email [EG. name@domain.com]" disabled="#{cc.attrs.readOnly}">
+				<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+			</p:inputText>
+			<p:message id="#{cc.attrs.id}_email_msg" for="#{cc.attrs.id}_email" />
+
+			<c:if test="#{cc.attrs.showPrimary}">
+				<p:outputLabel id="#{cc.attrs.id}_primary_lable" value="Is primary" for="#{cc.attrs.id}_primary" />
+				<p:selectBooleanCheckbox id="#{cc.attrs.id}_primary" value="#{cc.attrs.addressModel.primary}" disabled="true" />
+				<p:message id="#{cc.attrs.id}_primary_msg" for="#{cc.attrs.id}_primary" />
+			</c:if>
 		</h:panelGrid>
-
-		<p:outputLabel id="#{cc.attrs.id}_city_label" value="#{msg.city}" for="#{cc.attrs.id}_city" />
-		<p:inputText id="#{cc.attrs.id}_city" value="#{cc.attrs.addressModel.city}" required="true" disabled="#{cc.attrs.readOnly}"/>
-		<p:message for="#{cc.attrs.id}_city" />
-
-		<p:outputLabel id="#{cc.attrs.id}_country_label" value="#{msg.country}" for="#{cc.attrs.id}_country" />
-		<p:selectOneMenu id="#{cc.attrs.id}_country" value="#{cc.attrs.addressModel.country}" required="true"
-			converter="countryConverter" style="width:155px;" disabled="#{cc.attrs.readOnly}">
-			<f:selectItem itemLabel="Select country" itemValue="" />
-			<f:selectItems value="#{countryBean.countries}" var="country" itemLabel="#{country.name}" itemValue="#{country}" />
-		</p:selectOneMenu>
-		<p:message for="#{cc.attrs.id}_country" />
-
-		<p:outputLabel id="#{cc.attrs.id}_state_label" value="#{msg.state}" for="#{cc.attrs.id}_state" />
-		<p:inputText id="#{cc.attrs.id}_state" value="#{cc.attrs.addressModel.state}" required="true" disabled="#{cc.attrs.readOnly}"/>
-		<p:message id="#{cc.attrs.id}_state_msg" for="#{cc.attrs.id}_state" />
-
-		<p:outputLabel id="#{cc.attrs.id}_zipcode_label" value="#{msg.pincode}" for="#{cc.attrs.id}_zipcode" />
-		<p:inputMask id="#{cc.attrs.id}_zipcode" mask="999999" value="#{cc.attrs.addressModel.zipCode}" required="true"
-			validatorMessage="Invalid zipcode. [EG. 999999]" disabled="#{cc.attrs.readOnly}"/>
-		<p:message id="#{cc.attrs.id}_zipcode_label_msg" for="#{cc.attrs.id}_zipcode" />
-
-		<p:outputLabel id="#{cc.attrs.id}_mobilephone_label" value="#{msg.mobileNumber}" for="#{cc.attrs.id}_mobilephone" />
-		<p:inputMask id="#{cc.attrs.id}_mobilephone" value="#{cc.attrs.addressModel.mobileNr}" mask="9999999999" disabled="#{cc.attrs.readOnly}"/>
-		<p:message id="#{cc.attrs.id}_mobilephone_msg" for="#{cc.attrs.id}_mobilephone" />
-
-		<p:outputLabel id="#{cc.attrs.id}_officeNumber_label" value="Office Number" for="#{cc.attrs.id}_officeNumber" rendered="#{cc.attrs.displayOfficePhoneNumber}"/>
-		<p:inputText id="#{cc.attrs.id}_officeNumber" value="#{cc.attrs.addressModel.officePhoneNr}"
-			validatorMessage="Accept only numbers, Min length requried 10, Max length 14. [EG. 0401234567]" disabled="#{cc.attrs.readOnly}" rendered="#{cc.attrs.displayOfficePhoneNumber}">
-			<f:validateRegex pattern="[0-9]{10,14}$" />
-		</p:inputText>
-		<p:message id="#{cc.attrs.id}_officeNumber_msg" for="#{cc.attrs.id}_officeNumber" rendered="#{cc.attrs.displayOfficePhoneNumber}"/>
-
-		<p:outputLabel id="#{cc.attrs.id}_homephone_label" value="#{msg.alternativeNumber}" for="#{cc.attrs.id}_homephone" />
-		<p:inputText id="#{cc.attrs.id}_homephone" value="#{cc.attrs.addressModel.homePhoneNr}"
-			validatorMessage="Accept only numbers, Min length requried 10, Max length 14. [EG. 0401234567]" disabled="#{cc.attrs.readOnly}">
-			<f:validateRegex pattern="[0-9]{10,14}$" />
-		</p:inputText>
-		<p:message id="#{cc.attrs.id}_homephone_msg" for="#{cc.attrs.id}_homephone" />
-
-		<p:outputLabel id="#{cc.attrs.id}_email_label" value="#{msg.emailId}" for="#{cc.attrs.id}_email" />
-		<p:inputText id="#{cc.attrs.id}_email" value="#{cc.attrs.addressModel.email}"
-			validatorMessage="Invalid email [EG. name@domain.com]" disabled="#{cc.attrs.readOnly}"> 
-			<f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
-		</p:inputText>
-		<p:message id="#{cc.attrs.id}_email_msg" for="#{cc.attrs.id}_email" />
-
-		<c:if test="#{cc.attrs.showPrimary}">
-			<p:outputLabel id="#{cc.attrs.id}_primary_lable" value="Is primary" for="#{cc.attrs.id}_primary" />
-			<p:selectBooleanCheckbox id="#{cc.attrs.id}_primary" value="#{cc.attrs.addressModel.primary}" disabled="true" />
-			<p:message id="#{cc.attrs.id}_primary_msg" for="#{cc.attrs.id}_primary" />
-		</c:if>
-	</h:panelGrid>
-
+	</p:panel>
 </composite:implementation>
 
 

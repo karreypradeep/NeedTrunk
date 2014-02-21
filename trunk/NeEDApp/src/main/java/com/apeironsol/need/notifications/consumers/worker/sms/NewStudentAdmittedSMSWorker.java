@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 
 import org.apache.http.client.ClientProtocolException;
@@ -21,7 +22,9 @@ import org.springframework.ui.velocity.VelocityEngineUtils;
 
 import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.framework.exception.ApplicationException;
+import com.apeironsol.need.core.model.AdmissionReservationFee;
 import com.apeironsol.need.core.model.SMSProvider;
+import com.apeironsol.need.core.service.AdmissionReservationFeeService;
 import com.apeironsol.need.notifications.consumers.worker.util.EmailAndSMSUtil;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
@@ -41,12 +44,20 @@ public class NewStudentAdmittedSMSWorker implements SMSWorker {
 	 * Velocity engine for compiling and merging text with velocity templates.
 	 */
 	@Autowired
-	private VelocityEngine		velocityEngine;
+	private VelocityEngine			velocityEngine;
 
 	/**
 	 * Velocity template path for notification.
 	 */
-	private static final String	VELOCITY_TEMPLATE_PATH	= "velocityTemplates/newAdmissionSMSTemplate.vm";
+	private static final String		VELOCITY_TEMPLATE_PATH								= "velocityTemplates/newAdmissionSMSTemplate.vm";
+
+	/**
+	 * Velocity template path for notification. .vm
+	 */
+	private static final String		VELOCITY_TEMPLATE_PATH_WITH_RESER_APPL_FEE_DETAILS	= "velocityTemplates/newAdmissionWithFeePaidSMSTemplate.vm";
+
+	@Resource
+	AdmissionReservationFeeService	admissionReservationFeeService;
 
 	/**
 	 * Asynchronous method for sending fee pending notification mail for
@@ -65,16 +76,32 @@ public class NewStudentAdmittedSMSWorker implements SMSWorker {
 		model.put("organizationName", neEDJMSObject.getStudentAcademicYear().getStudent().getBranch().getName());
 		model.put("studentName", neEDJMSObject.getStudentAcademicYear().getStudent().getDisplayName());
 		model.put("admissionNumber", neEDJMSObject.getStudentAcademicYear().getStudent().getAdmissionNr());
+		final AdmissionReservationFee admissionReservationFee = this.admissionReservationFeeService.findAdmissionReservationFeeByStudentID(neEDJMSObject
+				.getStudentAcademicYear().getStudent().getId());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
-		final String template = VELOCITY_TEMPLATE_PATH;
+		String template = VELOCITY_TEMPLATE_PATH;
+		double amount = 0;
+		if (((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0) && ((admissionReservationFee
+				.getReservationFeeNotificationSent() == null) || !admissionReservationFee.getReservationFeeNotificationSent()))) {
+			amount = admissionReservationFee.getReservationFee();
+		}
+		if (((admissionReservationFee.getApplicationFormFee() != null) && (admissionReservationFee.getApplicationFormFee() > 0) && ((admissionReservationFee
+				.getApplicationFeeNotificationSent() == null) || !admissionReservationFee.getApplicationFeeNotificationSent()))) {
+			amount += admissionReservationFee.getApplicationFormFee();
+		}
+		if (amount > 0) {
+			model.put("amount", amount + "");
+			template = VELOCITY_TEMPLATE_PATH_WITH_RESER_APPL_FEE_DETAILS;
+		}
 		if ((smsText == null) || smsText.trim().isEmpty()) {
 			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, template, model);
 		}
 		notificationMessage.setMessage(smsText);
 
-		if (neEDJMSObject.getStudent().getAddress().getContactNumber() != null) {
-			notificationMessage.setSentAddress(neEDJMSObject.getStudent().getAddress().getContactNumber());
-			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { neEDJMSObject.getStudent().getAddress().getContactNumber() }, smsText);
+		if (neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber() != null) {
+			notificationMessage.setSentAddress(neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
+			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { neEDJMSObject.getStudentAcademicYear().getStudent().getAddress()
+					.getContactNumber() }, smsText);
 			if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 			} else {
@@ -94,10 +121,27 @@ public class NewStudentAdmittedSMSWorker implements SMSWorker {
 		new EmailAndSMSUtil();
 		final Map<String, String> model = new HashMap<String, String>();
 		model.put("organizationName", neEDJMSObject.getStudentAcademicYear().getStudent().getBranch().getName());
+		model.put("studentName", neEDJMSObject.getStudentAcademicYear().getStudent().getDisplayName());
 		model.put("admissionNumber", neEDJMSObject.getStudentAcademicYear().getStudent().getAdmissionNr());
+		final AdmissionReservationFee admissionReservationFee = this.admissionReservationFeeService.findAdmissionReservationFeeByStudentID(neEDJMSObject
+				.getStudentAcademicYear().getStudent().getId());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
+		String template = VELOCITY_TEMPLATE_PATH;
+		double amount = 0;
+		if (((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0) && ((admissionReservationFee
+				.getReservationFeeNotificationSent() == null) || !admissionReservationFee.getReservationFeeNotificationSent()))) {
+			amount = admissionReservationFee.getReservationFee();
+		}
+		if (((admissionReservationFee.getApplicationFormFee() != null) && (admissionReservationFee.getApplicationFormFee() > 0) && ((admissionReservationFee
+				.getApplicationFeeNotificationSent() == null) || !admissionReservationFee.getApplicationFeeNotificationSent()))) {
+			amount += admissionReservationFee.getApplicationFormFee();
+		}
+		if (amount > 0) {
+			model.put("amount", amount + "");
+			template = VELOCITY_TEMPLATE_PATH_WITH_RESER_APPL_FEE_DETAILS;
+		}
 		if ((smsText == null) || smsText.trim().isEmpty()) {
-			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, VELOCITY_TEMPLATE_PATH, model);
+			smsText = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, template, model);
 		}
 		return smsText;
 	}
