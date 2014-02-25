@@ -140,6 +140,7 @@
 			icon="ui-icon-circle-check">
 			<f:setPropertyActionListener target="#{admissionBean.loadStudentStatusHistoryFlag}" value="true" />
 			<f:setPropertyActionListener target="#{admissionBean.activeTabIndex}" value="0" />
+			<f:setPropertyActionListener target="#{admissionNotificationsBean.loadBatchLogMessagesFromDB}" value="true" />
 		</p:commandButton>
 		<p:spacer width="10px" />
 		<p:commandButton value="Cancel" process="@this" update="@form" style="width:80px;" icon="ui-icon-circle-close">

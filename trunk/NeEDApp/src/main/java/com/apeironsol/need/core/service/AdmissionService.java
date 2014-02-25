@@ -184,4 +184,6 @@ public interface AdmissionService {
 	Collection<Student> findAdmissionsBySearchCriteria(final AdmissionSearchCriteria admissionSearchCriteria) throws BusinessException;
 
 	void saveStudentStatusHistory(final StudentStatusHistory studentStatusHistory, final Student result, final String action);
+
+	public AdmissionReservationFee saveAdmissionReservationFee(final AdmissionReservationFee studentRegistrationFee) throws BusinessException;
 }

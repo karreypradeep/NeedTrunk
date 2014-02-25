@@ -84,7 +84,6 @@ public class NewAdmissionAcceptedSMSWorker implements SMSWorker {
 				.getStudent().getId());
 		String smsText = neEDJMSObject.getBatchLog().getMessage();
 		String template = VELOCITY_TEMPLATE_PATH;
-		model.put("amount", (admissionReservationFee.getReservationFee() != null ? admissionReservationFee.getReservationFee() : 0) + "");
 		model.put("reservationAmount", (admissionReservationFee.getReservationFee() != null ? admissionReservationFee.getReservationFee() : 0) + "");
 		model.put("applicationAmount", (admissionReservationFee.getApplicationFormFee() != null ? admissionReservationFee.getApplicationFormFee() : 0) + "");
 		if (((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() > 0))

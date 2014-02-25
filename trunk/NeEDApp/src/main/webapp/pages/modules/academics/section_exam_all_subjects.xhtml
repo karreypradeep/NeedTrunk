@@ -7,13 +7,34 @@
 	<f:metadata>
 		<f:event type="preRenderView" listener="#{sectionExamAllSubjectsBean.loadStudentExamAllSubjectsDOsFromDB()}" />
 	</f:metadata>
+	<p:toolbar style="margin-bottom:1px;">
+		<p:toolbarGroup align="left" style="margin-top:5px;margin-left:2px;">
+			<h:panelGrid columns="1" cellpadding="4">
+				<h:panelGrid columns="2" cellpadding="4">
+					<p:commandButton id="submit_marks_cancle" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
+						<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamWizardStep}" value="subjects_results" />
+					</p:commandButton>
 
-	<p:commandButton id="submit_marks_cancle" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
-		<f:setPropertyActionListener target="#{sectionExamsBean.sectionExamWizardStep}" value="subjects_results" />
-	</p:commandButton>
+					<p:commandButton id="submit_marks_save" value="Save" update="@form" icon="ui-icon-circle-check"
+						action="#{sectionExamAllSubjectsBean.submitMarksObtained()}" process="@this" />
+				</h:panelGrid>
+				<p:commandButton id="downloadLink" value="Download Excel to enter marks" icon="ui-icon ui-icon-arrowthichk-s"
+					ajax="false" immediate="true">
+					<p:fileDownload value="#{sectionExamAllSubjectsBean.excelFormatfile}" />
+				</p:commandButton>
+			</h:panelGrid>
+		</p:toolbarGroup>
 
-	<p:commandButton id="submit_marks_save" value="Save" update="@form" icon="ui-icon-circle-check"
-		action="#{sectionExamAllSubjectsBean.submitMarksObtained()}" process="@this" />
+		<p:toolbarGroup align="right">
+			<p:fileUpload fileUploadListener="#{sectionExamAllSubjectsBean.importMarks}" mode="advanced" sizeLimit="100000"
+				allowTypes="/(\.|\/)(xls)$/" update="@form" uploadLabel="Import Marks" />
+			<p:commandButton id="downloadStatusFile" value="Download Status Excel" icon="ui-icon ui-icon-arrowthichk-s"
+				ajax="false" immediate="true">
+				<p:fileDownload value="#{sectionExamAllSubjectsBean.excelAfterImport}" />
+			</p:commandButton>
+		</p:toolbarGroup>
+	</p:toolbar>
+
 
 	<p:dataTable id="playersTable" var="studentExamAllSubjectsDO"
 		value="#{sectionExamAllSubjectsBean.studentExamAllSubjectsDOs}">

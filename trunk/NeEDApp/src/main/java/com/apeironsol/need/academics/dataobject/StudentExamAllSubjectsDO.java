@@ -69,4 +69,24 @@ public class StudentExamAllSubjectsDO implements Serializable {
 		this.studentAcademicYear = studentAcademicYear;
 	}
 
+	public Double getMarksScoredBySectionExamSubjectId(final Long sectionSubjectId) {
+		Double result = 0.0;
+		for (final StudentExamSubject studentExamSubject : this.studentExamSubjects) {
+			if (studentExamSubject.getSectionExamSubject().getId().equals(sectionSubjectId)) {
+				result = studentExamSubject.getScoredMarks();
+			}
+		}
+		return result;
+	}
+
+	public StudentExamSubject getStudentExamSubjectBySectionExamSubjectId(final Long sectionSubjectId) {
+		StudentExamSubject result = null;
+		for (final StudentExamSubject studentExamSubject : this.studentExamSubjects) {
+			if (studentExamSubject.getSectionExamSubject().getId().equals(sectionSubjectId)) {
+				result = studentExamSubject;
+			}
+		}
+		return result;
+	}
+
 }

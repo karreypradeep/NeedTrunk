@@ -14,10 +14,10 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.dao.AdmissionReservationFeeDao;
 import com.apeironsol.need.core.model.AdmissionReservationFee;
 import com.apeironsol.need.util.DateUtil;
-import com.apeironsol.framework.exception.BusinessException;
 
 /**
  * 
@@ -54,13 +54,13 @@ public class AdmissionReservationFeeServiceImpl implements AdmissionReservationF
 	@Override
 	public AdmissionReservationFee saveAdmissionReservationFee(final AdmissionReservationFee studentRegistrationFee) throws BusinessException {
 
-		if (studentRegistrationFee != null && studentRegistrationFee.getApplicationFormFee() != null && studentRegistrationFee.getApplicationFormFee() > 0d
-				&& studentRegistrationFee.getApplicationFeePaidDate() == null) {
+		if ((studentRegistrationFee != null) && (studentRegistrationFee.getApplicationFormFee() != null)
+				&& (studentRegistrationFee.getApplicationFormFee() > 0d) && (studentRegistrationFee.getApplicationFeePaidDate() == null)) {
 			studentRegistrationFee.setApplicationFeePaidDate(DateUtil.getSystemDate());
 		}
 
-		if (studentRegistrationFee != null && studentRegistrationFee.getReservationFee() != null && studentRegistrationFee.getReservationFee() > 0d
-				&& studentRegistrationFee.getReservationFeePaidDate() == null) {
+		if ((studentRegistrationFee != null) && (studentRegistrationFee.getReservationFee() != null) && (studentRegistrationFee.getReservationFee() > 0d)
+				&& (studentRegistrationFee.getReservationFeePaidDate() == null)) {
 			studentRegistrationFee.setReservationFeePaidDate(DateUtil.getSystemDate());
 		}
 

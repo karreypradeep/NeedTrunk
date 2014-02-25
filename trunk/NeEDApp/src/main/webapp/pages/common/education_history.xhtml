@@ -26,7 +26,7 @@
 						itemValue="#{schoolType}" />
 				</p:selectOneRadio>
 
-				<p:outputLabel id="ed_mediam_label" value="Mediam" for="ed_mediam" />
+				<p:outputLabel id="ed_mediam_label" value="Medium" for="ed_mediam" />
 				<p:selectOneRadio id="ed_mediam" value="#{admissionBean.educationHistory.medium}"
 					disabled="#{admissionBean.disableRecentSchoolInfo}">
 					<f:selectItems value="#{enumConstantsBean.mediams}" var="mediam" itemLabel="#{mediam.label}" itemValue="#{mediam}" />

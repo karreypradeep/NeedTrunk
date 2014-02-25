@@ -158,6 +158,9 @@ public class AdmissionServiceImpl implements AdmissionService {
 	@Resource
 	StudentAcademicYearFeeComittedService	studentAcademicYearFeeComittedService;
 
+	@Resource
+	private BuildingBlockService			buildingBlockService;
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -195,6 +198,7 @@ public class AdmissionServiceImpl implements AdmissionService {
 			AdmissionReservationFee admiReservationFee = admissionReservationFee;
 			if ((admissionReservationFee != null) && (admissionReservationFee.getApplicationFormFee() != null)
 					&& (admissionReservationFee.getApplicationFormFee() > 0)) {
+				this.validateApplicationFormFee(admissionReservationFee, student, student.getAppliedForAcademicYear());
 				admissionReservationFee.setStudent(result);
 				admissionReservationFee.setApplicationFeeAppliedToStudentFees(false);
 				admissionReservationFee.setApplicationFeePaidDate(DateUtil.getSystemDate());
@@ -378,6 +382,43 @@ public class AdmissionServiceImpl implements AdmissionService {
 		}
 	}
 
+	/**
+	 * Validates application form fee paid for the admissions with application
+	 * form fee applicable for the branch.
+	 */
+	private void validateApplicationFormFee(final AdmissionReservationFee admissionReservationFee, final Student student,
+			final AcademicYear appliedForAcademicYear) throws ApplicationException {
+		// Validate application form fee amount so that amount paid is not
+		// more than application fee applicable.
+		final Collection<BuildingBlock> buildingBlocks = this.buildingBlockService.findFeeTypeBuildingBlocksbyBranchIdAndFeeType(student.getBranch().getId(),
+				FeeTypeConstant.APPLICATION_FEE);
+		if ((admissionReservationFee.getApplicationFormFee() != null) && (buildingBlocks != null) && (buildingBlocks.size() > 0)) {
+
+			final BuildingBlock applicationFeeBuildingBlock = buildingBlocks.iterator().next();
+			double branchApplicationFormFee = 0;
+			if (FeeClassificationLevelConstant.BRANCH_LEVEL.equals(applicationFeeBuildingBlock.getFeeClassificationLevel())) {
+				final Collection<BranchLevelFee> branchLevelFees = this.branchLevelFeeService.findBranchLevelFeeByBranchIdAndAcademicYearIdAndBuildingBlockId(
+						student.getBranch().getId(), appliedForAcademicYear.getId(), applicationFeeBuildingBlock.getId());
+				if ((branchLevelFees != null) && !branchLevelFees.isEmpty()) {
+					for (final BranchLevelFee branchLevelFee : branchLevelFees) {
+						branchApplicationFormFee = branchApplicationFormFee + branchLevelFee.getAmount();
+					}
+				}
+			}
+
+			if ((admissionReservationFee.getApplicationFormFee() != null) && (admissionReservationFee.getApplicationFormFee() < 0.0)) {
+				throw new ApplicationException("Application fee should be grater than 0.");
+			} else if ((branchApplicationFormFee > 0)
+					&& ((admissionReservationFee.getApplicationFormFee() != null) && (admissionReservationFee.getApplicationFormFee() > 0.0))) {
+				if (admissionReservationFee.getApplicationFormFee() > branchApplicationFormFee) {
+					throw new ApplicationException("Application fee cannot exceed " + branchApplicationFormFee);
+				}
+			} else if ((branchApplicationFormFee == 0) && (admissionReservationFee.getApplicationFormFee() != 0.0)) {
+				throw new ApplicationException("Application fee is not defined for the academic year " + appliedForAcademicYear.getDisplayLabel());
+			}
+		}
+	}
+
 	private void validateReservationFee(final AdmissionReservationFee admissionReservationFee, final Student student, final Klass acceptedForKlass) {
 		double maxReservationFeeCanBePaid = 0;
 		if ((admissionReservationFee.getReservationFee() != null) && (admissionReservationFee.getReservationFee() < 0d)) {
@@ -473,6 +514,16 @@ public class AdmissionServiceImpl implements AdmissionService {
 			}
 		}
 
+	}
+
+	@Override
+	public AdmissionReservationFee saveAdmissionReservationFee(final AdmissionReservationFee studentRegistrationFee) throws BusinessException {
+		AdmissionReservationFee result = studentRegistrationFee;
+		this.validateApplicationFormFee(studentRegistrationFee, studentRegistrationFee.getStudent(), studentRegistrationFee.getStudent()
+				.getAppliedForAcademicYear());
+		this.validateReservationFee(studentRegistrationFee, studentRegistrationFee.getStudent(), studentRegistrationFee.getStudent().getAcceptedForKlass());
+		result = this.admissionReservationFeeService.saveAdmissionReservationFee(studentRegistrationFee);
+		return result;
 	}
 
 	@Override

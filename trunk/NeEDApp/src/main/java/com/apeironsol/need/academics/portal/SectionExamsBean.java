@@ -113,7 +113,7 @@ public class SectionExamsBean extends AbstractTabbedBean implements Serializable
 				sectionExamTreeNode.setName(sectionExamDO.getSectionExam().getExam().getName());
 				sectionExamTreeNode.setSectionExam(sectionExamDO.getSectionExam());
 
-				final SectionExamTreeNode sectionExamTreeTableNode = new SectionExamTreeNode(sectionExamTreeNode, getRoot());
+				final SectionExamTreeNode sectionExamTreeTableNode = new SectionExamTreeNode(sectionExamTreeNode, this.getRoot());
 				sectionExamTreeTableNode.setExpanded(false);
 
 				final Collection<SectionExamSubjectDO> sectionExamSubjectDOs = sectionExamDO.getSectionExamSubjectDOs();
@@ -153,13 +153,13 @@ public class SectionExamsBean extends AbstractTabbedBean implements Serializable
 
 	public void viewSectionSubjectExamDetailsForStudents() {
 
-		setStudentExamSubjects(this.studentExamSubjectService.findStudentExamSubjectsByStudentIdAndSubjectExamId(this.sectionExamSubject.getId()));
+		this.setStudentExamSubjects(this.studentExamSubjectService.findStudentExamSubjectsByStudentIdAndSubjectExamId(this.sectionExamSubject.getId()));
 		this.sectionExamSubjectFlag = true;
 	}
 
 	public void submitMarksObtained() {
 		try {
-			setStudentExamSubjects(this.studentExamSubjectService.saveStudentExamSubjects(getStudentExamSubjects()));
+			this.setStudentExamSubjects(this.studentExamSubjectService.saveStudentExamSubjects(this.getStudentExamSubjects()));
 			ViewUtil.addMessage("Markes saved successfully.", FacesMessage.SEVERITY_INFO);
 		} catch (final ApplicationException applicationException) {
 			ViewExceptionHandler.handle(applicationException);
@@ -259,4 +259,5 @@ public class SectionExamsBean extends AbstractTabbedBean implements Serializable
 	public void setSectionExamWizardStep(final String sectionExamWizardStep) {
 		this.sectionExamWizardStep = sectionExamWizardStep;
 	}
+
 }
