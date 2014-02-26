@@ -413,7 +413,7 @@ public class StudentBean extends AbstractStudentBean {
 	}
 
 	public String getStudentTodayAttandanceStatus() {
-		return this.studentAttendance == null ? "Present in school" : "Absent";
+		return this.studentAttendance == null ? "Present" : "Absent";
 	}
 
 	/**

@@ -87,19 +87,24 @@ public class ExamResultSMSWorker implements SMSWorker {
 			final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findStudentExamSubjectsByStudentAcademicYearIdAndExamId(
 					neEDJMSObject.getStudentAcademicYear().getId(), exam.getId());
 			String subjects = "";
-			double total = 0;
-			double maxMarks = 0;
-			double scoredMarksForSubject = 0;
-			double maxMarksForSubject = 0;
+			int total = 0;
+			int maxMarks = 0;
+			int scoredMarksForSubject = 0;
+			int maxMarksForSubject = 0;
 			for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
-				if (StudentExamSubjectStatusConstant.ABSENT.equals(studentExamSubject.getStudentExamSubjectStatus())
-						|| StudentExamSubjectStatusConstant.TAKEN.equals(studentExamSubject.getStudentExamSubjectStatus())) {
-					scoredMarksForSubject = studentExamSubject.getScoredMarks() != null ? studentExamSubject.getScoredMarks() : 0;
-					maxMarksForSubject = studentExamSubject.getSectionExamSubject().getMaximumMarks();
-					total += scoredMarksForSubject;
-					maxMarks += maxMarksForSubject;
-					subjects += studentExamSubject.getSectionExamSubject().getSectionSubject().getSubject().getName() + ":" + scoredMarksForSubject + "/"
-							+ maxMarksForSubject;
+				if (!StudentExamSubjectStatusConstant.ASSIGNED.equals(studentExamSubject.getStudentExamSubjectStatus())) {
+					if (!StudentExamSubjectStatusConstant.NOT_APPLICABLE.equals(studentExamSubject.getStudentExamSubjectStatus())) {
+						scoredMarksForSubject = studentExamSubject.getScoredMarks() != null ? studentExamSubject.getScoredMarks().intValue() : 0;
+						maxMarksForSubject = studentExamSubject.getSectionExamSubject().getMaximumMarks().intValue();
+						total += scoredMarksForSubject;
+						maxMarks += maxMarksForSubject;
+						if (StudentExamSubjectStatusConstant.ABSENT.equals(studentExamSubject.getStudentExamSubjectStatus())) {
+							subjects += studentExamSubject.getSectionExamSubject().getSectionSubject().getSubject().getName() + " : Absent ";
+						} else {
+							subjects += studentExamSubject.getSectionExamSubject().getSectionSubject().getSubject().getName() + " : " + scoredMarksForSubject
+									+ "/" + maxMarksForSubject + " ";
+						}
+					}
 				} else {
 					notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.CANCELLED);
 					notificationMessage.setErrorMessage("Exam results not available.");
