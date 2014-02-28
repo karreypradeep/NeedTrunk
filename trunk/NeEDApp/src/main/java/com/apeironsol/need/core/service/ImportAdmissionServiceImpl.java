@@ -34,6 +34,7 @@ import org.apache.poi.ss.usermodel.Font;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.dao.StudentDao;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Address;
@@ -50,7 +51,6 @@ import com.apeironsol.need.util.constants.ImportAdmissionsColumnConstant;
 import com.apeironsol.need.util.constants.RelationTypeConstant;
 import com.apeironsol.need.util.constants.ResidenceConstant;
 import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
-import com.apeironsol.framework.exception.ApplicationException;
 
 /**
  * Service interface implementation for admissions.
@@ -135,10 +135,10 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 					try {
 						boolean importStudentRecord = true;
 						String status = null;
-						if (row.getCell(ImportAdmissionsColumnConstant.STATUS.getColumnNumber()) != null
-								&& row.getCell(ImportAdmissionsColumnConstant.STATUS.getColumnNumber()).toString() != null) {
+						if ((row.getCell(ImportAdmissionsColumnConstant.STATUS.getColumnNumber()) != null)
+								&& (row.getCell(ImportAdmissionsColumnConstant.STATUS.getColumnNumber()).toString() != null)) {
 							status = row.getCell(ImportAdmissionsColumnConstant.STATUS.getColumnNumber()).toString().trim();
-							if (status != null && status.trim().length() > 0 && status.startsWith("OK:")) {
+							if ((status != null) && (status.trim().length() > 0) && status.startsWith("OK:")) {
 								importStudentRecord = false;
 							}
 						}
@@ -165,7 +165,7 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 								importStatus.add("NOK:Invalid relations data " + student.getDisplayName());
 							} else {
 								if (student.getExternalAdmissionNr() != null) {
-									Student studentWithSameExAdNr = this.studentDao.findActiveStudentByExternalAdmissionNumberAndBranchId(
+									final Student studentWithSameExAdNr = this.studentDao.findActiveStudentByExternalAdmissionNumberAndBranchId(
 											student.getExternalAdmissionNr(), branch.getId());
 									if (studentWithSameExAdNr != null) {
 										importStatus.add("NOK: " + "Student with same external admission number " + student.getExternalAdmissionNr()
@@ -177,15 +177,15 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 								admissionSearchCriteria.setName(student.getFirstName());
 								admissionSearchCriteria.setDateOfBirth(student.getDateOfBirth());
 								boolean importDuplicateRecords = false;
-								if (row.getCell(ImportAdmissionsColumnConstant.IMPORT_DUPLICATE_RECORDS.getColumnNumber()) != null
-										&& row.getCell(ImportAdmissionsColumnConstant.IMPORT_DUPLICATE_RECORDS.getColumnNumber()).toString() != null) {
+								if ((row.getCell(ImportAdmissionsColumnConstant.IMPORT_DUPLICATE_RECORDS.getColumnNumber()) != null)
+										&& (row.getCell(ImportAdmissionsColumnConstant.IMPORT_DUPLICATE_RECORDS.getColumnNumber()).toString() != null)) {
 									importDuplicateRecords = row.getCell(ImportAdmissionsColumnConstant.IMPORT_DUPLICATE_RECORDS.getColumnNumber()).toString()
 											.equalsIgnoreCase("yes");
 								}
 								if (!importDuplicateRecords) {
 									studnetsWithSameName = this.admissionService.findAdmissionsBySearchCriteria(admissionSearchCriteria);
 								}
-								if (studnetsWithSameName == null || studnetsWithSameName.isEmpty()) {
+								if ((studnetsWithSameName == null) || studnetsWithSameName.isEmpty()) {
 									student = this.admissionService.submitAdmission(student, relations, primaryAddress, educationHistories, branch.getId(),
 											admissionReservationFee, false, history);
 									importStatus.add("OK:Student " + student.getDisplayName() + " imported with registration number "
@@ -226,47 +226,47 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 	private Student getStudent(final HSSFRow row, final Branch branch, final Klass applyingForKlass, final Batch applyingForBatch,
 			final AcademicYear applyingForAcademicYear) throws Exception {
 		final Student student = new Student();
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-		if (row.getCell(ImportAdmissionsColumnConstant.STUDENT_FIRST_NAME.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.STUDENT_FIRST_NAME.getColumnNumber()).toString() != null) {
+		final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+		if ((row.getCell(ImportAdmissionsColumnConstant.STUDENT_FIRST_NAME.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.STUDENT_FIRST_NAME.getColumnNumber()).toString() != null)) {
 			student.setFirstName(row.getCell(ImportAdmissionsColumnConstant.STUDENT_FIRST_NAME.getColumnNumber()).toString());
 		} else {
 			throw new ApplicationException("Student first name is mandatory");
 		}
-		if (row.getCell(ImportAdmissionsColumnConstant.STUDENT_MIDDLE_NAME.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.STUDENT_MIDDLE_NAME.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.STUDENT_MIDDLE_NAME.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.STUDENT_MIDDLE_NAME.getColumnNumber()).toString().trim().length() > 0)) {
 			student.setMiddleName(row.getCell(ImportAdmissionsColumnConstant.STUDENT_MIDDLE_NAME.getColumnNumber()).toString());
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.STUDENT_LAST_NAME.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.STUDENT_LAST_NAME.getColumnNumber()).toString() != null) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.STUDENT_LAST_NAME.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.STUDENT_LAST_NAME.getColumnNumber()).toString() != null)) {
 			student.setLastName(row.getCell(ImportAdmissionsColumnConstant.STUDENT_LAST_NAME.getColumnNumber()).toString());
 		} else {
 			throw new ApplicationException("Student last name is mandatory");
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.ADMISSION_DATE.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.ADMISSION_DATE.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.ADMISSION_DATE.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.ADMISSION_DATE.getColumnNumber()).toString().trim().length() > 0)) {
 			try {
-				Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.ADMISSION_DATE.getColumnNumber()).toString());
+				final Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.ADMISSION_DATE.getColumnNumber()).toString());
 				student.setAdmissionDate(date);
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				throw new ApplicationException("Invalid date format for admission date.");
 			}
 		}
 
 		if (row.getCell(ImportAdmissionsColumnConstant.STUDENT_DOB.getColumnNumber()) != null) {
 			try {
-				Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.STUDENT_DOB.getColumnNumber()).toString());
+				final Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.STUDENT_DOB.getColumnNumber()).toString());
 				student.setDateOfBirth(date);
-			} catch (Exception ex) {
+			} catch (final Exception ex) {
 				throw new ApplicationException("Invalid date format for student date of birth date.");
 			}
 		} else {
 			throw new ApplicationException("Student date of birth is mandatory");
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.EXISTING_ADMISSION_NUMBER.getColumnNumber()) != null
+		if ((row.getCell(ImportAdmissionsColumnConstant.EXISTING_ADMISSION_NUMBER.getColumnNumber()) != null)
 				&& StringUtils.isNotEmpty(row.getCell(ImportAdmissionsColumnConstant.EXISTING_ADMISSION_NUMBER.getColumnNumber()).toString())) {
 			student.setExternalAdmissionNr(row.getCell(ImportAdmissionsColumnConstant.EXISTING_ADMISSION_NUMBER.getColumnNumber()).toString());
 		}
@@ -282,41 +282,41 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 		} else {
 			throw new ApplicationException("Student gender is mandatory");
 		}
-		if (row.getCell(ImportAdmissionsColumnConstant.MOTHER_TONGUE.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.MOTHER_TONGUE.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.MOTHER_TONGUE.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.MOTHER_TONGUE.getColumnNumber()).toString().trim().length() > 0)) {
 			student.setMotherTongue(row.getCell(ImportAdmissionsColumnConstant.MOTHER_TONGUE.getColumnNumber()).getStringCellValue());
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.NATIONALITY.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.NATIONALITY.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.NATIONALITY.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.NATIONALITY.getColumnNumber()).toString().trim().length() > 0)) {
 			student.setNationality(row.getCell(ImportAdmissionsColumnConstant.NATIONALITY.getColumnNumber()).toString());
 		} else {
 			throw new ApplicationException("Student nationality is mandatory");
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.PREVIOUS_QUALIFIED_EDUCATION.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.PREVIOUS_QUALIFIED_EDUCATION.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.PREVIOUS_QUALIFIED_EDUCATION.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.PREVIOUS_QUALIFIED_EDUCATION.getColumnNumber()).toString().trim().length() > 0)) {
 			student.setPreviousQualifiedEducation(row.getCell(ImportAdmissionsColumnConstant.PREVIOUS_QUALIFIED_EDUCATION.getColumnNumber()).toString());
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.REFERENCED_BY.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.REFERENCED_BY.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.REFERENCED_BY.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.REFERENCED_BY.getColumnNumber()).toString().trim().length() > 0)) {
 			student.setReferencedBy(row.getCell(ImportAdmissionsColumnConstant.REFERENCED_BY.getColumnNumber()).toString());
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.RELIGION.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.RELIGION.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.RELIGION.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.RELIGION.getColumnNumber()).toString().trim().length() > 0)) {
 			student.setReligion(row.getCell(ImportAdmissionsColumnConstant.RELIGION.getColumnNumber()).toString());
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.RESERVATION.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.RESERVATION.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.RESERVATION.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.RESERVATION.getColumnNumber()).toString().trim().length() > 0)) {
 			student.setReservation(row.getCell(ImportAdmissionsColumnConstant.RESERVATION.getColumnNumber()).toString());
 		}
 
 		if (row.getCell(ImportAdmissionsColumnConstant.RESIDENCE_TYPE.getColumnNumber()) != null) {
 			final String residence = row.getCell(ImportAdmissionsColumnConstant.RESIDENCE_TYPE.getColumnNumber()).toString();
-			if (residence != null && residence.trim().length() > 0) {
+			if ((residence != null) && (residence.trim().length() > 0)) {
 				if (residence.equalsIgnoreCase("Hostel")) {
 					student.setResidence(ResidenceConstant.HOSTEL);
 				} else {
@@ -346,39 +346,39 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 			throws Exception {
 		Address address = new Address();
 		final DataFormatter formatter = new DataFormatter(Locale.US);
-		if (row.getCell(addressConstants.get("address").getColumnNumber()) != null
-				&& row.getCell(addressConstants.get("address").getColumnNumber()).toString() != null) {
+		if ((row.getCell(addressConstants.get("address").getColumnNumber()) != null)
+				&& (row.getCell(addressConstants.get("address").getColumnNumber()).toString() != null)) {
 			address.setAddress(row.getCell(addressConstants.get("address").getColumnNumber()).toString());
 		} else if (isPrimaryAddress) {
 			throw new ApplicationException("Address is mandatory");
 		}
 
-		if (row.getCell(addressConstants.get("city").getColumnNumber()) != null
-				&& row.getCell(addressConstants.get("city").getColumnNumber()).toString() != null) {
+		if ((row.getCell(addressConstants.get("city").getColumnNumber()) != null)
+				&& (row.getCell(addressConstants.get("city").getColumnNumber()).toString() != null)) {
 			address.setCity(row.getCell(addressConstants.get("city").getColumnNumber()).getStringCellValue());
 		} else if (isPrimaryAddress) {
 			throw new ApplicationException("City is mandatory");
 		}
 
-		if (row.getCell(addressConstants.get("state").getColumnNumber()) != null
-				&& row.getCell(addressConstants.get("state").getColumnNumber()).toString() != null) {
+		if ((row.getCell(addressConstants.get("state").getColumnNumber()) != null)
+				&& (row.getCell(addressConstants.get("state").getColumnNumber()).toString() != null)) {
 			address.setState(row.getCell(addressConstants.get("state").getColumnNumber()).toString());
 		} else if (isPrimaryAddress) {
 			throw new ApplicationException("State is mandatory");
 		}
 
-		if (row.getCell(addressConstants.get("emailId").getColumnNumber()) != null
-				&& row.getCell(addressConstants.get("emailId").getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(addressConstants.get("emailId").getColumnNumber()) != null)
+				&& (row.getCell(addressConstants.get("emailId").getColumnNumber()).toString().trim().length() > 0)) {
 			address.setEmail(row.getCell(addressConstants.get("emailId").getColumnNumber()).toString());
 		}
 
-		if (row.getCell(addressConstants.get("alternateNumber").getColumnNumber()) != null
-				&& row.getCell(addressConstants.get("alternateNumber").getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(addressConstants.get("alternateNumber").getColumnNumber()) != null)
+				&& (row.getCell(addressConstants.get("alternateNumber").getColumnNumber()).toString().trim().length() > 0)) {
 			address.setHomePhoneNr(row.getCell(addressConstants.get("alternateNumber").getColumnNumber()).toString());
 		}
 
-		if (row.getCell(addressConstants.get("mobileNumber").getColumnNumber()) != null
-				&& row.getCell(addressConstants.get("mobileNumber").getColumnNumber()).toString() != null) {
+		if ((row.getCell(addressConstants.get("mobileNumber").getColumnNumber()) != null)
+				&& (row.getCell(addressConstants.get("mobileNumber").getColumnNumber()).toString() != null)) {
 			address.setMobileNr(formatter.formatCellValue(row.getCell(addressConstants.get("mobileNumber").getColumnNumber())));
 		} else if (isPrimaryAddress) {
 			throw new ApplicationException("Mobile number is mandatory");
@@ -398,17 +398,17 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 			throw new ApplicationException("Pincode is mandatory");
 		}
 
-		if (address.getAddress() == null || address.getAddress().trim().length() == 0) {
+		if ((address.getAddress() == null) || (address.getAddress().trim().length() == 0)) {
 			address = null;
-		} else if (address.getCity() == null || address.getCity().trim().length() == 0) {
+		} else if ((address.getCity() == null) || (address.getCity().trim().length() == 0)) {
 			address = null;
-		} else if (address.getState() == null || address.getState().trim().length() == 0) {
+		} else if ((address.getState() == null) || (address.getState().trim().length() == 0)) {
 			address = null;
-		} else if (address.getMobileNr() == null || address.getMobileNr().trim().length() == 0) {
+		} else if ((address.getMobileNr() == null) || (address.getMobileNr().trim().length() == 0)) {
 			address = null;
 		} else if (address.getCountry() == null) {
 			address = null;
-		} else if (address.getZipCode() == null || address.getZipCode().trim().length() == 0) {
+		} else if ((address.getZipCode() == null) || (address.getZipCode().trim().length() == 0)) {
 			address = null;
 		}
 		return address;
@@ -424,33 +424,37 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 	 */
 	private Collection<Relation> getRelations(final HSSFRow row, final Address primaryAddress) throws Exception {
 		Collection<Relation> relations = null;
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-		if (row.getCell(ImportAdmissionsColumnConstant.FATHER_FIRST_NAME.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.FATHER_FIRST_NAME.getColumnNumber()).toString().trim().length() > 0
-				&& row.getCell(ImportAdmissionsColumnConstant.FATHER_LAST_NAME.getColumnNumber()).toString().trim().length() > 0
-				&& row.getCell(ImportAdmissionsColumnConstant.FATHER_LAST_NAME.getColumnNumber()) != null) {
+		final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+		if ((row.getCell(ImportAdmissionsColumnConstant.FATHER_FIRST_NAME.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.FATHER_FIRST_NAME.getColumnNumber()).toString().trim().length() > 0)
+				&& (row.getCell(ImportAdmissionsColumnConstant.FATHER_LAST_NAME.getColumnNumber()).toString().trim().length() > 0)
+				&& (row.getCell(ImportAdmissionsColumnConstant.FATHER_LAST_NAME.getColumnNumber()) != null)) {
 			relations = new ArrayList<Relation>();
 			final Relation father = new Relation();
 			father.setFirstName(row.getCell(ImportAdmissionsColumnConstant.FATHER_FIRST_NAME.getColumnNumber()).toString());
 			father.setLastName(row.getCell(ImportAdmissionsColumnConstant.FATHER_LAST_NAME.getColumnNumber()).toString());
-			if (row.getCell(ImportAdmissionsColumnConstant.FATHER_ANNUAL_INCOME.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.FATHER_ANNUAL_INCOME.getColumnNumber()).getNumericCellValue() > 0) {
-				father.setAnnualIncome(row.getCell(ImportAdmissionsColumnConstant.FATHER_ANNUAL_INCOME.getColumnNumber()).getNumericCellValue());
+			if ((row.getCell(ImportAdmissionsColumnConstant.FATHER_ANNUAL_INCOME.getColumnNumber()) != null)) {
+				try {
+					father.setAnnualIncome(Double.valueOf(row.getCell(ImportAdmissionsColumnConstant.FATHER_ANNUAL_INCOME.getColumnNumber())
+							.getStringCellValue()));
+				} catch (final Exception e) {
+					throw new ApplicationException("Invalid Father annual income value.");
+				}
 			}
 			if (row.getCell(ImportAdmissionsColumnConstant.FATHER_DOB.getColumnNumber()) != null) {
 				try {
-					Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.FATHER_DOB.getColumnNumber()).toString());
+					final Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.FATHER_DOB.getColumnNumber()).toString());
 					father.setDateOfBirth(date);
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					throw new ApplicationException("Invalid date format for father date of birth date.");
 				}
 			}
-			if (row.getCell(ImportAdmissionsColumnConstant.FATHER_MIDDLE_NAME.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.FATHER_MIDDLE_NAME.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.FATHER_MIDDLE_NAME.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.FATHER_MIDDLE_NAME.getColumnNumber()).toString().trim().length() > 0)) {
 				father.setMiddleName(row.getCell(ImportAdmissionsColumnConstant.FATHER_MIDDLE_NAME.getColumnNumber()).toString());
 			}
-			if (row.getCell(ImportAdmissionsColumnConstant.FATHER_OCCUPATION.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.FATHER_OCCUPATION.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.FATHER_OCCUPATION.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.FATHER_OCCUPATION.getColumnNumber()).toString().trim().length() > 0)) {
 				father.setOccupation(row.getCell(ImportAdmissionsColumnConstant.FATHER_OCCUPATION.getColumnNumber()).toString());
 			}
 			father.setRelationType(RelationTypeConstant.FATHER);
@@ -471,36 +475,40 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 			relations.add(father);
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.MOTHER_FIRST_NAME.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.MOTHER_FIRST_NAME.getColumnNumber()).toString().trim().length() > 0
-				&& row.getCell(ImportAdmissionsColumnConstant.MOTHER_LAST_NAME.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.MOTHER_LAST_NAME.getColumnNumber()).toString().trim().length() > 0) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.MOTHER_FIRST_NAME.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.MOTHER_FIRST_NAME.getColumnNumber()).toString().trim().length() > 0)
+				&& (row.getCell(ImportAdmissionsColumnConstant.MOTHER_LAST_NAME.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.MOTHER_LAST_NAME.getColumnNumber()).toString().trim().length() > 0)) {
 			if (relations == null) {
 				relations = new ArrayList<Relation>();
 			}
 			final Relation mother = new Relation();
 			mother.setFirstName(row.getCell(ImportAdmissionsColumnConstant.MOTHER_FIRST_NAME.getColumnNumber()).toString());
 			mother.setLastName(row.getCell(ImportAdmissionsColumnConstant.MOTHER_LAST_NAME.getColumnNumber()).toString());
-			if (row.getCell(ImportAdmissionsColumnConstant.MOTHER_ANNUAL_INCOME.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.MOTHER_ANNUAL_INCOME.getColumnNumber()).getNumericCellValue() > 0) {
-				mother.setAnnualIncome(row.getCell(ImportAdmissionsColumnConstant.MOTHER_ANNUAL_INCOME.getColumnNumber()).getNumericCellValue());
+			if ((row.getCell(ImportAdmissionsColumnConstant.MOTHER_ANNUAL_INCOME.getColumnNumber()) != null)) {
+				try {
+					mother.setAnnualIncome(Double.valueOf(row.getCell(ImportAdmissionsColumnConstant.MOTHER_ANNUAL_INCOME.getColumnNumber())
+							.getStringCellValue()));
+				} catch (final Exception e) {
+					throw new ApplicationException("Invalid Mother annual income value.");
+				}
 			}
 
-			if (row.getCell(ImportAdmissionsColumnConstant.MOTHER_DOB.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.MOTHER_DOB.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.MOTHER_DOB.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.MOTHER_DOB.getColumnNumber()).toString().trim().length() > 0)) {
 				try {
-					Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.MOTHER_DOB.getColumnNumber()).toString());
+					final Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.MOTHER_DOB.getColumnNumber()).toString());
 					mother.setDateOfBirth(date);
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					throw new ApplicationException("Invalid date format for mother date of birth date.");
 				}
 			}
-			if (row.getCell(ImportAdmissionsColumnConstant.MOTHER_MIDDLE_NAME.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.MOTHER_MIDDLE_NAME.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.MOTHER_MIDDLE_NAME.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.MOTHER_MIDDLE_NAME.getColumnNumber()).toString().trim().length() > 0)) {
 				mother.setMiddleName(row.getCell(ImportAdmissionsColumnConstant.MOTHER_MIDDLE_NAME.getColumnNumber()).toString());
 			}
-			if (row.getCell(ImportAdmissionsColumnConstant.MOTHER_OCCUPATION.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.MOTHER_OCCUPATION.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.MOTHER_OCCUPATION.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.MOTHER_OCCUPATION.getColumnNumber()).toString().trim().length() > 0)) {
 				mother.setOccupation(row.getCell(ImportAdmissionsColumnConstant.MOTHER_OCCUPATION.getColumnNumber()).toString());
 			}
 			mother.setRelationType(RelationTypeConstant.MOTHER);
@@ -521,10 +529,10 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 			relations.add(mother);
 		}
 
-		if (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_FIRST_NAME.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_FIRST_NAME.getColumnNumber()).toString().trim().length() > 0
-				&& row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_LAST_NAME.getColumnNumber()).toString().trim().length() > 0
-				&& row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_LAST_NAME.getColumnNumber()) != null) {
+		if ((row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_FIRST_NAME.getColumnNumber()) != null)
+				&& (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_FIRST_NAME.getColumnNumber()).toString().trim().length() > 0)
+				&& (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_LAST_NAME.getColumnNumber()).toString().trim().length() > 0)
+				&& (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_LAST_NAME.getColumnNumber()) != null)) {
 			if (relations == null) {
 				relations = new ArrayList<Relation>();
 			}
@@ -532,31 +540,36 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 			guardian.setAddress(primaryAddress);
 			guardian.setFirstName(row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_FIRST_NAME.getColumnNumber()).toString());
 			guardian.setLastName(row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_LAST_NAME.getColumnNumber()).toString());
-			if (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_MIDDLE_NAME.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_MIDDLE_NAME.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_MIDDLE_NAME.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_MIDDLE_NAME.getColumnNumber()).toString().trim().length() > 0)) {
 				guardian.setMiddleName(row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_MIDDLE_NAME.getColumnNumber()).toString());
 			}
-			if (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_ANNUAL_INCOME.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_ANNUAL_INCOME.getColumnNumber()).getNumericCellValue() > 0) {
-				guardian.setAnnualIncome(row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_ANNUAL_INCOME.getColumnNumber()).getNumericCellValue());
+			if ((row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_ANNUAL_INCOME.getColumnNumber()) != null)) {
+				try {
+					guardian.setAnnualIncome(Double.valueOf(row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_ANNUAL_INCOME.getColumnNumber())
+							.getStringCellValue()));
+				} catch (final Exception e) {
+					throw new ApplicationException("Invalid Guardian annual income value.");
+				}
+
 			}
 
-			if (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_DOB.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_DOB.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_DOB.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_DOB.getColumnNumber()).toString().trim().length() > 0)) {
 				try {
-					Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_DOB.getColumnNumber()).toString());
+					final Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_DOB.getColumnNumber()).toString());
 					guardian.setDateOfBirth(date);
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					throw new ApplicationException("Invalid date format for guardian date of birth date.");
 				}
 			}
-			if (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_OCCUPATION.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_OCCUPATION.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_OCCUPATION.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_OCCUPATION.getColumnNumber()).toString().trim().length() > 0)) {
 				guardian.setOccupation(row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_OCCUPATION.getColumnNumber()).toString());
 			}
 
-			if (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_GENDER.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_GENDER.getColumnNumber()).toString().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_GENDER.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.GUARDIAN_GENDER.getColumnNumber()).toString().trim().length() > 0)) {
 				final String gender = row.getCell(ImportAdmissionsColumnConstant.GENDER.getColumnNumber()).toString();
 				if (gender.toLowerCase().contains("male")) {
 					guardian.setGender(GenderConstant.MALE);
@@ -614,27 +627,30 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 	 */
 	private AdmissionReservationFee getAdmissionReservationFee(final HSSFRow row) throws Exception {
 		AdmissionReservationFee admissionReservationFee = null;
-		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
-		if (row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE.getColumnNumber()) != null
-				&& row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE.getColumnNumber()).getNumericCellValue() > 0) {
+		final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
+		if (row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE.getColumnNumber()) != null) {
 
 			admissionReservationFee = new AdmissionReservationFee();
 
-			if (row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_PAID_DATE.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_PAID_DATE.getColumnNumber()).toString().trim().length() > 0
-					&& row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_RECEIPT_NUMBER.getColumnNumber()) != null
-					&& row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_RECEIPT_NUMBER.getColumnNumber()).getStringCellValue().trim().length() > 0) {
+			if ((row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_PAID_DATE.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_PAID_DATE.getColumnNumber()).toString().trim().length() > 0)
+					&& (row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_RECEIPT_NUMBER.getColumnNumber()) != null)
+					&& (row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_RECEIPT_NUMBER.getColumnNumber()).getStringCellValue().trim().length() > 0)) {
 				try {
-					Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_PAID_DATE.getColumnNumber()).toString());
+					final Date date = formatter.parse(row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_PAID_DATE.getColumnNumber()).toString());
 					admissionReservationFee.setApplicationFeeExternalTransactionDate(date);
-				} catch (Exception ex) {
+				} catch (final Exception ex) {
 					throw new ApplicationException("Invalid date format for application form fee date.");
 				}
 				admissionReservationFee.setApplicationFeeExternalTransactionNr(row.getCell(
 						ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE_RECEIPT_NUMBER.getColumnNumber()).getStringCellValue());
 			}
-			admissionReservationFee.setApplicationFormFee(row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE.getColumnNumber())
-					.getNumericCellValue());
+			try {
+				admissionReservationFee.setApplicationFormFee(Double.valueOf(row.getCell(ImportAdmissionsColumnConstant.APPLICATION_FORM_FEE.getColumnNumber())
+						.getStringCellValue()));
+			} catch (final Exception e) {
+				throw new ApplicationException("Invalid application form fee.");
+			}
 		}
 		return admissionReservationFee;
 	}
@@ -744,7 +760,7 @@ public class ImportAdmissionServiceImpl implements ImportAdmissionService {
 	@Override
 	public byte[] getExcelAterImportOfAdmissions(final InputStream fileInputStream, final List<String> importStatus) throws ApplicationException {
 		byte[] bytes = null;
-		if (importStatus != null && !importStatus.isEmpty()) {
+		if ((importStatus != null) && !importStatus.isEmpty()) {
 			try {
 				final POIFSFileSystem fs = new POIFSFileSystem(fileInputStream);
 
