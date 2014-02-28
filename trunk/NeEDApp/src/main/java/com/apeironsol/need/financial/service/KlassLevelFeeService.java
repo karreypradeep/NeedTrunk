@@ -9,10 +9,10 @@ package com.apeironsol.need.financial.service;
 
 import java.util.Collection;
 
-import com.apeironsol.need.financial.model.KlassLevelFee;
-import com.apeironsol.need.financial.model.KlassLevelFeeCatalog;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.InvalidArgumentException;
+import com.apeironsol.need.financial.model.KlassLevelFee;
+import com.apeironsol.need.financial.model.KlassLevelFeeCatalog;
 
 /**
  * Service Interface for branch fee type periodicals.
@@ -33,7 +33,7 @@ public interface KlassLevelFeeService {
 	 * @throws InvalidArgumentException
 	 *             In case of exception.
 	 */
-	KlassLevelFee saveKlassFee(KlassLevelFee klassLevelFee) throws BusinessException, InvalidArgumentException;
+	KlassLevelFee saveKlassFee(KlassLevelFee klassLevelFee, final boolean deleteKlassLevelFeeCatalog) throws BusinessException, InvalidArgumentException;
 
 	/**
 	 * Remove class fee.

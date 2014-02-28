@@ -19,14 +19,16 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.AcademicYear;
+import com.apeironsol.need.core.service.StudentFeeTransactionDetailsService;
+import com.apeironsol.need.financial.model.StudentFeeTransactionDetails;
 import com.apeironsol.need.transportation.model.PickUpPoint;
 import com.apeironsol.need.transportation.model.PickUpPointFee;
 import com.apeironsol.need.transportation.model.PickUpPointFeeCatalog;
 import com.apeironsol.need.util.constants.PaymentFrequencyConstant;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 /**
  * View PickUpPointFeeBean class.
@@ -77,6 +79,11 @@ public class PickUpPointFeeBean extends AbstractTransportationBean {
 
 	@Resource
 	AbstractTransportationBean					pickUpPointBean;
+
+	@Resource
+	StudentFeeTransactionDetailsService			studentFeeTransactionDetailsService;
+
+	private boolean								studentTransactionFeesDetailsAlreadyExists;
 
 	/**
 	 * @return the renderNewPickUpPointFeeButton
@@ -208,27 +215,33 @@ public class PickUpPointFeeBean extends AbstractTransportationBean {
 	}
 
 	public void generatePickUpPointFeeCatalogs() {
-		if (this.academicYearId == null || this.academicYearId == 0 || this.pickUpPointFee == null || this.pickUpPointFee.getAmount() == null
-				|| this.pickUpPointFee.getAmount() <= 0 || this.pickUpPointFee.getPaymentFrequency() == null) {
+		if ((this.academicYearId == null) || (this.academicYearId == 0) || (this.pickUpPointFee == null) || (this.pickUpPointFee.getAmount() == null)
+				|| (this.pickUpPointFee.getAmount() <= 0) || (this.pickUpPointFee.getPaymentFrequency() == null)) {
 			return;
 		}
-
-		this.pickUpPointFeeCatalogs.clear();
+		if (!this.studentTransactionFeesDetailsAlreadyExists) {
+			this.pickUpPointFeeCatalogs.clear();
+		}
 		this.displayFeeDefinitionTable = true;
 
-		for (AcademicYear academicYear : this.getAllAcademicYearsForCurrentBranch()) {
+		for (final AcademicYear academicYear : this.getAllAcademicYearsForCurrentBranch()) {
 			if (academicYear.getId().equals(this.academicYearId)) {
 				this.pickUpPointFee.setAcademicYear(academicYear);
 				break;
 			}
 		}
 
-		int durationInDays = this.pickUpPointFee.getAcademicYear().getDays();
+		final int durationInDays = this.pickUpPointFee.getAcademicYear().getDays();
 
 		if (PaymentFrequencyConstant.ONCE.equals(this.pickUpPointFee.getPaymentFrequency())) {
-			this.pickUpPointFeeCatalogs.add(this.createPickUpPointFeeCatalog(this.pickUpPointFee.getAcademicYear().getStartDate(),
-					(this.pickUpPointFee.getAmount())));
-
+			if (!this.studentTransactionFeesDetailsAlreadyExists) {
+				this.pickUpPointFeeCatalogs.add(this.createPickUpPointFeeCatalog(this.pickUpPointFee.getAcademicYear().getStartDate(),
+						(this.pickUpPointFee.getAmount())));
+			} else {
+				if ((this.pickUpPointFeeCatalogs != null) && (this.pickUpPointFeeCatalogs.size() > 0)) {
+					this.pickUpPointFeeCatalogs.iterator().next().setAmount(this.pickUpPointFee.getAmount());
+				}
+			}
 		} else if (PaymentFrequencyConstant.TWICE.equals(this.pickUpPointFee.getPaymentFrequency())) {
 
 			this.processPayments(durationInDays, 2, this.pickUpPointFee.getAmount());
@@ -263,7 +276,7 @@ public class PickUpPointFeeBean extends AbstractTransportationBean {
 
 	private PickUpPointFeeCatalog createPickUpPointFeeCatalog(final Date date, final double amount) {
 
-		PickUpPointFeeCatalog pickUpPointFeeCatalog = new PickUpPointFeeCatalog();
+		final PickUpPointFeeCatalog pickUpPointFeeCatalog = new PickUpPointFeeCatalog();
 
 		pickUpPointFeeCatalog.setAmount(amount);
 
@@ -275,43 +288,55 @@ public class PickUpPointFeeBean extends AbstractTransportationBean {
 	}
 
 	public void processPayments(final int durationInDays, final int numberOfPayments, final Double amount) {
+		if (!this.studentTransactionFeesDetailsAlreadyExists) {
+			final double splitAmount = Math.round(amount / numberOfPayments);
 
-		double splitAmount = Math.round(amount / numberOfPayments);
+			double lastPaymentCorrectionValue = 0;
 
-		double lastPaymentCorrectionValue = 0;
+			final double totalAmount = splitAmount * numberOfPayments;
 
-		double totalAmount = splitAmount * numberOfPayments;
-
-		if (!amount.equals(totalAmount)) {
-			lastPaymentCorrectionValue = amount - totalAmount;
-		}
-
-		int nextPaymentDurationInDays = durationInDays / numberOfPayments;
-
-		Date paymentDate = this.pickUpPointFee.getAcademicYear().getStartDate();
-
-		DateTime nextPaymentDate = new DateTime(paymentDate.getTime());
-
-		for (int i = 0; i < numberOfPayments; i++) {
-
-			if (i == (numberOfPayments - 1)) {
-				this.pickUpPointFeeCatalogs.add(this.createPickUpPointFeeCatalog(paymentDate, splitAmount + lastPaymentCorrectionValue));
-			} else {
-
-				this.pickUpPointFeeCatalogs.add(this.createPickUpPointFeeCatalog(paymentDate, splitAmount));
-
+			if (!amount.equals(totalAmount)) {
+				lastPaymentCorrectionValue = amount - totalAmount;
 			}
 
-			nextPaymentDate = nextPaymentDate.plusDays(nextPaymentDurationInDays);
+			final int nextPaymentDurationInDays = durationInDays / numberOfPayments;
 
-			paymentDate = new Date(nextPaymentDate.dayOfMonth().withMinimumValue().getMillis());
+			Date paymentDate = this.pickUpPointFee.getAcademicYear().getStartDate();
 
+			DateTime nextPaymentDate = new DateTime(paymentDate.getTime());
+
+			for (int i = 0; i < numberOfPayments; i++) {
+
+				if (i == (numberOfPayments - 1)) {
+					this.pickUpPointFeeCatalogs.add(this.createPickUpPointFeeCatalog(paymentDate, splitAmount + lastPaymentCorrectionValue));
+				} else {
+
+					this.pickUpPointFeeCatalogs.add(this.createPickUpPointFeeCatalog(paymentDate, splitAmount));
+
+				}
+
+				nextPaymentDate = nextPaymentDate.plusDays(nextPaymentDurationInDays);
+
+				paymentDate = new Date(nextPaymentDate.dayOfMonth().withMinimumValue().getMillis());
+
+			}
 		}
-
 	}
 
 	public void cancelPickUpPointFee() {
 		this.renderNewPickUpPointFeeButton = true;
+	}
+
+	public boolean isFrequencyDisabled() {
+		this.studentTransactionFeesDetailsAlreadyExists = false;
+		if ((this.pickUpPointFee != null) && (this.pickUpPointFee.getId() != null)) {
+			final Collection<StudentFeeTransactionDetails> studentFeeTransactionDetails = this.studentFeeTransactionDetailsService
+					.findStudentFeeTransactionDetailsByPickUpPointFeeId(this.pickUpPointFee.getId());
+			if ((studentFeeTransactionDetails != null) && (studentFeeTransactionDetails.size() > 0)) {
+				this.studentTransactionFeesDetailsAlreadyExists = true;
+			}
+		}
+		return this.studentTransactionFeesDetailsAlreadyExists;
 	}
 
 	public void savePickUpPointFee() {
@@ -324,11 +349,11 @@ public class PickUpPointFeeBean extends AbstractTransportationBean {
 
 			this.pickUpPointFee.setPickUpPointFeeCatalogs(this.pickUpPointFeeCatalogs);
 
-			this.pickUpPointFee = this.pickUpPointFeeService.savePickUpPointFee(this.pickUpPointFee);
+			this.pickUpPointFee = this.pickUpPointFeeService.savePickUpPointFee(this.pickUpPointFee, !this.studentTransactionFeesDetailsAlreadyExists);
 
 			this.pickUpPointFeeCatalogs = this.pickUpPointFeeCatalogService.findPickUpPointFeeCatalogsByPickUpPointFeeId(this.pickUpPointFee.getId());
 
-			PickUpPoint pickupPoint = this.pickUpPointService.findPickUpPointById(this.pickUpPointBean.getPickUpPoint().getId());
+			final PickUpPoint pickupPoint = this.pickUpPointService.findPickUpPointById(this.pickUpPointBean.getPickUpPoint().getId());
 
 			this.pickUpPointBean.setPickUpPoint(pickupPoint);
 
@@ -337,37 +362,36 @@ public class PickUpPointFeeBean extends AbstractTransportationBean {
 			this.setViewOrNewAction(false);
 
 			ViewUtil.addMessage("Pickup point fees saved sucessfully.", FacesMessage.SEVERITY_INFO);
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ViewExceptionHandler.handle(ex);
 		}
 	}
 
 	public void removePickUpPointFee(final PickUpPointFee pickUpPointFee) {
-		
+
 		try {
-		this.pickUpPointFee = pickUpPointFee;
-		this.pickUpPointFeeService.removePickUpPointFee(this.pickUpPointFee.getId());
-		this.pickUpPointBean.loadPickUpPointFees();
-		ViewUtil.addMessage("Pickup point fees deleted sucessfully.", FacesMessage.SEVERITY_INFO);
-		} catch(ApplicationException e) {
+			this.pickUpPointFee = pickUpPointFee;
+			this.pickUpPointFeeService.removePickUpPointFee(this.pickUpPointFee.getId());
+			this.pickUpPointBean.loadPickUpPointFees();
+			ViewUtil.addMessage("Pickup point fees deleted sucessfully.", FacesMessage.SEVERITY_INFO);
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
 		}
 
-		
 	}
 
 	public String showPickUpPointFeeCatalogs(final PickUpPointFee pickUpPointFee) {
-		
+
 		this.pickUpPointFee = pickUpPointFee;
-		
+
 		this.academicYear = pickUpPointFee.getAcademicYear();
-		
+
 		this.academicYearId = pickUpPointFee.getAcademicYear().getId();
-	
+
 		this.renderNewPickUpPointFeeButton = false;
-		
+
 		this.setLoadActiveAcademicYearsFlag(true);
-		
+
 		this.loadActiveAcademicYearsForCurrentBranch();
 
 		this.pickUpPointFeeCatalogs = this.pickUpPointFeeCatalogService.findPickUpPointFeeCatalogsByPickUpPointFeeId(this.pickUpPointFee.getId());
@@ -383,5 +407,20 @@ public class PickUpPointFeeBean extends AbstractTransportationBean {
 		this.loadAllAcademicYearsForCurrentBranch();
 
 		return null;
+	}
+
+	/**
+	 * @return the studentTransactionFeesDetailsAlreadyExists
+	 */
+	public boolean isStudentTransactionFeesDetailsAlreadyExists() {
+		return this.studentTransactionFeesDetailsAlreadyExists;
+	}
+
+	/**
+	 * @param studentTransactionFeesDetailsAlreadyExists
+	 *            the studentTransactionFeesDetailsAlreadyExists to set
+	 */
+	public void setStudentTransactionFeesDetailsAlreadyExists(final boolean studentTransactionFeesDetailsAlreadyExists) {
+		this.studentTransactionFeesDetailsAlreadyExists = studentTransactionFeesDetailsAlreadyExists;
 	}
 }

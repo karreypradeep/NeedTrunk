@@ -30,7 +30,8 @@
 
 		<p:outputLabel id="frequency_label" value="Payment frequency" for="frequency" />
 		<p:selectOneMenu id="frequency" value="#{studentLevelFeeBean.studentLevelFee.paymentFrequency}" required="true"
-			style="width:100%" disabled="#{studentLevelFeeBean.studentLevelFee.buildingBlock == null}">
+			style="width:100%"
+			disabled="#{studentLevelFeeBean.studentLevelFee.buildingBlock == null || studentLevelFeeBean.frequencyDisabled}">
 			<f:selectItem itemLabel="select:" itemValue="" />
 			<f:selectItems value="#{enumConstantsBean.paymentFrequencies}" var="frequency" itemLabel="#{frequency.label}"
 				itemValue="#{frequency}" />
@@ -49,8 +50,8 @@
 		<p:message id="payments_msg" for="payments" rendered="#{studentLevelFeeBean.displayNoOfPayments}" />
 
 		<p:outputLabel id="description_label" value="Description" for="descriptionId" />
-		<p:inputTextarea id="descriptionId" value="#{studentLevelFeeBean.studentLevelFee.description}"
-			maxlength="200" rows="5" required="true">
+		<p:inputTextarea id="descriptionId" value="#{studentLevelFeeBean.studentLevelFee.description}" maxlength="200"
+			rows="5" required="true">
 			<p:ajax process="@this" update="@this" />
 		</p:inputTextarea>
 		<p:message id="descriptionId_msg" for="descriptionId" />
@@ -89,7 +90,9 @@
 				</f:facet>
 				<f:facet name="input">
 					<f:facet name="input">
-						<p:inputText value="#{studentLevelFeeCatalog.amount}" />
+						<p:inputText value="#{studentLevelFeeCatalog.amount}">
+							<p:ajax process="@this" update="@this" />
+						</p:inputText>
 					</f:facet>
 				</f:facet>
 			</p:cellEditor>

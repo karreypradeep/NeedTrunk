@@ -10,8 +10,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-import com.apeironsol.need.transportation.model.PickUpPointFeeCatalog;
 import com.apeironsol.framework.BaseEntity;
+import com.apeironsol.need.transportation.model.PickUpPointFeeCatalog;
 
 /**
  * Entity class for class fee
@@ -36,23 +36,23 @@ public class StudentFeeTransactionDetails extends BaseEntity implements Serializ
 	@Column(name = "AMOUNT", nullable = false)
 	private Double					amount;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "BRANCH_LEVEL_FEE_CATALOG_ID")
 	private BranchLevelFeeCatalog	branchLevelFeeCatalog;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "KLASS_LEVEL_FEE_CATALOG_ID")
 	private KlassLevelFeeCatalog	klassLevelFeeCatalog;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "STUDENT_LEVEL_FEE_CATALOG_ID")
 	private StudentLevelFeeCatalog	studentLevelFeeCatalog;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "PICKUP_POINT_FEE_CATALOG_ID")
 	private PickUpPointFeeCatalog	pickUpPointFeeCatalog;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
 	@JoinColumn(name = "STUDENT_FEE_TXN_ID", nullable = false)
 	private StudentFeeTransaction	studentFeeTransaction;
 

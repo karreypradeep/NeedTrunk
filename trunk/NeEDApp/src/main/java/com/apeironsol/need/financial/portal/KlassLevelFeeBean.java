@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
 import javax.inject.Named;
 
@@ -22,17 +23,19 @@ import org.joda.time.DateTime;
 import org.primefaces.event.RowEditEvent;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.BuildingBlock;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.portal.AbstractKlassBean;
+import com.apeironsol.need.core.service.StudentFeeTransactionDetailsService;
 import com.apeironsol.need.financial.model.KlassLevelFee;
 import com.apeironsol.need.financial.model.KlassLevelFeeCatalog;
+import com.apeironsol.need.financial.model.StudentFeeTransactionDetails;
 import com.apeironsol.need.util.comparator.KlassFeePaymentComparator;
 import com.apeironsol.need.util.constants.PaymentFrequencyConstant;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -95,6 +98,26 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 	private boolean								displayNoOfPayments;
 
 	private boolean								loadAcademicYears;
+
+	@Resource
+	StudentFeeTransactionDetailsService			studentFeeTransactionDetailsService;
+
+	private boolean								studentTransactionFeesDetailsAlreadyExists;
+
+	/**
+	 * @return the studentTransactionFeesDetailsAlreadyExists
+	 */
+	public boolean isStudentTransactionFeesDetailsAlreadyExists() {
+		return this.studentTransactionFeesDetailsAlreadyExists;
+	}
+
+	/**
+	 * @param studentTransactionFeesDetailsAlreadyExists
+	 *            the studentTransactionFeesDetailsAlreadyExists to set
+	 */
+	public void setStudentTransactionFeesDetailsAlreadyExists(final boolean studentTransactionFeesDetailsAlreadyExists) {
+		this.studentTransactionFeesDetailsAlreadyExists = studentTransactionFeesDetailsAlreadyExists;
+	}
 
 	@PostConstruct
 	public void init() {
@@ -180,7 +203,7 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 	 */
 	public void saveKlassFee() {
 		try {
-			Klass klass = this.sessionBean.getCurrentKlass();
+			final Klass klass = this.sessionBean.getCurrentKlass();
 			if (klass == null) {
 				ViewUtil.addMessage("Unexpected error : expected klass in seesion", FacesMessage.SEVERITY_ERROR);
 			}
@@ -193,17 +216,29 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 
 			this.klassLevelFee.setAcademicYear(this.academicYear);
 			this.klassLevelFee.setKlassLevelFeeCatalogs(this.klassLevelFeeCatalogs);
-			this.klassLevelFee = this.klassLevelFeeService.saveKlassFee(this.klassLevelFee);
+			this.klassLevelFee = this.klassLevelFeeService.saveKlassFee(this.klassLevelFee, !this.studentTransactionFeesDetailsAlreadyExists);
 
 			ViewUtil.addMessage("Fee type saved sucessfully.", FacesMessage.SEVERITY_INFO);
 
 			this.displayNewKlassFee = false;
 
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			log.info(exception.getMessage(), exception);
 			ViewExceptionHandler.handle(exception);
 		}
 		this.loadklassFees = true;
+	}
+
+	public boolean isFrequencyDisabled() {
+		this.studentTransactionFeesDetailsAlreadyExists = false;
+		if ((this.klassLevelFee != null) && (this.klassLevelFee.getId() != null)) {
+			final Collection<StudentFeeTransactionDetails> studentFeeTransactionDetails = this.studentFeeTransactionDetailsService
+					.findStudentFeeTransactionDetailsByKlassLevelFeeId(this.klassLevelFee.getId());
+			if ((studentFeeTransactionDetails != null) && (studentFeeTransactionDetails.size() > 0)) {
+				this.studentTransactionFeesDetailsAlreadyExists = true;
+			}
+		}
+		return this.studentTransactionFeesDetailsAlreadyExists;
 	}
 
 	/**
@@ -211,17 +246,27 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 	 */
 	public void applyToExistingStudnets() {
 		try {
+			if (this.sessionBean.getCurrentKlass() == null) {
+				ViewUtil.addMessage("Unexpected error : expected klass in seesion", FacesMessage.SEVERITY_ERROR);
+			}
+			if (this.buildingBlock == null) {
+				ViewUtil.addMessage("Unexpected error : expected building block in bean", FacesMessage.SEVERITY_ERROR);
+			}
 			this.klassLevelFee.setKlass(this.sessionBean.getCurrentKlass());
-
+			this.klassLevelFee.setBuildingBlock(this.buildingBlock);
 			this.klassLevelFee.setAcademicYear(this.academicYear);
+			this.klassLevelFee.setKlassLevelFeeCatalogs(this.klassLevelFeeCatalogs);
+			this.klassLevelFee = this.klassLevelFeeService.saveKlassFee(this.klassLevelFee, !this.studentTransactionFeesDetailsAlreadyExists);
 
+			this.klassLevelFee.setKlass(this.sessionBean.getCurrentKlass());
+			this.klassLevelFee.setAcademicYear(this.academicYear);
+			this.klassLevelFee.setBuildingBlock(this.buildingBlock);
+			this.loadKlassLevelFeeCatalogs();
+			this.klassLevelFee.setKlassLevelFeeCatalogs(this.klassLevelFeeCatalogs);
 			this.klassLevelFeeService.applyKlassFeeToExistingActiveStudents(this.klassLevelFee);
-
 			ViewUtil.addMessage("Fee applied to active students sucessfully.", FacesMessage.SEVERITY_INFO);
-
 			this.displayNewKlassFee = false;
-
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			log.info(exception.getMessage(), exception);
 			ViewExceptionHandler.handle(exception);
 		}
@@ -233,7 +278,7 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 	 */
 	public void removeKlassFee() {
 		try {
-			Klass klass = this.sessionBean.getCurrentKlass();
+			final Klass klass = this.sessionBean.getCurrentKlass();
 			if (klass == null) {
 				ViewUtil.addMessage("Unexpected error : expected klass in seesion", FacesMessage.SEVERITY_ERROR);
 			}
@@ -244,7 +289,7 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 			this.klassLevelFee.setBuildingBlock(this.buildingBlock);
 			this.klassLevelFeeService.removeKlassFee(this.klassLevelFee);
 			ViewUtil.addMessage(this.getFeeTypeName() + " period removed successfully.", FacesMessage.SEVERITY_INFO);
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			ViewExceptionHandler.handle(exception);
 		}
 		this.loadklassFees = true;
@@ -265,7 +310,7 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 	public void loadKlassFees() {
 		try {
 			if (this.loadklassFees) {
-				Klass klass = this.sessionBean.getCurrentKlass();
+				final Klass klass = this.sessionBean.getCurrentKlass();
 				if (klass == null) {
 					ViewUtil.addMessage("Unexpected error : expected klass in seesion", FacesMessage.SEVERITY_ERROR);
 				}
@@ -277,7 +322,7 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 
 				this.loadklassFees = false;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			log.info(ex.getMessage(), ex);
 			ViewUtil.addMessage(ex.getMessage(), FacesMessage.SEVERITY_ERROR);
 		}
@@ -417,25 +462,32 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 	 */
 	public void generateKlassFeePayments() {
 
-		if (this.academicYearId == null || this.academicYearId == 0 || this.klassLevelFee == null || this.klassLevelFee.getAmount() == null
-				|| this.klassLevelFee.getAmount() <= 0 || this.klassLevelFee.getPaymentFrequency() == null) {
+		if ((this.academicYearId == null) || (this.academicYearId == 0) || (this.klassLevelFee == null) || (this.klassLevelFee.getAmount() == null)
+				|| (this.klassLevelFee.getAmount() <= 0) || (this.klassLevelFee.getPaymentFrequency() == null)) {
 			return;
 		}
-
-		this.klassLevelFeeCatalogs.clear();
+		if (!this.studentTransactionFeesDetailsAlreadyExists) {
+			this.klassLevelFeeCatalogs.clear();
+		}
 		this.displayFeeDefinitionTable = true;
 
-		for (AcademicYear academicYear : this.getAllAcademicYearsForCurrentBranch()) {
+		for (final AcademicYear academicYear : this.getAllAcademicYearsForCurrentBranch()) {
 			if (academicYear.getId().equals(this.academicYearId)) {
 				this.academicYear = academicYear;
 				break;
 			}
 		}
 
-		int durationInDays = this.academicYear.getDays();
+		final int durationInDays = this.academicYear.getDays();
 
 		if (PaymentFrequencyConstant.ONCE.equals(this.klassLevelFee.getPaymentFrequency())) {
-			this.klassLevelFeeCatalogs.add(this.createKlassLevelFeeCatalog(this.academicYear.getStartDate(), this.klassLevelFee.getAmount()));
+			if (!this.studentTransactionFeesDetailsAlreadyExists) {
+				this.klassLevelFeeCatalogs.add(this.createKlassLevelFeeCatalog(this.academicYear.getStartDate(), this.klassLevelFee.getAmount()));
+			} else {
+				if ((this.klassLevelFeeCatalogs != null) && (this.klassLevelFeeCatalogs.size() > 0)) {
+					this.klassLevelFeeCatalogs.iterator().next().setAmount(this.klassLevelFee.getAmount());
+				}
+			}
 
 		} else if (PaymentFrequencyConstant.TWICE.equals(this.klassLevelFee.getPaymentFrequency())) {
 
@@ -458,39 +510,26 @@ public class KlassLevelFeeBean extends AbstractKlassBean {
 	}
 
 	public void processPayments(final int durationInDays, final int numberOfPayments, final Double amount) {
-
-		double splitAmount = Math.round(amount / numberOfPayments);
-
-		double lastPaymentCorrectionValue = 0;
-
-		double totalAmount = splitAmount * numberOfPayments;
-
-		if (!amount.equals(totalAmount)) {
-			lastPaymentCorrectionValue = amount - totalAmount;
-		}
-
-		int nextPaymentDurationInDays = durationInDays / numberOfPayments;
-
-		Date paymentDate = this.academicYear.getStartDate();
-
-		DateTime nextPaymentDate = new DateTime(paymentDate.getTime());
-
-		for (int i = 0; i < numberOfPayments; i++) {
-
-			if (i == numberOfPayments - 1) {
-				this.klassLevelFeeCatalogs.add(this.createKlassLevelFeeCatalog(paymentDate, splitAmount + lastPaymentCorrectionValue));
-			} else {
-
-				this.klassLevelFeeCatalogs.add(this.createKlassLevelFeeCatalog(paymentDate, splitAmount));
-
+		if (!this.studentTransactionFeesDetailsAlreadyExists) {
+			final double splitAmount = Math.round(amount / numberOfPayments);
+			double lastPaymentCorrectionValue = 0;
+			final double totalAmount = splitAmount * numberOfPayments;
+			if (!amount.equals(totalAmount)) {
+				lastPaymentCorrectionValue = amount - totalAmount;
 			}
-
-			nextPaymentDate = nextPaymentDate.plusDays(nextPaymentDurationInDays);
-
-			paymentDate = new Date(nextPaymentDate.dayOfMonth().withMinimumValue().getMillis());
-
+			final int nextPaymentDurationInDays = durationInDays / numberOfPayments;
+			Date paymentDate = this.academicYear.getStartDate();
+			DateTime nextPaymentDate = new DateTime(paymentDate.getTime());
+			for (int i = 0; i < numberOfPayments; i++) {
+				if (i == (numberOfPayments - 1)) {
+					this.klassLevelFeeCatalogs.add(this.createKlassLevelFeeCatalog(paymentDate, splitAmount + lastPaymentCorrectionValue));
+				} else {
+					this.klassLevelFeeCatalogs.add(this.createKlassLevelFeeCatalog(paymentDate, splitAmount));
+				}
+				nextPaymentDate = nextPaymentDate.plusDays(nextPaymentDurationInDays);
+				paymentDate = new Date(nextPaymentDate.dayOfMonth().withMinimumValue().getMillis());
+			}
 		}
-
 	}
 
 	/**

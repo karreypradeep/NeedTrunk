@@ -3,7 +3,7 @@
  * SMSystem.
  * www.apeironsol.com
  * Copyright © 2012 apeironsol
- *
+ * 
  */
 package com.apeironsol.need.hrms.service;
 
@@ -15,6 +15,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.service.SequenceGeneratorService;
 import com.apeironsol.need.hrms.dao.EmployeeDao;
@@ -24,13 +25,12 @@ import com.apeironsol.need.hrms.model.Employee;
 import com.apeironsol.need.hrms.model.EmployeeDesignation;
 import com.apeironsol.need.util.constants.EmploymentCurrentStatusConstant;
 import com.apeironsol.need.util.searchcriteria.EmployeeSearchCriteria;
-import com.apeironsol.framework.exception.BusinessException;
 
 /**
  * Service implementation interface for student.
- *
+ * 
  * @author pradeep
- *
+ * 
  */
 @Service("employeeService")
 @Transactional(rollbackFor = Exception.class)
@@ -40,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private EmployeeDao					employeeDao;
 
 	@Resource
-	private EmployeeDesignationDao 		employeeDesignationDao;
+	private EmployeeDesignationDao		employeeDesignationDao;
 
 	@Resource
 	private EmployeeDesignationService	employeeDesignationService;
@@ -95,9 +95,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public void saveNewEmployeeWizard(final Employee employee, final EmployeeDesignation employeeDesignation) {
 
-		String employeeNumber = this.sequenceGeneratorService.getNextEmployeeNumber(employee.getBranch().getCode());
+		final String employeeNumber = this.sequenceGeneratorService.getNextEmployeeNumber(employee.getBranch().getCode());
 		employee.setEmployeeNumber(employeeNumber);
-		Employee newEmployee = this.employeeDao.persist(employee);
+		final Employee newEmployee = this.employeeDao.persist(employee);
 		employeeDesignation.setEmployee(newEmployee);
 		this.employeeDesignationService.createNewEmployeeDesignation(employeeDesignation);
 	}
@@ -124,14 +124,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public Collection<EmployeeDO> findEmployeesBySearchCriteria(final EmployeeSearchCriteria employeeSearchCriteria) throws BusinessException {
 
-		Collection<EmployeeDO> employeeDOs = new ArrayList<EmployeeDO>();
-		Collection<Employee> searchResults = this.employeeDao.findEmployeesBySearchCriteria(employeeSearchCriteria);
+		final Collection<EmployeeDO> employeeDOs = new ArrayList<EmployeeDO>();
+		final Collection<Employee> searchResults = this.employeeDao.findEmployeesBySearchCriteria(employeeSearchCriteria);
 
-		if (searchResults != null && !searchResults.isEmpty()) {
+		if ((searchResults != null) && !searchResults.isEmpty()) {
 
-			for (Employee employee : searchResults) {
+			for (final Employee employee : searchResults) {
 
-				EmployeeDO employeeDO = this.buildEmployeeDO(employee);
+				final EmployeeDO employeeDO = this.buildEmployeeDO(employee);
 
 				employeeDOs.add(employeeDO);
 
@@ -144,17 +144,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	private EmployeeDO buildEmployeeDO(final Employee employee) {
 
-		EmployeeDesignation employeeCurrentDesignation = this.employeeDesignationDao.findCurrentEmployeeDesignationByEmployeeID(employee.getId());
+		final EmployeeDesignation employeeCurrentDesignation = this.employeeDesignationDao.findCurrentEmployeeDesignationByEmployeeID(employee.getId());
 
-		EmployeeDesignation employeeFirstDesignation = this.employeeDesignationDao.findFirstEmployeeDesignationByEmployeeID(employee.getId());
+		final EmployeeDesignation employeeFirstDesignation = this.employeeDesignationDao.findFirstEmployeeDesignationByEmployeeID(employee.getId());
 
-		EmployeeDO employeeDO = new EmployeeDO();
+		final EmployeeDO employeeDO = new EmployeeDO();
 
 		employeeDO.setEmployee(employee);
-
-		employeeDO.setEmployeeCurrentDesignation(employeeCurrentDesignation);
-
-		employeeDO.setJoiningDate(employeeFirstDesignation.getEndDate());
+		if (employeeCurrentDesignation != null) {
+			employeeDO.setEmployeeCurrentDesignation(employeeCurrentDesignation);
+		}
+		if (employeeFirstDesignation != null) {
+			employeeDO.setJoiningDate(employeeFirstDesignation.getStartDate());
+		}
 
 		return employeeDO;
 	}

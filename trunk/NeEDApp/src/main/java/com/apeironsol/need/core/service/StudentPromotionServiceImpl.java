@@ -159,7 +159,7 @@ public class StudentPromotionServiceImpl implements StudentPromotionService {
 			}
 			// If student is having past due then create the due as additional
 			// fee payment.
-			if (studentFinancialAcademicYearDO.getNetFeeDue() > 0 && pastDueBuildingBlock != null) {
+			if ((studentFinancialAcademicYearDO.getNetFeeDue() > 0) && (pastDueBuildingBlock != null)) {
 				StudentLevelFee studentLevelFee = new StudentLevelFee();
 				studentLevelFee.setStudentAcademicYear(studentAcademicYear);
 				studentLevelFee.setAmount(studentFinancialAcademicYearDO.getNetFeeDue());
@@ -174,7 +174,7 @@ public class StudentPromotionServiceImpl implements StudentPromotionService {
 				catalogs.add(studentLevelFeeCatalog);
 
 				studentLevelFee.setStudentLevelFeeCatalogs(catalogs);
-				studentLevelFee = this.studentLevelFeeService.saveStudentLevelFee(studentLevelFee);
+				studentLevelFee = this.studentLevelFeeService.saveStudentLevelFee(studentLevelFee, false);
 
 			}
 

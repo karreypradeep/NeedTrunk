@@ -9,10 +9,10 @@ package com.apeironsol.need.financial.service;
 
 import java.util.Collection;
 
-import com.apeironsol.need.financial.model.StudentLevelFee;
-import com.apeironsol.need.financial.model.StudentLevelFeeCatalog;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.SystemException;
+import com.apeironsol.need.financial.model.StudentLevelFee;
+import com.apeironsol.need.financial.model.StudentLevelFeeCatalog;
 
 /**
  * Service interface for branch level fee service.
@@ -22,7 +22,8 @@ import com.apeironsol.framework.exception.SystemException;
  */
 public interface StudentLevelFeeService {
 
-	StudentLevelFee saveStudentLevelFee(StudentLevelFee studentLevelFee) throws BusinessException, SystemException;
+	StudentLevelFee saveStudentLevelFee(StudentLevelFee studentLevelFee, final boolean deleteExistingStudentFeeCatalog) throws BusinessException,
+			SystemException;
 
 	void removeStudentLevelFee(StudentLevelFee studentLevelFee) throws BusinessException, SystemException;
 

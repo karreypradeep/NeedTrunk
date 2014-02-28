@@ -114,6 +114,38 @@ public interface StudentFeeTransactionDetailsService {
 	 * @param studentFeeId
 	 * @return
 	 */
+	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByKlassLevelFeeId(Long klassLevelFeeId);
+
+	/**
+	 * 
+	 * @param branchLevelFeeId
+	 * @param studentFeeId
+	 * @return
+	 */
+	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByBranchLevelFeeId(Long branchLevelFeeId);
+
+	/**
+	 * 
+	 * @param branchLevelFeeId
+	 * @param studentFeeId
+	 * @return
+	 */
+	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByStudentLevelFeeId(Long studentLevelFeeId);
+
+	/**
+	 * 
+	 * @param branchLevelFeeId
+	 * @param studentFeeId
+	 * @return
+	 */
+	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByPickUpPointFeeId(Long pickUpPointFeeId);
+
+	/**
+	 * 
+	 * @param branchLevelFeeId
+	 * @param studentFeeId
+	 * @return
+	 */
 	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByPickUpPointFeeCatalogIdAndStudentFeeId(Long pickUpPointFeeCatalogId,
 			Long studentFeeId);
 }

@@ -16,8 +16,7 @@
 			<p:outputLabel id="emp_start_date_label" value="Start date" for="emp_start_date" />
 			<h:panelGrid columns="2" style="border:0px;">
 				<p:calendar id="emp_start_date" value="#{employeeCTCBean.employeeCTC.startDate}" navigator="true" showOn="button"
-					pattern="dd/MM/yyyy" yearRange="1900" required="true"
-					disabled="#{employeeCTCBean.employeeCTCsByEmployee == null || employeeCTCBean.employeeCTCsByEmployee.isEmpty()}" />
+					pattern="dd/MM/yyyy" yearRange="1900" required="true" />
 				<p:watermark for="emp_start_date" value="DD/MM/YYYY" />
 			</h:panelGrid>
 			<p:message id="emp_start_date_msg" for="emp_start_date" />
@@ -52,7 +51,9 @@
 						<h:outputText value="#{cTCMonthly.amount}" />
 					</f:facet>
 					<f:facet name="input">
-						<p:inputText value="#{cTCMonthly.amount}" style="width:100%" label="Year" />
+						<p:inputText value="#{cTCMonthly.amount}" style="width:100%" label="Year">
+						<p:ajax process="@this" update="@this"></p:ajax>
+						 </p:inputText>
 					</f:facet>
 				</p:cellEditor>
 			</p:column>

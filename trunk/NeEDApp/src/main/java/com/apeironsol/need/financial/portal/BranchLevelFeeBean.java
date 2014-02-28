@@ -25,9 +25,12 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.AcademicYear;
+import com.apeironsol.need.core.service.StudentFeeTransactionDetailsService;
 import com.apeironsol.need.financial.model.BranchLevelFee;
 import com.apeironsol.need.financial.model.BranchLevelFeeCatalog;
+import com.apeironsol.need.financial.model.StudentFeeTransactionDetails;
 import com.apeironsol.need.financial.service.BranchLevelFeeService;
 import com.apeironsol.need.util.comparator.BranchLevelFeeCatalogComparator;
 import com.apeironsol.need.util.constants.PaymentFrequencyConstant;
@@ -35,7 +38,6 @@ import com.apeironsol.need.util.dataobject.AcademicYearBranchLevelFeeDO;
 import com.apeironsol.need.util.portal.BranchLevelFeeTreeNode;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -112,6 +114,11 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 	 */
 	private BranchLevelFeeTreeNode						root					= new BranchLevelFeeTreeNode("BranchLevelFeeTableRoot", null);
 
+	@Resource
+	StudentFeeTransactionDetailsService					studentFeeTransactionDetailsService;
+
+	private boolean										studentTransactionFeesDetailsAlreadyExists;
+
 	@PostConstruct
 	public void init() {
 		this.reset();
@@ -187,6 +194,18 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 		this.noOfPayments = noOfPayments;
 	}
 
+	public boolean isFrequencyDisabled() {
+		this.studentTransactionFeesDetailsAlreadyExists = false;
+		if ((this.branchLevelFee != null) && (this.branchLevelFee.getId() != null)) {
+			final Collection<StudentFeeTransactionDetails> studentFeeTransactionDetails = this.studentFeeTransactionDetailsService
+					.findStudentFeeTransactionDetailsByBranchLevelFeeId(this.branchLevelFee.getId());
+			if ((studentFeeTransactionDetails != null) && (studentFeeTransactionDetails.size() > 0)) {
+				this.studentTransactionFeesDetailsAlreadyExists = true;
+			}
+		}
+		return this.studentTransactionFeesDetailsAlreadyExists;
+	}
+
 	/**
 	 * Saves branch level fee to database.
 	 */
@@ -199,9 +218,7 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 
 			if (this.isNewAction()) {
 				this.branchLevelFee = this.branchLevelFeeService.saveBranchLevelFee(this.branchLevelFee);
-			}
-
-			if (this.isViewAction()) {
+			} else if (this.isViewAction()) {
 				this.branchLevelFee = this.branchLevelFeeService.updateBranchLevelFee(this.branchLevelFee);
 			}
 
@@ -213,7 +230,7 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 
 			this.loadAcademicYearBranchLevelFeeDOsFlag = true;
 
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			log.info(exception.getMessage(), exception);
 			ViewExceptionHandler.handle(exception);
 		}
@@ -225,14 +242,23 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 	 */
 	public void applyToExistingStudents() {
 		try {
-
 			this.branchLevelFee.setBranch(this.sessionBean.getCurrentBranch());
 
-			this.branchLevelFeeService.applyBranchLevelFeeToExistingActiveStudents(this.branchLevelFee);
+			this.branchLevelFee.setBranchLevelFeeCatalogs(this.branchLevelFeeCatalogs);
 
+			if (this.isNewAction()) {
+				this.branchLevelFee = this.branchLevelFeeService.saveBranchLevelFee(this.branchLevelFee);
+			} else if (this.isViewAction()) {
+				this.branchLevelFee = this.branchLevelFeeService.updateBranchLevelFee(this.branchLevelFee);
+			}
+
+			this.branchLevelFee.setBranch(this.sessionBean.getCurrentBranch());
+			this.loadBranchLevelFeeCatalogs();
+			this.branchLevelFee.setBranchLevelFeeCatalogs(this.branchLevelFeeCatalogs);
+			this.branchLevelFeeService.applyBranchLevelFeeToExistingActiveStudents(this.branchLevelFee);
 			ViewUtil.addMessage("Branch Fee applied sucessfully.", FacesMessage.SEVERITY_INFO);
 
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			log.info(exception.getMessage(), exception);
 			ViewExceptionHandler.handle(exception);
 		}
@@ -249,7 +275,7 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 			this.loadAcademicYearBranchLevelFeeDOsFlag = true;
 
 			ViewUtil.addMessage(this.getFeeTypeName() + " period removed successfully.", FacesMessage.SEVERITY_INFO);
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			ViewExceptionHandler.handle(exception);
 		}
 		this.loadBranchLevelFees = true;
@@ -275,7 +301,7 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 
 				this.loadBranchLevelFees = false;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ViewUtil.addMessage(ex.getMessage(), FacesMessage.SEVERITY_ERROR);
 		}
 	}
@@ -294,7 +320,7 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 
 				this.loadAcademicYearBranchLevelFeeDOsFlag = false;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ViewUtil.addMessage(ex.getMessage(), FacesMessage.SEVERITY_ERROR);
 		}
 	}
@@ -329,19 +355,26 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 	 */
 	public void generateBranchLevelFeeCatalogs() {
 
-		if (this.branchLevelFee == null || this.branchLevelFee.getAcademicYear() == null || this.branchLevelFee.getAmount() == null
-				|| this.branchLevelFee.getAmount() <= 0 || this.branchLevelFee.getPaymentFrequency() == null) {
+		if ((this.branchLevelFee == null) || (this.branchLevelFee.getAcademicYear() == null) || (this.branchLevelFee.getAmount() == null)
+				|| (this.branchLevelFee.getAmount() <= 0) || (this.branchLevelFee.getPaymentFrequency() == null)) {
 			return;
 		}
+		if (!this.studentTransactionFeesDetailsAlreadyExists) {
+			this.branchLevelFeeCatalogs.clear();
+		}
 
-		this.branchLevelFeeCatalogs.clear();
+		final AcademicYear academicYear = this.branchLevelFee.getAcademicYear();
 
-		AcademicYear academicYear = this.branchLevelFee.getAcademicYear();
-
-		int durationInDays = academicYear.getDays();
+		final int durationInDays = academicYear.getDays();
 
 		if (PaymentFrequencyConstant.ONCE.equals(this.branchLevelFee.getPaymentFrequency())) {
-			this.branchLevelFeeCatalogs.add(this.createBranchLevelFeeCatalog(academicYear.getStartDate(), this.branchLevelFee.getAmount()));
+			if (!this.studentTransactionFeesDetailsAlreadyExists) {
+				this.branchLevelFeeCatalogs.add(this.createBranchLevelFeeCatalog(academicYear.getStartDate(), this.branchLevelFee.getAmount()));
+			} else {
+				if ((this.branchLevelFeeCatalogs != null) && (this.branchLevelFeeCatalogs.size() > 0)) {
+					this.branchLevelFeeCatalogs.iterator().next().setAmount(this.branchLevelFee.getAmount());
+				}
+			}
 
 		} else if (PaymentFrequencyConstant.TWICE.equals(this.branchLevelFee.getPaymentFrequency())) {
 
@@ -364,39 +397,39 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 	}
 
 	public void processPayments(final int durationInDays, final int numberOfPayments, final Double amount) {
+		if (!this.studentTransactionFeesDetailsAlreadyExists) {
+			final double splitAmount = Math.round(amount / numberOfPayments);
 
-		double splitAmount = Math.round(amount / numberOfPayments);
+			double lastPaymentCorrectionValue = 0;
 
-		double lastPaymentCorrectionValue = 0;
+			final double totalAmount = splitAmount * numberOfPayments;
 
-		double totalAmount = splitAmount * numberOfPayments;
-
-		if (!amount.equals(totalAmount)) {
-			lastPaymentCorrectionValue = amount - totalAmount;
-		}
-
-		int nextPaymentDurationInDays = durationInDays / numberOfPayments;
-
-		Date paymentDate = this.branchLevelFee.getAcademicYear().getStartDate();
-
-		DateTime nextPaymentDate = new DateTime(paymentDate.getTime());
-
-		for (int i = 0; i < numberOfPayments; i++) {
-
-			if (i == numberOfPayments - 1) {
-				this.branchLevelFeeCatalogs.add(this.createBranchLevelFeeCatalog(paymentDate, splitAmount + lastPaymentCorrectionValue));
-			} else {
-
-				this.branchLevelFeeCatalogs.add(this.createBranchLevelFeeCatalog(paymentDate, splitAmount));
-
+			if (!amount.equals(totalAmount)) {
+				lastPaymentCorrectionValue = amount - totalAmount;
 			}
 
-			nextPaymentDate = nextPaymentDate.plusDays(nextPaymentDurationInDays);
+			final int nextPaymentDurationInDays = durationInDays / numberOfPayments;
 
-			paymentDate = new Date(nextPaymentDate.dayOfMonth().withMinimumValue().getMillis());
+			Date paymentDate = this.branchLevelFee.getAcademicYear().getStartDate();
 
+			DateTime nextPaymentDate = new DateTime(paymentDate.getTime());
+
+			for (int i = 0; i < numberOfPayments; i++) {
+
+				if (i == (numberOfPayments - 1)) {
+					this.branchLevelFeeCatalogs.add(this.createBranchLevelFeeCatalog(paymentDate, splitAmount + lastPaymentCorrectionValue));
+				} else {
+
+					this.branchLevelFeeCatalogs.add(this.createBranchLevelFeeCatalog(paymentDate, splitAmount));
+
+				}
+
+				nextPaymentDate = nextPaymentDate.plusDays(nextPaymentDurationInDays);
+
+				paymentDate = new Date(nextPaymentDate.dayOfMonth().withMinimumValue().getMillis());
+
+			}
 		}
-
 	}
 
 	/**
@@ -408,21 +441,21 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 
 		if (this.academicYearBranchLevelFeeDOs != null) {
 
-			for (AcademicYearBranchLevelFeeDO academicYearBranchLevelFeeDO : this.academicYearBranchLevelFeeDOs) {
+			for (final AcademicYearBranchLevelFeeDO academicYearBranchLevelFeeDO : this.academicYearBranchLevelFeeDOs) {
 
-				BranchLevelFeeTreeNode branchLevelFeeTreeNode = new BranchLevelFeeTreeNode();
+				final BranchLevelFeeTreeNode branchLevelFeeTreeNode = new BranchLevelFeeTreeNode();
 
 				branchLevelFeeTreeNode.setName(academicYearBranchLevelFeeDO.getAcademicYear().getDisplayLabel());
 				branchLevelFeeTreeNode.setTotalAmount(academicYearBranchLevelFeeDO.getTotalBranchLevelFee());
 
-				BranchLevelFeeTreeNode academicYearTree = new BranchLevelFeeTreeNode(branchLevelFeeTreeNode, this.getRoot());
+				final BranchLevelFeeTreeNode academicYearTree = new BranchLevelFeeTreeNode(branchLevelFeeTreeNode, this.getRoot());
 				academicYearTree.setExpanded(false);
 
-				Collection<BranchLevelFee> branchLevelFees = academicYearBranchLevelFeeDO.getBranchLevelFees();
+				final Collection<BranchLevelFee> branchLevelFees = academicYearBranchLevelFeeDO.getBranchLevelFees();
 
-				for (BranchLevelFee branchLevelFee : branchLevelFees) {
+				for (final BranchLevelFee branchLevelFee : branchLevelFees) {
 
-					BranchLevelFeeTreeNode branchLevelFeeTreeNode1 = new BranchLevelFeeTreeNode();
+					final BranchLevelFeeTreeNode branchLevelFeeTreeNode1 = new BranchLevelFeeTreeNode();
 
 					branchLevelFeeTreeNode1.setBranchLevelFee(branchLevelFee);
 
@@ -434,14 +467,14 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 
 					branchLevelFeeTreeNode1.setOptionsNode(true);
 
-					TreeNode branchLevelFeeTree = new DefaultTreeNode(branchLevelFeeTreeNode1, academicYearTree);
+					final TreeNode branchLevelFeeTree = new DefaultTreeNode(branchLevelFeeTreeNode1, academicYearTree);
 					branchLevelFeeTree.setExpanded(false);
 
-					Collection<BranchLevelFeeCatalog> branchLevelFeeCatalogs = branchLevelFee.getBranchLevelFeeCatalogs();
+					final Collection<BranchLevelFeeCatalog> branchLevelFeeCatalogs = branchLevelFee.getBranchLevelFeeCatalogs();
 
-					for (BranchLevelFeeCatalog branchLevelFeeCatalog : branchLevelFeeCatalogs) {
+					for (final BranchLevelFeeCatalog branchLevelFeeCatalog : branchLevelFeeCatalogs) {
 
-						BranchLevelFeeTreeNode branchLevelFeeTreeNode2 = new BranchLevelFeeTreeNode();
+						final BranchLevelFeeTreeNode branchLevelFeeTreeNode2 = new BranchLevelFeeTreeNode();
 
 						branchLevelFeeTreeNode2.setDueDate(branchLevelFeeCatalog.getDueDate());
 						branchLevelFeeTreeNode2.setDueAmount(branchLevelFeeCatalog.getAmount());
@@ -459,8 +492,8 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 	 * Removes all child nodes of the supplied root node.
 	 */
 	private void removeAllChildsOfRootNode(final TreeNode rootNode) {
-		if (rootNode != null && rootNode.getChildCount() > 0) {
-			TreeNode[] array = rootNode.getChildren().toArray(new TreeNode[rootNode.getChildCount()]);
+		if ((rootNode != null) && (rootNode.getChildCount() > 0)) {
+			final TreeNode[] array = rootNode.getChildren().toArray(new TreeNode[rootNode.getChildCount()]);
 			for (TreeNode child : array) {
 				child.setParent(null);
 				child = null;
@@ -566,6 +599,21 @@ public class BranchLevelFeeBean extends AbstractFinancialBean {
 
 	public void setAcademicYearBranchLevelFeeDO(final AcademicYearBranchLevelFeeDO academicYearBranchLevelFeeDO) {
 		this.academicYearBranchLevelFeeDO = academicYearBranchLevelFeeDO;
+	}
+
+	/**
+	 * @return the studentTransactionFeesDetailsAlreadyExists
+	 */
+	public boolean isStudentTransactionFeesDetailsAlreadyExists() {
+		return this.studentTransactionFeesDetailsAlreadyExists;
+	}
+
+	/**
+	 * @param studentTransactionFeesDetailsAlreadyExists
+	 *            the studentTransactionFeesDetailsAlreadyExists to set
+	 */
+	public void setStudentTransactionFeesDetailsAlreadyExists(final boolean studentTransactionFeesDetailsAlreadyExists) {
+		this.studentTransactionFeesDetailsAlreadyExists = studentTransactionFeesDetailsAlreadyExists;
 	}
 
 }

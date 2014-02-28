@@ -30,7 +30,7 @@
 
 			<p:outputLabel id="pup_pay_freq_lbl" value="#{msg.pickUpPointPaymentFrequency}" for="pup_pay_freq" />
 			<p:selectOneMenu id="pup_pay_freq" value="#{pickUpPointFeeBean.pickUpPointFee.paymentFrequency}" required="true"
-				requiredMessage="#{model.frequency_mandatory}">
+				requiredMessage="#{model.frequency_mandatory}" disabled="#{pickUpPointFeeBean.frequencyDisabled}">
 				<f:selectItem itemLabel="Select paymnet frequency" itemValue="" />
 				<f:selectItems value="#{enumConstantsBean.paymentFrequencies}" var="frequency" itemLabel="#{frequency.label}"
 					itemValue="#{frequency}" />

@@ -14,6 +14,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.core.portal.messages.BusinessMessages;
 import com.apeironsol.need.financial.dao.StudentFeeDao;
 import com.apeironsol.need.financial.dao.StudentFeeTransactionDetailsDao;
@@ -24,8 +26,6 @@ import com.apeironsol.need.financial.model.StudentFeeTransactionDetails;
 import com.apeironsol.need.financial.model.StudentLevelFee;
 import com.apeironsol.need.financial.model.StudentLevelFeeCatalog;
 import com.apeironsol.need.util.constants.FeeClassificationLevelConstant;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 /**
  * Service interface for branch level fee service implementation.
@@ -53,27 +53,26 @@ public class StudentLevelFeeServiceImpl implements StudentLevelFeeService {
 	private StudentFinancialService			studentFinancialService;
 
 	@Override
-	public StudentLevelFee saveStudentLevelFee(final StudentLevelFee studentLevelFee) throws BusinessException, SystemException {
+	public StudentLevelFee saveStudentLevelFee(final StudentLevelFee studentLevelFee, final boolean deleteExistingStudentFeeCatalog) throws BusinessException,
+			SystemException {
 
 		boolean newAction = false;
 		if (studentLevelFee.getId() == null) {
 			newAction = true;
-		} else {
-			validateAction(studentLevelFee);
 		}
 
 		studentLevelFee.validate();
 
-		if (studentLevelFee.getId() != null) {
+		if ((studentLevelFee.getId() != null) && deleteExistingStudentFeeCatalog) {
 
 			this.studentLevelFeeCatalogDao.removeStudentLevelFeeCatalogsByStudentLevelFeeId(studentLevelFee.getId());
 		}
 
-		StudentLevelFee studentLevelFeeLocal = this.studentLevelFeeDao.persist(studentLevelFee);
+		final StudentLevelFee studentLevelFeeLocal = this.studentLevelFeeDao.persist(studentLevelFee);
 
 		if (newAction) {
 
-			StudentFee studentFee = new StudentFee();
+			final StudentFee studentFee = new StudentFee();
 
 			studentFee.setFeeClassificationLevel(FeeClassificationLevelConstant.STUDENT_LEVEL);
 			studentFee.setStudentAcademicYear(studentLevelFeeLocal.getStudentAcademicYear());
@@ -86,33 +85,32 @@ public class StudentLevelFeeServiceImpl implements StudentLevelFeeService {
 
 	@Override
 	public void removeStudentLevelFee(final StudentLevelFee studentLevelFee) throws BusinessException, SystemException {
-		
-		validateAction(studentLevelFee);
-		
-		
-		StudentFee studentFee = this.studentFeeDao.findStudentFeeByStudentAcadmicYearIdAndStudentFeeId(studentLevelFee.getStudentAcademicYear().getId(),
+
+		this.validateAction(studentLevelFee);
+
+		final StudentFee studentFee = this.studentFeeDao.findStudentFeeByStudentAcadmicYearIdAndStudentFeeId(studentLevelFee.getStudentAcademicYear().getId(),
 				studentLevelFee.getId());
-		
+
 		this.studentFeeDao.remove(studentFee);
-		
+
 		this.studentFinancialService.processStudentAcademicYearFeeSummary(studentLevelFee.getStudentAcademicYear().getId());
 
 		this.studentLevelFeeDao.remove(studentLevelFee);
 
 	}
 
-	private void validateAction(StudentLevelFee studentLevelFee) {
-		
-		StudentFee studentFee = this.studentFeeDao.findStudentFeeByStudentAcadmicYearIdAndStudentFeeId(studentLevelFee.getStudentAcademicYear().getId(),
+	private void validateAction(final StudentLevelFee studentLevelFee) {
+
+		final StudentFee studentFee = this.studentFeeDao.findStudentFeeByStudentAcadmicYearIdAndStudentFeeId(studentLevelFee.getStudentAcademicYear().getId(),
 				studentLevelFee.getId());
 
-		Collection<StudentFeeTransactionDetails> studentFeeTransactionDetails = this.studentFeeTransactionDetailsDao
+		final Collection<StudentFeeTransactionDetails> studentFeeTransactionDetails = this.studentFeeTransactionDetailsDao
 				.findStudentFeeTransactionDetailsByStudentFeeId(studentFee.getId());
-		if (studentFeeTransactionDetails != null && !studentFeeTransactionDetails.isEmpty()) {
+		if ((studentFeeTransactionDetails != null) && !studentFeeTransactionDetails.isEmpty()) {
 			throw new BusinessException(BusinessMessages.getResourceBundleName(), BusinessMessages.MSG_CANNOT_DELETE_STUDENT_LEVEL_FEE_AS_TRANSACTION_FOUND,
 					null);
 		}
-		
+
 	}
 
 	@Override

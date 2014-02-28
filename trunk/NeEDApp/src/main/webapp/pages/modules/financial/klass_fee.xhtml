@@ -55,7 +55,8 @@
 				<p:message id="fee_amount_msg" for="fee_amount" />
 
 				<p:outputLabel id="frequency_label" value="Payment frequency" for="frequency" />
-				<p:selectOneMenu id="frequency" value="#{klassLevelFeeBean.klassFee.paymentFrequency}" required="true">
+				<p:selectOneMenu id="frequency" value="#{klassLevelFeeBean.klassFee.paymentFrequency}" required="true"
+					disabled="#{klassLevelFeeBean.frequencyDisabled}">
 					<f:selectItem itemLabel="select:" itemValue="" />
 					<f:selectItems value="#{enumConstantsBean.paymentFrequencies}" var="frequency" itemLabel="#{frequency.label}"
 						itemValue="#{frequency}" />
@@ -87,10 +88,9 @@
 							</h:outputText>
 						</f:facet>
 						<f:facet name="input">
-							<p:calendar value="#{klassLevelFeeCatalog.dueDate}" navigator="true" showOn="button"
-								pattern="dd/MM/yyyy" mindate="#{klassLevelFeeBean.academicYear.startDate}"
-								maxdate="#{klassLevelFeeBean.academicYear.endDate}">
-								<p:ajax event="dateSelect" process="@this"/>
+							<p:calendar value="#{klassLevelFeeCatalog.dueDate}" navigator="true" showOn="button" pattern="dd/MM/yyyy"
+								mindate="#{klassLevelFeeBean.academicYear.startDate}" maxdate="#{klassLevelFeeBean.academicYear.endDate}">
+								<p:ajax event="dateSelect" process="@this" />
 							</p:calendar>
 						</f:facet>
 					</p:cellEditor>
@@ -105,7 +105,7 @@
 						<f:facet name="input">
 							<f:facet name="input">
 								<p:inputText value="#{klassLevelFeeCatalog.amount}">
-									<p:ajax process="@this"/>
+									<p:ajax process="@this" />
 								</p:inputText>
 							</f:facet>
 						</f:facet>
@@ -115,12 +115,7 @@
 					<p:rowEditor />
 				</p:column>
 			</p:dataTable>
-
-
-
 			<br />
-
-
 			<p:commandButton id="cancel" value="Back" update="@form" process="@this" icon="ui-icon-circle-arrow-w">
 				<f:setPropertyActionListener target="#{klassLevelFeeBean.displayNewKlassFee}" value="false" />
 			</p:commandButton>
@@ -138,10 +133,14 @@
         		Request is processing, please wait<br />
 				<p:graphicImage value="/images/ajax-loader.gif" />
 			</p:blockUI>
+			<p:confirmDialog id="confirmDialogSave" message="Do you want to change class fee?" header="Confirmation"
+				severity="alert" widgetVar="confirmationSave">
+				<p:commandButton id="confirm" value="Yes" update="@form" process="@this" oncomplete="confirmationSave.hide()"
+					action="#{klassLevelFeeBean.saveKlassFee}" />
+				<p:commandButton id="decline" value="No" onclick="confirmationSave.hide()" type="button" />
+			</p:confirmDialog>
 
 		</p:panel>
-
-
 
 	</c:if>
 	<c:if test="#{!klassLevelFeeBean.displayNewKlassFee}">
@@ -162,8 +161,8 @@
 				<li class="ui-datalist-item">Existing can be deleted by clicking the delete icon.</li>
 			</ul>
 		</p:panel>
-		
-		
+
+
 		<p:dataTable id="klassFeesDatatable" var="klassFee" value="#{klassLevelFeeBean.klassFees}" paginator="true" rows="10"
 			paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 			rowsPerPageTemplate="5,10,15" paginatorPosition="bottom" sortOrder="descending" style="margin-top:1px;">

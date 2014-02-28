@@ -5,7 +5,6 @@ import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -34,7 +33,7 @@ public class KlassLevelFeeCatalog extends BaseEntity implements Serializable {
 	@Column(name = "AMOUNT", nullable = false)
 	private Double				amount;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "CLASS_LEVEL_FEE_ID", nullable = false)
 	private KlassLevelFee		klassLevelFee;
 

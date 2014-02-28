@@ -42,7 +42,7 @@
 							<p:ajax event="dateSelect" process="@this" update="@form"
 								listener="#{employeeSalaryBean.handleSalaryMonthChange}"></p:ajax>
 						</p:calendar>
-						<p:watermark for="available_start_date" value="DD/MM/YYYY" />
+						<p:watermark for="salary_month" value="DD/MM/YYYY" />
 					</h:panelGrid>
 					<p:message id="salary_month_msg" for="salary_month" />
 
@@ -121,11 +121,6 @@
 						<h:outputLabel id="employee_joining_date_label" value="Employment Joining Date :" />
 						<h:outputText value="#{employeeSalaryBean.currentEmployeeDO.joiningDate}" />
 
-						<h:outputLabel id="employee_end_date_label" value="Employment End Date :"
-							rendered="#{employeeSalaryBean.currentEmployeeDO.employementEndDate !=null}" />
-						<h:outputText value="#{employeeSalaryBean.currentEmployeeDO.employementEndDate}"
-							rendered="#{employeeSalaryBean.currentEmployeeDO.employementEndDate !=null}" />
-
 					</h:panelGrid>
 				</p:panel>
 				<p:panel id="bank_account_panel" style="margin-bottom:1px;border:0px" cellpadding="10" header="Bank Account Details"
@@ -157,7 +152,7 @@
 				disabled="#{employeeSalaryBean.employeeSalary.id != null}">
 				<p:ajax event="dateSelect" process="@this" update="@form"></p:ajax>
 			</p:calendar>
-			<p:watermark for="available_start_date" value="DD/MM/YYYY" />
+			<p:watermark for="salary_paid_date" value="DD/MM/YYYY" />
 		</h:panelGrid>
 		<p:message id="salary_paid_date_msg" for="salary_paid_date" />
 
@@ -273,7 +268,7 @@
 						style="font-weight:bold;" />
 				</p:column>
 			</p:row>
-		</h:panelGrid>
+		</p:panelGrid>
 	</p:panel>
 	<br></br>
 

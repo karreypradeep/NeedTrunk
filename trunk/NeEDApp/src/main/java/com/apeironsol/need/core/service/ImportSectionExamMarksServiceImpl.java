@@ -139,7 +139,7 @@ public class ImportSectionExamMarksServiceImpl implements ImportSectionExamMarks
 		final StudentExamAllSubjectsDO result = studentExamAllSubjectsDO;
 		boolean importedAtleastForOneSubject = false;
 		for (int c = 3; c < columnHeadersRow.getPhysicalNumberOfCells(); c++) {
-			if ((studentRow.getCell(c) != null) && (studentRow.getCell(c).getStringCellValue() != null)) {
+			if ((studentRow.getCell(c) != null)) {
 				for (final StudentExamSubject studentExamSubject : result.getStudentExamSubjects()) {
 					if (columnHeadersRow.getCell(c).getStringCellValue().contains(studentExamSubject.getSectionExamSubject().getId() + "")) {
 						String scoredValueAsString = null;
@@ -319,8 +319,6 @@ public class ImportSectionExamMarksServiceImpl implements ImportSectionExamMarks
 						+ sectionExamSubject.getMaximumMarks() + ")");
 				i++;
 			}
-			final HSSFCell cell = row.createCell((cellNum) + i);
-			cell.setCellValue("Status");
 
 			final Collection<StudentExamAllSubjectsDO> studentExamAllSubjectsDOs = this.studentExamSubjectService
 					.findStudentExamAllSubjectsDOsBySubjectExamId(sectionExam.getId());

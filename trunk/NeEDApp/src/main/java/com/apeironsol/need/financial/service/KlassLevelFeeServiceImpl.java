@@ -15,6 +15,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.core.dao.KlassDao;
 import com.apeironsol.need.core.model.BuildingBlock;
 import com.apeironsol.need.core.model.Klass;
@@ -33,8 +35,6 @@ import com.apeironsol.need.util.constants.BuildingBlockConstant;
 import com.apeironsol.need.util.constants.FeeClassificationLevelConstant;
 import com.apeironsol.need.util.constants.FeeTypeConstant;
 import com.apeironsol.need.util.constants.ResidenceConstant;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Service implementation interface for Branch fee type periodical.
@@ -62,21 +62,22 @@ public class KlassLevelFeeServiceImpl implements KlassLevelFeeService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public KlassLevelFee saveKlassFee(final KlassLevelFee klassLevelFee) throws BusinessException, InvalidArgumentException {
+	public KlassLevelFee saveKlassFee(final KlassLevelFee klassLevelFee, final boolean deleteKlassLevelFeeCatalog) throws BusinessException,
+			InvalidArgumentException {
 		// TODO Pradeep , check if the fee is associated with any transactions
 		// if so throw business exception.
 
 		klassLevelFee.validate();
 
-		KlassLevelFee klassFeeLocal = this.klassLevelFeeDao.findKlassFeeByKlassidAndBunildingBlockIdAndAcademicYearId(klassLevelFee.getKlass().getId(),
+		final KlassLevelFee klassFeeLocal = this.klassLevelFeeDao.findKlassFeeByKlassidAndBunildingBlockIdAndAcademicYearId(klassLevelFee.getKlass().getId(),
 				klassLevelFee.getBuildingBlock().getId(), klassLevelFee.getAcademicYear().getId());
 
-		if (klassFeeLocal != null && (klassLevelFee.getId() == null || klassLevelFee.getId() == 0)) {
+		if ((klassFeeLocal != null) && ((klassLevelFee.getId() == null) || (klassLevelFee.getId() == 0))) {
 			throw new BusinessException(klassFeeLocal.getBuildingBlock().getName() + " for class " + klassFeeLocal.getKlass().getName()
 					+ " is already defined for the academic year " + klassFeeLocal.getAcademicYear().getDisplayLabel());
 		}
 
-		if (klassLevelFee.getId() != null) {
+		if ((klassLevelFee.getId() != null) && deleteKlassLevelFeeCatalog) {
 			this.klassLevelFeeCatalogDao.removeKlassFeePaymentsByKlassFeeId(klassLevelFee);
 		}
 		return this.klassLevelFeeDao.persist(klassLevelFee);
@@ -116,14 +117,14 @@ public class KlassLevelFeeServiceImpl implements KlassLevelFeeService {
 	@Override
 	public Collection<KlassLevelFee> findAllKlassFeesByKlassIdAndCurrentAcademicYear(final Long klassId) throws BusinessException {
 
-		Klass klass = this.klassDao.findById(klassId);
+		final Klass klass = this.klassDao.findById(klassId);
 
-		Collection<BuildingBlock> feeTypes = this.buildingBlockService.findBuildingBlocksbyBranchIdAndBuildingBlockType(klass.getBranch().getId(),
+		final Collection<BuildingBlock> feeTypes = this.buildingBlockService.findBuildingBlocksbyBranchIdAndBuildingBlockType(klass.getBranch().getId(),
 				BuildingBlockConstant.FEE_TYPE);
 
-		Collection<KlassLevelFee> klassFeePeriodicals = new ArrayList<KlassLevelFee>();
-		for (BuildingBlock feeType : feeTypes) {
-			KlassLevelFee klassLevelFee = this.klassLevelFeeDao.findKlassFeeByKlassIdAndBuildingBlockIdAndCurrentAcademicYear(klassId, feeType.getId());
+		final Collection<KlassLevelFee> klassFeePeriodicals = new ArrayList<KlassLevelFee>();
+		for (final BuildingBlock feeType : feeTypes) {
+			final KlassLevelFee klassLevelFee = this.klassLevelFeeDao.findKlassFeeByKlassIdAndBuildingBlockIdAndCurrentAcademicYear(klassId, feeType.getId());
 			if (klassLevelFee != null) {
 				klassFeePeriodicals.add(klassLevelFee);
 			}
@@ -146,15 +147,15 @@ public class KlassLevelFeeServiceImpl implements KlassLevelFeeService {
 	@Override
 	public Collection<KlassLevelFee> findAllKlassFeesByKlassIdAndAcademicYearId(final Long klassId, final Long academicYearId) throws BusinessException {
 
-		Klass klass = this.klassDao.findById(klassId);
+		final Klass klass = this.klassDao.findById(klassId);
 
-		Collection<BuildingBlock> feeTypes = this.buildingBlockService.findBuildingBlocksbyBranchIdAndBuildingBlockType(klass.getBranch().getId(),
+		final Collection<BuildingBlock> feeTypes = this.buildingBlockService.findBuildingBlocksbyBranchIdAndBuildingBlockType(klass.getBranch().getId(),
 				BuildingBlockConstant.FEE_TYPE);
 
-		Collection<KlassLevelFee> klassFeePeriodicals = new ArrayList<KlassLevelFee>();
-		for (BuildingBlock feeType : feeTypes) {
+		final Collection<KlassLevelFee> klassFeePeriodicals = new ArrayList<KlassLevelFee>();
+		for (final BuildingBlock feeType : feeTypes) {
 
-			KlassLevelFee klassLevelFee = this.klassLevelFeeDao.findKlassFeeByKlassidAndBunildingBlockIdAndAcademicYearId(klassId, feeType.getId(),
+			final KlassLevelFee klassLevelFee = this.klassLevelFeeDao.findKlassFeeByKlassidAndBunildingBlockIdAndAcademicYearId(klassId, feeType.getId(),
 					academicYearId);
 			if (klassLevelFee != null) {
 				klassFeePeriodicals.add(klassLevelFee);
@@ -176,11 +177,11 @@ public class KlassLevelFeeServiceImpl implements KlassLevelFeeService {
 
 	@Override
 	public void applyKlassFeeToExistingActiveStudents(final KlassLevelFee klassLevelFee) throws BusinessException, InvalidArgumentException {
-		Collection<Section> activeSections = this.sectionService.findActiveSectionsByKlassIdAndAcademicYearId(klassLevelFee.getKlass().getId(), klassLevelFee
-				.getAcademicYear().getId());
-		for (Section section : activeSections) {
-			Collection<StudentSection> studentSections = this.studentService.findActiveStudentSectionsBySectionId(section.getId());
-			for (StudentSection studentSection : studentSections) {
+		final Collection<Section> activeSections = this.sectionService.findActiveSectionsByKlassIdAndAcademicYearId(klassLevelFee.getKlass().getId(),
+				klassLevelFee.getAcademicYear().getId());
+		for (final Section section : activeSections) {
+			final Collection<StudentSection> studentSections = this.studentService.findActiveStudentSectionsBySectionId(section.getId());
+			for (final StudentSection studentSection : studentSections) {
 				if (FeeTypeConstant.HOSTEL_FEE.equals(klassLevelFee.getBuildingBlock().getFeeType())
 						&& studentSection.getStudentAcademicYear().getStudent().getResidence().equals(ResidenceConstant.DAY_SCHOOLER)) {
 					// don't create hostel fee.

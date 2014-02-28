@@ -24,12 +24,12 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import com.apeironsol.framework.BaseEntity;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.BuildingBlock;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.util.constants.PaymentFrequencyConstant;
-import com.apeironsol.framework.BaseEntity;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Entity class for Class fee
@@ -56,11 +56,11 @@ public class KlassLevelFee extends BaseEntity implements Serializable {
 	@Enumerated(EnumType.STRING)
 	private PaymentFrequencyConstant			paymentFrequency;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "CLASS_ID", nullable = false)
 	private Klass								klass;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne
 	@JoinColumn(name = "BUILD_BLOCK_ID", nullable = false)
 	private BuildingBlock						buildingBlock;
 
@@ -130,8 +130,8 @@ public class KlassLevelFee extends BaseEntity implements Serializable {
 	public void validate() throws InvalidArgumentException {
 		super.validate();
 		Double totalAmountPayments = 0d;
-		if (this.klassLevelFeeCatalogs != null && !this.klassLevelFeeCatalogs.isEmpty()) {
-			for (KlassLevelFeeCatalog klassLevelFeeCatalog : this.klassLevelFeeCatalogs) {
+		if ((this.klassLevelFeeCatalogs != null) && !this.klassLevelFeeCatalogs.isEmpty()) {
+			for (final KlassLevelFeeCatalog klassLevelFeeCatalog : this.klassLevelFeeCatalogs) {
 				totalAmountPayments += klassLevelFeeCatalog.getAmount();
 			}
 			if (Math.round(totalAmountPayments) != Math.round(this.amount)) {

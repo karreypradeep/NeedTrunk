@@ -9,9 +9,9 @@ package com.apeironsol.need.transportation.service;
 
 import java.util.Collection;
 
-import com.apeironsol.need.transportation.model.PickUpPointFee;
 import com.apeironsol.framework.exception.BusinessException;
 import com.apeironsol.framework.exception.SystemException;
+import com.apeironsol.need.transportation.model.PickUpPointFee;
 
 /**
  * Service Interface for pickup point fee. This service act as controller for
@@ -28,7 +28,7 @@ public interface PickUpPointFeeService {
 	 * @return
 	 * @throws BusinessException
 	 */
-	PickUpPointFee savePickUpPointFee(PickUpPointFee pickUpPointFee) throws BusinessException;
+	PickUpPointFee savePickUpPointFee(PickUpPointFee pickUpPointFee, final boolean deleteAlreadyExistingCatalogs) throws BusinessException;
 
 	/**
 	 * 

@@ -14,13 +14,13 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.SystemException;
 import com.apeironsol.need.financial.dao.StudentFeeDao;
 import com.apeironsol.need.financial.model.StudentFee;
 import com.apeironsol.need.transportation.dao.PickUpPointFeeDao;
 import com.apeironsol.need.transportation.dao.StudentTransportationDao;
 import com.apeironsol.need.transportation.model.PickUpPointFee;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.SystemException;
 
 /**
  * @author Pradeep
@@ -35,34 +35,33 @@ public class PickUpPointFeeServiceImpl implements PickUpPointFeeService {
 
 	@Resource
 	PickUpPointFeeCatalogService	pickUpPointFeeCatalogService;
-	
+
 	@Resource
-	StudentTransportationDao studentTransportationDao;
-	
+	StudentTransportationDao		studentTransportationDao;
+
 	@Resource
-	StudentFeeDao studentFeeDao;
+	StudentFeeDao					studentFeeDao;
 
 	@Override
-	public PickUpPointFee savePickUpPointFee(final PickUpPointFee pickUpPointFee) throws BusinessException {
-		
+	public PickUpPointFee savePickUpPointFee(final PickUpPointFee pickUpPointFee, final boolean deleteAlreadyExistingCatalogs) throws BusinessException {
+
 		pickUpPointFee.validate();
-		
-		
+
 		this.checkForDuplicateAcedemicYear(pickUpPointFee);
-		
-		if (pickUpPointFee.getId() != null) {
+
+		if ((pickUpPointFee.getId() != null) && deleteAlreadyExistingCatalogs) {
 			this.pickUpPointFeeCatalogService.removePickUpPointFeeCatalogsByPickUpPointFeeId(pickUpPointFee.getId());
 		}
-		
+
 		return this.pickUpPointFeeDao.persist(pickUpPointFee);
 	}
 
 	private void checkForDuplicateAcedemicYear(final PickUpPointFee pickUpPointFee) throws BusinessException {
-		PickUpPointFee pickUpPointFeeDB = this.pickUpPointFeeDao.findPickUpPointFeeByPickUpPointIdAndAcademicYearId(pickUpPointFee.getPickUpPoint().getId(),
-					pickUpPointFee.getAcademicYear().getId());
-		
+		final PickUpPointFee pickUpPointFeeDB = this.pickUpPointFeeDao.findPickUpPointFeeByPickUpPointIdAndAcademicYearId(pickUpPointFee.getPickUpPoint()
+				.getId(), pickUpPointFee.getAcademicYear().getId());
+
 		if (pickUpPointFeeDB != null) {
-			if (pickUpPointFeeDB.getId() == null || !pickUpPointFeeDB.getId().equals(pickUpPointFee.getId())) {
+			if ((pickUpPointFeeDB.getId() == null) || !pickUpPointFeeDB.getId().equals(pickUpPointFee.getId())) {
 				throw new BusinessException("PickUpPointFee for academic year " + pickUpPointFee.getAcademicYear().getDisplayLabel() + " already exists.");
 			}
 		}
@@ -75,18 +74,19 @@ public class PickUpPointFeeServiceImpl implements PickUpPointFeeService {
 
 	@Override
 	public void removePickUpPointFee(final Long pickUpPointFeeId) throws BusinessException {
-		
-		PickUpPointFee pickUpPointFee = this.pickUpPointFeeDao.findById(pickUpPointFeeId);
-		
-		Collection<StudentFee> studentFees = this.studentFeeDao.findStudentFeeByAcadmicYearIdAndPickupPointFeeId(pickUpPointFee.getAcademicYear().getId(), pickUpPointFeeId);
-		
-		if(studentFees != null && !studentFees.isEmpty()) {
-			
+
+		final PickUpPointFee pickUpPointFee = this.pickUpPointFeeDao.findById(pickUpPointFeeId);
+
+		final Collection<StudentFee> studentFees = this.studentFeeDao.findStudentFeeByAcadmicYearIdAndPickupPointFeeId(
+				pickUpPointFee.getAcademicYear().getId(), pickUpPointFeeId);
+
+		if ((studentFees != null) && !studentFees.isEmpty()) {
+
 			throw new BusinessException("Pickup point fee cannot be removed because it is associated with the student fee.");
 		}
-		
+
 		this.pickUpPointFeeCatalogService.removePickUpPointFeeCatalogsByPickUpPointFeeId(pickUpPointFeeId);
-		
+
 		this.pickUpPointFeeDao.remove(this.findPickUpPointFeeById(pickUpPointFeeId));
 	}
 
@@ -96,8 +96,8 @@ public class PickUpPointFeeServiceImpl implements PickUpPointFeeService {
 
 	@Override
 	public void removePickUpPointFeesByPickUpPointId(final Long pickUpPointId) throws BusinessException {
-		Collection<PickUpPointFee> pickUpPointFees = this.pickUpPointFeeDao.findPickUpPointFeesByPickUpPointId(pickUpPointId);
-		for (PickUpPointFee pickUpPointFee : pickUpPointFees) {
+		final Collection<PickUpPointFee> pickUpPointFees = this.pickUpPointFeeDao.findPickUpPointFeesByPickUpPointId(pickUpPointId);
+		for (final PickUpPointFee pickUpPointFee : pickUpPointFees) {
 			this.removePickUpPointFee(pickUpPointFee);
 		}
 	}

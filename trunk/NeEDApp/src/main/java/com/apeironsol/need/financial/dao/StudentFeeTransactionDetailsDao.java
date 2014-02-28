@@ -9,9 +9,9 @@ package com.apeironsol.need.financial.dao;
 
 import java.util.Collection;
 
+import com.apeironsol.framework.BaseDao;
 import com.apeironsol.need.financial.model.StudentFee;
 import com.apeironsol.need.financial.model.StudentFeeTransactionDetails;
-import com.apeironsol.framework.BaseDao;
 
 /**
  * Data access interface for student fee transaction entity.
@@ -112,5 +112,37 @@ public interface StudentFeeTransactionDetailsDao extends BaseDao<StudentFeeTrans
 	 */
 	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByPickUpPointFeeCatalogIdAndStudentFeeId(Long pickUpPointFeeCatalogId,
 			Long studentFeeId);
+
+	/**
+	 * 
+	 * @param branchLevelFeeId
+	 * @param studentFeeId
+	 * @return
+	 */
+	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByKlassLevelFeeId(Long klassLevelFeeId);
+
+	/**
+	 * 
+	 * @param branchLevelFeeId
+	 * @param studentFeeId
+	 * @return
+	 */
+	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByBranchLevelFeeId(Long branchLevelFeeId);
+
+	/**
+	 * 
+	 * @param branchLevelFeeId
+	 * @param studentFeeId
+	 * @return
+	 */
+	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByStudentLevelFeeId(Long studentLevelFeeId);
+
+	/**
+	 * 
+	 * @param branchLevelFeeId
+	 * @param studentFeeId
+	 * @return
+	 */
+	Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByPickUpPointFeeId(Long pickUpPointFeeId);
 
 }

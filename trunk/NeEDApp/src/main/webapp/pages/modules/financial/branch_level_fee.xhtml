@@ -49,8 +49,8 @@
 
 			<p:outputLabel id="frequency_label" value="Payment frequency" for="frequency" />
 			<p:selectOneMenu id="frequency" value="#{branchLevelFeeBean.branchLevelFee.paymentFrequency}" required="true"
-				style="width:100%" disabled="#{branchLevelFeeBean.branchLevelFee.buildingBlock == null}">
-				<f:selectItem itemLabel="select:" itemValue="" />
+				style="width:100%" disabled="#{branchLevelFeeBean.branchLevelFee.buildingBlock == null || branchLevelFeeBean.frequencyDisabled}">
+				<f:selectItem itemLabel="select:" itemValue="" /> 
 				<f:selectItems value="#{enumConstantsBean.paymentFrequencies}" var="frequency" itemLabel="#{frequency.label}"
 					itemValue="#{frequency}" />
 				<p:ajax process="@this" update="@form" listener="#{branchLevelFeeBean.onChangePaymentFrequency}" />

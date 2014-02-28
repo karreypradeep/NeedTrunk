@@ -98,4 +98,24 @@ public class StudentFeeTransactionDetailsServiceImpl implements StudentFeeTransa
 
 	}
 
+	@Override
+	public Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByKlassLevelFeeId(final Long klassLevelFeeId) {
+		return this.studentFeeTransactionDetailsDao.findStudentFeeTransactionDetailsByKlassLevelFeeId(klassLevelFeeId);
+	}
+
+	@Override
+	public Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByBranchLevelFeeId(final Long branchLevelFeeId) {
+		return this.studentFeeTransactionDetailsDao.findStudentFeeTransactionDetailsByBranchLevelFeeId(branchLevelFeeId);
+	}
+
+	@Override
+	public Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByStudentLevelFeeId(final Long studentLevelFeeId) {
+		return this.studentFeeTransactionDetailsDao.findStudentFeeTransactionDetailsByStudentLevelFeeId(studentLevelFeeId);
+	}
+
+	@Override
+	public Collection<StudentFeeTransactionDetails> findStudentFeeTransactionDetailsByPickUpPointFeeId(final Long pickUpPointFeeId) {
+		return this.studentFeeTransactionDetailsDao.findStudentFeeTransactionDetailsByPickUpPointFeeId(pickUpPointFeeId);
+	}
+
 }

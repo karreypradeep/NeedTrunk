@@ -814,7 +814,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 		} else if (FeeClassificationLevelConstant.TRANSPORTATION_LEVEL.equals(studentFee.getFeeClassificationLevel())) {
 
-			studentFinancialDO.setFeeName(studentFee.getPickUpPointFee().getPickUpPoint().getName());
+			studentFinancialDO.setFeeName("Transportation Fee from " + studentFee.getPickUpPointFee().getPickUpPoint().getName());
 
 			studentFinancialDO.setPaymentFrequency(studentFee.getPickUpPointFee().getPaymentFrequency());
 		}

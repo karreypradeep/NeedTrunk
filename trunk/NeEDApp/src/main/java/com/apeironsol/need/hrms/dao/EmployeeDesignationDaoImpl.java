@@ -3,7 +3,7 @@
  * SMSystem.
  * www.apeironsol.com
  * Copyright © 2012 apeironsol
- *
+ * 
  */
 package com.apeironsol.need.hrms.dao;
 
@@ -15,15 +15,15 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-import com.apeironsol.need.hrms.model.EmployeeDesignation;
 import com.apeironsol.framework.BaseDaoImpl;
 import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.need.hrms.model.EmployeeDesignation;
 
 /**
  * Data access interface for employee designation entity implementation.
- *
+ * 
  * @author Sunny
- *
+ * 
  */
 @Repository("employeeDesignationDao")
 public class EmployeeDesignationDaoImpl extends BaseDaoImpl<EmployeeDesignation> implements EmployeeDesignationDao {
@@ -33,8 +33,8 @@ public class EmployeeDesignationDaoImpl extends BaseDaoImpl<EmployeeDesignation>
 	 */
 	@Override
 	public Collection<EmployeeDesignation> findAllEmployeeDesignationsByEmployeeID(final Long employeeId) {
-		TypedQuery<EmployeeDesignation> query = this.getEntityManager().createQuery("select ed from EmployeeDesignation ed where ed.employee.id = :employeeId",
-				EmployeeDesignation.class);
+		final TypedQuery<EmployeeDesignation> query = this.getEntityManager().createQuery(
+				"select ed from EmployeeDesignation ed where ed.employee.id = :employeeId", EmployeeDesignation.class);
 		query.setParameter("employeeId", employeeId);
 		return query.getResultList();
 	}
@@ -44,7 +44,7 @@ public class EmployeeDesignationDaoImpl extends BaseDaoImpl<EmployeeDesignation>
 	 */
 	@Override
 	public void removeEmployeeDesignationByEmployeeID(final Long employeeId) {
-		Query query = this.getEntityManager().createQuery("delete from EmployeeDesignation ed where ed.employee.id = :employeeId");
+		final Query query = this.getEntityManager().createQuery("delete from EmployeeDesignation ed where ed.employee.id = :employeeId");
 		query.setParameter("employeeId", employeeId);
 		query.executeUpdate();
 	}
@@ -53,14 +53,13 @@ public class EmployeeDesignationDaoImpl extends BaseDaoImpl<EmployeeDesignation>
 	public EmployeeDesignation findCurrentEmployeeDesignationByEmployeeID(final Long employeeId) throws BusinessException {
 
 		try {
-
-			TypedQuery<EmployeeDesignation> query = this.getEntityManager().createQuery(
+			final TypedQuery<EmployeeDesignation> query = this.getEntityManager().createQuery(
 					"select ed from EmployeeDesignation ed where ed.employee.id = :employeeId order by ed.startDate desc", EmployeeDesignation.class);
-
 			query.setParameter("employeeId", employeeId);
+			query.setMaxResults(1);
 			return query.getSingleResult();
 
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			return null;
 		}
 
@@ -70,14 +69,13 @@ public class EmployeeDesignationDaoImpl extends BaseDaoImpl<EmployeeDesignation>
 	public EmployeeDesignation findFirstEmployeeDesignationByEmployeeID(final Long employeeId) throws BusinessException {
 
 		try {
-
-			TypedQuery<EmployeeDesignation> query = this.getEntityManager().createQuery(
+			final TypedQuery<EmployeeDesignation> query = this.getEntityManager().createQuery(
 					"select ed from EmployeeDesignation ed where ed.employee.id = :employeeId order by ed.startDate asc", EmployeeDesignation.class);
-
 			query.setParameter("employeeId", employeeId);
+			query.setMaxResults(1);
 			return query.getSingleResult();
 
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			return null;
 		}
 	}

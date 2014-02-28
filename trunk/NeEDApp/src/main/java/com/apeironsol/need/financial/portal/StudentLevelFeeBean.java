@@ -24,8 +24,11 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.springframework.context.annotation.Scope;
 
+import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.portal.StudentBean;
+import com.apeironsol.need.core.service.StudentFeeTransactionDetailsService;
+import com.apeironsol.need.financial.model.StudentFeeTransactionDetails;
 import com.apeironsol.need.financial.model.StudentLevelFee;
 import com.apeironsol.need.financial.model.StudentLevelFeeCatalog;
 import com.apeironsol.need.financial.service.StudentLevelFeeService;
@@ -34,7 +37,6 @@ import com.apeironsol.need.util.constants.PaymentFrequencyConstant;
 import com.apeironsol.need.util.portal.StudentLevelFeeTreeNode;
 import com.apeironsol.need.util.portal.ViewExceptionHandler;
 import com.apeironsol.need.util.portal.ViewUtil;
-import com.apeironsol.framework.exception.ApplicationException;
 
 @Named
 @Scope(value = "session")
@@ -90,6 +92,11 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 	 */
 	private final StudentLevelFeeTreeNode		root						= new StudentLevelFeeTreeNode("StudentLevelFeeTreeNode", null);
 
+	@Resource
+	StudentFeeTransactionDetailsService			studentFeeTransactionDetailsService;
+
+	private boolean								studentTransactionFeesDetailsAlreadyExists;
+
 	@PostConstruct
 	public void init() {
 		this.reset();
@@ -136,6 +143,18 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 		this.noOfPayments = noOfPayments;
 	}
 
+	public boolean isFrequencyDisabled() {
+		this.studentTransactionFeesDetailsAlreadyExists = false;
+		if ((this.studentLevelFee != null) && (this.studentLevelFee.getId() != null)) {
+			final Collection<StudentFeeTransactionDetails> studentFeeTransactionDetails = this.studentFeeTransactionDetailsService
+					.findStudentFeeTransactionDetailsByStudentLevelFeeId(this.studentLevelFee.getId());
+			if ((studentFeeTransactionDetails != null) && (studentFeeTransactionDetails.size() > 0)) {
+				this.studentTransactionFeesDetailsAlreadyExists = true;
+			}
+		}
+		return this.studentTransactionFeesDetailsAlreadyExists;
+	}
+
 	/**
 	 * Saves student level fee to database.
 	 */
@@ -146,7 +165,7 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 
 			this.studentLevelFee.setStudentLevelFeeCatalogs(this.studentLevelFeeCatalogs);
 
-			this.studentLevelFee = this.studentLevelFeeService.saveStudentLevelFee(this.studentLevelFee);
+			this.studentLevelFee = this.studentLevelFeeService.saveStudentLevelFee(this.studentLevelFee, !this.studentTransactionFeesDetailsAlreadyExists);
 
 			ViewUtil.addMessage("Student Fee is saved sucessfully.", FacesMessage.SEVERITY_INFO);
 
@@ -156,9 +175,9 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 
 			this.loadStudentLevelFeesFlag = true;
 
-		} catch (ApplicationException e) {
+		} catch (final ApplicationException e) {
 			ViewExceptionHandler.handle(e);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			ViewExceptionHandler.handle(e);
 		}
 		this.loadStudentLevelFeesFlag = true;
@@ -175,7 +194,7 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 			this.loadStudentLevelFeesFlag = true;
 
 			ViewUtil.addMessage(this.getFeeTypeName() + " removed successfully.", FacesMessage.SEVERITY_INFO);
-		} catch (ApplicationException exception) {
+		} catch (final ApplicationException exception) {
 			ViewExceptionHandler.handle(exception);
 		}
 		this.loadStudentLevelFeesFlag = true;
@@ -204,7 +223,7 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 
 				this.loadStudentLevelFeesFlag = false;
 			}
-		} catch (Exception ex) {
+		} catch (final Exception ex) {
 			ViewUtil.addMessage(ex.getMessage(), FacesMessage.SEVERITY_ERROR);
 		}
 	}
@@ -241,20 +260,26 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 	 */
 	public void generateStudentLevelFeeCatalogs() {
 
-		if (this.studentLevelFee == null || this.studentLevelFee.getAmount() == null || this.studentLevelFee.getAmount() <= 0
-				|| this.studentLevelFee.getPaymentFrequency() == null) {
+		if ((this.studentLevelFee == null) || (this.studentLevelFee.getAmount() == null) || (this.studentLevelFee.getAmount() <= 0)
+				|| (this.studentLevelFee.getPaymentFrequency() == null)) {
 			return;
 		}
+		if (!this.studentTransactionFeesDetailsAlreadyExists) {
+			this.studentLevelFeeCatalogs.clear();
+		}
 
-		this.studentLevelFeeCatalogs.clear();
+		final AcademicYear academicYear = this.studentBean.getStudentAcademicYear().getAcademicYear();
 
-		AcademicYear academicYear = this.studentBean.getStudentAcademicYear().getAcademicYear();
-
-		int durationInDays = academicYear.getDays();
+		final int durationInDays = academicYear.getDays();
 
 		if (PaymentFrequencyConstant.ONCE.equals(this.studentLevelFee.getPaymentFrequency())) {
-			this.studentLevelFeeCatalogs.add(this.createStudentLevelFeeCatalog(academicYear.getStartDate(), this.studentLevelFee.getAmount()));
-
+			if (!this.studentTransactionFeesDetailsAlreadyExists) {
+				this.studentLevelFeeCatalogs.add(this.createStudentLevelFeeCatalog(academicYear.getStartDate(), this.studentLevelFee.getAmount()));
+			} else {
+				if ((this.studentLevelFeeCatalogs != null) && (this.studentLevelFeeCatalogs.size() > 0)) {
+					this.studentLevelFeeCatalogs.iterator().next().setAmount(this.studentLevelFee.getAmount());
+				}
+			}
 		} else if (PaymentFrequencyConstant.TWICE.equals(this.studentLevelFee.getPaymentFrequency())) {
 
 			this.processPayments(durationInDays, 2, this.studentLevelFee.getAmount());
@@ -276,39 +301,39 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 	}
 
 	public void processPayments(final int durationInDays, final int numberOfPayments, final Double amount) {
+		if (!this.studentTransactionFeesDetailsAlreadyExists) {
+			final double splitAmount = Math.round(amount / numberOfPayments);
 
-		double splitAmount = Math.round(amount / numberOfPayments);
+			double lastPaymentCorrectionValue = 0;
 
-		double lastPaymentCorrectionValue = 0;
+			final double totalAmount = splitAmount * numberOfPayments;
 
-		double totalAmount = splitAmount * numberOfPayments;
-
-		if (!amount.equals(totalAmount)) {
-			lastPaymentCorrectionValue = amount - totalAmount;
-		}
-
-		int nextPaymentDurationInDays = durationInDays / numberOfPayments;
-
-		Date paymentDate = this.studentBean.getStudentAcademicYear().getAcademicYear().getStartDate();
-
-		DateTime nextPaymentDate = new DateTime(paymentDate.getTime());
-
-		for (int i = 0; i < numberOfPayments; i++) {
-
-			if (i == (numberOfPayments - 1)) {
-				this.studentLevelFeeCatalogs.add(this.createStudentLevelFeeCatalog(paymentDate, splitAmount + lastPaymentCorrectionValue));
-			} else {
-
-				this.studentLevelFeeCatalogs.add(this.createStudentLevelFeeCatalog(paymentDate, splitAmount));
-
+			if (!amount.equals(totalAmount)) {
+				lastPaymentCorrectionValue = amount - totalAmount;
 			}
 
-			nextPaymentDate = nextPaymentDate.plusDays(nextPaymentDurationInDays);
+			final int nextPaymentDurationInDays = durationInDays / numberOfPayments;
 
-			paymentDate = new Date(nextPaymentDate.dayOfMonth().withMinimumValue().getMillis());
+			Date paymentDate = this.studentBean.getStudentAcademicYear().getAcademicYear().getStartDate();
 
+			DateTime nextPaymentDate = new DateTime(paymentDate.getTime());
+
+			for (int i = 0; i < numberOfPayments; i++) {
+
+				if (i == (numberOfPayments - 1)) {
+					this.studentLevelFeeCatalogs.add(this.createStudentLevelFeeCatalog(paymentDate, splitAmount + lastPaymentCorrectionValue));
+				} else {
+
+					this.studentLevelFeeCatalogs.add(this.createStudentLevelFeeCatalog(paymentDate, splitAmount));
+
+				}
+
+				nextPaymentDate = nextPaymentDate.plusDays(nextPaymentDurationInDays);
+
+				paymentDate = new Date(nextPaymentDate.dayOfMonth().withMinimumValue().getMillis());
+
+			}
 		}
-
 	}
 
 	/**
@@ -404,9 +429,9 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 
 		if (this.studentLevelFees != null) {
 
-			for (StudentLevelFee studentLevelFee : this.studentLevelFees) {
+			for (final StudentLevelFee studentLevelFee : this.studentLevelFees) {
 
-				StudentLevelFeeTreeNode studentLevelFeeTreeNode = new StudentLevelFeeTreeNode();
+				final StudentLevelFeeTreeNode studentLevelFeeTreeNode = new StudentLevelFeeTreeNode();
 
 				studentLevelFeeTreeNode.setName(studentLevelFee.getBuildingBlock().getName());
 				studentLevelFeeTreeNode.setPaymentFrequency(studentLevelFee.getPaymentFrequency());
@@ -414,14 +439,14 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 				studentLevelFeeTreeNode.setStudentLevelFee(studentLevelFee);
 				studentLevelFeeTreeNode.setOptionsNode(true);
 
-				StudentLevelFeeTreeNode studentlevelFeeCatalogNode = new StudentLevelFeeTreeNode(studentLevelFeeTreeNode, this.getRoot());
+				final StudentLevelFeeTreeNode studentlevelFeeCatalogNode = new StudentLevelFeeTreeNode(studentLevelFeeTreeNode, this.getRoot());
 				studentlevelFeeCatalogNode.setExpanded(false);
 
-				Collection<StudentLevelFeeCatalog> studentLevelFeeCatalogs = studentLevelFee.getStudentLevelFeeCatalogs();
+				final Collection<StudentLevelFeeCatalog> studentLevelFeeCatalogs = studentLevelFee.getStudentLevelFeeCatalogs();
 
-				for (StudentLevelFeeCatalog studentLevelFeeCatalog : studentLevelFeeCatalogs) {
+				for (final StudentLevelFeeCatalog studentLevelFeeCatalog : studentLevelFeeCatalogs) {
 
-					StudentLevelFeeTreeNode studentLevelFeeTreeNode2 = new StudentLevelFeeTreeNode();
+					final StudentLevelFeeTreeNode studentLevelFeeTreeNode2 = new StudentLevelFeeTreeNode();
 
 					studentLevelFeeTreeNode2.setDueDate(studentLevelFeeCatalog.getDueDate());
 					studentLevelFeeTreeNode2.setDueAmount(studentLevelFeeCatalog.getAmount());
@@ -438,8 +463,8 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 	 * Removes all child nodes of the supplied root node.
 	 */
 	private void removeAllChildsOfRootNode(final TreeNode rootNode) {
-		if (rootNode != null && rootNode.getChildCount() > 0) {
-			TreeNode[] array = rootNode.getChildren().toArray(new TreeNode[rootNode.getChildCount()]);
+		if ((rootNode != null) && (rootNode.getChildCount() > 0)) {
+			final TreeNode[] array = rootNode.getChildren().toArray(new TreeNode[rootNode.getChildCount()]);
 			for (TreeNode child : array) {
 				child.setParent(null);
 				child = null;
@@ -457,6 +482,21 @@ public class StudentLevelFeeBean extends AbstractFinancialBean {
 
 	public void setLoadStudentLevelFeesFlag(final boolean loadStudentLevelFeesFlag) {
 		this.loadStudentLevelFeesFlag = loadStudentLevelFeesFlag;
+	}
+
+	/**
+	 * @return the studentTransactionFeesDetailsAlreadyExists
+	 */
+	public boolean isStudentTransactionFeesDetailsAlreadyExists() {
+		return this.studentTransactionFeesDetailsAlreadyExists;
+	}
+
+	/**
+	 * @param studentTransactionFeesDetailsAlreadyExists
+	 *            the studentTransactionFeesDetailsAlreadyExists to set
+	 */
+	public void setStudentTransactionFeesDetailsAlreadyExists(final boolean studentTransactionFeesDetailsAlreadyExists) {
+		this.studentTransactionFeesDetailsAlreadyExists = studentTransactionFeesDetailsAlreadyExists;
 	}
 
 }
