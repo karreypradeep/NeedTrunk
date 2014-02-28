@@ -208,8 +208,8 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
 						.notificationLevelId(this.studentBean.getStudentAcademicYear().getId()).notificationTypeConstant(this.notificationTypeConstant)
 						.notificationLevelConstant(NotificationLevelConstant.STUDENT_ACADEMIC_YEAR)
-						.notificationSubTypeConstant(this.notificationSubTypeConstant).messageToBeSent(this.notificationText)
-						.attendanceDate(DateUtil.getSystemDate()).build();
+						.smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider()).notificationSubTypeConstant(this.notificationSubTypeConstant)
+						.messageToBeSent(this.notificationText).attendanceDate(DateUtil.getSystemDate()).build();
 
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.studentBean.getStudentAcademicYear(), this.scheduledBatchLog);
 			} catch (final Exception e) {
