@@ -31,6 +31,7 @@ import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.BranchAccountTypeConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.constants.PaymentMethodConstant;
@@ -115,18 +116,17 @@ public class BranchExpenseServiceImpl implements BranchExpenseService {
 		try {
 			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(branchExpense
 					.getBranch().getId(), NotificationSubTypeConstant.EXPENSES_INCURRED_NOTIFICATION);
-			if (branchNotification != null && branchNotification.getSmsIndicator()) {
+			if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
 				if (branchNotification.getSmsIndicator()) {
 					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branchExpense.getBranch(), branchExpense.getId(),
 							NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.BRANCH,
-							NotificationSubTypeConstant.EXPENSES_INCURRED_NOTIFICATION, null, null);
+							NotificationSubTypeConstant.EXPENSES_INCURRED_NOTIFICATION, NotificationSentForConstant.BRANCH_FINANCIALS, null, null);
 					this.notificationService.sendNotification(batchLog);
-
 				}
 				if (branchNotification.getEmailIndicator()) {
 					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branchExpense.getBranch(), branchExpense.getId(),
 							NotificationTypeConstant.EMAIL_NOTIFICATION, NotificationLevelConstant.BRANCH,
-							NotificationSubTypeConstant.EXPENSES_INCURRED_NOTIFICATION, null, null);
+							NotificationSubTypeConstant.EXPENSES_INCURRED_NOTIFICATION, NotificationSentForConstant.BRANCH_FINANCIALS, null, null);
 					this.notificationService.sendNotification(batchLog);
 				}
 			}
@@ -141,7 +141,7 @@ public class BranchExpenseServiceImpl implements BranchExpenseService {
 	@Override
 	public void removeBranchExpense(final BranchExpense branchExpense) throws BusinessException {
 		this.branchFinancialService.checkIfBranchFinancialTransactionsAreAllowed(branchExpense.getBranch().getId(), branchExpense.getExpenseDate());
-		if (branchExpense.getId() != null && PaymentMethodConstant.CHEQUE.equals(branchExpense.getPaymentMethod())) {
+		if ((branchExpense.getId() != null) && PaymentMethodConstant.CHEQUE.equals(branchExpense.getPaymentMethod())) {
 			Long accountId = null;
 			if (BranchAccountTypeConstant.BANK_ACCOUNT.equals(branchExpense.getBranchAccountType())) {
 				accountId = branchExpense.getBranchBankAccount().getId();
@@ -198,7 +198,8 @@ public class BranchExpenseServiceImpl implements BranchExpenseService {
 	 */
 	private BatchLog createBatchLog(final Long batchSize, final Branch branch, final Long notificationLevelId,
 			final NotificationTypeConstant notificationTypeConstant, final NotificationLevelConstant notificationLevelConstant,
-			final NotificationSubTypeConstant notificationSubTypeConstant, final String messageToBeSent, final String studentFeeTransactionNr) {
+			final NotificationSubTypeConstant notificationSubTypeConstant, final NotificationSentForConstant notificationSentForConstant,
+			final String messageToBeSent, final String studentFeeTransactionNr) {
 		BatchLog batchLog = new BatchLog();
 		batchLog.setBatchStatusConstant(batchSize > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 		batchLog.setBranch(branch);
@@ -207,6 +208,7 @@ public class BranchExpenseServiceImpl implements BranchExpenseService {
 		batchLog.setNotificationLevelConstant(notificationLevelConstant);
 		batchLog.setNotificationSubTypeConstant(notificationSubTypeConstant);
 		batchLog.setNotificationTypeConstant(notificationTypeConstant);
+		batchLog.setNotificationSentFor(notificationSentForConstant);
 		batchLog.setNrElements(batchSize);
 		batchLog.setNotificationLevelId(notificationLevelId);
 		batchLog.setMessage(messageToBeSent);

@@ -15,6 +15,8 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.service.SequenceGeneratorService;
@@ -31,11 +33,10 @@ import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.BranchAccountTypeConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.constants.PaymentMethodConstant;
-import com.apeironsol.framework.exception.BusinessException;
-import com.apeironsol.framework.exception.InvalidArgumentException;
 
 /**
  * Data access interface for Student Attendance entity implementation.
@@ -106,17 +107,17 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(purchaseInvoice
 					.getBranch().getId(), NotificationSubTypeConstant.INVOICE_NOTIFICATION);
 
-			if (branchNotification != null && branchNotification.getSmsIndicator()) {
+			if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
 				if (branchNotification.getSmsIndicator()) {
 					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), purchaseInvoice.getBranch(), result.getId(),
 							NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.BRANCH, NotificationSubTypeConstant.INVOICE_NOTIFICATION,
-							null, null);
+							NotificationSentForConstant.BRANCH_FINANCIALS, null, null);
 					this.notificationService.sendNotification(batchLog);
 
 				} else if (branchNotification.getEmailIndicator()) {
 					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), purchaseInvoice.getBranch(), result.getId(),
 							NotificationTypeConstant.EMAIL_NOTIFICATION, NotificationLevelConstant.BRANCH, NotificationSubTypeConstant.INVOICE_NOTIFICATION,
-							null, null);
+							NotificationSentForConstant.BRANCH_FINANCIALS, null, null);
 					this.notificationService.sendNotification(batchLog);
 				}
 			}
@@ -133,7 +134,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 	 */
 	@Override
 	public void removePurchaseInvoice(final PurchaseInvoice purchaseInvoice) throws BusinessException {
-		if (purchaseInvoice.getId() != null && PaymentMethodConstant.CHEQUE.equals(purchaseInvoice.getPaymentMethod())) {
+		if ((purchaseInvoice.getId() != null) && PaymentMethodConstant.CHEQUE.equals(purchaseInvoice.getPaymentMethod())) {
 			Long accountId = null;
 			if (BranchAccountTypeConstant.BANK_ACCOUNT.equals(purchaseInvoice.getBranchAccountType())) {
 				accountId = purchaseInvoice.getBranchBankAccount().getId();
@@ -184,7 +185,8 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 	 */
 	private BatchLog createBatchLog(final Long batchSize, final Branch branch, final Long notificationLevelId,
 			final NotificationTypeConstant notificationTypeConstant, final NotificationLevelConstant notificationLevelConstant,
-			final NotificationSubTypeConstant notificationSubTypeConstant, final String messageToBeSent, final String studentFeeTransactionNr) {
+			final NotificationSubTypeConstant notificationSubTypeConstant, final NotificationSentForConstant notificationSentForConstant,
+			final String messageToBeSent, final String studentFeeTransactionNr) {
 		BatchLog batchLog = new BatchLog();
 		batchLog.setBatchStatusConstant(batchSize > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 		batchLog.setBranch(branch);
@@ -193,6 +195,7 @@ public class PurchaseInvoiceServiceImpl implements PurchaseInvoiceService {
 		batchLog.setNotificationLevelConstant(notificationLevelConstant);
 		batchLog.setNotificationSubTypeConstant(notificationSubTypeConstant);
 		batchLog.setNotificationTypeConstant(notificationTypeConstant);
+		batchLog.setNotificationSentFor(notificationSentForConstant);
 		batchLog.setNrElements(batchSize);
 		batchLog.setNotificationLevelId(notificationLevelId);
 		batchLog.setMessage(messageToBeSent);

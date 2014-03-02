@@ -27,6 +27,7 @@ import com.apeironsol.need.notifications.service.BranchNotificationService;
 import com.apeironsol.need.notifications.service.NotificationService;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.constants.StudentRegistrationStatusConstant;
@@ -79,8 +80,9 @@ public class StudentRegistrationServiceImpl implements StudentRegistrationServic
 					BatchLog batchLog = new BatchLogBuilder().branch(studentRegistration.getBranch())
 							.notificationLevelConstant(NotificationLevelConstant.STUDENT_REGISTRATION).notificationLevelId(result.getId())
 							.notificationSubTypeConstant(NotificationSubTypeConstant.NEW_STUDENT_REGISTRATION_NOTIFICATION)
+							.notificationSendForAcademicYear(studentRegistration.getAcademicYear())
 							.notificationTypeConstant(NotificationTypeConstant.SMS_NOTIFICATION).nrElements(Long.valueOf(1))
-							.smsProvider(branchRule.getSmsProvider()).build();
+							.notificationSentFor(NotificationSentForConstant.STUDENT_REGISTRATIONS).smsProvider(branchRule.getSmsProvider()).build();
 
 					if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
 							|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
@@ -107,12 +109,12 @@ public class StudentRegistrationServiceImpl implements StudentRegistrationServic
 	}
 
 	@Override
-	public Collection<StudentRegistration> findStudentRegistrationesByBranchId(final Long branchId) throws BusinessException {
+	public Collection<StudentRegistration> findStudentRegistrationsByBranchId(final Long branchId) throws BusinessException {
 		return this.studentRegistrationDao.findStudentRegistrationesByBranchId(branchId);
 	}
 
 	@Override
-	public Collection<StudentRegistration> findStudentRegistrationesByAcademicYearId(final Long academicYearId) throws BusinessException {
+	public Collection<StudentRegistration> findStudentRegistrationsByAcademicYearId(final Long academicYearId) throws BusinessException {
 		return this.studentRegistrationDao.findStudentRegistrationesByAcademicYearId(academicYearId);
 	}
 

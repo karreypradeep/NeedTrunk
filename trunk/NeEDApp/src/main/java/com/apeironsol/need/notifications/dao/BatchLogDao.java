@@ -12,6 +12,7 @@ import java.util.Date;
 import com.apeironsol.framework.BaseDao;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 
 /**
@@ -43,7 +44,8 @@ public interface BatchLogDao extends BaseDao<BatchLog> {
 	 * @return collection of batch logs for the supplied branch id.
 	 */
 	Collection<BatchLog> findBatchLogsByNotificationLevelAndNotificationLevelId(final Long branchId, final NotificationLevelConstant notificationLevelConstant,
-			final Long notificationLevelId);
+			final Long notificationLevelId, final Collection<NotificationSubTypeConstant> notificationSubTypeConstants,
+			final NotificationSentForConstant notificationSentFor);
 
 	/**
 	 * 
@@ -78,6 +80,15 @@ public interface BatchLogDao extends BaseDao<BatchLog> {
 	 * @return
 	 */
 	Collection<BatchLog> findBatchLogsForExamAndNotificationAcademicYear(final Long examId, final Long academicYearId,
+			final NotificationSubTypeConstant notificationSubTypeConstant);
+
+	/**
+	 * 
+	 * @param branchId
+	 * @param attendanceDate
+	 * @return
+	 */
+	Collection<BatchLog> findBatchLogsForNotificationSubTypeAndAcademicYear(final Long academicYearId,
 			final NotificationSubTypeConstant notificationSubTypeConstant);
 
 }

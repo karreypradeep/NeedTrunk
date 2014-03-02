@@ -19,6 +19,7 @@ import com.apeironsol.framework.exception.InvalidArgumentException;
 import com.apeironsol.need.notifications.dao.BatchLogDao;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 
 /**
@@ -60,8 +61,10 @@ public class BatchLogServiceImpl implements BatchLogService {
 
 	@Override
 	public Collection<BatchLog> findBatchLogsByNotificationLevelAndNotificationLevelId(final Long branchId,
-			final NotificationLevelConstant notificationLevelConstant, final Long notificationLevelId) {
-		return this.batchLogDao.findBatchLogsByNotificationLevelAndNotificationLevelId(branchId, notificationLevelConstant, notificationLevelId);
+			final NotificationLevelConstant notificationLevelConstant, final Long notificationLevelId,
+			final Collection<NotificationSubTypeConstant> notificationSubTypeConstants, final NotificationSentForConstant notificationSentFor) {
+		return this.batchLogDao.findBatchLogsByNotificationLevelAndNotificationLevelId(branchId, notificationLevelConstant, notificationLevelId,
+				notificationSubTypeConstants, notificationSentFor);
 	}
 
 	@Override
@@ -91,6 +94,12 @@ public class BatchLogServiceImpl implements BatchLogService {
 	public Collection<BatchLog> findBatchLogsForExamAndNotificationAcademicYear(final Long examId, final Long academicYearId,
 			final NotificationSubTypeConstant notificationSubTypeConstant) {
 		return this.batchLogDao.findBatchLogsForExamAndNotificationAcademicYear(examId, academicYearId, notificationSubTypeConstant);
+	}
+
+	@Override
+	public Collection<BatchLog> findBatchLogsForNotificationSubTypeAndAcademicYear(final Long academicYearId,
+			final NotificationSubTypeConstant notificationSubTypeConstant) {
+		return this.batchLogDao.findBatchLogsForNotificationSubTypeAndAcademicYear(academicYearId, notificationSubTypeConstant);
 	}
 
 }

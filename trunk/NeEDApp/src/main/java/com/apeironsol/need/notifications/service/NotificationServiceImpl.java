@@ -41,15 +41,18 @@ import com.apeironsol.need.core.service.BranchService;
 import com.apeironsol.need.core.service.KlassService;
 import com.apeironsol.need.core.service.SectionService;
 import com.apeironsol.need.core.service.StudentAbsentService;
+import com.apeironsol.need.core.service.StudentRegistrationService;
 import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.model.BatchLogMessage;
 import com.apeironsol.need.notifications.producer.util.NotificationProducerUtil;
 import com.apeironsol.need.util.DateUtil;
+import com.apeironsol.need.util.constants.AdmissionStatusConstant;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
+import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
 
 @Service("notificationService")
 public class NotificationServiceImpl implements NotificationService {
@@ -100,6 +103,9 @@ public class NotificationServiceImpl implements NotificationService {
 	private StudentExamSubjectService	studentExamSubjectService;
 
 	@Autowired
+	private StudentRegistrationService	studentRegistrationService;
+
+	@Autowired
 	private BranchRuleService			branchRuleService;
 
 	private NotificationProducerUtil createNotificationProducerUtil(final NotificationTypeConstant notificationTypeConstant) {
@@ -139,144 +145,46 @@ public class NotificationServiceImpl implements NotificationService {
 	}
 
 	@Override
-	public synchronized BatchLog sendNotificationForStudent(final Collection<StudentAcademicYear> studentAcademicYears, final BatchLog batchLog)
-			throws ApplicationException {
-		BatchLog result = batchLog;
-		if (result == null) {
-			throw new ApplicationException("BatchLog cannot be null");
-		} else if (result.getBranch() == null) {
-			throw new ApplicationException("Branch for BatchLog cannot be null");
-		}
-		final Collection<StudentAcademicYear> studentAcademicYearsForNotification = this
-				.returnUniqueStudentAcademicYearsForSendingNotifications(studentAcademicYears);
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
-		if (result.getId() == null) {
-			result.setNrElements(Long.valueOf(studentAcademicYearsForNotification.size()));
-			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
-			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
-			if (result.getNrElements() == 0) {
-				result.setExecutionTime(Long.valueOf(0));
-			}
-			result = notificationProducerUtil.createBatchLog(result);
-		}
-		if (studentAcademicYearsForNotification.size() > 0) {
-			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearsForNotification, result);
-		}
-		return result;
-	}
-
-	@Override
 	public synchronized BatchLog sendNotificationForStudent(final Section section, final BatchLog batchLog) throws ApplicationException {
-		BatchLog result = batchLog;
+		final BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		} else if (result.getBranch() == null) {
 			throw new ApplicationException("Branch for BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		final Collection<Section> sections = new ArrayList<Section>();
 		sections.add(section);
-		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION)) {
-			result = this.sendExamAbsentNotification(sections, batchLog);
-		} else if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION)) {
-			result = this.sendExamScheduleNotification(sections, batchLog);
-		} else if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION)) {
-			result = this.sendExamResultNotification(sections, batchLog);
-		} else {
-			final Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
-			final Collection<StudentAcademicYear> studentAcademicYearsForNotification = this
-					.returnUniqueStudentAcademicYearsForSendingNotifications(studentAcademicYears);
-			if (result.getId() == null) {
-				result.setNrElements(Long.valueOf(studentAcademicYearsForNotification.size()));
-				result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
-				result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
-				if (result.getNrElements() == 0) {
-					result.setExecutionTime(Long.valueOf(0));
-				}
-				result = notificationProducerUtil.createBatchLog(result);
-			}
-			if (studentAcademicYearsForNotification.size() > 0) {
-				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearsForNotification, result);
-			}
-		}
-
-		return result;
+		return this.sendNotificationForSections(batchLog, sections);
 	}
 
 	@Override
 	public synchronized BatchLog sendNotificationForStudent(final Long academicYearId, final Klass klass, final BatchLog batchLog) throws ApplicationException {
 
-		BatchLog result = batchLog;
+		final BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		} else if (result.getBranch() == null) {
 			throw new ApplicationException("Branch for BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		final Collection<Section> sections = this.sectionService.findActiveSectionsByKlassIdAndAcademicYearId(klass.getId(), academicYearId);
-		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION)) {
-			result = this.sendExamAbsentNotification(sections, batchLog);
-		} else if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION)) {
-			result = this.sendExamScheduleNotification(sections, batchLog);
-		} else if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION)) {
-			result = this.sendExamResultNotification(sections, batchLog);
-		} else {
-			final Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
-			if (result.getId() == null) {
-				result.setNrElements(Long.valueOf(studentAcademicYears.size()));
-				result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
-				result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
-				if (result.getNrElements() == 0) {
-					result.setExecutionTime(Long.valueOf(0));
-				}
-				result = notificationProducerUtil.createBatchLog(result);
-			}
-			if (studentAcademicYears.size() > 0) {
-				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
-			}
-		}
-		return result;
+		return this.sendNotificationForSections(batchLog, sections);
 	}
 
 	@Override
 	public synchronized BatchLog sendNotificationForStudent(final Long academicYearId, final BatchLog batchLog) throws ApplicationException {
-		BatchLog result = batchLog;
+		final BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
 		} else if (result.getBranch() == null) {
 			throw new ApplicationException("Branch for BatchLog cannot be null");
 		}
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		final Collection<Long> klasseIDs = new ArrayList<Long>();
 		final Collection<Klass> klasses = this.klassService.findActiveKlassesByBranchId(batchLog.getBranch().getId());
 		for (final Klass klass : klasses) {
 			klasseIDs.add(klass.getId());
 		}
 		final Collection<Section> sections = this.sectionService.findActiveSectionsByKlassIdsAndAcademicYearId(klasseIDs, academicYearId);
-
-		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION)) {
-			result = this.sendExamAbsentNotification(sections, batchLog);
-		} else if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION)) {
-			result = this.sendExamScheduleNotification(sections, batchLog);
-		} else if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION)) {
-			result = this.sendExamResultNotification(sections, batchLog);
-		} else {
-			final Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
-
-			if (result.getId() == null) {
-				result.setNrElements(Long.valueOf(studentAcademicYears.size()));
-				result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
-				result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
-				if (result.getNrElements() == 0) {
-					result.setExecutionTime(Long.valueOf(0));
-				}
-				result = notificationProducerUtil.createBatchLog(result);
-			}
-			if (studentAcademicYears.size() > 0) {
-				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
-			}
-		}
-		return result;
+		return this.sendNotificationForSections(batchLog, sections);
 	}
 
 	@Override
@@ -295,8 +203,7 @@ public class NotificationServiceImpl implements NotificationService {
 		return result;
 	}
 
-	@Override
-	public BatchLog sendNotificationForStudent(final BatchLog batchLog, final Collection<Section> sections) throws ApplicationException {
+	private BatchLog sendNotificationForSections(final BatchLog batchLog, final Collection<Section> sections) throws ApplicationException {
 		BatchLog result = batchLog;
 		if (result == null) {
 			throw new ApplicationException("BatchLog cannot be null");
@@ -304,18 +211,24 @@ public class NotificationServiceImpl implements NotificationService {
 			throw new ApplicationException("Branch for BatchLog cannot be null");
 		}
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
-		final Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
-		if (result.getId() == null) {
-			result.setNrElements(Long.valueOf(studentAcademicYears.size()));
-			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
-			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
-			if (result.getNrElements() == 0) {
-				result.setExecutionTime(Long.valueOf(0));
+		if (batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION)
+				|| batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION)
+				|| batchLog.getNotificationSubTypeConstant().equals(NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION)) {
+			result = this.sendExamNotifications(sections, batchLog, batchLog.getNotificationSubTypeConstant());
+		} else {
+			final Collection<StudentAcademicYear> studentAcademicYears = this.getStudentAcademicYearsToSendNotification(sections, batchLog);
+			if (result.getId() == null) {
+				result.setNrElements(Long.valueOf(studentAcademicYears.size()));
+				result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+				result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+				if (result.getNrElements() == 0) {
+					result.setExecutionTime(Long.valueOf(0));
+				}
+				result = notificationProducerUtil.createBatchLog(result);
 			}
-			result = notificationProducerUtil.createBatchLog(result);
-		}
-		if (studentAcademicYears.size() > 0) {
-			notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+			if (studentAcademicYears.size() > 0) {
+				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYears, result);
+			}
 		}
 		return result;
 	}
@@ -396,7 +309,7 @@ public class NotificationServiceImpl implements NotificationService {
 				sections.add(sectionExam.getSection());
 			}
 		}
-		result = this.sendNotificationForStudent(batchLog, sections);
+		result = this.sendNotificationForSections(batchLog, sections);
 		return result;
 	}
 
@@ -408,7 +321,8 @@ public class NotificationServiceImpl implements NotificationService {
 	 * @return
 	 * @throws ApplicationException
 	 */
-	private BatchLog sendExamAbsentNotification(final Collection<Section> sections, final BatchLog batchLog) throws ApplicationException {
+	private BatchLog sendExamNotifications(final Collection<Section> sections, final BatchLog batchLog,
+			final NotificationSubTypeConstant notificationSubTypeConstant) throws ApplicationException {
 		BatchLog result = batchLog;
 		final Collection<Long> listOfIDs = new ArrayList<Long>();
 		AcademicYear notificationSendForAcademicYear = null;
@@ -417,6 +331,7 @@ public class NotificationServiceImpl implements NotificationService {
 			if (notificationSendForAcademicYear == null) {
 				notificationSendForAcademicYear = section.getAcademicYear();
 			}
+
 			listOfIDs.add(section.getId());
 		}
 		if (batchLog.getExam() == null) {
@@ -431,15 +346,27 @@ public class NotificationServiceImpl implements NotificationService {
 			if (notificationSendForAcademicYear == null) {
 				notificationSendForAcademicYear = sectionExam.getSection().getAcademicYear();
 			}
-			listOfIDs.add(sectionExam.getId());
+			if (NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION.equals(notificationSubTypeConstant)) {
+				if (!sectionExam.getStartDate().before(DateUtil.getSystemDate())) {
+					listOfIDs.add(sectionExam.getId());
+				}
+			} else {
+				listOfIDs.add(sectionExam.getId());
+			}
+
 		}
 
 		if (notificationSendForAcademicYear != null) {
 			final Collection<BatchLog> attendanceBatchLogs = this.batchLogService.findBatchLogsForExamAndNotificationAcademicYear(batchLog.getExam().getId(),
-					notificationSendForAcademicYear.getId(), NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION);
+					notificationSendForAcademicYear.getId(), notificationSubTypeConstant);
 			alreadySendStudentAcademicYears = this.getAlreadySendNotificationsForStudentAcademicYearIds(attendanceBatchLogs);
 		}
-		final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findAbsentStudentSubjectsForSectionExamIds(listOfIDs);
+		Collection<StudentExamSubject> studentExamSubjects = null;
+		if (NotificationSubTypeConstant.EXAM_ABSENT_NOTIFICATION.equals(notificationSubTypeConstant)) {
+			studentExamSubjects = this.studentExamSubjectService.findAbsentStudentSubjectsForSectionExamIds(listOfIDs);
+		} else {
+			studentExamSubjects = this.studentExamSubjectService.findAllStudentExamSubjectsForSectionExamIds(listOfIDs);
+		}
 		final Map<Long, StudentAcademicYear> studentAcademicYearMap = new HashMap<Long, StudentAcademicYear>();
 		for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
 			// Check if absent message has already been send. If yes
@@ -468,148 +395,6 @@ public class NotificationServiceImpl implements NotificationService {
 			if (studentAcademicYearMap.values().size() > 0) {
 				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearMap.values(), result);
 			}
-		}
-		return result;
-	}
-
-	/**
-	 * Send exam notification to students of scheduled sections.
-	 * 
-	 * @param sections
-	 * @param batchLog
-	 * @return
-	 * @throws ApplicationException
-	 */
-	private BatchLog sendExamScheduleNotification(final Collection<Section> sections, final BatchLog batchLog) throws ApplicationException {
-		BatchLog result = batchLog;
-		final Collection<Long> listOfIDs = new ArrayList<Long>();
-		for (final Section section : sections) {
-			listOfIDs.add(section.getId());
-		}
-		if (batchLog.getExam() == null) {
-			result.setBatchStatusConstant(BatchStatusConstant.CANCELLED);
-			result.setNrElements(0l);
-			result = this.batchLogService.saveBatchLog(result);
-			return result;
-		}
-
-		final Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsBySectionIdsAndExamId(listOfIDs, batchLog.getExam().getId());
-		listOfIDs.clear();
-		AcademicYear notificationSendForAcademicYear = null;
-		Collection<Long> alreadySendStudentAcademicYears = null;
-		for (final SectionExam sectionExam : sectionExams) {
-			if (notificationSendForAcademicYear == null) {
-				notificationSendForAcademicYear = sectionExam.getSection().getAcademicYear();
-			}
-			if (!sectionExam.getStartDate().before(DateUtil.getSystemDate())) {
-				listOfIDs.add(sectionExam.getId());
-			}
-		}
-		if (notificationSendForAcademicYear != null) {
-			final Collection<BatchLog> attendanceBatchLogs = this.batchLogService.findBatchLogsForExamAndNotificationAcademicYear(batchLog.getExam().getId(),
-					notificationSendForAcademicYear.getId(), NotificationSubTypeConstant.EXAM_SCHEDULE_NOTIFICATION);
-			alreadySendStudentAcademicYears = this.getAlreadySendNotificationsForStudentAcademicYearIds(attendanceBatchLogs);
-		}
-		final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findAllStudentExamSubjectsForSectionExamIds(listOfIDs);
-		final Map<Long, StudentAcademicYear> studentAcademicYearMap = new HashMap<Long, StudentAcademicYear>();
-		for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
-			// Check if absent message has already been send. If yes
-			// then skip the message to those student for whom
-			// message has already been send.
-			if (alreadySendStudentAcademicYears != null) {
-				if (!alreadySendStudentAcademicYears.contains(studentExamSubject.getStudentAcademicYear().getId())) {
-					studentAcademicYearMap.put(studentExamSubject.getStudentAcademicYear().getId(), studentExamSubject.getStudentAcademicYear());
-				}
-			} else {
-				studentAcademicYearMap.put(studentExamSubject.getStudentAcademicYear().getId(), studentExamSubject.getStudentAcademicYear());
-			}
-		}
-
-		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
-		if (result.getId() == null) {
-			result.setNrElements(Long.valueOf(studentAcademicYearMap.values().size()));
-			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
-			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
-			result.setNotificationSendForAcademicYear(notificationSendForAcademicYear);
-			if (result.getNrElements() == 0) {
-				result.setExecutionTime(Long.valueOf(0));
-			}
-			result = notificationProducerUtil.createBatchLog(result);
-			if (studentAcademicYearMap.values().size() > 0) {
-				notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearMap.values(), result);
-			}
-		}
-		return result;
-	}
-
-	/**
-	 * Send exam notification to students of scheduled sections.
-	 * 
-	 * @param sections
-	 * @param batchLog
-	 * @return
-	 * @throws ApplicationException
-	 */
-	private BatchLog sendExamResultNotification(final Collection<Section> sections, final BatchLog batchLog) throws ApplicationException {
-		BatchLog result = batchLog;
-		try {
-			final Collection<Long> listOfIDs = new ArrayList<Long>();
-			for (final Section section : sections) {
-				listOfIDs.add(section.getId());
-			}
-			if (batchLog.getExam() == null) {
-				result.setBatchStatusConstant(BatchStatusConstant.CANCELLED);
-				result.setNrElements(0l);
-				result = this.batchLogService.saveBatchLog(result);
-				return result;
-			}
-
-			final Collection<SectionExam> sectionExams = this.sectionExamService.findSectionExamsBySectionIdsAndExamId(listOfIDs, batchLog.getExam().getId());
-			listOfIDs.clear();
-			AcademicYear notificationSendForAcademicYear = null;
-			Collection<Long> alreadySendStudentAcademicYears = null;
-			for (final SectionExam sectionExam : sectionExams) {
-				if (notificationSendForAcademicYear == null) {
-					notificationSendForAcademicYear = sectionExam.getSection().getAcademicYear();
-				}
-				listOfIDs.add(sectionExam.getId());
-			}
-			if (notificationSendForAcademicYear != null) {
-				final Collection<BatchLog> attendanceBatchLogs = this.batchLogService.findBatchLogsForExamAndNotificationAcademicYear(batchLog.getExam()
-						.getId(), notificationSendForAcademicYear.getId(), NotificationSubTypeConstant.EXAM_RESULT_NOTIFICATION);
-				alreadySendStudentAcademicYears = this.getAlreadySendNotificationsForStudentAcademicYearIds(attendanceBatchLogs);
-			}
-			final Collection<StudentExamSubject> studentExamSubjects = this.studentExamSubjectService.findAllStudentExamSubjectsForSectionExamIds(listOfIDs);
-			final Map<Long, StudentAcademicYear> studentAcademicYearMap = new HashMap<Long, StudentAcademicYear>();
-			for (final StudentExamSubject studentExamSubject : studentExamSubjects) {
-				// Check if absent message has already been send. If yes
-				// then skip the message to those student for whom
-				// message has already been send.
-				if (alreadySendStudentAcademicYears != null) {
-					if (!alreadySendStudentAcademicYears.contains(studentExamSubject.getStudentAcademicYear().getId())) {
-						studentAcademicYearMap.put(studentExamSubject.getStudentAcademicYear().getId(), studentExamSubject.getStudentAcademicYear());
-					}
-				} else {
-					studentAcademicYearMap.put(studentExamSubject.getStudentAcademicYear().getId(), studentExamSubject.getStudentAcademicYear());
-				}
-			}
-
-			final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
-			if (result.getId() == null) {
-				result.setNrElements(Long.valueOf(studentAcademicYearMap.values().size()));
-				result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
-				result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
-				result.setNotificationSendForAcademicYear(notificationSendForAcademicYear);
-				if (result.getNrElements() == 0) {
-					result.setExecutionTime(Long.valueOf(0));
-				}
-				result = notificationProducerUtil.createBatchLog(result);
-				if (studentAcademicYearMap.values().size() > 0) {
-					notificationProducerUtil.sendNotificationAsBatch(studentAcademicYearMap.values(), result);
-				}
-			}
-		} catch (final Exception e) {
-			throw new ApplicationException("Could not send noifications. Exception occured: " + e.getMessage());
 		}
 		return result;
 	}
@@ -619,6 +404,10 @@ public class NotificationServiceImpl implements NotificationService {
 		if ((batchLogs != null) && (batchLogs.size() > 0)) {
 			final Collection<Long> batchLogIDs = new ArrayList<Long>();
 			for (final BatchLog batchLog : batchLogs) {
+				// Adhoc message can be sent any number of times.
+				if (NotificationSubTypeConstant.ADHOC_NOTIFICATION.equals(batchLog.getNotificationSubTypeConstant())) {
+					return alreadySendStudentAcademicYears;
+				}
 				batchLogIDs.add(batchLog.getId());
 			}
 
@@ -631,6 +420,52 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 		}
 		return alreadySendStudentAcademicYears;
+	}
+
+	private Collection<Long> getAlreadySendNotificationsForStudentIds(final Collection<BatchLog> batchLogs) {
+		final Collection<Long> alreadySendStudents = new ArrayList<Long>();
+		if ((batchLogs != null) && (batchLogs.size() > 0)) {
+			final Collection<Long> batchLogIDs = new ArrayList<Long>();
+			for (final BatchLog batchLog : batchLogs) {
+				// Adhoc message can be sent any number of times.
+				if (NotificationSubTypeConstant.ADHOC_NOTIFICATION.equals(batchLog.getNotificationSubTypeConstant())) {
+					return alreadySendStudents;
+				}
+				batchLogIDs.add(batchLog.getId());
+			}
+
+			final Collection<BatchLogMessage> alreadySendAbsentNotoficationMessages = this.batchLogMessageService
+					.findBatchLogMessagesByBatchLogIds(batchLogIDs);
+			for (final BatchLogMessage batchLogMessage : alreadySendAbsentNotoficationMessages) {
+				if (BatchLogMessageStatusConstant.SUCCESS.equals(batchLogMessage.getBatchLogMessageStatusConstant())) {
+					alreadySendStudents.add(batchLogMessage.getStudent().getId());
+				}
+			}
+		}
+		return alreadySendStudents;
+	}
+
+	private Collection<Long> getAlreadySendNotificationsForStudentRegistrationIds(final Collection<BatchLog> batchLogs) {
+		final Collection<Long> alreadySendStudentRegistrations = new ArrayList<Long>();
+		if ((batchLogs != null) && (batchLogs.size() > 0)) {
+			final Collection<Long> batchLogIDs = new ArrayList<Long>();
+			for (final BatchLog batchLog : batchLogs) {
+				// Adhoc message can be sent any number of times.
+				if (NotificationSubTypeConstant.ADHOC_NOTIFICATION.equals(batchLog.getNotificationSubTypeConstant())) {
+					return alreadySendStudentRegistrations;
+				}
+				batchLogIDs.add(batchLog.getId());
+			}
+
+			final Collection<BatchLogMessage> alreadySendAbsentNotoficationMessages = this.batchLogMessageService
+					.findBatchLogMessagesByBatchLogIds(batchLogIDs);
+			for (final BatchLogMessage batchLogMessage : alreadySendAbsentNotoficationMessages) {
+				if (BatchLogMessageStatusConstant.SUCCESS.equals(batchLogMessage.getBatchLogMessageStatusConstant())) {
+					alreadySendStudentRegistrations.add(batchLogMessage.getStudentRegistration().getId());
+				}
+			}
+		}
+		return alreadySendStudentRegistrations;
 	}
 
 	@Override
@@ -664,10 +499,31 @@ public class NotificationServiceImpl implements NotificationService {
 		} else if (result.getBranch() == null) {
 			throw new ApplicationException("Branch for BatchLog cannot be null");
 		}
+		final AcademicYear notificationSendForAcademicYear = result.getNotificationSendForAcademicYear();
+		Collection<Long> alreadySendStudents = null;
+
 		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
 		final Collection<Student> studentsForNotification = this.returnUniqueStudentsForSendingNotifications(students);
+		if (notificationSendForAcademicYear != null) {
+			final Collection<BatchLog> alreadySentBatchLogs = this.batchLogService.findBatchLogsForNotificationSubTypeAndAcademicYear(
+					notificationSendForAcademicYear.getId(), batchLog.getNotificationSubTypeConstant());
+			alreadySendStudents = this.getAlreadySendNotificationsForStudentIds(alreadySentBatchLogs);
+		}
+		final Map<Long, Student> studentsMap = new HashMap<Long, Student>();
+		for (final Student student : studentsForNotification) {
+			// Check if message has already been send. If yes
+			// then skip the message to those student for whom
+			// message has already been send.
+			if (alreadySendStudents != null) {
+				if (!alreadySendStudents.contains(student.getId())) {
+					studentsMap.put(student.getId(), student);
+				}
+			} else {
+				studentsMap.put(student.getId(), student);
+			}
+		}
 		if (result.getId() == null) {
-			result.setNrElements(Long.valueOf(studentsForNotification.size()));
+			result.setNrElements(Long.valueOf(studentsMap.values().size()));
 			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
 			if (result.getNrElements() == 0) {
@@ -675,8 +531,8 @@ public class NotificationServiceImpl implements NotificationService {
 			}
 			result = notificationProducerUtil.createBatchLog(result);
 		}
-		if (studentsForNotification.size() > 0) {
-			notificationProducerUtil.sendNotificationAsBatch(result, studentsForNotification);
+		if (studentsMap.values().size() > 0) {
+			notificationProducerUtil.sendNotificationAsBatch(result, studentsMap.values());
 		}
 		return result;
 	}
@@ -717,6 +573,91 @@ public class NotificationServiceImpl implements NotificationService {
 			result = notificationProducerUtil.createBatchLog(result);
 		}
 		notificationProducerUtil.sendNotificationJMS(studentRegistration, result);
+		return result;
+	}
+
+	@Override
+	public BatchLog sendNotificationForStudentAdmissions(final BatchLog batchLog) throws ApplicationException {
+		final AdmissionSearchCriteria admissionSearchCriteria = new AdmissionSearchCriteria(batchLog.getBranch());
+		admissionSearchCriteria.setAcademicYear(batchLog.getNotificationSendForAcademicYear());
+		AdmissionStatusConstant admissionStatusConstant = null;
+		boolean nullAdmissionNumberInd = true;
+		if (NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION.equals(batchLog.getNotificationSubTypeConstant())) {
+			admissionStatusConstant = AdmissionStatusConstant.ACCEPTED;
+		} else if (NotificationSubTypeConstant.NEW_ADMISSION_SUBMITTED_NOTIFICATION.equals(batchLog.getNotificationSubTypeConstant())) {
+			admissionStatusConstant = AdmissionStatusConstant.SUBMITTED;
+		} else if (NotificationSubTypeConstant.NEW_ADMISSION_NOTIFICATION.equals(batchLog.getNotificationSubTypeConstant())) {
+			admissionStatusConstant = AdmissionStatusConstant.ADMITTED;
+			nullAdmissionNumberInd = false;
+		} else if (NotificationSubTypeConstant.ADHOC_NOTIFICATION.equals(batchLog.getNotificationSubTypeConstant())) {
+			nullAdmissionNumberInd = false;
+		}
+		if (admissionStatusConstant != null) {
+			admissionSearchCriteria.setAdmissionStatusConstant(admissionStatusConstant);
+		}
+		final Collection<Student> students = this.studentService.findAdmissionsBySearchCriteria(admissionSearchCriteria);
+		final Collection<Student> studentForNotifications = new ArrayList<Student>();
+		if (nullAdmissionNumberInd) {
+			for (final Student student : students) {
+				if (null == student.getAdmissionNr()) {
+					studentForNotifications.add(student);
+				}
+			}
+		} else {
+			for (final Student student : students) {
+				studentForNotifications.add(student);
+			}
+		}
+		return this.sendNotificationForStudentAdmission(studentForNotifications, batchLog);
+	}
+
+	@Override
+	public BatchLog sendNotificationForStudentRegistration(final BatchLog batchLog) throws ApplicationException {
+		BatchLog result = batchLog;
+		if (result == null) {
+			throw new ApplicationException("BatchLog cannot be null");
+		} else if (result.getBranch() == null) {
+			throw new ApplicationException("Branch for BatchLog cannot be null");
+		} else if (result.getNotificationSendForAcademicYear() == null) {
+			throw new ApplicationException("Academic year for BatchLog cannot be null");
+		}
+
+		final Collection<StudentRegistration> studentRegistrations = this.studentRegistrationService.findStudentRegistrationsByAcademicYearId(batchLog
+				.getNotificationSendForAcademicYear().getId());
+		Collection<Long> alreadySendStudentRegistrations = null;
+		final Collection<BatchLog> alreadySentBatchLogs = this.batchLogService.findBatchLogsForNotificationSubTypeAndAcademicYear(batchLog
+				.getNotificationSendForAcademicYear().getId(), batchLog.getNotificationSubTypeConstant());
+		alreadySendStudentRegistrations = this.getAlreadySendNotificationsForStudentRegistrationIds(alreadySentBatchLogs);
+		final NotificationProducerUtil notificationProducerUtil = this.createNotificationProducerUtil(batchLog.getNotificationTypeConstant());
+
+		final Map<Long, StudentRegistration> studentRegistrationMap = new HashMap<Long, StudentRegistration>();
+		for (final StudentRegistration studentRegistration : studentRegistrations) {
+			// Check if absent message has already been send. If yes
+			// then skip the message to those student for whom
+			// message has already been send.
+			if (alreadySendStudentRegistrations != null) {
+				if (!alreadySendStudentRegistrations.contains(studentRegistration.getId())) {
+					studentRegistrationMap.put(studentRegistration.getId(), studentRegistration);
+				}
+			} else {
+				studentRegistrationMap.put(studentRegistration.getId(), studentRegistration);
+			}
+
+		}
+
+		if (result.getId() == null) {
+			result.setNrElements(Long.valueOf(studentRegistrationMap.values().size()));
+			result.setBatchStatusConstant(result.getNrElements() > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
+			result.setCompletedIndicator(result.getNrElements() > 0 ? false : true);
+			result.setNotificationSendForAcademicYear(batchLog.getNotificationSendForAcademicYear());
+			if (result.getNrElements() == 0) {
+				result.setExecutionTime(Long.valueOf(0));
+			}
+			result = notificationProducerUtil.createBatchLog(result);
+			if (studentRegistrationMap.values().size() > 0) {
+				notificationProducerUtil.sendNotificationAsBatchForStudentRegistration(studentRegistrationMap.values(), result);
+			}
+		}
 		return result;
 	}
 

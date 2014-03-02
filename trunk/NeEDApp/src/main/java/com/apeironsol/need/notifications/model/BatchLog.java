@@ -30,6 +30,7 @@ import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 
@@ -89,6 +90,11 @@ public class BatchLog extends BaseEntity implements Serializable {
 	@Column(name = "BATCH_NOTIFICATION_SUB_TYPE", length = 50, nullable = false)
 	@Enumerated(EnumType.STRING)
 	private NotificationSubTypeConstant	notificationSubTypeConstant;
+
+	@Basic
+	@Column(name = "BATCH_NOTIFICATION_SENT_FOR", length = 50, nullable = false)
+	@Enumerated(EnumType.STRING)
+	private NotificationSentForConstant	notificationSentFor;
 
 	/**
 	 * Batch notification level.
@@ -531,6 +537,21 @@ public class BatchLog extends BaseEntity implements Serializable {
 	 */
 	public void setNumberOfSMSConsumedByBatchLog(final Integer numberOfSMSConsumedByBatchLog) {
 		this.numberOfSMSConsumedByBatchLog = numberOfSMSConsumedByBatchLog;
+	}
+
+	/**
+	 * @return the notificationSentFor
+	 */
+	public NotificationSentForConstant getNotificationSentFor() {
+		return this.notificationSentFor;
+	}
+
+	/**
+	 * @param notificationSentFor
+	 *            the notificationSentFor to set
+	 */
+	public void setNotificationSentFor(final NotificationSentForConstant notificationSentFor) {
+		this.notificationSentFor = notificationSentFor;
 	}
 
 }

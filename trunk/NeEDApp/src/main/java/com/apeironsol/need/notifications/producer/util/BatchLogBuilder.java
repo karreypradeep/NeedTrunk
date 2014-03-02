@@ -6,12 +6,14 @@ import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.academics.model.Exam;
 import com.apeironsol.need.academics.model.ReportCard;
 import com.apeironsol.need.academics.model.SectionExam;
+import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.model.SMSProvider;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 
@@ -22,6 +24,7 @@ public class BatchLogBuilder {
 	private Long						nrElements;
 	private NotificationTypeConstant	notificationTypeConstant;
 	private NotificationSubTypeConstant	notificationSubTypeConstant;
+	private NotificationSentForConstant	notificationSentFor;
 	private NotificationLevelConstant	notificationLevelConstant;
 	private Branch						branch;
 	private Long						notificationLevelId;
@@ -32,6 +35,7 @@ public class BatchLogBuilder {
 	private String						messageToBeSent;
 	private Exam						exam;
 	private SMSProvider					smsProvider;
+	private AcademicYear				notificationSendForAcademicYear;
 
 	public BatchLogBuilder messageToBeSent(final String messageToBeSent) {
 		this.messageToBeSent = messageToBeSent;
@@ -98,6 +102,16 @@ public class BatchLogBuilder {
 		return this;
 	}
 
+	public BatchLogBuilder notificationSentFor(final NotificationSentForConstant notificationSentFor) {
+		this.notificationSentFor = notificationSentFor;
+		return this;
+	}
+
+	public BatchLogBuilder notificationSendForAcademicYear(final AcademicYear academicYear) {
+		this.notificationSendForAcademicYear = academicYear;
+		return this;
+	}
+
 	public BatchLog build() {
 		return this.getBatchLog(this);
 	}
@@ -117,6 +131,8 @@ public class BatchLogBuilder {
 		batchLog.setSectionExam(builder.sectionExam);
 		batchLog.setMessage(builder.messageToBeSent);
 		batchLog.setReportCard(this.reportCard);
+		batchLog.setNotificationSentFor(this.notificationSentFor);
+		batchLog.setNotificationSendForAcademicYear(this.notificationSendForAcademicYear);
 		batchLog.setExam(this.exam);
 
 		if (this.nrElements != null) {
@@ -133,5 +149,4 @@ public class BatchLogBuilder {
 		batchLog.setExecutionStartDate(DateUtil.getSystemDate());
 		return batchLog;
 	}
-
 }

@@ -23,15 +23,13 @@ public interface NotificationService {
 
 	BatchLog sendNotificationForStudentAdmission(Collection<Student> students, BatchLog batchLog) throws ApplicationException;
 
-	BatchLog sendNotificationForStudent(StudentAcademicYear studentAcademicYear, BatchLog batchLog) throws ApplicationException;
+	BatchLog sendNotificationForStudentAdmissions(BatchLog batchLog) throws ApplicationException;
 
-	BatchLog sendNotificationForStudent(Collection<StudentAcademicYear> studentAcademicYears, BatchLog batchLog) throws ApplicationException;
+	BatchLog sendNotificationForStudent(StudentAcademicYear studentAcademicYear, BatchLog batchLog) throws ApplicationException;
 
 	BatchLog sendNotificationForStudent(final Section section, BatchLog batchLog) throws ApplicationException;
 
 	BatchLog sendNotificationForStudent(Long academicYearId, Klass klass, BatchLog batchLog) throws ApplicationException;
-
-	BatchLog sendNotificationForStudent(BatchLog batchLog, Collection<Section> sections) throws ApplicationException;
 
 	BatchLog sendNotificationForStudent(Long academicYearId, BatchLog batchLog) throws ApplicationException;
 
@@ -40,4 +38,6 @@ public interface NotificationService {
 	BatchLog sendNotification(BatchLog batchLog) throws ApplicationException;
 
 	BatchLog sendNotificationForStudentRegistration(StudentRegistration studentRegistration, BatchLog batchLog) throws ApplicationException;
+
+	BatchLog sendNotificationForStudentRegistration(BatchLog batchLog) throws ApplicationException;
 }

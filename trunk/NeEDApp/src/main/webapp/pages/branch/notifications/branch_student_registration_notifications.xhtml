@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components/notifications">
+	<p:panel style="margin-botton:0px;margin-top:0px;" id="klassNotificationPanel" toggleTitle="Send notification" header="Send notification">
+		<p:messages globalOnly="true" autoUpdate="true" closable="true" />
+		<c:choose>
+			<c:when test="#{branchStudentRegistrationsNotificationsBean.viewActionString == 'VIEW_SEND_NOTIFICATION'}">
+				<f:metadata>
+					<f:event type="preRenderView" listener="#{branchStudentRegistrationsNotificationsBean.loadBranchNotification}" />
+					<f:event type="preRenderView" listener="#{branchStudentRegistrationsNotificationsBean.getBranchNotificationByNotificationType}" />
+				</f:metadata>
+				<biz:send_notification notificationType="#{branchStudentRegistrationsNotificationsBean.notificationTypeConstant}"
+					notificationSubType="#{branchStudentRegistrationsNotificationsBean.notificationSubTypeConstant}"
+					notificationSubTypeConstants="#{branchStudentRegistrationsNotificationsBean.notificationSubTypeAvailable}"
+					cancelActionMethod="#{branchStudentRegistrationsNotificationsBean.setViewBatchLogs()}"
+					sendNotificationActionMethod="#{branchStudentRegistrationsNotificationsBean.sendNotification()}"
+					notificationMessage="#{branchStudentRegistrationsNotificationsBean.notificationText}"
+					academicYears="#{branchStudentRegistrationsNotificationsBean.activeAcademicYears}"
+					academicYearForNotification="#{branchStudentRegistrationsNotificationsBean.academicYearForNotification}"
+					renderAcademicYearIndicator="true" notificationTypeConstants="#{enumConstantsBean.notificationTypeConstants}"
+					notificationTypeAjaxMethod="#{branchStudentRegistrationsNotificationsBean.handleNotificationTypeChange()}"
+					notificationSubTypeAjaxMethod="#{branchStudentRegistrationsNotificationsBean.handleNotificationSubTypeChange()}"
+					academicYearAjaxMethod="#{branchStudentRegistrationsNotificationsBean.handleAcademicYearChange()}"
+					renderExamIndicator="#{branchStudentRegistrationsNotificationsBean.disaplyExamDropdownForNotification}"
+					scheduledExams="#{branchStudentRegistrationsNotificationsBean.examsForNotification}"
+					selectedScheduledExam="#{branchStudentRegistrationsNotificationsBean.selectedExamForNotification}" />
+			</c:when>
+
+			<c:when test="#{branchStudentRegistrationsNotificationsBean.viewActionString == 'VIEW_BATCH_LOG_MESSAGES'}">
+				<f:metadata>
+					<f:event type="preRenderView" listener="#{branchStudentRegistrationsNotificationsBean.loadBatchLogMessagesByBatchLog}" />
+				</f:metadata>
+
+				<biz:batch_log_message_datatable batchLogMessages="#{branchStudentRegistrationsNotificationsBean.klassBatchLogMessages}"
+					backActionMethod="#{branchStudentRegistrationsNotificationsBean.setViewBatchLogs}"
+					errorMessage="#{branchStudentRegistrationsNotificationsBean.batchLogMessageErrorMessage}"
+					messageSent="#{branchStudentRegistrationsNotificationsBean.batchLogMessageSentMessage}"
+					loadBatchLogsIndicator="#{branchStudentRegistrationsNotificationsBean.loadBatchLogsFromDB}" />
+
+			</c:when>
+			<c:otherwise>
+				<p:poll listener="#{branchStudentRegistrationsNotificationsBean.pollListener()}"
+					stop="#{branchStudentRegistrationsNotificationsBean.batchFinished}"
+					interval="#{branchStudentRegistrationsNotificationsBean.batchPollInterval}" update="klassNotificationPanel"></p:poll>
+				<p:toolbar style="margin-bottom:1px;">
+					<p:toolbarGroup align="right">
+						<p:commandButton id="view_send_notification" value="New notification" icon="ui-icon-document"
+							action="#{branchStudentRegistrationsNotificationsBean.setViewSendNotification()}" update="@form"
+							disabled="#{!grantedAuthorityBean.userAllowedToSendNotificationsBranch || !branchStudentRegistrationsNotificationsBean.batchFinished}">
+							<f:setPropertyActionListener target="#{branchStudentRegistrationsNotificationsBean.batchFinished}" value="true" />
+						</p:commandButton>
+					</p:toolbarGroup>
+				</p:toolbar>
+				<p:panel style="margin-botton:1px;margin-top:1px;">
+					<b>Notification for the branch.</b>
+					<br />
+					<br />
+					<b>Follow the steps to send a new notification</b>
+
+					<ul id="hintList_list" class="ui-datalist-data" type="disc">
+						<li class="ui-datalist-item">New notification can be send by clicking the <b>New notification</b> button.
+						</li>
+						<li class="ui-datalist-item">Notification details can be viewed by clicking the view icon.</li>
+					</ul>
+				</p:panel>
+				<f:metadata>
+					<f:event type="preRenderView" listener="#{branchStudentRegistrationsNotificationsBean.loadBatchLogsByBranchLevelAndBranchId}" />
+				</f:metadata>
+				<biz:batch_log_datatable batchLogs="#{branchStudentRegistrationsNotificationsBean.klassBatchLogs}"
+					actionMethod="#{branchStudentRegistrationsNotificationsBean.setViewBatchLogMessages}"
+					batchLogParameter="#{branchStudentRegistrationsNotificationsBean.batchLog}"
+					loadBatchLogMessagesIndicator="#{branchStudentRegistrationsNotificationsBean.loadBatchLogMessagesFromDB}"
+					progressBarProgressValue="#{branchStudentRegistrationsNotificationsBean.progressBarValue}"
+					batchLogScheduled="#{branchStudentRegistrationsNotificationsBean.scheduledBatchLog}"
+					numberOfElementsProcesed="#{branchStudentRegistrationsNotificationsBean.elementsProcessed}" />
+			</c:otherwise>
+		</c:choose>
+	</p:panel>
+</ui:composition>

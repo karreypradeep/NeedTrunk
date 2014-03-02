@@ -4,11 +4,13 @@
  * www.apeironsol.com
  * Copyright © 2012 apeironsol
  */
-package com.apeironsol.need.academics.portal;
+package com.apeironsol.need.notifications.portal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 
 import javax.annotation.Resource;
 import javax.faces.application.FacesMessage;
@@ -17,20 +19,22 @@ import javax.inject.Named;
 
 import org.springframework.context.annotation.Scope;
 
-import com.apeironsol.need.core.portal.AbstractTabbedBean;
+import com.apeironsol.need.core.portal.AbstractNotificationBean;
 import com.apeironsol.need.notifications.model.BatchLog;
 import com.apeironsol.need.notifications.model.BatchLogMessage;
+import com.apeironsol.need.notifications.model.BranchNotification;
 import com.apeironsol.need.notifications.producer.util.BatchLogBuilder;
 import com.apeironsol.need.notifications.service.BatchLogMessageService;
 import com.apeironsol.need.notifications.service.BatchLogService;
-import com.apeironsol.need.notifications.service.NotificationService;
 import com.apeironsol.need.util.DateUtil;
+import com.apeironsol.need.util.comparator.BatchLogComparator;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
 import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
+import com.apeironsol.need.util.portal.ViewUtil;
 
 /**
  * Managed bean for klass notifications.
@@ -39,22 +43,22 @@ import com.apeironsol.need.util.constants.NotificationTypeConstant;
  */
 @Named
 @Scope(value = "session")
-public class ReportCardNotificationsBean extends AbstractTabbedBean {
+public class BranchStudentRegistrationsNotificationsBean extends AbstractNotificationBean {
 
 	/**
 	 * Unique serial version id for this class
 	 */
-	private static final long			serialVersionUID				= -393945274413948139L;
+	private static final long			serialVersionUID			= 6835124226503498607L;
 
 	/**
 	 * Batch logs send for the klass for entire academic year.
 	 */
-	private Collection<BatchLog>		batchReportCardBatchLogs		= new ArrayList<BatchLog>();
+	private Collection<BatchLog>		klassBatchLogs				= new ArrayList<BatchLog>();
 
 	/**
 	 * Batch log messages for the klass for selected batch log.
 	 */
-	private Collection<BatchLogMessage>	batchReportCardBatchLogMessages	= new ArrayList<BatchLogMessage>();
+	private Collection<BatchLogMessage>	klassBatchLogMessages		= new ArrayList<BatchLogMessage>();
 
 	/**
 	 * Batch log service.
@@ -79,11 +83,6 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 	private BatchLog					scheduledBatchLog;
 
 	/**
-	 * Variable to decide what has to be displayed.
-	 */
-	private ViewAction					viewActionString				= ViewAction.VIEW_BATCH_LOGS;
-
-	/**
 	 * Variable to hole batch log message error message.
 	 */
 	private String						batchLogMessageErrorMessage;
@@ -96,43 +95,35 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 	/**
 	 * Indicator to specify if batch logs has to be fetched form DB.
 	 */
-	private boolean						loadBatchLogsFromDB				= false;
+	private boolean						loadBatchLogsFromDB			= false;
 
 	/**
 	 * Indicator to specify if batch logs has to be fetched form DB.
 	 */
-	private boolean						loadBatchLogMessagesFromDB		= false;
+	private boolean						loadBatchLogMessagesFromDB	= false;
 
 	/**
 	 * Boolean to indicate if current scheduled batch has finished.
 	 */
-	private boolean						batchFinished					= true;
+	private boolean						batchFinished				= true;
 
 	/**
 	 * Number of elements processed.
 	 */
 	private long						elementsProcessed;
 
-	@Resource
-	private NotificationService			notificationService;
-
-	@Resource
-	private ReportCardBean				reportCardBean;
-
-	/**
-	 * Enum class used for deciding what has to be displayed on screen.
-	 * 
-	 * @author pradeep
-	 * 
-	 */
-	public enum ViewAction {
-		VIEW_BATCH_LOGS, VIEW_BATCH_LOG_MESSAGES, VIEW_SEND_NOTIFICATION;
-	}
-
 	/**
 	 * Default constructor.
 	 */
-	public ReportCardNotificationsBean() {
+	public BranchStudentRegistrationsNotificationsBean() {
+	}
+
+	/**
+	 * @param batchFinished
+	 *            the batchFinished to set
+	 */
+	public void setBatchFinished(final boolean batchFinished) {
+		this.batchFinished = batchFinished;
 	}
 
 	/**
@@ -140,8 +131,10 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 	 */
 	@Override
 	public void onTabChange() {
-		this.viewActionString = ViewAction.VIEW_BATCH_LOGS;
+		this.setViewActionString(ViewAction.VIEW_BATCH_LOGS);
 		this.loadBatchLogsFromDB = true;
+		this.loadBranchNotification();
+		this.getBranchNotificationByNotificationType();
 	}
 
 	/**
@@ -160,34 +153,53 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 	 * @return
 	 */
 	public String sendNotification() {
-		try {
-			this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
-					.notificationLevelId(this.sessionBean.getCurrentBranch().getId()).notificationTypeConstant(NotificationTypeConstant.SMS_NOTIFICATION)
-					.notificationLevelConstant(NotificationLevelConstant.BRANCH).reportCard(this.reportCardBean.getReportCard())
-					.notificationSentFor(NotificationSentForConstant.STUDENTS)
-					.notificationSendForAcademicYear(this.reportCardBean.getReportCard().getAcademicYear())
-					.notificationSubTypeConstant(NotificationSubTypeConstant.REPORT_CARD_NOTIFICATION).attendanceDate(DateUtil.getSystemDate()).build();
-			this.scheduledBatchLog = this.notificationService.sendReportCardNotificationForStudent(this.scheduledBatchLog);
-		} catch (final Exception e) {
-			final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
-			this.addMessage(message);
+		if (this.getNotificationTypeConstant() == null) {
+			ViewUtil.addMessage("Please select notification type.", FacesMessage.SEVERITY_ERROR);
+			return null;
+		} else if (this.getNotificationSubTypeConstant() == null) {
+			ViewUtil.addMessage("Please select notifications sub type.", FacesMessage.SEVERITY_ERROR);
+			return null;
+		} else {
+			try {
+				if (this.getNotificationSubTypeConstant().isMessageRequired()
+						&& ((this.getNotificationText() == null) || this.getNotificationText().trim().isEmpty())) {
+					ViewUtil.addMessage("Message required for this notification type.", FacesMessage.SEVERITY_ERROR);
+					return null;
+				}
+				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
+						.notificationLevelId(this.sessionBean.getCurrentBranch().getId()).notificationTypeConstant(this.getNotificationTypeConstant())
+						.notificationLevelConstant(NotificationLevelConstant.BRANCH).notificationSubTypeConstant(this.getNotificationSubTypeConstant())
+						.messageToBeSent(this.getNotificationText()).exam(this.getSelectedExamForNotification()).attendanceDate(DateUtil.getSystemDate())
+						.notificationSentFor(NotificationSentForConstant.STUDENT_REGISTRATIONS)
+						.notificationSendForAcademicYear(this.getAcademicYearForNotification())
+						.smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider()).build();
+
+				ViewUtil.addMessage("Notifications are sent for processing.", FacesMessage.SEVERITY_INFO);
+				this.setViewBatchLogs();
+				this.loadBatchLogsFromDB = true;
+				this.batchFinished = false;
+				this.elementsProcessed = 0;
+
+				this.scheduledBatchLog = this.notificationService.sendNotificationForStudentRegistration(this.scheduledBatchLog);
+
+			} catch (final Exception e) {
+				final FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), e.getMessage());
+				this.addMessage(message);
+			}
+			this.loadBatchLogsByBranchLevelAndBranchId();
 		}
-		this.setViewBatchLogs();
-		this.loadBatchLogsFromDB = true;
-		this.loadBatchLogsByBranchLevelAndReportCardId();
-		this.batchFinished = false;
-		this.elementsProcessed = 0;
 		return null;
 	}
 
 	/**
 	 * Load batch logs from database.
 	 */
-	public void loadBatchLogsByBranchLevelAndReportCardId() {
+	public void loadBatchLogsByBranchLevelAndBranchId() {
 		if (this.loadBatchLogsFromDB) {
-			this.setBatchReportCardBatchLogs(this.batchLogService.findBatchLogsForReportCardByNotificationLevelAndNotificationLevelId(this.sessionBean
-					.getCurrentBranch().getId(), NotificationLevelConstant.BRANCH, this.sessionBean.getCurrentBranch().getId(), this.reportCardBean
-					.getReportCard().getId()));
+			this.setKlassBatchLogs(this.batchLogService.findBatchLogsByNotificationLevelAndNotificationLevelId(this.sessionBean.getCurrentBranch().getId(),
+					NotificationLevelConstant.BRANCH, this.sessionBean.getCurrentBranch().getId(), NotificationSubTypeConstant.getRegistrationNotifications(),
+					NotificationSentForConstant.STUDENT_REGISTRATIONS));
+			Collections.sort((List<BatchLog>) this.getKlassBatchLogs(), new BatchLogComparator(BatchLogComparator.Order.ID));
 			this.loadBatchLogsFromDB = false;
 		}
 	}
@@ -197,46 +209,56 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 	 */
 	public void loadBatchLogMessagesByBatchLog() {
 		if (this.loadBatchLogMessagesFromDB) {
-			this.setBatchReportCardBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByBatchLogId(this.getBatchLog().getId()));
+			this.setKlassBatchLogMessages(this.batchLogMessageService.findBatchLogMessagesByBatchLogId(this.getBatchLog().getId()));
 			this.loadBatchLogMessagesFromDB = false;
 		}
 	}
 
 	/**
-	 * @return the viewActionString
+	 * @return the klassBatchLogs
 	 */
-	public ViewAction getViewActionString() {
-		return this.viewActionString;
+	public Collection<BatchLog> getKlassBatchLogs() {
+		return this.klassBatchLogs;
 	}
 
 	/**
-	 * @param viewActionString
-	 *            the viewActionString to set
+	 * @param klassBatchLogs
+	 *            the klassBatchLogs to set
 	 */
-	public void setViewActionString(final ViewAction viewActionString) {
-		this.viewActionString = viewActionString;
+	public void setKlassBatchLogs(final Collection<BatchLog> klassBatchLogs) {
+		this.klassBatchLogs = klassBatchLogs;
+	}
+
+	/**
+	 * @return the klassBatchLogMessages
+	 */
+	public Collection<BatchLogMessage> getKlassBatchLogMessages() {
+		return this.klassBatchLogMessages;
+	}
+
+	/**
+	 * @param klassBatchLogs
+	 *            the klassBatchLogs to set
+	 */
+	public void setKlassBatchLogMessages(final Collection<BatchLogMessage> batchLogMessages) {
+		this.klassBatchLogMessages = batchLogMessages;
 	}
 
 	public String setViewBatchLogs() {
-		this.viewActionString = ViewAction.VIEW_BATCH_LOGS;
+		this.setViewActionString(ViewAction.VIEW_BATCH_LOGS);
 		return null;
 	}
 
 	public String setViewBatchLogMessages() {
-		this.viewActionString = ViewAction.VIEW_BATCH_LOG_MESSAGES;
+		this.setViewActionString(ViewAction.VIEW_BATCH_LOG_MESSAGES);
 		this.clearBatchLogMesagesCollection();
 		return null;
 	}
 
 	public void clearBatchLogMesagesCollection() {
-		if ((this.batchReportCardBatchLogs != null) && !this.batchReportCardBatchLogs.isEmpty()) {
-			this.batchReportCardBatchLogs.clear();
+		if ((this.klassBatchLogMessages != null) && !this.klassBatchLogMessages.isEmpty()) {
+			this.klassBatchLogMessages.clear();
 		}
-	}
-
-	public String setViewSendNotification() {
-		this.viewActionString = ViewAction.VIEW_SEND_NOTIFICATION;
-		return null;
 	}
 
 	/**
@@ -319,7 +341,7 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 	 */
 	public void checkBatchStopped() {
 		this.batchFinished = true;
-		if (this.scheduledBatchLog != null) {
+		if ((this.scheduledBatchLog != null) && ((this.scheduledBatchLog.getId()) != null)) {
 			this.scheduledBatchLog = this.batchLogService.findBatchLogById(this.scheduledBatchLog.getId());
 			if (BatchStatusConstant.CREATED.equals(this.scheduledBatchLog.getBatchStatusConstant())
 					|| BatchStatusConstant.DISTRIBUTED.equals(this.scheduledBatchLog.getBatchStatusConstant())) {
@@ -328,8 +350,12 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 				this.batchLog = this.scheduledBatchLog;
 				this.scheduledBatchLog = null;
 				this.loadBatchLogsFromDB = true;
-				this.loadBatchLogsByBranchLevelAndReportCardId();
+				this.loadBatchLogsByBranchLevelAndBranchId();
 			}
+		} else if ((this.scheduledBatchLog != null)
+				&& ((this.scheduledBatchLog.getId() == null) && (BatchStatusConstant.CREATED.equals(this.scheduledBatchLog.getBatchStatusConstant()) || BatchStatusConstant.DISTRIBUTED
+						.equals(this.scheduledBatchLog.getBatchStatusConstant())))) {
+			this.batchFinished = false;
 		}
 	}
 
@@ -384,11 +410,7 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 	 * @return
 	 */
 	public int getBatchPollInterval() {
-		int interval = 15;
-		if (this.scheduledBatchLog != null) {
-			interval = 10;
-		}
-		return interval;
+		return 45;
 	}
 
 	/**
@@ -421,34 +443,31 @@ public class ReportCardNotificationsBean extends AbstractTabbedBean {
 		this.elementsProcessed = elementsProcessed;
 	}
 
-	/**
-	 * @return the batchReportCardBatchLogs
-	 */
-	public Collection<BatchLog> getBatchReportCardBatchLogs() {
-		return this.batchReportCardBatchLogs;
+	@Override
+	public void loadExamsForNotifications() {
+		ViewUtil.addMessage("Notification  not supported for Student Registration.", FacesMessage.SEVERITY_WARN);
 	}
 
-	/**
-	 * @return the batchReportCardBatchLogMessages
-	 */
-	public Collection<BatchLogMessage> getBatchReportCardBatchLogMessages() {
-		return this.batchReportCardBatchLogMessages;
-	}
-
-	/**
-	 * @param batchReportCardBatchLogMessages
-	 *            the batchReportCardBatchLogMessages to set
-	 */
-	public void setBatchReportCardBatchLogMessages(final Collection<BatchLogMessage> batchReportCardBatchLogMessages) {
-		this.batchReportCardBatchLogMessages = batchReportCardBatchLogMessages;
-	}
-
-	/**
-	 * @param batchReportCardBatchLogs
-	 *            the batchReportCardBatchLogs to set
-	 */
-	public void setBatchReportCardBatchLogs(final Collection<BatchLog> batchReportCardBatchLogs) {
-		this.batchReportCardBatchLogs = batchReportCardBatchLogs;
+	@Override
+	public void getBranchNotificationByNotificationType() {
+		this.setNotificationSubTypeAvailable(new ArrayList<NotificationSubTypeConstant>());
+		for (final BranchNotification branchNotification : this.getBranchNotifications()) {
+			if (NotificationSubTypeConstant.getRegistrationNotifications().contains(branchNotification.getNotificationSubType())) {
+				if (branchNotification.getNotificationSubType().isGroupMessage()) {
+					if (NotificationTypeConstant.EMAIL_NOTIFICATION.equals(this.getNotificationTypeConstant())
+							&& ((null != branchNotification.getEmailIndicator()) && branchNotification.getEmailIndicator())) {
+						this.getNotificationSubTypeAvailable().add(branchNotification.getNotificationSubType());
+					} else if (NotificationTypeConstant.SMS_NOTIFICATION.equals(this.getNotificationTypeConstant())
+							&& (null != branchNotification.getSmsIndicator()) && branchNotification.getSmsIndicator()) {
+						this.getNotificationSubTypeAvailable().add(branchNotification.getNotificationSubType());
+					} else if ((this.getNotificationTypeConstant() == null)
+							&& (((null != branchNotification.getSmsIndicator()) && branchNotification.getSmsIndicator()) || ((null != branchNotification
+									.getEmailIndicator()) && branchNotification.getEmailIndicator()))) {
+						this.getNotificationSubTypeAvailable().add(branchNotification.getNotificationSubType());
+					}
+				}
+			}
+		}
 	}
 
 }

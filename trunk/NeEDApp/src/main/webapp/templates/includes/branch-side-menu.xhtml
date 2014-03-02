@@ -11,13 +11,15 @@
 		activeIndex="#{leftMenuBean.activeTabIndex}" id="branch_side_menu">
 
 		<p:tab title="#{msg.students}" id="left_students_tab">
-			<h:panelGrid columns="1" cellpadding="2"> 
+			<h:panelGrid columns="1" cellpadding="2">
 				<p:commandLink value="#{msg.registrations}" process="branch_side_menu" update="@form"
-					actionListener="#{admissionBean.performSearch()}" rendered="#{grantedAuthorityBean.userAllowedToAccessRegistrations}">
+					actionListener="#{admissionBean.performSearch()}"
+					rendered="#{grantedAuthorityBean.userAllowedToAccessRegistrations}">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_REGISTRATIONS">
 						<f:converter converterId="viewContentConverter" />
 					</f:setPropertyActionListener>
-					<f:setPropertyActionListener target="#{studentRegistrationBean.loadAcademicYearsForAdmissionsOpenedFlag}" value="true" />
+					<f:setPropertyActionListener target="#{studentRegistrationBean.loadAcademicYearsForAdmissionsOpenedFlag}"
+						value="true" />
 					<f:setPropertyActionListener target="#{studentRegistrationBean.viewOrNewAction}" value="false" />
 				</p:commandLink>
 				<p:commandLink value="#{msg.admissions}" process="branch_side_menu" update="@form"
@@ -107,7 +109,7 @@
 					rendered="#{grantedAuthorityBean.userAllowedToAccessReportCard}">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_REPORT_CARD">
 						<f:converter converterId="viewContentConverter" />
-					</f:setPropertyActionListener>  
+					</f:setPropertyActionListener>
 					<f:setPropertyActionListener target="#{reportCardBean.viewOrNewAction}" value="false" />
 					<f:setPropertyActionListener target="#{reportCardBean.loadReportCardsFlag}" value="true" />
 					<f:setPropertyActionListener target="#{reportCardBean.loadExamsFlag}" value="true" />
@@ -263,18 +265,30 @@
 
 		<p:tab title="#{msg.notifications}" id="left_notifications_tab">
 			<h:panelGrid columns="1" cellpadding="2">
-				<p:commandLink value="#{msg.students}" update="@form" process="branch_side_menu" action="#{branchStudentsNotificationsBean.setViewBatchLogs}">
+				<p:commandLink value="#{msg.registrations}" update="@form" process="branch_side_menu"
+					action="#{branchAdmissionsNotificationsBean.setViewBatchLogs}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_STUDENT_REGISTRATIONS_NOTIFICATIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchStudentRegistrationsNotificationsBean.loadBatchLogsFromDB}"
+						value="true" />
+				</p:commandLink>
+				<p:commandLink value="#{msg.admissions}" update="@form" process="branch_side_menu"
+					action="#{branchAdmissionsNotificationsBean.setViewBatchLogs}">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_ADMISSIONS_NOTIFICATIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchAdmissionsNotificationsBean.loadBatchLogsFromDB}" value="true" />
+				</p:commandLink>
+				<p:commandLink value="#{msg.students}" update="@form" process="branch_side_menu"
+					action="#{branchStudentsNotificationsBean.setViewBatchLogs}">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
 						value="BRANCH_STUDENTS_NOTIFICATIONS">
 						<f:converter converterId="viewContentConverter" />
 					</f:setPropertyActionListener>
 					<f:setPropertyActionListener target="#{branchStudentsNotificationsBean.loadBatchLogsFromDB}" value="true" />
-				</p:commandLink>
-				<p:commandLink value="#{msg.admissions}" update="@form" process="branch_side_menu" rendered="false">
-					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
-						value="BRANCH_ADMISSIONS_NOTIFICATIONS">
-						<f:converter converterId="viewContentConverter" />
-					</f:setPropertyActionListener>
 				</p:commandLink>
 			</h:panelGrid>
 		</p:tab>

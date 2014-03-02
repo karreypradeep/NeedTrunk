@@ -343,6 +343,59 @@ public class NotificationProducerUtil implements Serializable {
 	}
 
 	/**
+	 * 
+	 * @param studentAcademicYear
+	 * @param branchId
+	 * @param batchLog
+	 */
+	public synchronized void sendNotificationAsBatchForStudentRegistration(final Collection<StudentRegistration> studentRegistrations, final BatchLog batchLog) {
+		Connection queueConn = null;
+		Session session = null;
+		try {
+			// create a queue connection
+			queueConn = this.getJmsConnectionFactory().createConnection();
+			// create a queue session
+			session = queueConn.createSession(true, Session.AUTO_ACKNOWLEDGE);
+			// create a queue sender
+			final MessageProducer producer = session.createProducer(this.getDestination());
+			producer.setDeliveryMode(DeliveryMode.PERSISTENT);
+			ObjectMessage message = null;
+			int seqNr = 1;
+			for (final StudentRegistration studentRegistration : studentRegistrations) {
+				message = this.createNotificationMessage(studentRegistration, batchLog, Long.valueOf(seqNr), session);
+				// send the message
+				producer.send(message);
+				seqNr++;
+			}
+			// Send this message as last message to update batch log.
+			message = this.createLastMessage(batchLog, session);
+			// send the message
+			producer.send(message);
+			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.DISTRIBUTED, Long.valueOf(studentRegistrations.size()));
+			session.commit();
+		} catch (final Exception e) {
+			this.updateBatchLogToStatus(batchLog, BatchStatusConstant.SENDING_FAILED, Long.valueOf(studentRegistrations.size()));
+			if (session != null) {
+				try {
+					session.rollback();
+				} catch (final JMSException e1) {
+					Logger.error(e.getCause());
+				}
+			}
+			Logger.error(e.getCause());
+		} finally {
+			// close the queue connection
+			if (queueConn != null) {
+				try {
+					queueConn.close();
+				} catch (final JMSException e) {
+					Logger.error(e.getCause());
+				}
+			}
+		}
+	}
+
+	/**
 	 * Updates supplied batch log to status supplied.
 	 * 
 	 * @param batchLog

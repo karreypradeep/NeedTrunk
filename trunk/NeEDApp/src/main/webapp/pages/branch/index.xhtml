@@ -182,6 +182,11 @@
 			</c:when>
 
 			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchStudentRegistrationsNotifications}">
+				<ui:include src="/pages/branch/notifications/branch_student_registration_notifications.xhtml" />
+			</c:when>
+
+			<c:when
 				test="#{viewContentHandlerBean.viewContentBranchChangePassword}">
 				<ui:include src="/pages/branch/settings/change_password.xhtml" />
 			</c:when>

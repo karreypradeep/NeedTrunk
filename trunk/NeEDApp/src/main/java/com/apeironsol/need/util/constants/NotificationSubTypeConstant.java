@@ -27,10 +27,10 @@ public enum NotificationSubTypeConstant implements Labeled {
 	ABSENT_NOTIFICATION("absent_notification", true, false, false, false, false, false),
 	EXAM_ABSENT_NOTIFICATION("exam_absent_notification", true, false, false, false, false, false),
 	EXAM_SCHEDULE_NOTIFICATION("exam_schedule_notification", true, false, false, false, false, false),
-	NEW_ADMISSION_ACCEPTED_NOTIFICATION("new_admission_accepted_notification", false, false, false, true, false, false),
-	NEW_ADMISSION_SUBMITTED_NOTIFICATION("new_admission_submitted_notification", false, false, false, true, false, false),
-	NEW_ADMISSION_NOTIFICATION("new_admission_admitted_notification", false, false, false, true, false, false),
-	NEW_STUDENT_REGISTRATION_NOTIFICATION("new_student_registration_notification", false, false, false, true, false, false),
+	NEW_ADMISSION_ACCEPTED_NOTIFICATION("new_admission_accepted_notification", true, false, false, true, false, false),
+	NEW_ADMISSION_SUBMITTED_NOTIFICATION("new_admission_submitted_notification", true, false, false, true, false, false),
+	NEW_ADMISSION_NOTIFICATION("new_admission_admitted_notification", true, false, false, true, false, false),
+	NEW_STUDENT_REGISTRATION_NOTIFICATION("new_student_registration_notification", true, false, false, true, false, false),
 	REPORT_CARD_NOTIFICATION("report_card_notification", true, false, false, false, false, false),
 	EXAM_RESULT_NOTIFICATION("exam_result_notification", true, false, false, false, false, false),
 	ADHOC_NOTIFICATION("adhoc_notification", true, true, false, false, false, false);
@@ -65,7 +65,11 @@ public enum NotificationSubTypeConstant implements Labeled {
 	// attribute as true.
 	private final boolean									isAllowedTobeScheduled;
 
-	private static final List<NotificationSubTypeConstant>	brachNotifications	= new ArrayList<NotificationSubTypeConstant>();
+	private static final List<NotificationSubTypeConstant>	brachNotifications			= new ArrayList<NotificationSubTypeConstant>();
+
+	private static final List<NotificationSubTypeConstant>	admissionNotifications		= new ArrayList<NotificationSubTypeConstant>();
+
+	private static final List<NotificationSubTypeConstant>	regitrationNotifications	= new ArrayList<NotificationSubTypeConstant>();
 
 	static {
 		brachNotifications.add(FEE_DUE_NOTIFICATION);
@@ -84,6 +88,15 @@ public enum NotificationSubTypeConstant implements Labeled {
 		brachNotifications.add(REPORT_CARD_NOTIFICATION);
 		brachNotifications.add(EXAM_RESULT_NOTIFICATION);
 		brachNotifications.add(NEW_STUDENT_REGISTRATION_NOTIFICATION);
+
+		admissionNotifications.add(NEW_ADMISSION_ACCEPTED_NOTIFICATION);
+		admissionNotifications.add(NEW_ADMISSION_SUBMITTED_NOTIFICATION);
+		admissionNotifications.add(NEW_ADMISSION_NOTIFICATION);
+		admissionNotifications.add(ADHOC_NOTIFICATION);
+
+		regitrationNotifications.add(NEW_STUDENT_REGISTRATION_NOTIFICATION);
+		regitrationNotifications.add(ADHOC_NOTIFICATION);
+
 	}
 
 	/**
@@ -91,6 +104,20 @@ public enum NotificationSubTypeConstant implements Labeled {
 	 */
 	public static List<NotificationSubTypeConstant> getBrachNotifications() {
 		return brachNotifications;
+	}
+
+	/**
+	 * @return the brachLevelNotifications
+	 */
+	public static List<NotificationSubTypeConstant> getAdmissionNotifications() {
+		return admissionNotifications;
+	}
+
+	/**
+	 * @return the brachLevelNotifications
+	 */
+	public static List<NotificationSubTypeConstant> getRegistrationNotifications() {
+		return regitrationNotifications;
 	}
 
 	/**

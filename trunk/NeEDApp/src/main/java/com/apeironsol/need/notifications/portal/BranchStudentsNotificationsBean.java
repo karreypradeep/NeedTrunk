@@ -34,6 +34,7 @@ import com.apeironsol.need.util.comparator.BatchLogComparator;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.portal.ViewUtil;
 
@@ -169,8 +170,10 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 				}
 				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
 						.notificationLevelId(this.sessionBean.getCurrentBranch().getId()).notificationTypeConstant(this.getNotificationTypeConstant())
-						.notificationLevelConstant(NotificationLevelConstant.BRANCH).notificationSubTypeConstant(this.getNotificationSubTypeConstant())
-						.messageToBeSent(this.getNotificationText()).exam(this.getSelectedExamForNotification()).attendanceDate(DateUtil.getSystemDate())
+						.notificationSendForAcademicYear(this.getAcademicYearForNotification()).notificationLevelConstant(NotificationLevelConstant.BRANCH)
+						.notificationSubTypeConstant(this.getNotificationSubTypeConstant()).messageToBeSent(this.getNotificationText())
+						.exam(this.getSelectedExamForNotification()).attendanceDate(DateUtil.getSystemDate())
+						.notificationSendForAcademicYear(this.getAcademicYearForNotification()).notificationSentFor(NotificationSentForConstant.STUDENTS)
 						.smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider()).build();
 
 				ViewUtil.addMessage("Notifications are sent for processing.", FacesMessage.SEVERITY_INFO);
@@ -197,7 +200,8 @@ public class BranchStudentsNotificationsBean extends AbstractNotificationBean {
 	public void loadBatchLogsByKlassLevelAndKlassId() {
 		if (this.loadBatchLogsFromDB) {
 			this.setKlassBatchLogs(this.batchLogService.findBatchLogsByNotificationLevelAndNotificationLevelId(this.sessionBean.getCurrentBranch().getId(),
-					NotificationLevelConstant.BRANCH, this.sessionBean.getCurrentBranch().getId()));
+					NotificationLevelConstant.BRANCH, this.sessionBean.getCurrentBranch().getId(), NotificationSubTypeConstant.getBrachNotifications(),
+					NotificationSentForConstant.STUDENTS));
 			Collections.sort((List<BatchLog>) this.getKlassBatchLogs(), new BatchLogComparator(BatchLogComparator.Order.ID));
 			this.loadBatchLogsFromDB = false;
 		}

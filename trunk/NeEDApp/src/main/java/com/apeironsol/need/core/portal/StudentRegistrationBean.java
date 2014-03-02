@@ -107,13 +107,13 @@ public class StudentRegistrationBean extends AbstractTabbedBean {
 			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationesByAcademicYearIdAndStatus(
 					this.academicYearForSearch.getId(), this.registrationStatusConstantForSearch);
 		} else if (this.academicYearForSearch != null) {
-			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationesByAcademicYearId(this.academicYearForSearch
+			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationsByAcademicYearId(this.academicYearForSearch
 					.getId());
 		} else if (this.registrationStatusConstantForSearch != null) {
 			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService
 					.findStudentRegistrationesByStudentRegistrationStatus(this.registrationStatusConstantForSearch);
 		} else {
-			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationesByBranchId(this.sessionBean.getCurrentBranch()
+			this.studentRegistrationsBySearchCriteria = this.studentRegistrationService.findStudentRegistrationsByBranchId(this.sessionBean.getCurrentBranch()
 					.getId());
 		}
 	}

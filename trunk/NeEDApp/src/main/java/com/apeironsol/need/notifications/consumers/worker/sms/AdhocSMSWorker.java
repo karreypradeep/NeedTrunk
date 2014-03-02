@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import com.apeironsol.framework.NeEDJMSObject;
 import com.apeironsol.framework.exception.ApplicationException;
 import com.apeironsol.need.core.model.SMSProvider;
+import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.notifications.consumers.worker.util.NotificationMessage;
 import com.apeironsol.need.notifications.providers.sms.UniversalSMSProvider;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
@@ -46,10 +47,15 @@ public class AdhocSMSWorker implements SMSWorker {
 		final SMSProvider sMSProvider = neEDJMSObject.getSmsProvider() != null ? neEDJMSObject.getSmsProvider() : neEDJMSObject.getBatchLog().getSmsProvider();
 		final UniversalSMSProvider universalSMSProvider = new UniversalSMSProvider(sMSProvider);
 		final String smsText = neEDJMSObject.getBatchLog().getMessage();
-		if (neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber() != null) {
-			notificationMessage.setSentAddress(neEDJMSObject.getStudentAcademicYear().getStudent().getAddress().getContactNumber());
-			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { neEDJMSObject.getStudentAcademicYear().getStudent().getAddress()
-					.getContactNumber() }, smsText);
+		Student stduent = null;
+		if (neEDJMSObject.getStudentAcademicYear() != null) {
+			stduent = neEDJMSObject.getStudentAcademicYear().getStudent();
+		} else {
+			stduent = neEDJMSObject.getStudent();
+		}
+		if ((stduent != null) && (stduent.getAddress().getContactNumber() != null)) {
+			notificationMessage.setSentAddress(stduent.getAddress().getContactNumber());
+			final String smsReturnTest = universalSMSProvider.sendSMS(new String[] { stduent.getAddress().getContactNumber() }, smsText);
 			if (smsReturnTest.toLowerCase().contains(sMSProvider.getSuccessString().toLowerCase())) {
 				notificationMessage.setBatchLogMessageStatus(BatchLogMessageStatusConstant.SUCCESS);
 				notificationMessage.setMessage(neEDJMSObject.getBatchLog().getMessage());

@@ -36,6 +36,7 @@ import com.apeironsol.need.util.comparator.BatchLogComparator;
 import com.apeironsol.need.util.constants.BatchLogMessageStatusConstant;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.portal.ViewUtil;
 
@@ -178,7 +179,9 @@ public class SectionNotificationsBean extends AbstractNotificationBean {
 						.notificationLevelId(this.sectionBean.getSection().getId()).notificationTypeConstant(this.getNotificationTypeConstant())
 						.notificationLevelConstant(NotificationLevelConstant.SECTION).notificationSubTypeConstant(this.getNotificationSubTypeConstant())
 						.messageToBeSent(this.getNotificationText()).exam(this.getSelectedExamForNotification()).attendanceDate(DateUtil.getSystemDate())
-						.smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider()).build();
+						.notificationSendForAcademicYear(this.sectionBean.getSection().getAcademicYear())
+						.notificationSentFor(NotificationSentForConstant.STUDENTS).smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider())
+						.build();
 
 				ViewUtil.addMessage("Notifications are sent for processing.", FacesMessage.SEVERITY_INFO);
 				this.setViewBatchLogs();
@@ -202,7 +205,8 @@ public class SectionNotificationsBean extends AbstractNotificationBean {
 	public void loadBatchLogsBySectionLevelAndSectionId() {
 		if (this.loadBatchLogsFromDB) {
 			this.setSectionBatchLogs(this.batchLogService.findBatchLogsByNotificationLevelAndNotificationLevelId(this.sessionBean.getCurrentBranch().getId(),
-					NotificationLevelConstant.SECTION, this.sectionBean.getSection().getId()));
+					NotificationLevelConstant.SECTION, this.sectionBean.getSection().getId(), NotificationSubTypeConstant.getBrachNotifications(),
+					NotificationSentForConstant.STUDENTS));
 			Collections.sort((List<BatchLog>) this.getSectionBatchLogs(), new BatchLogComparator(BatchLogComparator.Order.ID));
 			this.loadBatchLogsFromDB = false;
 		}

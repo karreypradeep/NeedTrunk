@@ -61,6 +61,7 @@ import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.FeeClassificationLevelConstant;
 import com.apeironsol.need.util.constants.FeeTypeConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.constants.PaymentMethodConstant;
@@ -219,8 +220,9 @@ public class AdmissionServiceImpl implements AdmissionService {
 				final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(
 						branch.getId(), NotificationSubTypeConstant.NEW_ADMISSION_SUBMITTED_NOTIFICATION);
 				if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
-					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branch.getId(), result.getId(), NotificationTypeConstant.SMS_NOTIFICATION,
-							NotificationLevelConstant.STUDENT, NotificationSubTypeConstant.NEW_ADMISSION_SUBMITTED_NOTIFICATION, null, null);
+					final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branch.getId(), result.getId(), student.getAppliedForAcademicYear(),
+							NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT,
+							NotificationSubTypeConstant.NEW_ADMISSION_SUBMITTED_NOTIFICATION, NotificationSentForConstant.ADMISSIONS, null, null);
 					if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
 							|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
 						this.notificationService.sendNotificationForStudentAdmission(result, batchLog);
@@ -357,8 +359,8 @@ public class AdmissionServiceImpl implements AdmissionService {
 							appliedForAcademicYear.getBranch().getId(), NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION);
 					if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
 						final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), appliedForAcademicYear.getBranch().getId(), result.getId(),
-								NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT,
-								NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION, null, null);
+								appliedForAcademicYear, NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT,
+								NotificationSubTypeConstant.NEW_ADMISSION_ACCEPTED_NOTIFICATION, NotificationSentForConstant.ADMISSIONS, null, null);
 						if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
 								|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
 							this.notificationService.sendNotificationForStudentAdmission(result, batchLog);
@@ -676,8 +678,9 @@ public class AdmissionServiceImpl implements AdmissionService {
 					studentAcademicYear.getStudent().getBranch().getId(), NotificationSubTypeConstant.NEW_ADMISSION_NOTIFICATION);
 			if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
 				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), studentAcademicYear.getStudent().getBranch().getId(),
-						studentAcademicYear.getId(), NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
-						NotificationSubTypeConstant.NEW_ADMISSION_NOTIFICATION, null, null);
+						studentAcademicYear.getId(), studentAcademicYear.getAcademicYear(), NotificationTypeConstant.SMS_NOTIFICATION,
+						NotificationLevelConstant.STUDENT_ACADEMIC_YEAR, NotificationSubTypeConstant.NEW_ADMISSION_NOTIFICATION,
+						NotificationSentForConstant.STUDENTS, null, null);
 				if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
 						|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
 					this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);
@@ -1275,9 +1278,10 @@ public class AdmissionServiceImpl implements AdmissionService {
 	 *            branch id.
 	 * @return batch log created.
 	 */
-	private BatchLog createBatchLog(final Long batchSize, final Long branchId, final Long notificationLevelId,
+	private BatchLog createBatchLog(final Long batchSize, final Long branchId, final Long notificationLevelId, final AcademicYear notificationForAcademicYear,
 			final NotificationTypeConstant notificationTypeConstant, final NotificationLevelConstant notificationLevelConstant,
-			final NotificationSubTypeConstant notificationSubTypeConstant, final String messageToBeSent, final String studentFeeTransactionNr) {
+			final NotificationSubTypeConstant notificationSubTypeConstant, final NotificationSentForConstant notificationSentForConstant,
+			final String messageToBeSent, final String studentFeeTransactionNr) {
 		BatchLog batchLog = new BatchLog();
 		final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(branchId);
 		if ((branchRule != null) && (branchRule.getSmsProvider() != null)) {
@@ -1293,11 +1297,13 @@ public class AdmissionServiceImpl implements AdmissionService {
 		batchLog.setExecutionStartDate(DateUtil.getSystemDate());
 		batchLog.setNotificationLevelConstant(notificationLevelConstant);
 		batchLog.setNotificationSubTypeConstant(notificationSubTypeConstant);
+		batchLog.setNotificationSentFor(notificationSentForConstant);
 		batchLog.setNotificationTypeConstant(notificationTypeConstant);
 		batchLog.setNrElements(batchSize);
 		batchLog.setNotificationLevelId(notificationLevelId);
 		batchLog.setMessage(messageToBeSent);
 		batchLog.setStudentFeeTransactionNr(studentFeeTransactionNr);
+		batchLog.setNotificationSendForAcademicYear(notificationForAcademicYear);
 		batchLog = this.batchLogService.saveBatchLogInNewTransaction(batchLog);
 		return batchLog;
 	}

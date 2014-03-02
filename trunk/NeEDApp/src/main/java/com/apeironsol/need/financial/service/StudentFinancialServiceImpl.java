@@ -65,6 +65,7 @@ import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.FeeClassificationLevelConstant;
 import com.apeironsol.need.util.constants.FeeTypeConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.constants.PaymentMethodConstant;
@@ -740,9 +741,10 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	 *            branch id.
 	 * @return batch log created.
 	 */
-	private BatchLog createBatchLog(final Long batchSize, final Long branchId, final Long notificationLevelId,
+	private BatchLog createBatchLog(final Long batchSize, final Long branchId, final Long notificationLevelId, final AcademicYear notificationForAcademicYear,
 			final NotificationTypeConstant notificationTypeConstant, final NotificationLevelConstant notificationLevelConstant,
-			final NotificationSubTypeConstant notificationSubTypeConstant, final String messageToBeSent, final String studentFeeTransactionNr) {
+			final NotificationSubTypeConstant notificationSubTypeConstant, final NotificationSentForConstant notificationSentForConstant,
+			final String messageToBeSent, final String studentFeeTransactionNr) {
 		final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(branchId);
 		BatchLog batchLog = new BatchLog();
 		if ((branchRule != null) && (branchRule.getSmsProvider() != null)) {
@@ -759,6 +761,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		batchLog.setNotificationLevelConstant(notificationLevelConstant);
 		batchLog.setNotificationSubTypeConstant(notificationSubTypeConstant);
 		batchLog.setNotificationTypeConstant(notificationTypeConstant);
+		batchLog.setNotificationSentFor(notificationSentForConstant);
 		batchLog.setNrElements(batchSize);
 		batchLog.setNotificationLevelId(notificationLevelId);
 
@@ -932,9 +935,10 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(branchId,
 					NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
 			if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
-				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branchId, studentAcademicYear.getId(),
+				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branchId, studentAcademicYear.getId(), studentAcademicYear.getAcademicYear(),
 						NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
-						NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, null, studentFeeTransactionLocal.getTransactionNr());
+						NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, NotificationSentForConstant.STUDENTS, null,
+						studentFeeTransactionLocal.getTransactionNr());
 				if (BatchStatusConstant.CREATED.equals(batchLog.getBatchStatusConstant())
 						|| BatchStatusConstant.DISTRIBUTED.equals(batchLog.getBatchStatusConstant())) {
 					this.notificationService.sendNotificationForStudent(studentAcademicYear, batchLog);

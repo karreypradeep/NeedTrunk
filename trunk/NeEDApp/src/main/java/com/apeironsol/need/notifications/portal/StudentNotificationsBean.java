@@ -34,6 +34,7 @@ import com.apeironsol.need.util.DateUtil;
 import com.apeironsol.need.util.comparator.BatchLogMessageComparator;
 import com.apeironsol.need.util.constants.BatchStatusConstant;
 import com.apeironsol.need.util.constants.NotificationLevelConstant;
+import com.apeironsol.need.util.constants.NotificationSentForConstant;
 import com.apeironsol.need.util.constants.NotificationSubTypeConstant;
 import com.apeironsol.need.util.constants.NotificationTypeConstant;
 import com.apeironsol.need.util.portal.ViewUtil;
@@ -208,8 +209,10 @@ public class StudentNotificationsBean extends AbstractTabbedBean {
 				this.scheduledBatchLog = new BatchLogBuilder().branch(this.sessionBean.getCurrentBranch())
 						.notificationLevelId(this.studentBean.getStudentAcademicYear().getId()).notificationTypeConstant(this.notificationTypeConstant)
 						.notificationLevelConstant(NotificationLevelConstant.STUDENT_ACADEMIC_YEAR)
+						.notificationSendForAcademicYear(this.studentBean.getStudentAcademicYear().getAcademicYear())
 						.smsProvider(this.sessionBean.getCurrentBranchRule().getSmsProvider()).notificationSubTypeConstant(this.notificationSubTypeConstant)
-						.messageToBeSent(this.notificationText).attendanceDate(DateUtil.getSystemDate()).build();
+						.notificationSentFor(NotificationSentForConstant.STUDENTS).messageToBeSent(this.notificationText)
+						.attendanceDate(DateUtil.getSystemDate()).build();
 
 				this.scheduledBatchLog = this.notificationService.sendNotificationForStudent(this.studentBean.getStudentAcademicYear(), this.scheduledBatchLog);
 			} catch (final Exception e) {

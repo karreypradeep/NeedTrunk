@@ -62,7 +62,7 @@ public interface StudentRegistrationService {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	Collection<StudentRegistration> findStudentRegistrationesByBranchId(Long branchId) throws BusinessException;
+	Collection<StudentRegistration> findStudentRegistrationsByBranchId(Long branchId) throws BusinessException;
 
 	/**
 	 * Retrieves all studentRegistrationes of supplied branch id.
@@ -73,7 +73,7 @@ public interface StudentRegistrationService {
 	 * @throws BusinessException
 	 *             In case of exception.
 	 */
-	Collection<StudentRegistration> findStudentRegistrationesByAcademicYearId(Long academicYearId) throws BusinessException;
+	Collection<StudentRegistration> findStudentRegistrationsByAcademicYearId(Long academicYearId) throws BusinessException;
 
 	/**
 	 * Retrieves all studentRegistrationes of supplied branch id.
