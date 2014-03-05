@@ -3,25 +3,25 @@
  * SMSystem.
  * www.apeironsol.com
  * Copyright © 2012 apeironsol
- *
+ * 
  */
 package com.apeironsol.need.core.service;
 
 import java.util.Collection;
 
-import com.apeironsol.need.core.model.AdmissionReservationFee;
 import com.apeironsol.framework.exception.BusinessException;
+import com.apeironsol.need.core.model.AdmissionReservationFee;
 
 /**
  * @author sunny
- *  Service interface for AdmissionReservationFee.
- *
+ *         Service interface for AdmissionReservationFee.
+ * 
  */
 public interface AdmissionReservationFeeService {
 
 	/**
 	 * Retrieves the admission reservation fee point by id.
-	 *
+	 * 
 	 * @param id
 	 *            the id of admission reservation fee to be retrieved.
 	 * @return
@@ -30,31 +30,40 @@ public interface AdmissionReservationFeeService {
 
 	/**
 	 * Retrieves all admission reservation fees available.
-	 *
+	 * 
 	 * @return all admission reservation fees available.
 	 */
 	Collection<AdmissionReservationFee> findAllAdmissionReservationFees() throws BusinessException;
 
 	/**
 	 * Saves the admission reservation fee.
-	 *
+	 * 
 	 * @return the saved admission reservation fee.
 	 */
 	AdmissionReservationFee saveAdmissionReservationFee(AdmissionReservationFee admissionReservationFee) throws BusinessException;
 
 	/**
 	 * Deletes the admission reservation fee.
-	 *
+	 * 
 	 */
 	void deleteAdmissionReservationFee(final Long id) throws BusinessException;
 
 	/**
 	 * Find admission reservation fee by student id.
-	 *
+	 * 
 	 * @param sectionId
 	 *            sectionId
 	 * @return admission reservation fee by student id.
 	 */
 	AdmissionReservationFee findAdmissionReservationFeeByStudentID(Long studentId);
+
+	/**
+	 * Find admission reservation fee by student id.
+	 * 
+	 * @param sectionId
+	 *            sectionId
+	 * @return admission reservation fee by student id.
+	 */
+	Collection<AdmissionReservationFee> findAdmissionReservationFeeByStudentID(Collection<Long> studentIds);
 
 }

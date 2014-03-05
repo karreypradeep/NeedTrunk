@@ -21,6 +21,11 @@
 			<f:setPropertyActionListener target="#{financialBean.activeTabIndex}" value="2" />
 		</p:menuitem>
 
+		<p:menuitem value="Non Admission Fees Collected" icon="ui-icon-bookmark" action="#{financeFeesCollectedBean.onTabChange}"
+			process="@this" update="@form">
+			<f:setPropertyActionListener target="#{financialBean.activeTabIndex}" value="3" />
+		</p:menuitem>
+
 	</p:tabMenu>
 
 	<c:if test="#{financialBean.activeTabIndex == 0}">
@@ -31,5 +36,8 @@
 	</c:if>
 	<c:if test="#{financialBean.activeTabIndex == 2}">
 		<ui:include src="/pages/branch/finances/financial_fees_collected_due_details.xhtml" />
+	</c:if>
+	<c:if test="#{financialBean.activeTabIndex == 3}">
+		<ui:include src="/pages/branch/finances/financial_admission_fees_collected.xhtml" />
 	</c:if>
 </ui:composition>

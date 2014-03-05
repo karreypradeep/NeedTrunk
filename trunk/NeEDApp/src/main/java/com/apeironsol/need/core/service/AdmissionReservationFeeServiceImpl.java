@@ -80,4 +80,9 @@ public class AdmissionReservationFeeServiceImpl implements AdmissionReservationF
 		return this.admissionReservationFeeDao.findAdmissionReservationFeeByStudentID(studentId);
 	}
 
+	@Override
+	public Collection<AdmissionReservationFee> findAdmissionReservationFeeByStudentID(final Collection<Long> studentIds) {
+		return this.admissionReservationFeeDao.findAdmissionReservationFeeByStudentID(studentIds);
+	}
+
 }
