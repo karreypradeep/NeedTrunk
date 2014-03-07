@@ -56,8 +56,8 @@ public class StudentAcademicYearFeeSummaryServiceImp implements StudentAcademicY
 
 	@Override
 	public StudentAcademicYearFeeSummary createStudentAcademicYearFeeSummaryForStudentAcademicYearId(final Long studentAcademicYearId) {
-		StudentAcademicYear studentAcademicYear = this.studentAcademicYearService.findStudentAcademicYearById(studentAcademicYearId);
-		StudentFinancialAcademicYearDO studentFinancialAcademicYearDO = new StudentFinancialAcademicYearDO();
+		final StudentAcademicYear studentAcademicYear = this.studentAcademicYearService.findStudentAcademicYearById(studentAcademicYearId);
+		final StudentFinancialAcademicYearDO studentFinancialAcademicYearDO = new StudentFinancialAcademicYearDO();
 		studentFinancialAcademicYearDO.setStudentFinancialDOs(this.studentFinancialService.getStudentFinancialDetailsByStudentIdAndAcadmicYearIdForDueDate(
 				studentAcademicYear.getStudent().getId(), studentAcademicYear.getAcademicYear().getId(), null));
 		studentFinancialAcademicYearDO.calculateStudentFeeForAcademicYear();
@@ -92,8 +92,8 @@ public class StudentAcademicYearFeeSummaryServiceImp implements StudentAcademicY
 		if (studentAcademicYearFeeSummary == null) {
 			studentAcademicYearFeeSummary = this.createStudentAcademicYearFeeSummaryForStudentAcademicYearId(studentAcademicYearId);
 		} else {
-			StudentAcademicYear studentAcademicYear = this.studentAcademicYearService.findStudentAcademicYearById(studentAcademicYearId);
-			StudentFinancialAcademicYearDO studentFinancialAcademicYearDO = new StudentFinancialAcademicYearDO();
+			final StudentAcademicYear studentAcademicYear = this.studentAcademicYearService.findStudentAcademicYearById(studentAcademicYearId);
+			final StudentFinancialAcademicYearDO studentFinancialAcademicYearDO = new StudentFinancialAcademicYearDO();
 			studentFinancialAcademicYearDO.setStudentFinancialDOs(this.studentFinancialService.getStudentFinancialDetailsByStudentIdAndAcadmicYearIdForDueDate(
 					studentAcademicYear.getStudent().getId(), studentAcademicYear.getAcademicYear().getId(), null));
 			studentFinancialAcademicYearDO.calculateStudentFeeForAcademicYear();
@@ -114,6 +114,11 @@ public class StudentAcademicYearFeeSummaryServiceImp implements StudentAcademicY
 	@Override
 	public Collection<StudentAcademicYearFeeSummary> findStudentAcademicYearFeeSummaryByStudentAcademicYearIds(final Collection<Long> studentAcademicYearIds) {
 		return this.studentAcademicYearFeeSummaryDao.findStudentAcademicYearFeeSummaryByStudentAcademicYearIds(studentAcademicYearIds);
+	}
+
+	@Override
+	public Collection<StudentAcademicYearFeeSummary> findStudentAcademicYearFeeSummaryByAcademicYearId(final Long academicYearId) {
+		return this.studentAcademicYearFeeSummaryDao.findStudentAcademicYearFeeSummaryByAcademicYearId(academicYearId);
 	}
 
 }

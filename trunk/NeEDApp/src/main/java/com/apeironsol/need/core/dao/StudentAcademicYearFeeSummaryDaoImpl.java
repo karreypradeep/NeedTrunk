@@ -7,8 +7,8 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
-import com.apeironsol.need.core.model.StudentAcademicYearFeeSummary;
 import com.apeironsol.framework.BaseDaoImpl;
+import com.apeironsol.need.core.model.StudentAcademicYearFeeSummary;
 
 @Repository("studentAcademicYearFeeSummaryDao")
 public class StudentAcademicYearFeeSummaryDaoImpl extends BaseDaoImpl<StudentAcademicYearFeeSummary> implements StudentAcademicYearFeeSummaryDao {
@@ -19,22 +19,31 @@ public class StudentAcademicYearFeeSummaryDaoImpl extends BaseDaoImpl<StudentAca
 	@Override
 	public StudentAcademicYearFeeSummary findStudentAcademicYearFeeSummaryByStudentAcademicYearId(final Long studentAcademicYearId) {
 		try {
-			TypedQuery<StudentAcademicYearFeeSummary> query = this.getEntityManager().createQuery(
+			final TypedQuery<StudentAcademicYearFeeSummary> query = this.getEntityManager().createQuery(
 					"select s from StudentAcademicYearFeeSummary s where s.studentAcademicYear.id = :studentAcademicYearId",
 					StudentAcademicYearFeeSummary.class);
 			query.setParameter("studentAcademicYearId", studentAcademicYearId);
 			return query.getSingleResult();
 
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Collection<StudentAcademicYearFeeSummary> findStudentAcademicYearFeeSummaryByStudentAcademicYearIds(final Collection<Long> studentAcademicYearIds) {
-		TypedQuery<StudentAcademicYearFeeSummary> query = this.getEntityManager().createQuery(
+		final TypedQuery<StudentAcademicYearFeeSummary> query = this.getEntityManager().createQuery(
 				"select s from StudentAcademicYearFeeSummary s where s.studentAcademicYear.id in :studentAcademicYearIds", StudentAcademicYearFeeSummary.class);
 		query.setParameter("studentAcademicYearIds", studentAcademicYearIds);
+		return query.getResultList();
+	}
+
+	@Override
+	public Collection<StudentAcademicYearFeeSummary> findStudentAcademicYearFeeSummaryByAcademicYearId(final Long academicYearId) {
+		final TypedQuery<StudentAcademicYearFeeSummary> query = this.getEntityManager().createQuery(
+				"select s from StudentAcademicYearFeeSummary s where s.studentAcademicYear.academicYear.id = :academicYearId",
+				StudentAcademicYearFeeSummary.class);
+		query.setParameter("academicYearId", academicYearId);
 		return query.getResultList();
 	}
 

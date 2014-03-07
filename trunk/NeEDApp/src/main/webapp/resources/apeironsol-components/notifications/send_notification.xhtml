@@ -67,7 +67,7 @@
 
 				<p:outputLabel id="message_text_label" value="Message text: " for="message_text"
 					rendered="#{cc.attrs.notificationSubType.messageRequired}" />
-				<p:inputTextarea rows="5" cols="40" counter="counter" maxlength="200" counterTemplate="{0} characters remaining."
+				<p:inputTextarea rows="6" cols="50"  counter="counter" maxlength="300" counterTemplate="{0} characters remaining."
 					autoResize="false" value="#{cc.attrs.notificationMessage}" id="message_text"
 					rendered="#{cc.attrs.notificationSubType.messageRequired}" required="true" />
 				<h:outputText id="counter" rendered="#{cc.attrs.notificationSubType.messageRequired}" />

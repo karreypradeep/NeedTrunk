@@ -4,8 +4,7 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
 	xmlns:pe="http://primefaces.org/ui/extensions">
 
-	<p:panel id="academic_year_expense_analysis_panel" style="margin-bottom:10px;">
-
+	<p:panel id="academic_year_expense_analysis_panel" style="margin-bottom:10px;border:0px;">
 		<h:panelGrid columns="2" width="100%">
 			<h:panelGrid columns="1" cellspacing="0" cellpadding="0" style="margin-bottom:10px;">
 				<p:commandButton id="expense_type_back_buton" value="Back" update="@form">
@@ -13,11 +12,11 @@
 				</p:commandButton>
 			</h:panelGrid>
 			<h:panelGrid columns="2" cellspacing="0" cellpadding="0" style="margin-bottom:10px;float:right;">
-				<p:commandButton id="expense_type_individual_buton" value="Individual Analysis" update="@form" rendered="false">
+				<p:commandButton id="expense_type_individual_buton" value="Individual Analysis" update="@form">
 					<f:setPropertyActionListener target="#{financeExpensesBean.financialExpenseWizardActiveStep}"
 						value="expenseIndividualAnalysys"></f:setPropertyActionListener>
 				</p:commandButton>
-				<p:commandButton id="expense_type_cumulative_buton" value="Cumulative Analysis" update="@form" rendered="false">
+				<p:commandButton id="expense_type_cumulative_buton" value="Cumulative Analysis" update="@form">
 					<f:setPropertyActionListener target="#{financeExpensesBean.financialExpenseWizardActiveStep}"
 						value="expenseCumulativeAnalysys"></f:setPropertyActionListener>
 				</p:commandButton>
@@ -25,27 +24,53 @@
 			</h:panelGrid>
 		</h:panelGrid>
 
-		<c:choose>
-			<c:when test="#{financeExpensesBean.financialExpenseWizardActiveStep == 'expenseIndividualAnalysys'}">
-				<f:metadata>
-					<f:event type="preRenderView" listener="#{financeExpensesBean.analyseFinancialExpensesLineChartReportIndividual}" />
-				</f:metadata>
-
-				<p:lineChart id="studentAtendancePercentageLineChart1" value="#{financeExpensesBean.financialExpenseAnalysisChart}"
-					legendPosition="w" title="Expenses" style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false"
-					yaxisLabel="Rupeees" animate="true" xaxisLabel="Expense Date" />
-			</c:when>
-			<c:when test="#{financeExpensesBean.financialExpenseWizardActiveStep == 'expenseCumulativeAnalysys'}">
-				<f:metadata>
-					<f:event type="preRenderView" listener="#{financeExpensesBean.analyseFinancialExpensesLineChartReportCumulative}" />
-				</f:metadata>
-				<p:lineChart id="studentAtendancePercentageLineChart2" value="#{financeExpensesBean.financialExpenseAnalysisChart}"
-					legendPosition="w" title="Expenses" style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0"
-					yaxisLabel="Rupeees" animate="true" xaxisLabel="Expense Date" />
-				<p:barChart id="studentAtendancePercentageBarChart2" value="#{financeExpensesBean.financialExpenseAnalysisChart}"
-					legendPosition="w" title="Expenses" style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0"
-					yaxisLabel="Rupeees" animate="true" xaxisLabel="Expense Date" />
-			</c:when>
-		</c:choose>
+		<p:panel id="academic_year_expense_analysis_panel1" style="margin-bottom:10px;border:0px;">
+			<f:facet name="header">
+				<c:choose>
+					<c:when test="#{financeExpensesBean.financialExpenseWizardActiveStep == 'expenseIndividualAnalysys'}">
+						<p:outputLabel value="Individual Analysis" />
+					</c:when>
+					<c:when test="#{financeExpensesBean.financialExpenseWizardActiveStep == 'expenseCumulativeAnalysys'}">
+						<p:outputLabel value="Cumulative Analysis" />
+					</c:when>
+				</c:choose>
+			</f:facet>
+			<c:choose>
+				<c:when test="#{financeExpensesBean.financialExpenseWizardActiveStep == 'expenseIndividualAnalysys'}">
+					<f:metadata>
+						<f:event type="preRenderView" listener="#{financeExpensesBean.analyseFinancialExpensesLineChartReportIndividual}" />
+					</f:metadata>
+					<p:tabView>
+						<p:tab title="Line Chart">
+							<p:lineChart value="#{financeExpensesBean.financialExpenseAnalysisChart}" legendPosition="w" title="Expenses"
+								style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" yaxisLabel="Rupeees" animate="true"
+								xaxisLabel="Expense Date" />
+						</p:tab>
+						<p:tab title="Bar Chart">
+							<p:barChart value="#{financeExpensesBean.financialExpenseAnalysisChart}" legendPosition="w" title="Expenses"
+								style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0" yaxisLabel="Rupeees"
+								animate="true" xaxisLabel="Expense Date" />
+						</p:tab>
+					</p:tabView>
+				</c:when>
+				<c:when test="#{financeExpensesBean.financialExpenseWizardActiveStep == 'expenseCumulativeAnalysys'}">
+					<f:metadata>
+						<f:event type="preRenderView" listener="#{financeExpensesBean.analyseFinancialExpensesLineChartReportCumulative}" />
+					</f:metadata>  
+					<p:tabView>
+						<p:tab title="Line Chart">
+							<p:lineChart value="#{financeExpensesBean.financialExpenseAnalysisChart}" legendPosition="w" title="Expenses"
+								style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0" yaxisLabel="Rupeees"
+								animate="true" xaxisLabel="Expense Date" />
+						</p:tab>
+						<p:tab title="Bar Chart">  
+							<p:barChart value="#{financeExpensesBean.financialExpenseAnalysisChart}" legendPosition="w" title="Expenses"
+								style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0" yaxisLabel="Rupeees"
+								animate="true" xaxisLabel="Expense Date" />
+						</p:tab>
+					</p:tabView>
+				</c:when>
+			</c:choose>
+		</p:panel>
 	</p:panel>
 </ui:composition>

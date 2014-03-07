@@ -15,10 +15,10 @@ import javax.persistence.TypedQuery;
 
 import org.springframework.stereotype.Repository;
 
+import com.apeironsol.framework.BaseDaoImpl;
 import com.apeironsol.need.core.model.Student;
 import com.apeironsol.need.util.constants.StudentStatusConstant;
 import com.apeironsol.need.util.searchcriteria.AdmissionSearchCriteria;
-import com.apeironsol.framework.BaseDaoImpl;
 
 /**
  * Data access interface for student entity implementation.
@@ -33,7 +33,7 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	 */
 	@Override
 	public Collection<Student> findStudentsByBranchId(final Long branchId) {
-		TypedQuery<Student> query = this.getEntityManager().createQuery("select s from Student s where s.branch.id = :id", Student.class);
+		final TypedQuery<Student> query = this.getEntityManager().createQuery("select s from Student s where s.branch.id = :id", Student.class);
 		query.setParameter("id", branchId);
 		return query.getResultList();
 	}
@@ -43,7 +43,7 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	 */
 	@Override
 	public Student findStudentByAdmissionId(final Long admissionId) {
-		TypedQuery<Student> query = this.getEntityManager().createQuery("select s from Student s where s.admission.id = :id", Student.class);
+		final TypedQuery<Student> query = this.getEntityManager().createQuery("select s from Student s where s.admission.id = :id", Student.class);
 		query.setParameter("id", admissionId);
 		return query.getSingleResult();
 	}
@@ -53,8 +53,8 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	 */
 	@Override
 	public Collection<Student> findActiveStudentsByBranchId(final Long branchId) {
-		TypedQuery<Student> query = this.getEntityManager().createQuery("select s from Student s where s.branch.id = :id and s.studentStatus = :studentStatus",
-				Student.class);
+		final TypedQuery<Student> query = this.getEntityManager().createQuery(
+				"select s from Student s where s.branch.id = :id and s.studentStatus = :studentStatus", Student.class);
 		query.setParameter("id", branchId);
 		query.setParameter("studentStatus", StudentStatusConstant.ACTIVE);
 		return query.getResultList();
@@ -78,7 +78,7 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 			whereClasuseAdded = true;
 		}
 
-		if (admissionSearchCriteria.getName() != null && !admissionSearchCriteria.getName().trim().isEmpty()) {
+		if ((admissionSearchCriteria.getName() != null) && !admissionSearchCriteria.getName().trim().isEmpty()) {
 			if (!whereClasuseAdded) {
 				queryString = queryString.append(" where ");
 			} else {
@@ -92,7 +92,7 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 			whereClasuseAdded = true;
 		}
 
-		if (admissionSearchCriteria.getAdmissionNumber() != null && !admissionSearchCriteria.getAdmissionNumber().trim().isEmpty()) {
+		if ((admissionSearchCriteria.getAdmissionNumber() != null) && !admissionSearchCriteria.getAdmissionNumber().trim().isEmpty()) {
 			if (!whereClasuseAdded) {
 				queryString = queryString.append(" where ");
 			} else {
@@ -105,7 +105,7 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 			whereClasuseAdded = true;
 		}
 
-		if (admissionSearchCriteria.getRegistrationNumber() != null && !admissionSearchCriteria.getRegistrationNumber().trim().isEmpty()) {
+		if ((admissionSearchCriteria.getRegistrationNumber() != null) && !admissionSearchCriteria.getRegistrationNumber().trim().isEmpty()) {
 			if (!whereClasuseAdded) {
 				queryString = queryString.append(" where ");
 			} else {
@@ -151,11 +151,21 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 			} else {
 				queryString = queryString.append(" and ");
 			}
-			queryString = queryString.append(" s.applyingForKlass in :klass");
+			queryString = queryString.append(" s.acceptedForKlass in :acceptedForKlass");
 			whereClasuseAdded = true;
 		}
 
-		TypedQuery<Student> query = this.getEntityManager().createQuery(queryString.toString(), Student.class);
+		if (admissionSearchCriteria.getAppliedForClass() != null) {
+			if (!whereClasuseAdded) {
+				queryString = queryString.append(" where ");
+			} else {
+				queryString = queryString.append(" and ");
+			}
+			queryString = queryString.append(" s.applyingForKlass in :applyingForKlass");
+			whereClasuseAdded = true;
+		}
+
+		final TypedQuery<Student> query = this.getEntityManager().createQuery(queryString.toString(), Student.class);
 		if (admissionSearchCriteria.getBranch() != null) {
 			query.setParameter("branch", admissionSearchCriteria.getBranch());
 		}
@@ -171,6 +181,12 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 		if (admissionSearchCriteria.getAcademicYear() != null) {
 			query.setParameter("academicYear", admissionSearchCriteria.getAcademicYear());
 		}
+		if (admissionSearchCriteria.getAcceptedForKlass() != null) {
+			query.setParameter("acceptedForKlass", admissionSearchCriteria.getAcceptedForKlass());
+		}
+		if (admissionSearchCriteria.getAppliedForClass() != null) {
+			query.setParameter("applyingForKlass", admissionSearchCriteria.getAppliedForClass());
+		}
 		return query.getResultList();
 	}
 
@@ -180,12 +196,12 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	@Override
 	public Student findActiveStudentByAdmissionNumber(final String admissionNumber) {
 		try {
-			TypedQuery<Student> query = this.getEntityManager().createQuery(
+			final TypedQuery<Student> query = this.getEntityManager().createQuery(
 					"select s from Student s where s.admissionNr = :admissionNumber and s.studentStatus = :studentStatus", Student.class);
 			query.setParameter("admissionNumber", admissionNumber);
 			query.setParameter("studentStatus", StudentStatusConstant.ACTIVE);
 			return query.getSingleResult();
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			return null;
 		}
 	}
@@ -196,17 +212,18 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	@Override
 	public Student findStudentByUsername(final String username) {
 		try {
-			TypedQuery<Student> query = this.getEntityManager().createQuery("select s from Student s where s.userAccount.username = :username", Student.class);
+			final TypedQuery<Student> query = this.getEntityManager().createQuery("select s from Student s where s.userAccount.username = :username",
+					Student.class);
 			query.setParameter("username", username);
 			return query.getSingleResult();
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			return null;
 		}
 	}
 
 	@Override
 	public Long findActiveStudentsCountForBranchId(final Long branchId) {
-		Query query = this.getEntityManager().createQuery("select count(s) from Student s where s.branch.id = :id and s.studentStatus = :studentStatus");
+		final Query query = this.getEntityManager().createQuery("select count(s) from Student s where s.branch.id = :id and s.studentStatus = :studentStatus");
 		query.setParameter("id", branchId);
 		query.setParameter("studentStatus", StudentStatusConstant.ACTIVE);
 		return Long.valueOf(query.getSingleResult().toString());
@@ -215,12 +232,12 @@ public class StudentDaoImpl extends BaseDaoImpl<Student> implements StudentDao {
 	@Override
 	public Student findActiveStudentByExternalAdmissionNumberAndBranchId(final String externalAdmissionNumber, final Long branchId) {
 		try {
-			TypedQuery<Student> query = this.getEntityManager().createQuery(
+			final TypedQuery<Student> query = this.getEntityManager().createQuery(
 					"select s from Student s where s.externalAdmissionNr = :externalAdmissionNr and s.branch.id = :branchId", Student.class);
 			query.setParameter("externalAdmissionNr", externalAdmissionNumber);
 			query.setParameter("branchId", branchId);
 			return query.getSingleResult();
-		} catch (NoResultException e) {
+		} catch (final NoResultException e) {
 			return null;
 		}
 	}

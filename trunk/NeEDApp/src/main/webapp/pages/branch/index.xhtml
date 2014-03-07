@@ -211,6 +211,11 @@
 				<ui:include src="/pages/modules/core/student_registrations.xhtml" />
 			</c:when>   
 
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchRevenueAcademicYearAnalysis}">
+				<ui:include src="/pages/branch/statisticalAnalysis/revenue/revenue_academic_year.xhtml" />
+			</c:when>   
+
 			<c:otherwise>
 				<p:panel header="Unauthorized access !!">
 
