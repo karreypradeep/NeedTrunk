@@ -24,6 +24,8 @@ import com.apeironsol.need.analysis.revenue.dataobject.RevenueAcademicYearDO;
 import com.apeironsol.need.analysis.revenue.service.RevenueAnalysisService;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.portal.AbstractTabbedBean;
+import com.apeironsol.need.util.constants.GenderConstant;
+import com.apeironsol.need.util.constants.RevenueAnalysisTypeConstant;
 import com.apeironsol.need.util.portal.ViewUtil;
 import com.apeironsol.need.util.searchcriteria.RevenueAnalysisSearchCriteria;
 
@@ -92,7 +94,7 @@ public class RevenueAcademicYearAnalysisBean extends AbstractTabbedBean implemen
 		} else {
 			this.revenueAnalysisSearchCriteria.setBranch(this.sessionBean.getCurrentBranch());
 			this.revenueAcademicYearDO = this.revenueAnalysisService.getRevenueGeneratedForAcademicYearBySearchCriteria(this.revenueAnalysisSearchCriteria);
-			this.analyseRevenueByAcademicYearLineChartReport();
+			this.generateRevenueReport();
 		}
 		return null;
 	}
@@ -115,20 +117,52 @@ public class RevenueAcademicYearAnalysisBean extends AbstractTabbedBean implemen
 	/**
 	 * Subject exam results.
 	 */
-	public void analyseRevenueByAcademicYearLineChartReport() {
+	public void generateRevenueReport() {
 		this.revenueAcademicYearAnalysisChart = new CartesianChartModel();
 		this.revenueAcademicYearAnalysisPieChart = new PieChartModel();
 		if (this.revenueAcademicYearDO != null) {
-			final Map<Klass, Double> expensesMapByType = this.revenueAcademicYearDO.getRevenueByCourse();
-			final ChartSeries percentage = new ChartSeries();
-			percentage.setLabel("Revenue");
-			for (final Map.Entry<Klass, Double> entry : expensesMapByType.entrySet()) {
-				percentage.set(entry.getKey().getName(), entry.getValue());
-				this.revenueAcademicYearAnalysisPieChart.set(entry.getKey().getName(), entry.getValue());
+			if (RevenueAnalysisTypeConstant.BY_COURSE.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
+				this.generateChartByCourse();
+			} else if (RevenueAnalysisTypeConstant.BY_GENDER.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
+				this.generateChartByGender();
+			} else if (RevenueAnalysisTypeConstant.BY_LOCATION.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
+				this.generateChartByLocation();
 			}
-			this.revenueAcademicYearAnalysisChart.addSeries(percentage);
 			this.displayCharts = true;
 		}
+	}
+
+	private void generateChartByCourse() {
+		final Map<Klass, Double> expensesMapByType = this.revenueAcademicYearDO.getRevenueByCourse();
+		final ChartSeries percentage = new ChartSeries();
+		percentage.setLabel("Revenue");
+		for (final Map.Entry<Klass, Double> entry : expensesMapByType.entrySet()) {
+			percentage.set(entry.getKey().getName(), entry.getValue());
+			this.revenueAcademicYearAnalysisPieChart.set(entry.getKey().getName(), entry.getValue());
+		}
+		this.revenueAcademicYearAnalysisChart.addSeries(percentage);
+	}
+
+	private void generateChartByGender() {
+		final Map<GenderConstant, Double> expensesMapByType = this.revenueAcademicYearDO.getRevenueByGender();
+		final ChartSeries percentage = new ChartSeries();
+		percentage.setLabel("Revenue");
+		for (final Map.Entry<GenderConstant, Double> entry : expensesMapByType.entrySet()) {
+			percentage.set(entry.getKey().getLabel(), entry.getValue());
+			this.revenueAcademicYearAnalysisPieChart.set(entry.getKey().getLabel(), entry.getValue());
+		}
+		this.revenueAcademicYearAnalysisChart.addSeries(percentage);
+	}
+
+	private void generateChartByLocation() {
+		final Map<String, Double> expensesMapByType = this.revenueAcademicYearDO.getRevenueByLocation();
+		final ChartSeries percentage = new ChartSeries();
+		percentage.setLabel("Revenue");
+		for (final Map.Entry<String, Double> entry : expensesMapByType.entrySet()) {
+			percentage.set(entry.getKey(), entry.getValue());
+			this.revenueAcademicYearAnalysisPieChart.set(entry.getKey(), entry.getValue());
+		}
+		this.revenueAcademicYearAnalysisChart.addSeries(percentage);
 	}
 
 	/**

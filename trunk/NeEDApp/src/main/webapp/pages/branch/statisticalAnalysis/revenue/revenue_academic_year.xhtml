@@ -19,7 +19,7 @@
 			</p:selectOneMenu>
 
 			<p:outputLabel id="revenue_analysis_type_label" value="Revenue Analysis Type" for="revenue_analysis_type" />
-			<p:selectOneMenu id="revenue_analysis_type" style="width:152px;"
+			<p:selectOneMenu id="revenue_analysis_type" style="width:152px;" required="true"
 				value="#{revenueAcademicYearAnalysisBean.revenueAnalysisSearchCriteria.revenueAnalysisType}">
 				<f:selectItem itemLabel="Select analysis type" itemValue="" />
 				<f:selectItems value="#{enumConstantsBean.revenueAnalysisTypes}" var="revenueAnalysisType"
@@ -36,19 +36,20 @@
 			<p:tab title="Line Chart">
 				<p:lineChart value="#{revenueAcademicYearAnalysisBean.revenueAcademicYearAnalysisChart}" legendPosition="w"
 					title="Revenue" style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0"
-					yaxisLabel="Rupeees" xaxisLabel="Course" animate="true"/>
+					yaxisLabel="Rupeees" animate="true" />
 			</p:tab>
 			<p:tab title="Bar Chart">
 				<p:barChart value="#{revenueAcademicYearAnalysisBean.revenueAcademicYearAnalysisChart}" legendPosition="w"
 					title="Revenue" style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0"
-					yaxisLabel="Rupeees" xaxisLabel="Course" animate="true"/>
+					yaxisLabel="Rupeees" animate="true" />
 			</p:tab>
 			<p:tab title="Pie Chart">
 				<h:panelGrid columns="2" cellpadding="4" style="border:0px;">
 					<p:pieChart id="sample" value="#{revenueAcademicYearAnalysisBean.revenueAcademicYearAnalysisPieChart}"
-						legendPosition="w" style="height:500px" animate="true"/>
+						legendPosition="w" style="height:500px" animate="true" />
 					<p:pieChart id="custom" value="#{revenueAcademicYearAnalysisBean.revenueAcademicYearAnalysisPieChart}"
-						legendPosition="e" fill="false" showDataLabels="true" style="height:500px" sliceMargin="5" diameter="150" animate="true"/>
+						legendPosition="e" fill="false" showDataLabels="true" style="height:500px" sliceMargin="5" diameter="150"
+						animate="true" />
 				</h:panelGrid>
 			</p:tab>
 		</p:tabView>
