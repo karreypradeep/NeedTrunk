@@ -319,6 +319,40 @@
 			</h:panelGrid>
 		</p:tab>
 
+		<p:tab title="Statistical Analysis" id="left_statistical_analysis_tab">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="Revenue" update="@form" process="branch_side_menu">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_REVENUE_ACADEMIC_YEAR_ANALYSIS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="Expenses" update="@form" process="branch_side_menu"
+					action="#{branchStudentsNotificationsBean.setViewBatchLogs}" rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_STUDENTS_NOTIFICATIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchStudentsNotificationsBean.loadBatchLogsFromDB}" value="true" />
+				</p:commandLink>
+				<p:commandLink value="#{msg.students}" update="@form" process="branch_side_menu"
+					action="#{branchAdmissionsNotificationsBean.setViewBatchLogs}" rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_ADMISSIONS_NOTIFICATIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchAdmissionsNotificationsBean.loadBatchLogsFromDB}" value="true" />
+				</p:commandLink>
+				<p:commandLink value="Defaulters" update="@form" process="branch_side_menu"
+					action="#{branchStudentsNotificationsBean.setViewBatchLogs}" rendered="false">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_STUDENTS_NOTIFICATIONS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+					<f:setPropertyActionListener target="#{branchStudentsNotificationsBean.loadBatchLogsFromDB}" value="true" />
+				</p:commandLink>
+			</h:panelGrid>
+		</p:tab>
 		<p:tab title="Import" id="left_processes_tab" rendered="#{grantedAuthorityBean.userAllowedToAccessImports}">
 			<h:panelGrid columns="1" cellpadding="2">
 				<p:commandLink value="Import Admissons" update="@form" process="branch_side_menu"
