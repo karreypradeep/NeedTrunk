@@ -216,6 +216,11 @@
 				<ui:include src="/pages/branch/statisticalAnalysis/revenue/revenue_analysis.xhtml" />
 			</c:when>   
 
+			<c:when
+				test="#{viewContentHandlerBean.viewContentBranchFeeCollectedAcademicYearAnalysis}">
+				<ui:include src="/pages/branch/statisticalAnalysis/feeCollected/fee_collected_analysis.xhtml" />
+			</c:when>   
+
 			<c:otherwise>
 				<p:panel header="Unauthorized access !!">
 

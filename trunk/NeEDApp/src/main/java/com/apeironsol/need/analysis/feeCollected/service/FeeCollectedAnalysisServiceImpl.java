@@ -5,7 +5,7 @@
  * Copyright © 2012 apeironsol
  * 
  */
-package com.apeironsol.need.analysis.revenue.service;
+package com.apeironsol.need.analysis.feeCollected.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +18,7 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.apeironsol.need.analysis.revenue.dataobject.RevenueAcademicYearDO;
+import com.apeironsol.need.analysis.feeCollected.dataobject.FeeCollectedAcademicYearDO;
 import com.apeironsol.need.core.model.AcademicYear;
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.model.Klass;
@@ -31,7 +31,7 @@ import com.apeironsol.need.core.service.StudentAcademicYearFeeSummaryService;
 import com.apeironsol.need.core.service.StudentService;
 import com.apeironsol.need.util.constants.FeeCollectedAnalysisTypeConstant;
 import com.apeironsol.need.util.constants.StudentSectionStatusConstant;
-import com.apeironsol.need.util.searchcriteria.RevenueAnalysisSearchCriteria;
+import com.apeironsol.need.util.searchcriteria.FeeCollectedAnalysisSearchCriteria;
 
 /**
  * Service implementation interface for student.
@@ -39,9 +39,9 @@ import com.apeironsol.need.util.searchcriteria.RevenueAnalysisSearchCriteria;
  * @author pradeep
  * 
  */
-@Service("revenueAnalysisService")
+@Service("feeCollectedAnalysisService")
 @Transactional(rollbackFor = Exception.class)
-public class RevenueAnalysisServiceImpl implements RevenueAnalysisService {
+public class FeeCollectedAnalysisServiceImpl implements FeeCollectedAnalysisService {
 
 	@Resource
 	private StudentAcademicYearFeeSummaryService	studentAcademicYearFeeSummaryService;
@@ -56,17 +56,18 @@ public class RevenueAnalysisServiceImpl implements RevenueAnalysisService {
 	private StudentService							studentService;
 
 	@Override
-	public RevenueAcademicYearDO getRevenueGeneratedForAcademicYearBySearchCriteria(final RevenueAnalysisSearchCriteria revenueAnalysisSearchCriteria) {
+	public FeeCollectedAcademicYearDO getFeeCollectedGeneratedForAcademicYearBySearchCriteria(
+			final FeeCollectedAnalysisSearchCriteria feeCollectedAnalysisSearchCriteria) {
 		final Collection<StudentAcademicYearFeeSummary> studentAcademicYearFeeSummaries = this.studentAcademicYearFeeSummaryService
-				.findStudentAcademicYearFeeSummaryByAcademicYearId(revenueAnalysisSearchCriteria.getAcademicYear().getId());
-		final RevenueAcademicYearDO revenueAcademicYearDO = new RevenueAcademicYearDO();
-		revenueAcademicYearDO.setStudentAcademicYearFeeSummaries(studentAcademicYearFeeSummaries);
-		revenueAcademicYearDO.setBranch(revenueAnalysisSearchCriteria.getBranch());
-		if (FeeCollectedAnalysisTypeConstant.BY_COURSE.equals(revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
-			revenueAcademicYearDO.setStudentAcademicYearIdsByKlass(this.getStudentAcademicYearsByKlass(revenueAnalysisSearchCriteria.getAcademicYear(),
-					revenueAnalysisSearchCriteria.getBranch()));
+				.findStudentAcademicYearFeeSummaryByAcademicYearId(feeCollectedAnalysisSearchCriteria.getAcademicYear().getId());
+		final FeeCollectedAcademicYearDO feeCollectedAcademicYearDO = new FeeCollectedAcademicYearDO();
+		feeCollectedAcademicYearDO.setStudentAcademicYearFeeSummaries(studentAcademicYearFeeSummaries);
+		feeCollectedAcademicYearDO.setBranch(feeCollectedAnalysisSearchCriteria.getBranch());
+		if (FeeCollectedAnalysisTypeConstant.BY_COURSE.equals(feeCollectedAnalysisSearchCriteria.getFeeCollectedAnalysisType())) {
+			feeCollectedAcademicYearDO.setStudentAcademicYearIdsByKlass(this.getStudentAcademicYearsByKlass(
+					feeCollectedAnalysisSearchCriteria.getAcademicYear(), feeCollectedAnalysisSearchCriteria.getBranch()));
 		}
-		return revenueAcademicYearDO;
+		return feeCollectedAcademicYearDO;
 	}
 
 	private Map<Klass, Collection<Long>> getStudentAcademicYearsByKlass(final AcademicYear academicYear, final Branch branch) {

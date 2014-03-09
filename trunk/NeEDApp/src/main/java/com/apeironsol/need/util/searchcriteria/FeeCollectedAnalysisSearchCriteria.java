@@ -16,7 +16,7 @@ import com.apeironsol.need.util.constants.FeeCollectedAnalysisTypeConstant;
  * 
  * @author Pradeep
  */
-public class RevenueAnalysisSearchCriteria implements SearchCriteria {
+public class FeeCollectedAnalysisSearchCriteria implements SearchCriteria {
 
 	/**
 	 * Universal serial version id for this class
@@ -31,7 +31,7 @@ public class RevenueAnalysisSearchCriteria implements SearchCriteria {
 	/**
 	 * Student status.
 	 */
-	private FeeCollectedAnalysisTypeConstant	revenueAnalysisType;
+	private FeeCollectedAnalysisTypeConstant	feeCollectedAnalysisType;
 
 	/**
 	 * Branch.
@@ -42,7 +42,7 @@ public class RevenueAnalysisSearchCriteria implements SearchCriteria {
 	 * 
 	 * @param branch
 	 */
-	public RevenueAnalysisSearchCriteria(final Branch branch) {
+	public FeeCollectedAnalysisSearchCriteria(final Branch branch) {
 		this.setBranch(branch);
 	}
 
@@ -52,7 +52,7 @@ public class RevenueAnalysisSearchCriteria implements SearchCriteria {
 	@Override
 	public void resetSeacrhCriteria() {
 		this.academicYear = null;
-		this.revenueAnalysisType = null;
+		this.feeCollectedAnalysisType = null;
 	}
 
 	/**
@@ -60,7 +60,7 @@ public class RevenueAnalysisSearchCriteria implements SearchCriteria {
 	 */
 	@Override
 	public boolean isSearchCriteriaIsEmpty() {
-		return ((this.academicYear == null) && (this.revenueAnalysisType == null));
+		return ((this.academicYear == null) && (this.feeCollectedAnalysisType == null));
 	}
 
 	/**
@@ -98,16 +98,16 @@ public class RevenueAnalysisSearchCriteria implements SearchCriteria {
 	/**
 	 * @return the revenueAnalysisType
 	 */
-	public FeeCollectedAnalysisTypeConstant getRevenueAnalysisType() {
-		return this.revenueAnalysisType;
+	public FeeCollectedAnalysisTypeConstant getFeeCollectedAnalysisType() {
+		return this.feeCollectedAnalysisType;
 	}
 
 	/**
 	 * @param revenueAnalysisType
 	 *            the revenueAnalysisType to set
 	 */
-	public void setRevenueAnalysisType(final FeeCollectedAnalysisTypeConstant revenueAnalysisType) {
-		this.revenueAnalysisType = revenueAnalysisType;
+	public void setFeeCollectedAnalysisType(final FeeCollectedAnalysisTypeConstant revenueAnalysisType) {
+		this.feeCollectedAnalysisType = revenueAnalysisType;
 	}
 
 }

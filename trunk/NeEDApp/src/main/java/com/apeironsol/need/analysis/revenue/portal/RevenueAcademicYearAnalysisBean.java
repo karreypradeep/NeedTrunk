@@ -25,7 +25,7 @@ import com.apeironsol.need.analysis.revenue.service.RevenueAnalysisService;
 import com.apeironsol.need.core.model.Klass;
 import com.apeironsol.need.core.portal.AbstractTabbedBean;
 import com.apeironsol.need.util.constants.GenderConstant;
-import com.apeironsol.need.util.constants.RevenueAnalysisTypeConstant;
+import com.apeironsol.need.util.constants.FeeCollectedAnalysisTypeConstant;
 import com.apeironsol.need.util.portal.ViewUtil;
 import com.apeironsol.need.util.searchcriteria.RevenueAnalysisSearchCriteria;
 
@@ -123,13 +123,13 @@ public class RevenueAcademicYearAnalysisBean extends AbstractTabbedBean implemen
 		this.revenueAcademicYearAnalysisChart = new CartesianChartModel();
 		this.revenueAcademicYearAnalysisPieChart = new PieChartModel();
 		if (this.revenueAcademicYearDO != null) {
-			if (RevenueAnalysisTypeConstant.BY_COURSE.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
+			if (FeeCollectedAnalysisTypeConstant.BY_COURSE.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
 				this.generateChartByCourse();
 				this.setxAxisLabel("Course");
-			} else if (RevenueAnalysisTypeConstant.BY_GENDER.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
+			} else if (FeeCollectedAnalysisTypeConstant.BY_GENDER.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
 				this.generateChartByGender();
 				this.xAxisLabel = "Gender";
-			} else if (RevenueAnalysisTypeConstant.BY_LOCATION.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
+			} else if (FeeCollectedAnalysisTypeConstant.BY_LOCATION.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
 				this.generateChartByLocation();
 				this.xAxisLabel = "Pincode";
 			}

@@ -15,13 +15,13 @@ import com.apeironsol.need.util.portal.ViewUtil;
  * 
  * @author Pradeep
  */
-public enum RevenueAnalysisTypeConstant implements Labeled {
+public enum FeeCollectedAnalysisTypeConstant implements Labeled {
 
 	BY_COURSE("by_course"), BY_GENDER("by_gender"), BY_FATHER_OCCUPATION("by_father_occupation"), BY_LOCATION("by_location");
 
 	private String	label;
 
-	RevenueAnalysisTypeConstant(final String label) {
+	FeeCollectedAnalysisTypeConstant(final String label) {
 		this.label = label;
 	}
 
@@ -35,9 +35,9 @@ public enum RevenueAnalysisTypeConstant implements Labeled {
 		this.label = label;
 	}
 
-	public static RevenueAnalysisTypeConstant[] getValuesSortedByLabels() {
-		return EnumUtil.getEnumsSortedByLabels(RevenueAnalysisTypeConstant.class).toArray(
-				new RevenueAnalysisTypeConstant[RevenueAnalysisTypeConstant.values().length]);
+	public static FeeCollectedAnalysisTypeConstant[] getValuesSortedByLabels() {
+		return EnumUtil.getEnumsSortedByLabels(FeeCollectedAnalysisTypeConstant.class).toArray(
+				new FeeCollectedAnalysisTypeConstant[FeeCollectedAnalysisTypeConstant.values().length]);
 	}
 
 	public String getValue() {

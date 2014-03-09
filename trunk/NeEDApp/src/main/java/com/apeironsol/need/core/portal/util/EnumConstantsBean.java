@@ -28,6 +28,7 @@ import com.apeironsol.need.util.constants.EmployeeCTCCategoryTypeConstant;
 import com.apeironsol.need.util.constants.EmployeeCTCDefinitionTypeConstant;
 import com.apeironsol.need.util.constants.EmploymentTypeConstant;
 import com.apeironsol.need.util.constants.FeeClassificationLevelConstant;
+import com.apeironsol.need.util.constants.FeeCollectedAnalysisTypeConstant;
 import com.apeironsol.need.util.constants.FeeTypeConstant;
 import com.apeironsol.need.util.constants.FrequencyConstant;
 import com.apeironsol.need.util.constants.GenderConstant;
@@ -42,7 +43,6 @@ import com.apeironsol.need.util.constants.PurchaseOrderTypeConstant;
 import com.apeironsol.need.util.constants.RegistrationTypeConstant;
 import com.apeironsol.need.util.constants.RelationTypeConstant;
 import com.apeironsol.need.util.constants.ResidenceConstant;
-import com.apeironsol.need.util.constants.RevenueAnalysisTypeConstant;
 import com.apeironsol.need.util.constants.SMSProvidersConstant;
 import com.apeironsol.need.util.constants.SalaryDeductionTypeConstant;
 import com.apeironsol.need.util.constants.SalaryFrequencyConstant;
@@ -274,8 +274,12 @@ public class EnumConstantsBean implements Serializable {
 		return SMSProvidersConstant.values();
 	}
 
-	public RevenueAnalysisTypeConstant[] getRevenueAnalysisTypes() {
-		return RevenueAnalysisTypeConstant.values();
+	public FeeCollectedAnalysisTypeConstant[] getRevenueAnalysisTypes() {
+		return FeeCollectedAnalysisTypeConstant.values();
+	}
+
+	public FeeCollectedAnalysisTypeConstant[] getFeeCollectedAnalysisTypes() {
+		return FeeCollectedAnalysisTypeConstant.values();
 	}
 
 }

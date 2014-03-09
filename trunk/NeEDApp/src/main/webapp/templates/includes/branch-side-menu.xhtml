@@ -321,9 +321,15 @@
 
 		<p:tab title="Statistical Analysis" id="left_statistical_analysis_tab">
 			<h:panelGrid columns="1" cellpadding="2">
-				<p:commandLink value="Revenue" update="@form" process="branch_side_menu">
+				<p:commandLink value="Revenue" update="@form" process="branch_side_menu" rendered="false">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
-						value="BRANCH_REVENUE_ACADEMIC_YEAR_ANALYSIS">
+						value="BRANCH_REVENUE_ACADEMIC_YEAR_ANALYSIS" >
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="Fee collected" update="@form" process="branch_side_menu">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FEE_COLLECTED_ACADEMIC_YEAR_ANALYSIS">
 						<f:converter converterId="viewContentConverter" />
 					</f:setPropertyActionListener>
 				</p:commandLink>

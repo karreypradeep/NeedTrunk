@@ -1,4 +1,4 @@
-package com.apeironsol.need.analysis.revenue.dataobject;
+package com.apeironsol.need.analysis.feeCollected.dataobject;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -23,7 +23,7 @@ import com.apeironsol.need.util.constants.GenderConstant;
  * @author pradeep
  * 
  */
-public class RevenueAcademicYearDO implements Serializable {
+public class FeeCollectedAcademicYearDO implements Serializable {
 
 	/**
 	 * Universal serial version id for this class.
@@ -101,8 +101,8 @@ public class RevenueAcademicYearDO implements Serializable {
 		this.relationsByStudentId = relationsByStudentId;
 	}
 
-	public Map<Klass, Double> getRevenueByCourse() {
-		final Map<Klass, Double> revenueByCourse = new HashMap<Klass, Double>();
+	public Map<Klass, Double> getFeeCollectedByCourse() {
+		final Map<Klass, Double> feeCollectedByCourse = new HashMap<Klass, Double>();
 		if (this.studentAcademicYearFeeSummaries != null) {
 			final Map<Long, StudentAcademicYearFeeSummary> studentAcademicYearFeeSummaryByStudentAcademicYearId = new HashMap<Long, StudentAcademicYearFeeSummary>();
 			for (final StudentAcademicYearFeeSummary studentAcademicYearFeeSummary : this.studentAcademicYearFeeSummaries) {
@@ -110,43 +110,44 @@ public class RevenueAcademicYearDO implements Serializable {
 						studentAcademicYearFeeSummary);
 			}
 
-			double revenueByKlass = 0;
+			double feeCollectedByKlass = 0;
 			if (this.studentAcademicYearIdsByKlass != null) {
 				for (final Map.Entry<Klass, Collection<Long>> entry : this.studentAcademicYearIdsByKlass.entrySet()) {
-					revenueByKlass = 0;
+					feeCollectedByKlass = 0;
 					for (final Long studentAcademicYearId : entry.getValue()) {
 						final StudentAcademicYearFeeSummary studentAcademicYearFeeSummary = studentAcademicYearFeeSummaryByStudentAcademicYearId
 								.get(studentAcademicYearId);
 						if (studentAcademicYearFeeSummary != null) {
-							revenueByKlass += studentAcademicYearFeeSummary.getTotalFeePaid() != null ? studentAcademicYearFeeSummary.getTotalFeePaid() : 0;
+							feeCollectedByKlass += studentAcademicYearFeeSummary.getTotalFeePaid() != null ? studentAcademicYearFeeSummary.getTotalFeePaid()
+									: 0;
 						}
 					}
-					revenueByCourse.put(entry.getKey(), revenueByKlass);
+					feeCollectedByCourse.put(entry.getKey(), feeCollectedByKlass);
 				}
 			}
 		}
-		return revenueByCourse;
+		return feeCollectedByCourse;
 	}
 
-	public Map<GenderConstant, Double> getRevenueByGender() {
-		final Map<GenderConstant, Double> revenueByGender = new HashMap<GenderConstant, Double>();
+	public Map<GenderConstant, Double> getFeeCollectedByGender() {
+		final Map<GenderConstant, Double> feeCollectedByGender = new HashMap<GenderConstant, Double>();
 		if (this.studentAcademicYearFeeSummaries != null) {
 			for (final StudentAcademicYearFeeSummary studentAcademicYearFeeSummary : this.studentAcademicYearFeeSummaries) {
-				if (revenueByGender.get(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getGender()) != null) {
-					double currentAmount = revenueByGender.get(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getGender());
+				if (feeCollectedByGender.get(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getGender()) != null) {
+					double currentAmount = feeCollectedByGender.get(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getGender());
 					currentAmount += studentAcademicYearFeeSummary.getTotalFeePaid() != null ? studentAcademicYearFeeSummary.getTotalFeePaid() : 0;
-					revenueByGender.put(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getGender(), currentAmount);
+					feeCollectedByGender.put(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getGender(), currentAmount);
 				} else {
-					revenueByGender.put(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getGender(),
+					feeCollectedByGender.put(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getGender(),
 							studentAcademicYearFeeSummary.getTotalFeePaid() != null ? studentAcademicYearFeeSummary.getTotalFeePaid() : 0);
 				}
 			}
 		}
-		return revenueByGender;
+		return feeCollectedByGender;
 	}
 
-	public Map<String, Double> getRevenueByLocation() {
-		final Map<String, Double> revenueByLocation = new HashMap<String, Double>();
+	public Map<String, Double> getFeeCollectedByLocation() {
+		final Map<String, Double> feeCollectedByLocation = new HashMap<String, Double>();
 		if (this.studentAcademicYearFeeSummaries != null) {
 			// As number of zi codes can be many, only display those pincodes
 			// where substantial students are coming from.
@@ -179,17 +180,17 @@ public class RevenueAcademicYearDO implements Serializable {
 			for (final StudentAcademicYearFeeSummary studentAcademicYearFeeSummary : this.studentAcademicYearFeeSummaries) {
 				final String zipCode = locationsUsedInGraph.contains(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getAddress()
 						.getZipCode()) ? studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getAddress().getZipCode() : "Other";
-				if (revenueByLocation.get(zipCode) != null) {
-					double currentAmount = revenueByLocation.get(zipCode);
+				if (feeCollectedByLocation.get(zipCode) != null) {
+					double currentAmount = feeCollectedByLocation.get(zipCode);
 					currentAmount += studentAcademicYearFeeSummary.getTotalFeePaid() != null ? studentAcademicYearFeeSummary.getTotalFeePaid() : 0;
-					revenueByLocation.put(zipCode, currentAmount);
+					feeCollectedByLocation.put(zipCode, currentAmount);
 				} else {
-					revenueByLocation.put(zipCode, studentAcademicYearFeeSummary.getTotalFeePaid() != null ? studentAcademicYearFeeSummary.getTotalFeePaid()
-							: 0);
+					feeCollectedByLocation.put(zipCode,
+							studentAcademicYearFeeSummary.getTotalFeePaid() != null ? studentAcademicYearFeeSummary.getTotalFeePaid() : 0);
 				}
 			}
 		}
-		return revenueByLocation;
+		return feeCollectedByLocation;
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
