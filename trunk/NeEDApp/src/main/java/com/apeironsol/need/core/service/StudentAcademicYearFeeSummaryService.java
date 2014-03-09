@@ -96,4 +96,15 @@ public interface StudentAcademicYearFeeSummaryService {
 	 */
 	Collection<StudentAcademicYearFeeSummary> findStudentAcademicYearFeeSummaryByStudentAcademicYearIds(final Collection<Long> studentAcademicYearId);
 
+	/**
+	 * Find student academic year by student id and academic year id.
+	 * 
+	 * @param studentId
+	 *            student id.
+	 * @param academicYearId
+	 *            academic year id.
+	 * @return student academic year by student id and academic year id.
+	 */
+	Collection<StudentAcademicYearFeeSummary> findStudentAcademicYearFeeSummaryByAcademicYearId(final Long academicYearId);
+
 }

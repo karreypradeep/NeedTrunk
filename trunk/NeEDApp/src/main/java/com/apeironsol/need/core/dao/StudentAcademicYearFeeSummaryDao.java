@@ -2,8 +2,8 @@ package com.apeironsol.need.core.dao;
 
 import java.util.Collection;
 
-import com.apeironsol.need.core.model.StudentAcademicYearFeeSummary;
 import com.apeironsol.framework.BaseDao;
+import com.apeironsol.need.core.model.StudentAcademicYearFeeSummary;
 
 public interface StudentAcademicYearFeeSummaryDao extends BaseDao<StudentAcademicYearFeeSummary> {
 	/**
@@ -27,4 +27,6 @@ public interface StudentAcademicYearFeeSummaryDao extends BaseDao<StudentAcademi
 	 * @return student academic year by student id and academic year id.
 	 */
 	Collection<StudentAcademicYearFeeSummary> findStudentAcademicYearFeeSummaryByStudentAcademicYearIds(final Collection<Long> studentAcademicYearIds);
+
+	Collection<StudentAcademicYearFeeSummary> findStudentAcademicYearFeeSummaryByAcademicYearId(final Long academicYearId);
 }

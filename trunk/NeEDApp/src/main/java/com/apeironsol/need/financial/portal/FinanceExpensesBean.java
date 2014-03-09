@@ -255,7 +255,7 @@ public class FinanceExpensesBean extends AbstractTabbedBean implements Serializa
 			this.setViewOrNewAction(false);
 			this.financialExpenseWizardActiveStep = FinancialExpenseWizard.EXPENSE_SEARCH.getKey();
 			ViewUtil.addMessage("Expense created successfully.", FacesMessage.SEVERITY_INFO);
-			if (this.branchExpenseSearchCriteria != null && !this.branchExpenseSearchCriteria.isSearchCriteriaIsEmpty()) {
+			if ((this.branchExpenseSearchCriteria != null) && !this.branchExpenseSearchCriteria.isSearchCriteriaIsEmpty()) {
 				this.searchBranchExpensesBySearchCriteria();
 			}
 		} catch (final Exception ex) {
@@ -274,7 +274,7 @@ public class FinanceExpensesBean extends AbstractTabbedBean implements Serializa
 			this.setViewOrNewAction(false);
 			this.financialExpenseWizardActiveStep = FinancialExpenseWizard.EXPENSE_SEARCH.getKey();
 			ViewUtil.addMessage("Expense removed successfully.", FacesMessage.SEVERITY_INFO);
-			if (this.branchExpenseSearchCriteria != null && !this.branchExpenseSearchCriteria.isSearchCriteriaIsEmpty()) {
+			if ((this.branchExpenseSearchCriteria != null) && !this.branchExpenseSearchCriteria.isSearchCriteriaIsEmpty()) {
 				this.searchBranchExpensesBySearchCriteria();
 			}
 		} catch (final Exception ex) {
@@ -346,7 +346,7 @@ public class FinanceExpensesBean extends AbstractTabbedBean implements Serializa
 		} else {
 			this.branchExpenseSearchCriteria.setBranch(this.sessionBean.getCurrentBranch());
 			this.setBranchExpensesBySearchCriteria(this.branchExpenseService.findBranchExpensesBySearchCriteria(this.branchExpenseSearchCriteria));
-			if (this.getBranchExpensesBySearchCriteria() == null || this.getBranchExpensesBySearchCriteria().isEmpty()) {
+			if ((this.getBranchExpensesBySearchCriteria() == null) || this.getBranchExpensesBySearchCriteria().isEmpty()) {
 				ViewUtil.addMessage("No expenses found for entered search criteria..", FacesMessage.SEVERITY_INFO);
 			}
 		}
@@ -628,7 +628,7 @@ public class FinanceExpensesBean extends AbstractTabbedBean implements Serializa
 	 */
 	public boolean isDeleteButtonVisible(final BranchExpense expense) {
 		boolean result = false;
-		if (this.grantedAuthorityBean.isUserAllowedToRemoveExpenses() && expense != null && expense.getId() != null) {
+		if (this.grantedAuthorityBean.isUserAllowedToRemoveExpenses() && (expense != null) && (expense.getId() != null)) {
 			result = true;
 			/*
 			 * final Calendar expenseDateCal = Calendar.getInstance();
@@ -653,4 +653,5 @@ public class FinanceExpensesBean extends AbstractTabbedBean implements Serializa
 	public void setBranchCreditAccounts(final Collection<BranchCreditAccount> branchCreditAccounts) {
 		this.branchCreditAccounts = branchCreditAccounts;
 	}
+
 }
