@@ -59,6 +59,8 @@ public class RevenueAcademicYearAnalysisBean extends AbstractTabbedBean implemen
 
 	private boolean							displayCharts;
 
+	private String							xAxisLabel							= null;
+
 	@PostConstruct
 	public void init() {
 		this.initializeSearchCriteria();
@@ -123,10 +125,13 @@ public class RevenueAcademicYearAnalysisBean extends AbstractTabbedBean implemen
 		if (this.revenueAcademicYearDO != null) {
 			if (RevenueAnalysisTypeConstant.BY_COURSE.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
 				this.generateChartByCourse();
+				this.setxAxisLabel("Course");
 			} else if (RevenueAnalysisTypeConstant.BY_GENDER.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
 				this.generateChartByGender();
+				this.xAxisLabel = "Gender";
 			} else if (RevenueAnalysisTypeConstant.BY_LOCATION.equals(this.revenueAnalysisSearchCriteria.getRevenueAnalysisType())) {
 				this.generateChartByLocation();
+				this.xAxisLabel = "Pincode";
 			}
 			this.displayCharts = true;
 		}
@@ -208,6 +213,21 @@ public class RevenueAcademicYearAnalysisBean extends AbstractTabbedBean implemen
 	 */
 	public void setDisplayCharts(final boolean displayCharts) {
 		this.displayCharts = displayCharts;
+	}
+
+	/**
+	 * @return the xAxisLabel
+	 */
+	public String getxAxisLabel() {
+		return this.xAxisLabel;
+	}
+
+	/**
+	 * @param xAxisLabel
+	 *            the xAxisLabel to set
+	 */
+	public void setxAxisLabel(final String xAxisLabel) {
+		this.xAxisLabel = xAxisLabel;
 	}
 
 }

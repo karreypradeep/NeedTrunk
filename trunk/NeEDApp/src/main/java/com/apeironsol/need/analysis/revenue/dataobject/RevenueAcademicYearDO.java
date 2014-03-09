@@ -166,10 +166,10 @@ public class RevenueAcademicYearDO implements Serializable {
 					locationsUsedInGraph.add(entry.getKey());
 				}
 			} else {
-				final Map<String, Integer> sortedMap = sortByComparator(locationCount);
+				final Map<String, Integer> sortedMap = sortByComparator(locationCount, false);
 				int count = 1;
 				for (final Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
-					if (count > 10) {
+					if (count >= 10) {
 						break;
 					}
 					locationsUsedInGraph.add(entry.getKey());
@@ -192,7 +192,7 @@ public class RevenueAcademicYearDO implements Serializable {
 		return revenueByLocation;
 	}
 
-	private static Map<String, Integer> sortByComparator(final Map<String, Integer> unsortMap) {
+	private static Map<String, Integer> sortByComparator(final Map<String, Integer> unsortMap, final boolean ascending) {
 
 		final List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
 
@@ -200,7 +200,9 @@ public class RevenueAcademicYearDO implements Serializable {
 		Collections.sort(list, new Comparator() {
 			@Override
 			public int compare(final Object o1, final Object o2) {
-				return ((Comparable) ((Map.Entry<String, Integer>) (o1)).getValue()).compareTo(((Map.Entry<String, Integer>) (o2)).getValue());
+				int result = 0;
+				result = ((Comparable) ((Map.Entry<String, Integer>) (o1)).getValue()).compareTo(((Map.Entry<String, Integer>) (o2)).getValue());
+				return result != 0 ? ascending ? result : result == 1 ? -1 : 1 : result;
 			}
 		});
 
