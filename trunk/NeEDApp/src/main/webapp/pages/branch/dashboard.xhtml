@@ -2,33 +2,64 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui">
-	<p:panel>
-		<h:panelGrid columns="2" columnClasses="branch-dashboard-column,branch-dashboard-column" style="width:100%;">
-			<p:tabView>
-			
-				<p:tab title="Admission status" style="hight:300px;">
-				
-				</p:tab>
-			</p:tabView>
-			<p:tabView>
-			
-				<p:tab title="Notifications">
-				
-				</p:tab>
-			</p:tabView>
-			<p:tabView>
-			
-				<p:tab title="Upcomming events">
-				
-				</p:tab>
-			</p:tabView>
-			<p:tabView>
-			
-				<p:tab title="Weather">
-				
-				</p:tab>
-			</p:tabView>
-		
-		</h:panelGrid>
-	</p:panel>
+	<h:panelGrid columns="4" cellspacing="30" cellpadding="30">
+
+		<p:panel style="background-color:lightblue;width:300px;height:200px">
+			<h:panelGrid columns="1">
+				<h:panelGrid columns="2" cellspacing="10" cellpadding="5">
+					<p:outputLabel value="Total Students" style="background-color:inherit !important;font-size:20px;" />
+					<p:outputLabel value="500" style="font-size:30px;font-weight:bold" />
+					<p:outputLabel value="Students Absent" style="background-color:inherit !important;font-size:20px;" />
+					<p:outputLabel value="50" style="font-size:30px;font-weight:bold" />
+				</h:panelGrid>
+				<p:separator/>
+				<h:panelGrid columns="1" cellspacing="5" cellpadding="5">
+					<p:commandLink value="More Details" style="padding-left:140px;font-size:15px;"/>
+				</h:panelGrid>
+			</h:panelGrid>
+		</p:panel>
+		<p:panel style="background-color:lightgreen;width:300px;height:200px">
+			<h:panelGrid columns="1">
+				<h:panelGrid columns="2" cellspacing="10" cellpadding="5">
+					<p:outputLabel value="Total Students" style="background-color:inherit !important;font-size:20px;" />
+					<p:outputLabel value="500" style="font-size:30px;font-weight:bold" />
+					<p:outputLabel value="Students Absent" style="background-color:inherit !important;font-size:20px;" />
+					<p:outputLabel value="50" style="font-size:30px;font-weight:bold" />
+				</h:panelGrid>
+				<p:separator/>
+				<h:panelGrid columns="1" cellspacing="5" cellpadding="5">
+					<p:commandLink value="More Details" style="padding-left:140px;font-size:15px;"/>
+				</h:panelGrid>
+			</h:panelGrid>
+		</p:panel>
+		<p:panel style="background-color:lightyellow;width:300px;height:200px">
+			<h:panelGrid columns="1">
+				<h:panelGrid columns="2" cellspacing="10" cellpadding="5">
+					<p:outputLabel value="Total Students" style="background-color:inherit !important;font-size:20px;" />
+					<p:outputLabel value="500" style="font-size:30px;font-weight:bold" />
+					<p:outputLabel value="Students Absent" style="background-color:inherit !important;font-size:20px;" />
+					<p:outputLabel value="50" style="font-size:30px;font-weight:bold" />
+				</h:panelGrid>
+				<p:separator/>
+				<h:panelGrid columns="1" cellspacing="5" cellpadding="5">
+					<p:commandLink value="More Details" style="padding-left:140px;font-size:15px;"/>
+				</h:panelGrid>
+			</h:panelGrid>
+		</p:panel>
+		<p:panel style="background-color:purple;width:300px;height:200px">
+			<h:panelGrid columns="1">
+				<h:panelGrid columns="2" cellspacing="10" cellpadding="5">
+					<p:outputLabel value="Total Students" style="background-color:inherit !important;font-size:20px;" />
+					<p:outputLabel value="500" style="font-size:30px;font-weight:bold" />
+					<p:outputLabel value="Students Absent" style="background-color:inherit !important;font-size:20px;" />
+					<p:outputLabel value="50" style="font-size:30px;font-weight:bold" />
+				</h:panelGrid>
+				<p:separator/>
+				<h:panelGrid columns="1" cellspacing="5" cellpadding="5">
+					<p:commandLink value="More Details" style="padding-left:140px;font-size:15px;"/>
+				</h:panelGrid>
+			</h:panelGrid>
+		</p:panel>
+	</h:panelGrid>
+
 </ui:composition>

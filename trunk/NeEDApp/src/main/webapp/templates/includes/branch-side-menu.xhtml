@@ -9,7 +9,12 @@
 
 	<p:accordionPanel rendered="#{accessBean.accessingBranch}" style="width:100%;"
 		activeIndex="#{leftMenuBean.activeTabIndex}" id="branch_side_menu">
-
+		<p:tab title="#{msg.dashboard}" id="left_dashboard_tab">
+			<h:panelGrid columns="1" cellpadding="2">
+				<p:commandLink value="#{msg.mydashboard}"></p:commandLink>
+				<p:commandLink value="#{msg.preferences}"></p:commandLink>
+			</h:panelGrid>
+		</p:tab>
 		<p:tab title="#{msg.students}" id="left_students_tab">
 			<h:panelGrid columns="1" cellpadding="2">
 				<p:commandLink value="#{msg.registrations}" process="branch_side_menu" update="@form"
