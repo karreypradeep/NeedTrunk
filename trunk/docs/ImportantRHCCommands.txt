@@ -1,1 +1,0 @@
-rhc cartridge restart -a {appName} -c mysql-5.5
