@@ -106,17 +106,6 @@ public class BranchDashboardBean extends AbstractStudentBean {
 		return this.feeCollectedSearchCriteria;
 	}
 
-	public void searchFeesCollectedBySearchCriteria() {
-		this.dashBoardPortletClicked = BranchDashboardPortals.FEE_COLLECTED.getKey();
-		this.feeCollectedSearchCriteria.setBranch(this.sessionBean.getCurrentBranch());
-		this.feeCollectedSearchCriteria.setFromDate(this.sessionBean.getCurrentDate());
-		this.feeCollectedSearchCriteria.setToDate(this.sessionBean.getCurrentDate());
-		this.studentFeeTransactionsProcessed = this.studentFinancialService.findFeesCollectedBySearchCriteria(this.feeCollectedSearchCriteria);
-		if (this.studentFeeTransactionsProcessed == null || this.studentFeeTransactionsProcessed.isEmpty()) {
-			ViewUtil.addMessage("No fee collected records found for entered search criteria..", FacesMessage.SEVERITY_INFO);
-		}
-	}
-
 	/**
 	 * @param feeCollectedSearchCriteria
 	 *            the feeCollectedSearchCriteria to set
@@ -145,6 +134,26 @@ public class BranchDashboardBean extends AbstractStudentBean {
 		this.studentFeeTransactionsProcessed = studentFeeTransactionsProcessed;
 	}
 
+
+	public String getDashBoardPortletClicked() {
+		return this.dashBoardPortletClicked;
+	}
+
+	public void setDashBoardPortletClicked(final String dashBoardPortletClicked) {
+		this.dashBoardPortletClicked = dashBoardPortletClicked;
+	}
+
+	public void searchFeesCollectedBySearchCriteria() {
+		this.dashBoardPortletClicked = BranchDashboardPortals.FEE_COLLECTED.getKey();
+		this.feeCollectedSearchCriteria.setBranch(this.sessionBean.getCurrentBranch());
+		this.feeCollectedSearchCriteria.setFromDate(this.sessionBean.getCurrentDate());
+		this.feeCollectedSearchCriteria.setToDate(this.sessionBean.getCurrentDate());
+		this.studentFeeTransactionsProcessed = this.studentFinancialService.findFeesCollectedBySearchCriteria(this.feeCollectedSearchCriteria);
+		if (this.studentFeeTransactionsProcessed == null || this.studentFeeTransactionsProcessed.isEmpty()) {
+			ViewUtil.addMessage("No fee collected records found for entered search criteria..", FacesMessage.SEVERITY_INFO);
+		}
+	}
+
 	public double getTotalFeeCollected() {
 		double totalFeeCollected = 0.0;
 		this.searchFeesCollectedBySearchCriteria();
@@ -154,15 +163,6 @@ public class BranchDashboardBean extends AbstractStudentBean {
 			}
 		}
 		return totalFeeCollected;
-	}
-
-
-	public String getDashBoardPortletClicked() {
-		return this.dashBoardPortletClicked;
-	}
-
-	public void setDashBoardPortletClicked(final String dashBoardPortletClicked) {
-		this.dashBoardPortletClicked = dashBoardPortletClicked;
 	}
 
 }
