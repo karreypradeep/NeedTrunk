@@ -246,4 +246,8 @@ public class ViewContentHandlerBean implements Serializable {
 	public boolean isViewContentBranchFeeCollectedAcademicYearAnalysis() {
 		return ViewContentConstant.BRANCH_FEE_COLLECTED_ACADEMIC_YEAR_ANALYSIS.equals(this.getCurrentViewContent());
 	}
+
+	public boolean isViewContentBranchFeeDueAcademicYearAnalysis() {
+		return ViewContentConstant.BRANCH_FEE_DUE_ACADEMIC_YEAR_ANALYSIS.equals(this.getCurrentViewContent());
+	}
 }

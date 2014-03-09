@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:p="http://primefaces.org/ui"
+	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
+	<p:tabMenu activeIndex="#{feeDueAnalysisBean.activeTabIndex}">
+
+		<p:menuitem value="Fee Due In Academic Year" icon="ui-icon-bookmark" action="#{feeDueAnalysisBean.onTabChange}"
+			process="@this" update="@form">
+			<f:setPropertyActionListener target="#{feeDueAnalysisBean.activeTabIndex}" value="0" />
+		</p:menuitem>
+
+		<p:menuitem value="Fee Due Across Academic Years" icon="ui-icon-bookmark" action="#{feeDueAnalysisBean.onTabChange}"
+			process="@this" update="@form">
+			<f:setPropertyActionListener target="#{feeDueAnalysisBean.activeTabIndex}" value="1" />
+		</p:menuitem>
+
+	</p:tabMenu>
+ 
+	<c:if test="#{feeDueAnalysisBean.activeTabIndex == 0}">
+		<ui:include src="fee_due_academic_year_analysis.xhtml" />
+	</c:if>
+	<c:if test="#{feeDueAnalysisBean.activeTabIndex == 1}">
+		<ui:include src="fee_due_across_academic_year_analysis.xhtml" />
+	</c:if>
+</ui:composition>

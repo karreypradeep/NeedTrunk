@@ -5,12 +5,12 @@
 	xmlns:biz="http://java.sun.com/jsf/composite/apeironsol-components">
 	<p:tabMenu activeIndex="#{feeCollectedAnalysisBean.activeTabIndex}">
 
-		<p:menuitem value="In Academic Year" icon="ui-icon-bookmark" action="#{feeCollectedAnalysisBean.onTabChange}"
+		<p:menuitem value="Fee Collected In Academic Year" icon="ui-icon-bookmark" action="#{feeCollectedAnalysisBean.onTabChange}"
 			process="@this" update="@form">
 			<f:setPropertyActionListener target="#{feeCollectedAnalysisBean.activeTabIndex}" value="0" />
 		</p:menuitem>
 
-		<p:menuitem value="Across Academic Years" icon="ui-icon-bookmark" action="#{feeCollectedAnalysisBean.onTabChange}"
+		<p:menuitem value="Fee Collected Across Academic Years" icon="ui-icon-bookmark" action="#{feeCollectedAnalysisBean.onTabChange}"
 			process="@this" update="@form">
 			<f:setPropertyActionListener target="#{feeCollectedAnalysisBean.activeTabIndex}" value="1" />
 		</p:menuitem>
@@ -18,9 +18,9 @@
 	</p:tabMenu>
 
 	<c:if test="#{feeCollectedAnalysisBean.activeTabIndex == 0}">
-		<ui:include src="fee_collected_academic_year.xhtml" />
+		<ui:include src="fee_collected_academic_year_analysis.xhtml" />
 	</c:if>
 	<c:if test="#{feeCollectedAnalysisBean.activeTabIndex == 1}">
-		<ui:include src="fee_collected_across_academic_year.xhtml" />
+		<ui:include src="fee_collected_across_academic_year_analysis.xhtml" />
 	</c:if>
 </ui:composition>

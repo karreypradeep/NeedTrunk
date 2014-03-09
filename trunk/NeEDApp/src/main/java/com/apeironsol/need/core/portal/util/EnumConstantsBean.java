@@ -29,6 +29,7 @@ import com.apeironsol.need.util.constants.EmployeeCTCDefinitionTypeConstant;
 import com.apeironsol.need.util.constants.EmploymentTypeConstant;
 import com.apeironsol.need.util.constants.FeeClassificationLevelConstant;
 import com.apeironsol.need.util.constants.FeeCollectedAnalysisTypeConstant;
+import com.apeironsol.need.util.constants.FeeDueAnalysisTypeConstant;
 import com.apeironsol.need.util.constants.FeeTypeConstant;
 import com.apeironsol.need.util.constants.FrequencyConstant;
 import com.apeironsol.need.util.constants.GenderConstant;
@@ -280,6 +281,10 @@ public class EnumConstantsBean implements Serializable {
 
 	public FeeCollectedAnalysisTypeConstant[] getFeeCollectedAnalysisTypes() {
 		return FeeCollectedAnalysisTypeConstant.values();
+	}
+
+	public FeeDueAnalysisTypeConstant[] getFeeDueAnalysisTypes() {
+		return FeeDueAnalysisTypeConstant.values();
 	}
 
 }

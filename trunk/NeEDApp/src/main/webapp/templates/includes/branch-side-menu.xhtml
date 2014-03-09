@@ -333,6 +333,12 @@
 						<f:converter converterId="viewContentConverter" />
 					</f:setPropertyActionListener>
 				</p:commandLink>
+				<p:commandLink value="Fee Due" update="@form" process="branch_side_menu">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FEE_DUE_ACADEMIC_YEAR_ANALYSIS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
 				<p:commandLink value="Expenses" update="@form" process="branch_side_menu"
 					action="#{branchStudentsNotificationsBean.setViewBatchLogs}" rendered="false">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
