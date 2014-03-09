@@ -6,18 +6,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-<<<<<<< HEAD
-=======
-import java.util.Iterator;
->>>>>>> 1b23452af92a090222e1503b8747a861be4642fc
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-<<<<<<< HEAD
 import java.util.Map.Entry;
-=======
->>>>>>> 1b23452af92a090222e1503b8747a861be4642fc
 
 import com.apeironsol.need.core.model.Branch;
 import com.apeironsol.need.core.model.Klass;
@@ -173,7 +166,6 @@ public class RevenueAcademicYearDO implements Serializable {
 					locationsUsedInGraph.add(entry.getKey());
 				}
 			} else {
-<<<<<<< HEAD
 				final Map<String, Integer> sortedMap = sortByComparator(locationCount);
 				int count = 1;
 				for (final Map.Entry<String, Integer> entry : sortedMap.entrySet()) {
@@ -183,9 +175,6 @@ public class RevenueAcademicYearDO implements Serializable {
 					locationsUsedInGraph.add(entry.getKey());
 					count++;
 				}
-=======
-
->>>>>>> 1b23452af92a090222e1503b8747a861be4642fc
 			}
 			for (final StudentAcademicYearFeeSummary studentAcademicYearFeeSummary : this.studentAcademicYearFeeSummaries) {
 				final String zipCode = locationsUsedInGraph.contains(studentAcademicYearFeeSummary.getStudentAcademicYear().getStudent().getAddress()
@@ -203,38 +192,22 @@ public class RevenueAcademicYearDO implements Serializable {
 		return revenueByLocation;
 	}
 
-<<<<<<< HEAD
 	private static Map<String, Integer> sortByComparator(final Map<String, Integer> unsortMap) {
 
 		final List<Map.Entry<String, Integer>> list = new LinkedList<Map.Entry<String, Integer>>(unsortMap.entrySet());
-=======
-	private static Map sortByComparator(final Map unsortMap) {
-
-		final List list = new LinkedList(unsortMap.entrySet());
->>>>>>> 1b23452af92a090222e1503b8747a861be4642fc
 
 		// sort list based on comparator
 		Collections.sort(list, new Comparator() {
 			@Override
 			public int compare(final Object o1, final Object o2) {
-<<<<<<< HEAD
 				return ((Comparable) ((Map.Entry<String, Integer>) (o1)).getValue()).compareTo(((Map.Entry<String, Integer>) (o2)).getValue());
-=======
-				return ((Comparable) ((Map.Entry) (o1)).getValue()).compareTo(((Map.Entry) (o2)).getValue());
->>>>>>> 1b23452af92a090222e1503b8747a861be4642fc
 			}
 		});
 
 		// put sorted list into map again
 		// LinkedHashMap make sure order in which keys were inserted
-<<<<<<< HEAD
 		final Map<String, Integer> sortedMap = new LinkedHashMap<String, Integer>();
 		for (final Entry<String, Integer> entry : list) {
-=======
-		final Map sortedMap = new LinkedHashMap();
-		for (final Iterator it = list.iterator(); it.hasNext();) {
-			final Map.Entry entry = (Map.Entry) it.next();
->>>>>>> 1b23452af92a090222e1503b8747a861be4642fc
 			sortedMap.put(entry.getKey(), entry.getValue());
 		}
 		return sortedMap;
