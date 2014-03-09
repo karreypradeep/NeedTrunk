@@ -11,8 +11,12 @@
 		activeIndex="#{leftMenuBean.activeTabIndex}" id="branch_side_menu">
 		<p:tab title="#{msg.dashboard}" id="left_dashboard_tab">
 			<h:panelGrid columns="1" cellpadding="2">
-				<p:commandLink value="#{msg.mydashboard}"></p:commandLink>
-				<p:commandLink value="#{msg.preferences}"></p:commandLink>
+				<p:commandLink value="#{msg.mydashboard}" process="branch_side_menu" update="@form">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}" value="BRANCH_DASHBOARD">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="#{msg.preferences}" rendered="false" />
 			</h:panelGrid>
 		</p:tab>
 		<p:tab title="#{msg.students}" id="left_students_tab">
@@ -330,6 +334,12 @@
 				<p:commandLink value="Fee collected" update="@form" process="branch_side_menu">
 					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
 						value="BRANCH_FEE_COLLECTED_ACADEMIC_YEAR_ANALYSIS">
+						<f:converter converterId="viewContentConverter" />
+					</f:setPropertyActionListener>
+				</p:commandLink>
+				<p:commandLink value="Fee Due" update="@form" process="branch_side_menu">
+					<f:setPropertyActionListener target="#{viewContentHandlerBean.currentViewContent}"
+						value="BRANCH_FEE_DUE_ACADEMIC_YEAR_ANALYSIS">
 						<f:converter converterId="viewContentConverter" />
 					</f:setPropertyActionListener>
 				</p:commandLink>

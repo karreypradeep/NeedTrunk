@@ -133,6 +133,16 @@ public class DateUtil {
 		date.setTime(calendar.getTime().getTime());
 	}
 
+	public static void setLastPossibleTimeStamp(final java.util.Date date) {
+
+		final Calendar calendar = Calendar.getInstance();
+		calendar.setTime(date);
+		calendar.set(Calendar.HOUR, 23);
+		calendar.set(Calendar.MINUTE, 59);
+		calendar.set(Calendar.SECOND, 59);
+		date.setTime(calendar.getTime().getTime());
+	}
+
 	public static Calendar returnFirstDateOfMonth(final Calendar calendar) {
 		final Calendar calendarFirstOfMonth = Calendar.getInstance();
 		calendarFirstOfMonth.setTime(calendar.getTime());
@@ -241,7 +251,7 @@ public class DateUtil {
 			if (weekOfMonth == numOfWeeksInMonth) {
 				lastDateOfWeekOfMonth = numOfDaysInMonth;
 				break;
-			} else if (calendar.get(Calendar.WEEK_OF_MONTH) == (weekOfMonth + 1)) {
+			} else if (calendar.get(Calendar.WEEK_OF_MONTH) == weekOfMonth + 1) {
 				lastDateOfWeekOfMonth = i - 1;
 				break;
 			}

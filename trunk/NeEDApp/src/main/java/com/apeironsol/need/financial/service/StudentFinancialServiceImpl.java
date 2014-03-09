@@ -747,7 +747,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 			final String messageToBeSent, final String studentFeeTransactionNr) {
 		final BranchRule branchRule = this.branchRuleService.findBranchRuleByBranchId(branchId);
 		BatchLog batchLog = new BatchLog();
-		if ((branchRule != null) && (branchRule.getSmsProvider() != null)) {
+		if (branchRule != null && branchRule.getSmsProvider() != null) {
 			batchLog.setSmsProvider(branchRule.getSmsProvider());
 			batchLog.setBatchStatusConstant(batchSize > 0 ? BatchStatusConstant.CREATED : BatchStatusConstant.FINISHED);
 			batchLog.setMessage(messageToBeSent);
@@ -871,7 +871,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double payingAmount = studentFeeDetailsDO.getPayingAmount();
 
-			if ((payingAmount != null) && (payingAmount != 0)) {
+			if (payingAmount != null && payingAmount != 0) {
 
 				this.validatePayingAmount(studentFeeDetailsDO, payingAmount);
 				totolPayment = totolPayment + payingAmount;
@@ -899,7 +899,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double payingAmount = studentFeeDetailsDO.getPayingAmount();
 
-			if ((payingAmount != null) && (payingAmount != 0)) {
+			if (payingAmount != null && payingAmount != 0) {
 
 				this.validatePayingAmount(studentFeeDetailsDO, payingAmount);
 
@@ -934,7 +934,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		try {
 			final BranchNotification branchNotification = this.branchNotificationService.findBranchNotificationByBranchIdAnsNotificationSubType(branchId,
 					NotificationSubTypeConstant.FEE_PAID_NOTIFICATION);
-			if ((branchNotification != null) && branchNotification.getSmsIndicator()) {
+			if (branchNotification != null && branchNotification.getSmsIndicator()) {
 				final BatchLog batchLog = this.createBatchLog(Long.valueOf(1), branchId, studentAcademicYear.getId(), studentAcademicYear.getAcademicYear(),
 						NotificationTypeConstant.SMS_NOTIFICATION, NotificationLevelConstant.STUDENT_ACADEMIC_YEAR,
 						NotificationSubTypeConstant.FEE_PAID_NOTIFICATION, NotificationSentForConstant.STUDENTS, null,
@@ -958,6 +958,16 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 	@Override
 	public Collection<StudentFeeTransaction> findFeesCollectedBySearchCriteria(final FeeCollectedSearchCriteria feeCollectedSearchCriteria)
 			throws BusinessException {
+		final Date fromDate = feeCollectedSearchCriteria.getFromDate();
+		if(fromDate!=null){
+			DateUtil.clearTimeInfo(fromDate);
+			feeCollectedSearchCriteria.setFromDate(fromDate);
+		}
+		final Date toDate = feeCollectedSearchCriteria.getToDate();
+		if(toDate!=null){
+			DateUtil.setLastPossibleTimeStamp(toDate);
+			feeCollectedSearchCriteria.setToDate(toDate);
+		}
 		return this.studentFeeTransactionDao.findFeesCollectedBySearchCriteria(feeCollectedSearchCriteria);
 	}
 
@@ -991,16 +1001,16 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		final Collection<StudentFinancialAcademicYearDO> allStudentFinancialAcademicYearDO = this
 				.getStudnetFeeFinancialAcademicYearDetailsByAcademicYearIdForDueDate(studentSections, feeDueSearchCriteria.getDueDate());
 		for (final StudentFinancialAcademicYearDO studentFinancialAcademicYearDO : allStudentFinancialAcademicYearDO) {
-			if ((feeDueSearchCriteria.getFeeDuePercetage() > 0) && (feeDueSearchCriteria.getFeeDuePercetage() < 100)) {
-				if (((studentFinancialAcademicYearDO.getNetFeeDue() * 100) / studentFinancialAcademicYearDO.getNetFee()) >= feeDueSearchCriteria
+			if (feeDueSearchCriteria.getFeeDuePercetage() > 0 && feeDueSearchCriteria.getFeeDuePercetage() < 100) {
+				if (studentFinancialAcademicYearDO.getNetFeeDue() * 100 / studentFinancialAcademicYearDO.getNetFee() >= feeDueSearchCriteria
 						.getFeeDuePercetage()) {
 					studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
 				}
 
-			} else if ((feeDueSearchCriteria.getMinimumDueAmount() > 0)
-					&& (studentFinancialAcademicYearDO.getNetFeeDue() >= feeDueSearchCriteria.getMinimumDueAmount())) {
+			} else if (feeDueSearchCriteria.getMinimumDueAmount() > 0
+					&& studentFinancialAcademicYearDO.getNetFeeDue() >= feeDueSearchCriteria.getMinimumDueAmount()) {
 				studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
-			} else if ((feeDueSearchCriteria.getMinimumDueAmount() == 0) && (studentFinancialAcademicYearDO.getNetFeeDue() > 0)) {
+			} else if (feeDueSearchCriteria.getMinimumDueAmount() == 0 && studentFinancialAcademicYearDO.getNetFeeDue() > 0) {
 				studentFinancialAcademicYearDOs.add(studentFinancialAcademicYearDO);
 			}
 		}
@@ -1016,7 +1026,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		Double result = 0.0;
 		final Collection<StudentFinancialDO> studentFinancialDOs = this.computeStudentFinancialDetaislByAcademicYearAndDueDate(student.getId(),
 				academicYear.getId(), dueDate);
-		if ((studentFinancialDOs != null) && !studentFinancialDOs.isEmpty()) {
+		if (studentFinancialDOs != null && !studentFinancialDOs.isEmpty()) {
 			for (final StudentFinancialDO studentFinancialDO : studentFinancialDOs) {
 				result += studentFinancialDO.getNetFeeDue();
 			}
@@ -1110,10 +1120,10 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 			studentAcademicYearIds.put(studentSection.getStudentAcademicYear().getId(), studentSection);
 		}
 		Collection<StudentAcademicYearFeeSummary> studentAcademicYearFeeSummaryByStuAcYearIds = new ArrayList<StudentAcademicYearFeeSummary>();
-		if ((studentAcademicYearIds.keySet() != null) && (studentAcademicYearIds.keySet().size() > 0)) {
+		if (studentAcademicYearIds.keySet() != null && studentAcademicYearIds.keySet().size() > 0) {
 			studentAcademicYearFeeSummaryByStuAcYearIds = this.studentAcademicYearFeeSummaryService
 					.findStudentAcademicYearFeeSummaryByStudentAcademicYearIds(studentAcademicYearIds.keySet());
-			if ((studentAcademicYearFeeSummaryByStuAcYearIds != null) && (studentAcademicYearFeeSummaryByStuAcYearIds.size() != studentAcademicYearIds.size())) {
+			if (studentAcademicYearFeeSummaryByStuAcYearIds != null && studentAcademicYearFeeSummaryByStuAcYearIds.size() != studentAcademicYearIds.size()) {
 				final Map<Long, StudentAcademicYearFeeSummary> retrievedStudentAcademicYearFeeSummary = new HashMap<Long, StudentAcademicYearFeeSummary>();
 				for (final StudentAcademicYearFeeSummary studentAcademicYearFeeSummary : studentAcademicYearFeeSummaryByStuAcYearIds) {
 					retrievedStudentAcademicYearFeeSummary.put(studentAcademicYearFeeSummary.getStudentAcademicYear().getId(), studentAcademicYearFeeSummary);
@@ -1209,7 +1219,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double deductAmount = studentFeeDetailsDO.getDeductingAmount();
 
-			if ((deductAmount != null) && (deductAmount != 0)) {
+			if (deductAmount != null && deductAmount != 0) {
 
 				this.validateDeductionAmount(studentFeeDetailsDO, deductAmount);
 				totolDeduction = totolDeduction + deductAmount;
@@ -1234,7 +1244,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double deductingAmount = studentFeeDetailsDO.getDeductingAmount();
 
-			if ((deductingAmount != null) && (deductingAmount != 0)) {
+			if (deductingAmount != null && deductingAmount != 0) {
 
 				this.validateDeductionAmount(studentFeeDetailsDO, deductingAmount);
 
@@ -1294,7 +1304,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double refundAmount = studentFeeDetailsDO.getRefundAmount();
 
-			if ((refundAmount != null) && (refundAmount != 0)) {
+			if (refundAmount != null && refundAmount != 0) {
 
 				this.validateRefundAmount(studentFeeDetailsDO, refundAmount);
 				totolRefund = totolRefund + refundAmount;
@@ -1319,7 +1329,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			final Double refundAmount = studentFeeDetailsDO.getRefundAmount();
 
-			if ((refundAmount != null) && (refundAmount != 0)) {
+			if (refundAmount != null && refundAmount != 0) {
 
 				this.validateRefundAmount(studentFeeDetailsDO, refundAmount);
 
@@ -1504,7 +1514,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		if (deductAmount > allowedDeduction) {
 			throw new BusinessException(BusinessMessages.getResourceBundleName(),
 					BusinessMessages.MSG_DEDUCTING_AMOUNT_SHOULD_NOT_BE_GREATER_THAN_THE_TOTOAL_AMOUNT, new Object[] { studentFeeDetailsDO.getFeeName(),
-							allowedDeduction, studentFeeDetailsDO.getKlassLevelFeeCatalog().getDueDate() });
+				allowedDeduction, studentFeeDetailsDO.getKlassLevelFeeCatalog().getDueDate() });
 		}
 	}
 
@@ -1516,7 +1526,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 
 			throw new BusinessException(BusinessMessages.getResourceBundleName(),
 					BusinessMessages.MSG_PAYMENT_AMOUNT_SHOULD_NOT_BE_GREATER_THAN_THE_DUE_AMOUNT, new Object[] { studentFeeDetailsDO.getFeeName(),
-							totalAmount, studentFeeDetailsDO.getKlassLevelFeeCatalog().getDueDate() });
+				totalAmount, studentFeeDetailsDO.getKlassLevelFeeCatalog().getDueDate() });
 		}
 	}
 
@@ -1528,7 +1538,7 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 		if (refundAmount > allowedRefund) {
 			throw new BusinessException(BusinessMessages.getResourceBundleName(),
 					BusinessMessages.MSG_REFUND_AMOUNT_SHOULD_NOT_BE_GREATER_THAN_THE_TOTOAL_AMOUNT, new Object[] { studentFeeDetailsDO.getFeeName(),
-							allowedRefund, studentFeeDetailsDO.getKlassLevelFeeCatalog().getDueDate() });
+				allowedRefund, studentFeeDetailsDO.getKlassLevelFeeCatalog().getDueDate() });
 		}
 	}
 
@@ -1629,8 +1639,8 @@ public class StudentFinancialServiceImpl implements StudentFinancialService {
 				student.getBranch().getId(), academicYearId);
 		if (branchLevelFees != null) {
 			for (final BranchLevelFee branchLevelFee : branchLevelFees) {
-				if ((student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER) && FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee.getBuildingBlock()
-						.getFeeType()))
+				if (student.getResidence().equals(ResidenceConstant.DAY_SCHOOLER) && FeeTypeConstant.HOSTEL_FEE.equals(branchLevelFee.getBuildingBlock()
+						.getFeeType())
 						|| FeeTypeConstant.APPLICATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())
 						|| FeeTypeConstant.RESERVATION_FEE.equals(branchLevelFee.getBuildingBlock().getFeeType())) {
 					// don't create hostel fee.
