@@ -7,17 +7,6 @@
 		<p:messages id="messages" globalOnly="true" autoUpdate="true" closable="true" />
 		<h:panelGrid columns="2" id="expense_type_grid" cellpadding="4" style="border:0px;"
 			columnClasses="column-vertical-align,column-vertical-align">
-
-			<p:outputLabel id="academic_year_label" value="#{msg.academicYear}" for="academic_year" />
-			<p:selectOneMenu id="academic_year"
-				value="#{revenueAcademicYearAnalysisBean.revenueAnalysisSearchCriteria.academicYear}"
-				converter="academicYearConverter" style="width:165px;" required="true">
-				<f:selectItem itemLabel="Select academic year" itemValue="" />
-				<f:selectItems value="#{revenueAcademicYearAnalysisBean.activeAcademicYears}" var="academicYear"
-					itemLabel="#{academicYear.displayLabel}" itemValue="#{academicYear}" />
-				<p:ajax update="@this" process="@this" />
-			</p:selectOneMenu>
-
 			<p:outputLabel id="revenue_analysis_type_label" value="Revenue Analysis Type" for="revenue_analysis_type" />
 			<p:selectOneMenu id="revenue_analysis_type" style="width:152px;"
 				value="#{revenueAcademicYearAnalysisBean.revenueAnalysisSearchCriteria.revenueAnalysisType}">
@@ -32,26 +21,25 @@
 		<p:commandButton id="expense_type_reset" value="Reset" update="@form" process="@this" icon="ui-icon-refresh"
 			action="#{revenueAcademicYearAnalysisBean.resetSearchCriteria}" />
 
-		<p:tabView dynamic="true" cache="true" rendered="#{revenueAcademicYearAnalysisBean.displayCharts}">
+		<p:tabView dynamic="true" cache="true">
 			<p:tab title="Line Chart">
 				<p:lineChart value="#{revenueAcademicYearAnalysisBean.revenueAcademicYearAnalysisChart}" legendPosition="w"
 					title="Revenue" style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0"
-					yaxisLabel="Rupeees" xaxisLabel="Course" animate="true"/>
+					yaxisLabel="Rupeees" xaxisLabel="Course" />
 			</p:tab>
 			<p:tab title="Bar Chart">
 				<p:barChart value="#{revenueAcademicYearAnalysisBean.revenueAcademicYearAnalysisChart}" legendPosition="w"
 					title="Revenue" style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0"
-					yaxisLabel="Rupeees" xaxisLabel="Course" animate="true"/>
+					yaxisLabel="Rupeees" xaxisLabel="Course" />
 			</p:tab>
 			<p:tab title="Pie Chart">
 				<h:panelGrid columns="2" cellpadding="4" style="border:0px;">
 					<p:pieChart id="sample" value="#{revenueAcademicYearAnalysisBean.revenueAcademicYearAnalysisPieChart}"
-						legendPosition="w" style="height:500px" animate="true"/>
+						legendPosition="w" style="height:500px" />
 					<p:pieChart id="custom" value="#{revenueAcademicYearAnalysisBean.revenueAcademicYearAnalysisPieChart}"
-						legendPosition="e" fill="false" showDataLabels="true" style="height:500px" sliceMargin="5" diameter="150" animate="true"/>
+						legendPosition="e" fill="false" showDataLabels="true" style="height:500px" sliceMargin="5" diameter="150" />
 				</h:panelGrid>
 			</p:tab>
 		</p:tabView>
-
 	</p:panel>
 </ui:composition>

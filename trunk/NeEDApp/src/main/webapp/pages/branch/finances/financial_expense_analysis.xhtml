@@ -40,7 +40,7 @@
 					<f:metadata>
 						<f:event type="preRenderView" listener="#{financeExpensesBean.analyseFinancialExpensesLineChartReportIndividual}" />
 					</f:metadata>
-					<p:tabView>
+					<p:tabView dynamic="true" cache="true">>
 						<p:tab title="Line Chart">
 							<p:lineChart value="#{financeExpensesBean.financialExpenseAnalysisChart}" legendPosition="w" title="Expenses"
 								style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" yaxisLabel="Rupeees" animate="true"
@@ -57,7 +57,7 @@
 					<f:metadata>
 						<f:event type="preRenderView" listener="#{financeExpensesBean.analyseFinancialExpensesLineChartReportCumulative}" />
 					</f:metadata>  
-					<p:tabView>
+					<p:tabView dynamic="true" cache="true">
 						<p:tab title="Line Chart">
 							<p:lineChart value="#{financeExpensesBean.financialExpenseAnalysisChart}" legendPosition="w" title="Expenses"
 								style="height:600px;margin-top:20px;margin-bottom:15px;" shadow="false" minY="0" yaxisLabel="Rupeees"
